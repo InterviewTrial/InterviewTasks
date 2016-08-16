@@ -1,0 +1,13 @@
+D:\KERConsultancy\projects\JGGrove\JG_Prospect\JG_Prospect.DAL\obj\Release\JG_Prospect.DAL.csprojResolveAssemblyReference.cache
+D:\KERConsultancy\projects\JGGrove\JG_Prospect\JG_Prospect.DAL\bin\Release\JG_Prospect.DAL.dll
+D:\KERConsultancy\projects\JGGrove\JG_Prospect\JG_Prospect.DAL\bin\Release\JG_Prospect.DAL.pdb
+D:\KERConsultancy\projects\JGGrove\JG_Prospect\JG_Prospect.DAL\bin\Release\JG_Prospect.Common.dll
+D:\KERConsultancy\projects\JGGrove\JG_Prospect\JG_Prospect.DAL\bin\Release\Microsoft.Practices.EnterpriseLibrary.Common.dll
+D:\KERConsultancy\projects\JGGrove\JG_Prospect\JG_Prospect.DAL\bin\Release\Microsoft.Practices.EnterpriseLibrary.Data.dll
+D:\KERConsultancy\projects\JGGrove\JG_Prospect\JG_Prospect.DAL\bin\Release\Microsoft.Practices.ServiceLocation.dll
+D:\KERConsultancy\projects\JGGrove\JG_Prospect\JG_Prospect.DAL\bin\Release\Microsoft.Practices.EnterpriseLibrary.Logging.dll
+D:\KERConsultancy\projects\JGGrove\JG_Prospect\JG_Prospect.DAL\bin\Release\Microsoft.Practices.Unity.dll
+D:\KERConsultancy\projects\JGGrove\JG_Prospect\JG_Prospect.DAL\bin\Release\Microsoft.Practices.Unity.Interception.dll
+D:\KERConsultancy\projects\JGGrove\JG_Prospect\JG_Prospect.DAL\bin\Release\JG_Prospect.Common.pdb
+D:\KERConsultancy\projects\JGGrove\JG_Prospect\JG_Prospect.DAL\obj\Release\JG_Prospect.DAL.dll
+D:\KERConsultancy\projects\JGGrove\JG_Prospect\JG_Prospect.DAL\obj\Release\JG_Prospect.DAL.pdb

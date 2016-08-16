@@ -1,0 +1,14 @@
+D:\KERConsultancy\projects\JGGrove\JG_Prospect\JG_Prospect.BLL\obj\Debug\JG_Prospect.BLL.csprojResolveAssemblyReference.cache
+D:\KERConsultancy\projects\JGGrove\JG_Prospect\JG_Prospect.BLL\bin\Debug\JG_Prospect.BLL.dll
+D:\KERConsultancy\projects\JGGrove\JG_Prospect\JG_Prospect.BLL\bin\Debug\JG_Prospect.BLL.pdb
+D:\KERConsultancy\projects\JGGrove\JG_Prospect\JG_Prospect.BLL\bin\Debug\JG_Prospect.Common.dll
+D:\KERConsultancy\projects\JGGrove\JG_Prospect\JG_Prospect.BLL\bin\Debug\JG_Prospect.DAL.dll
+D:\KERConsultancy\projects\JGGrove\JG_Prospect\JG_Prospect.BLL\bin\Debug\Microsoft.Practices.EnterpriseLibrary.Logging.dll
+D:\KERConsultancy\projects\JGGrove\JG_Prospect\JG_Prospect.BLL\bin\Debug\Microsoft.Practices.Unity.dll
+D:\KERConsultancy\projects\JGGrove\JG_Prospect\JG_Prospect.BLL\bin\Debug\Microsoft.Practices.Unity.Interception.dll
+D:\KERConsultancy\projects\JGGrove\JG_Prospect\JG_Prospect.BLL\bin\Debug\JG_Prospect.Common.pdb
+D:\KERConsultancy\projects\JGGrove\JG_Prospect\JG_Prospect.BLL\bin\Debug\JG_Prospect.DAL.pdb
+D:\KERConsultancy\projects\JGGrove\JG_Prospect\JG_Prospect.BLL\obj\Debug\JG_Prospect.BLL.dll
+D:\KERConsultancy\projects\JGGrove\JG_Prospect\JG_Prospect.BLL\obj\Debug\JG_Prospect.BLL.pdb
+D:\KERConsultancy\projects\JGGrove\JG_Prospect\JG_Prospect.BLL\bin\Debug\Microsoft.Practices.EnterpriseLibrary.Common.dll
+D:\KERConsultancy\projects\JGGrove\JG_Prospect\JG_Prospect.BLL\bin\Debug\Microsoft.Practices.ServiceLocation.dll

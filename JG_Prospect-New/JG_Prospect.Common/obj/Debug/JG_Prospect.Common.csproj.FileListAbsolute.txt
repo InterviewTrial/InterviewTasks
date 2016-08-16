@@ -1,0 +1,5 @@
+D:\KERConsultancy\projects\JGGrove\JG_Prospect\JG_Prospect.Common\bin\Debug\JG_Prospect.Common.dll
+D:\KERConsultancy\projects\JGGrove\JG_Prospect\JG_Prospect.Common\bin\Debug\JG_Prospect.Common.pdb
+D:\KERConsultancy\projects\JGGrove\JG_Prospect\JG_Prospect.Common\obj\Debug\JG_Prospect.Common.dll
+D:\KERConsultancy\projects\JGGrove\JG_Prospect\JG_Prospect.Common\obj\Debug\JG_Prospect.Common.pdb
+D:\KERConsultancy\projects\JGGrove\JG_Prospect\JG_Prospect.Common\obj\Debug\JG_Prospect.Common.csprojResolveAssemblyReference.cache

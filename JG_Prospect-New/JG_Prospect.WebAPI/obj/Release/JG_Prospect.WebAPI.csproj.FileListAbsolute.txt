@@ -1,0 +1,6 @@
+D:\KERConsultancy\projects\JGGrove\JG_Prospect\JG_Prospect.WebAPI\obj\Release\JG_Prospect.WebAPI.csprojResolveAssemblyReference.cache
+D:\KERConsultancy\projects\JGGrove\JG_Prospect\JG_Prospect.WebAPI\bin\JG_Prospect.WebAPI.dll.config
+D:\KERConsultancy\projects\JGGrove\JG_Prospect\JG_Prospect.WebAPI\bin\JG_Prospect.WebAPI.dll
+D:\KERConsultancy\projects\JGGrove\JG_Prospect\JG_Prospect.WebAPI\bin\JG_Prospect.WebAPI.pdb
+D:\KERConsultancy\projects\JGGrove\JG_Prospect\JG_Prospect.WebAPI\obj\Release\JG_Prospect.WebAPI.dll
+D:\KERConsultancy\projects\JGGrove\JG_Prospect\JG_Prospect.WebAPI\obj\Release\JG_Prospect.WebAPI.pdb
