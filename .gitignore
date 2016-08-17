@@ -1,0 +1,10 @@
+JG_Prospect-New/packages/
+JG_Prospect-New/JG_Prospect.web/bin/
+JG_Prospect-New/JG_Prospect.web/obj/
+JG_Prospect-New/JG_Prospect.WebAPI/obj/
+JG_Prospect-New/.vs/JG_Prospect/v14/.suo
+JG_Prospect-New/.vs/config/applicationhost.config
+JG_Prospect-New/JG_Prospect.WebAPI/bin/
+JG_Prospect-New/JG_Prospect.Common/obj/
+JG_Prospect-New/JG_Prospect.DAL/obj/
+JG_Prospect-New/JG_Prospect.BLL/obj/
