@@ -10,77 +10,8 @@
     <link rel="stylesheet" href="css/jquery-ui.css" />
     <script src="jquery/jquery-2.1.1.js" type="text/javascript"></script>
     <script src="jquery/jquery-ui-1.11.1.js" type="text/javascript"></script>
-    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false&libraries=places&key=AIzaSyCKkBhvDXVd3K53AdMRXjbKpE0utScfWZM"></script>
-    <script type="text/javascript">
-        var source, destination;
-        var directionsDisplay;
-        var directionsService = new google.maps.DirectionsService();
-
-        google.maps.event.addDomListener(window, 'load', function () {
-            new google.maps.places.SearchBox(document.getElementById('txtFromLocation'));
-            new google.maps.places.SearchBox(document.getElementById('txtToLocation'));
-            directionsDisplay = new google.maps.DirectionsRenderer({ 'draggable': true });
-        });
-
-        function GetRoute() {
-            // var mumbai = new google.maps.LatLng(18.9750, 72.8258);
-            var philadelphia = new google.maps.LatLng(39.9526, 75.1652);
-            var mapOptions = {
-                zoom: 7,
-                center: philadelphia
-            };
-
-            map = new google.maps.Map(document.getElementById('dvMap'), mapOptions);
-            directionsDisplay.setMap(map);
-
-            //directionsDisplay.setPanel(document.getElementById('dvPanel'));
-
-            //*********DIRECTIONS AND ROUTE**********************//
-            source = document.getElementById("txtFromLocation").value;
-            destination = document.getElementById("txtToLocation").value;
-
-            var request = {
-                origin: source,
-                destination: destination,
-                travelMode: google.maps.TravelMode.DRIVING
-            };
-            directionsService.route(request, function (response, status) {
-                if (status == google.maps.DirectionsStatus.OK) {
-                    directionsDisplay.setDirections(response);
-                }
-            });
-
-            //*********DISTANCE AND DURATION**********************//
-            var service = new google.maps.DistanceMatrixService();
-            service.getDistanceMatrix({
-                origins: [source],
-                destinations: [destination],
-                travelMode: google.maps.TravelMode.DRIVING,
-                unitSystem: google.maps.UnitSystem.METRIC,
-                avoidHighways: false,
-                avoidTolls: false
-            }, function (response, status) {
-                if (status == google.maps.DistanceMatrixStatus.OK && response.rows[0].elements[0].status != "ZERO_RESULTS") {
-                    var distance = response.rows[0].elements[0].distance.text;
-                    var duration = response.rows[0].elements[0].duration.text;
-                    var dvDistance = document.getElementById("dvDistance");
-                    dvDistance.innerHTML = "";
-                    dvDistance.innerHTML += "Distance: " + distance + "<br />";
-                    dvDistance.innerHTML += "Duration:" + duration;
-
-                } else {
-                    alert("Unable to find the distance.");
-                }
-            });
-        }
-    </script>
     <link href="datetime/css/jquery-ui-1.7.1.custom.css" rel="stylesheet" type="text/css" />
-
     <link href="datetime/css/stylesheet.css" rel="stylesheet" type="text/css" />
-    <%--
-    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-        <script src="//code.jquery.com/jquery-1.10.2.js"></script>
-  <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>--%>
 
     <script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <style>
@@ -114,6 +45,19 @@
             line-height: normal;
         }
     </style>
+    <script type="text/javascript">
+        function FullCalenderPerformCallback(dateInput) {
+            var customers = [];
+            var txtSearch = $('#txtSearch').val();
+
+            $('input:checkbox.customer-check-box').each(function () {
+                if (this.checked)
+                    customers.push($(this).attr('customer_id'))
+            });
+
+            $("#iframeSalesCalender").attr("src", "SalesCalender.aspx?e=" + JSON.stringify(customers) + "&s=" + txtSearch + "&d=" + dateInput);
+        }
+    </script>
 </head>
 <body>
     <form id="form1" runat="server">
@@ -125,11 +69,6 @@
                         <table>
                             <tr>
                                 <td style="width: 1200px;">
-
-                                    <div style="float: left">
-                                        <div class="date dateCalender" id="datepicker"></div>
-                                    </div>
-
                                     <div style="margin-left: auto; width: 55%; padding-top: 10px;">
                                         <div class="form-group has-feedback" style="align-self: center">
                                             <input type="text" class="form-control" name="txtSearch" id="txtSearch" placeholder="Search Calendar" />
@@ -167,60 +106,24 @@
 
                             </tr>
                             <tr>
-
-                                <td style="width: 100%;">
-                                    <div style="float: left; width: 45%">
-                                        <table style="font-family: Verdana; font-size: small;" width="100%">
-                                            <tbody>
-                                                <tr>
-                                                    <td style="font-family: Verdana; font-size: 11pt; color: red;">
-                                                        <b>A:</b><textarea name="txtFromLocation" rows="2" cols="10" id="txtFromLocation" style="color: Black; width: 93%;">3502 Scotts Ln Philadelphia, PA 19129</textarea>
-                                                        <br />
-                                                        <br />
-                                                        <b>B:</b><textarea name="txtToLocation" rows="2" cols="10" id="txtToLocation" style="color: Black; width: 93%;"></textarea>
-                                                        <br />
-                                                        <div class="btn_sec">
-                                                            <input type="submit" name="btnGetDirection" value="Get Direction" id="btnGetDirection" onclick="GetRoute();" tabindex="3" style="height: 40px; width: 190px; margin: 6px 17px;" />
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <div id="direction_steps_holder" style="width: 100%">
-                                                            <div id="dvDistance" style="padding: 5px;">
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div style="float: left; width: 53%; padding: 0 0 0 10px;">
-                                        <div id="dvMap" style="width: 100%; height: 400px;">
-                                            <%--<tr>
-                                                    <td colspan="2">
-                                                        <div id="map_canvasMarkers" style="width: 500px; height: 400px"></div>
-                                                    </td>
-                                                </tr>--%>
-                                        </div>
-                                    </div>
-                                </td>
+                                <td style="width: 100%;"></td>
                             </tr>
                         </table>
                     </td>
+
                     <td style="vertical-align: top;"></td>
                 </tr>
             </table>
-
-
         </div>
+
+
     </form>
     <script type="text/javascript">
         Date.prototype.yyyymmdd = function () {
             var yyyy = this.getFullYear().toString();
-            var mm = (this.getMonth() + 1).toString(); // getMonth() is zero-based
+            var mm = (this.getMonth() + 1).toString();
             var dd = this.getDate().toString();
-            return yyyy + "-" + (mm[1] ? mm : "0" + mm[0]) + "-" + (dd[1] ? dd : "0" + dd[0]); // padding
+            return yyyy + "-" + (mm[1] ? mm : "0" + mm[0]) + "-" + (dd[1] ? dd : "0" + dd[0]);
         };
 
         var isPersonal = false;
@@ -233,14 +136,9 @@
                     var d = new Date(dateText);
                     date = d.yyyymmdd();
                     LoadCalender();
-
                 }
 
             });
-            //$('#datepicker').hide();
-            //$("#lnkDatePicker").click(function () {
-            //    $('#datepicker').toggle();
-            //});
             $('.navbar a.dropdown-toggle').on('click', function (e) {
 
                 var elmnt = $(this).parent().parent();
@@ -253,7 +151,6 @@
                     else li.removeClass('open');
                     $(this).next().css('top', heightParent + 'px');
                     $(this).next().css('left', widthParent + 'px');
-
                     return false;
                 }
             });
@@ -262,7 +159,6 @@
 
                 var items = [];
                 $.each(data, function (key, val) {
-                    // items.push("<li id='" + key + "'>" + val + "</li>");
                     items.push("  <li class='divider'></li> <li class='li-emp'><input type='checkbox' class='customer-check-box' customer_id='" + val.id + "' id='chk_" + val.id + "' />" + val.name + "</li>");
                 });
 
@@ -334,6 +230,24 @@
 
             date = '';
         }
+
+        function doIframe() {
+            var $iframes = $("iframe");
+            $iframes.each(function () {
+                var iframe = this;
+                $(iframe).load(function () {
+                    setHeight(iframe);
+                });
+            });
+        }
+
+        function setHeight(e) {
+            e.height = e.contentWindow.document.body.scrollHeight + 35;
+        }
+
+        $(window).load(function () {
+            doIframe();
+        });
 
     </script>
 </body>

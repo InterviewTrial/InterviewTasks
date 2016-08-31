@@ -25,5 +25,8 @@ namespace JG_Prospect.JGCalender
         public string firstname { get; set; }
         public string backgroundColor { get; set; }
         public bool  textEscape {get;set;}
+        public double? Latitude { get; set; }
+        public double? Longitude { get; set; }
+        public string CommonAddress { get; set; }
     }
 }

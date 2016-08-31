@@ -18,6 +18,7 @@ namespace JG_Prospect.JGCalender
         public DateTime end { get; set; }
         public bool allDay { get; set; }
 
+        public string CommonAddress { get; set; }
         public int customerid { get; set; }
         public string lastname { get; set; }
         public string primarycontact{ get; set; }
