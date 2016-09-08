@@ -38,7 +38,7 @@
             <li id="li_AnnualCalender" visible="false" runat="server"><a href="#" runat="server">Annual Event Calendar</a> </li>
         </ul>
         <!-- appointment tabs section end -->
-        <h1><b>Dashboard</b></h1>
+        <h1><b>Dashboard</b></h1> 
         <asp:Panel ID="pnlTestEmail" Visible="false" GroupingText="Test E-Mail" runat="server" CssClass="clsTestMail">
             <asp:TextBox ID="txtTestEmail" runat="server"></asp:TextBox>
             <asp:Button ID="btnTestMail" runat="server" Text="Send Mail" OnClick="btnTestMail_Click" />

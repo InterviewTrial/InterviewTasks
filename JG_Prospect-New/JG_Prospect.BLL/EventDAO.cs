@@ -147,7 +147,7 @@ namespace JG_Prospect.JGCalender
                     cevent.backgroundColor = "gray";
                 }
                 cevent.id = (int)reader["event_id"];
-                cevent.title = ((string)reader["title"]).Replace("##", ", "); ;
+                cevent.title = ((string)reader["title"]).Replace("##", ", ");
                 cevent.description = ((string)reader["description"]).Replace("##", "<br>");
                 cevent.start = (DateTime)reader["event_start"];
                 cevent.end = (DateTime)reader["event_end"];

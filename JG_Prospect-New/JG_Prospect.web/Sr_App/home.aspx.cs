@@ -23,15 +23,17 @@ namespace JG_Prospect.Sr_App
         {
             if (!IsPostBack)
             {
+
                 Session["AppType"] = "SrApp";
                 if ((string)Session["usertype"] == "SM" || (string)Session["usertype"] == "SSE" || (string)Session["usertype"] == "MM")
                 {
                     li_AnnualCalender.Visible = true;
                 }
-                if ((string)Session["usertype"] == "Admin")
-                {
-                    pnlTestEmail.Visible = true;
-                }
+
+                //if ((string)Session["usertype"] == "Admin")
+                //{
+                //    pnlTestEmail.Visible = true;
+                //}
             }
         }
 

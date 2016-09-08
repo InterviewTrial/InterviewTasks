@@ -15,7 +15,6 @@
     <script src="jquery/jquery-ui-1.11.1.js" type="text/javascript"></script>
     <script src="jquery/jquery.qtip-2.2.0.js" type="text/javascript"></script>
     <script src="fullcalendar/fullcalendar-2.6.0.js" type="text/javascript"></script>
-    <script src="scripts/calendarscript.js" type="text/javascript"></script>
     <script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false&libraries=places&key=AIzaSyCKkBhvDXVd3K53AdMRXjbKpE0utScfWZM"></script>
 
