@@ -371,9 +371,16 @@
         }
 
         function AddDayTime(e) {
+
+            if ($("#ContentPlaceHolder1_txtestimate_time").val().trim() == "") {
+                alert("Should contain option for user to select time!");
+                return false;
+            }
+
             if ($("#txtBestDayToContact").val().trim() == "") {
                 alert("Please Select Best Day to Contact");
                 return false;
+                
             }
 
             if ($("#txtBestStartTime").val().trim() == "") {
@@ -504,22 +511,32 @@
         }
 
         function CheckDuplicateCustomerCred(obj, type) {
-            $.ajax({
-                type: "POST",
-                url: "new_customer.aspx/CheckDuplicateCustomerCredentials",
-                contentType: "application/json; charset=utf-8",
-                dataType: "JSON",
-                data: "{'pValueForValidation':'" + obj.value + "', 'pValidationType':"+type+"}",
-                
-                success: function (data) {
-                    debugger;
-                    var dataInput = (data.d);
-                    if (dataInput != '') {
-                        alert(dataInput);
-                        obj.value = '';
+            if (obj.value.trim() != "") {
+                $.ajax({
+                    type: "POST",
+                    url: "new_customer.aspx/CheckDuplicateCustomerCredentials",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "JSON",
+                    data: "{'pValueForValidation':'" + obj.value + "', 'pValidationType':" + type + "}",
+
+                    success: function (data) {
+                        debugger;
+                        var dataInput = (data.d);
+                        if (dataInput != '') {
+                            // alert(dataInput);
+                            confirm("contact"+obj.value+" already exists: would you like to redirect to this customer profile page?");
+
+                            
+                            obj.value = '';
+                        }
                     }
-                }
-            });
+                });
+            }
+            else {
+               
+                if(obj.id=="txtEMail1" || obj.id=="ContentPlaceHolder1_txtEMail2")
+                alert("Email field cannot be empty");
+            }
         }
 
         function CheckDuplicatePhone(obj){
