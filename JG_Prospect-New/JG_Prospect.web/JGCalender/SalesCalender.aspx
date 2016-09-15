@@ -7,17 +7,15 @@
     <link href="css/cupertino/jquery-ui-1.10.3.min.css" rel="stylesheet" type="text/css" />
     <link href="fullcalendar/fullcalendar.css" rel="stylesheet" type="text/css" />
     <link href="css/jquery.qtip-2.2.0.css" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" />
     <link href="datetime/css/stylesheet.css" rel="stylesheet" type="text/css" />
-
     <script src="jquery/moment-2.8.1.min.js" type="text/javascript"></script>
     <script src="jquery/jquery-2.1.1.js" type="text/javascript"></script>
     <script src="jquery/jquery-ui-1.11.1.js" type="text/javascript"></script>
     <script src="jquery/jquery.qtip-2.2.0.js" type="text/javascript"></script>
     <script src="fullcalendar/fullcalendar-2.6.0.js" type="text/javascript"></script>
-    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" type="text/javascript"></script>
     <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false&libraries=places&key=AIzaSyCKkBhvDXVd3K53AdMRXjbKpE0utScfWZM"></script>
-
     <style type='text/css'>
         body {
             margin-top: 40px;
@@ -34,6 +32,7 @@
             /*width: 900px;*/
             /*margin: 0 auto;*/
         }
+
         /* css for timepicker */
         .ui-timepicker-div dl {
             text-align: left;
@@ -74,7 +73,6 @@
         .dropdown-menu > li {
             padding-left: 10px;
         }
-
         dropdown-menu .divider1 {
             height: 1px;
             margin: 5px 0 !important;
@@ -86,7 +84,6 @@
         .customer-check-box {
             margin-right: 5px;
         }
-
         input[type=checkbox] {
             margin: 4px 10px 0;
             margin-top: 1px\9;
@@ -108,8 +105,7 @@
 </head>
 <body>
     <form id="form1" runat="server">
-        <asp:ScriptManager ID="ScriptManager1" runat="server" EnablePageMethods="true">
-        </asp:ScriptManager>
+        <asp:ScriptManager ID="ScriptManager1" runat="server" EnablePageMethods="true"></asp:ScriptManager>
         <asp:HiddenField ID="hdnCustomerIds" runat="server" />
         <div id="calendar" style="height: 100%; overflow: visible">
         </div>
@@ -117,22 +113,22 @@
             <div class="divmap" id="dvMap" style="width: 50%; height: 300px; margin-top: 20px; margin-left: 20px; margin-bottom: 20px; float: left">
             </div>
             <div style="float: right; margin-right: 20px; margin-bottom: 20px; width: 25%; height: 300px; margin-top: 20px;">
-                <div class="date dateCalender" id="datepicker"></div>
+                <div class="date dateCalender" id="datepicker">
+                </div>
             </div>
         </div>
-
-        <div style="float: left; width: 100%; padding: 0 0 0 10px;">
-
-            <div style="float: left; width: 45%">
+        <div style="padding: 0 0 0 10px; float: left; width: 100%;">
+            <div style="float: left; width: 45%;">
                 <table style="font-family: Verdana; font-size: small;" width="100%">
                     <tbody>
                         <tr>
                             <td style="font-family: Verdana; font-size: 11pt; color: red;">
-                                <b>A:</b><textarea name="txtFromLocation" rows="2" cols="10" id="txtFromLocation" style="color: Black; width: 93%;">3502 Scotts Ln Philadelphia, PA 19129</textarea>
-                                <br />
-                                <br />
-                                <b>B:</b><textarea name="txtToLocation" rows="2" cols="10" id="txtToLocation" style="color: Black; width: 93%;"></textarea>
-                                <br />
+                                <b>A:</b>
+                                <textarea name="txtFromLocation" rows="2" cols="10" id="txtFromLocation" style="color: Black; width: 93%;">3502 Scotts Ln Philadelphia, PA 19129</textarea>
+                                <br/><br/>
+                                <b>B:</b>
+                                <textarea name="txtToLocation" rows="2" cols="10" id="txtToLocation" style="color: Black; width: 93%;"></textarea>
+                                <br/>
                                 <div class="btn_sec">
                                     <input type="button" name="btnGetDirection" value="Get Direction" id="btnGetDirection" onclick="GetRoute();" tabindex="3" style="height: 40px; width: 190px; margin: 6px 17px;" />
                                 </div>
@@ -150,33 +146,44 @@
                 </table>
             </div>
         </div>
-        <div id="updatedialog" style="font: 70% 'Trebuchet MS', sans-serif; margin: 50px; display: none;"
+        <div id="updatedialog" style="font: 70% 'Trebuchet MS', sans-serif; display: none; margin: 50px;"
             title="Update or Delete Event">
             <table cellpadding="0" class="style1">
                 <tr>
                     <td class="alignRight">Customer ID:</td>
-                    <td class="alignLeft"><span id="txtCustID"></span></td>
+                    <td class="alignLeft">
+                        <span id="txtCustID"></span>
+                    </td>
                 </tr>
                 <tr>
                     <td class="alignRight">Last Name:</td>
-                    <td class="alignLeft"><span id="txtlstName"></span></td>
+                    <td class="alignLeft">
+                        <span id="txtlstName"></span>
+                    </td>
                 </tr>
                 <tr>
                     <td class="alignRight">Primary Phone #:</td>
-                    <td class="alignLeft"><span id="spnPrimaryPhone"></span></td>
+                    <td class="alignLeft">
+                        <span id="spnPrimaryPhone"></span>
+                    </td>
                 </tr>
                 <tr>
                     <td class="alignRight">Address:</td>
-                    <td class="alignLeft"><span id="spnAddress"></span></td>
+                    <td class="alignLeft">
+                        <span id="spnAddress"></span>
+                    </td>
                 </tr>
                 <tr>
                     <td class="alignRight">Zip:</td>
-                    <td class="alignLeft"><span id="spnZip"></span></td>
+                    <td class="alignLeft">
+                        <span id="spnZip"></span>
+                    </td>
                 </tr>
                 <tr style="display: none">
                     <td class="alignRight">Description:</td>
                     <td class="alignLeft">
-                        <textarea id="eventDesc" disabled="disabled" cols="30" rows="3"></textarea></td>
+                        <textarea id="eventDesc" disabled="disabled" cols="30" rows="3"></textarea>
+                    </td>
                 </tr>
                 <tr>
                     <td class="alignRight">Status:</td>
@@ -193,34 +200,36 @@
                             <option value="Closed (sold)">Closed (sold)</option>
                             <option value="Rehash">Rehash</option>
                             <option value="cancelation-no rehash">cancelation-no rehash</option>
-
-                        </select></td>
+                        </select>
+                    </td>
                 </tr>
                 <tr>
                     <td class="alignRight">Product Line:</td>
                     <td class="alignLeft">
-                        <span id="spnProductLine"></span></td>
+                        <span id="spnProductLine"></span>
+                    </td>
                 </tr>
                 <tr>
                     <td class="alignRight">Start:</td>
                     <td class="alignLeft">
-                        <span id="eventStart"></span></td>
+                        <span id="eventStart"></span>
+                    </td>
                 </tr>
                 <tr>
                     <td class="alignRight">End: </td>
                     <td class="alignLeft">
                         <span id="eventEnd"></span>
-                        <input type="hidden" id="eventId" /></td>
+                        <input type="hidden" id="eventId" />
+                    </td>
                 </tr>
                 <tr>
                     <td class="alignRight">Added By:</td>
                     <td class="alignLeft">
-                        <span id="spnAddedBy"></span></td>
+                        <span id="spnAddedBy"></span>
+                    </td>
                 </tr>
             </table>
         </div>
-
-
         <div id="NewEventDialog" style="font: 70% 'Trebuchet MS', sans-serif; margin: 50px; display: none;" title="Create New Event">
             <label id="addEventStartDate" style="display: none"></label>
             <label id="addEventEndDate" style="display: none"></label>
@@ -229,7 +238,6 @@
                     <a>
                         <label>
                             <input type='radio' id="chkExisting" name="chkNewEvent" value="Existing" checked="checked" />Existing Customer
-                       
                         </label>
                     </a>
                 </li>
@@ -237,25 +245,22 @@
                     <a>
                         <label>
                             <input type="radio" id="chkNew" name="chkNewEvent" value="New" />New Customer
-                       
                         </label>
                     </a>
                 </li>
                 <li>
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Sales Calendar <b class="caret"></b></a>
-                    <ul id="ul-customer" class="dropdown-menu" style="width: 250px; height: 250px; overflow-y: scroll;">
+                    <ul id="ul-customer" class="dropdown-menu" style="width: 250px; height: 250px; overflow-y: scroll;"></ul>
                 </li>
             </ul>
         </div>
         <div runat="server" id="jsonDiv" />
         <input type="hidden" id="hdClient" runat="server" />
     </form>
-
     <script type="text/javascript">
         var source, destination;
         var directionsDisplay;
         var directionsService = new google.maps.DirectionsService();
-
         google.maps.event.addDomListener(window, 'load', function () {
             new google.maps.places.SearchBox(document.getElementById('txtFromLocation'));
             new google.maps.places.SearchBox(document.getElementById('txtToLocation'));
@@ -267,16 +272,14 @@
                 zoom: 7,
                 center: philadelphia
             };
-
             map = new google.maps.Map(document.getElementById('dvMap'), mapOptions);
             directionsDisplay.setMap(map);
 
             //directionsDisplay.setPanel(document.getElementById('dvPanel'));
 
-            //*********DIRECTIONS AND ROUTE**********************//
+            //*********DIRECTIONS AND ROUTE***********//
             source = document.getElementById("txtFromLocation").value;
             destination = document.getElementById("txtToLocation").value;
-
             var request = {
                 origin: source,
                 destination: destination,
@@ -288,7 +291,7 @@
                 }
             });
 
-            //*********DISTANCE AND DURATION**********************//
+            //*********DISTANCE AND DURATION***********//
             var service = new google.maps.DistanceMatrixService();
             service.getDistanceMatrix({
                 origins: [source],
@@ -305,21 +308,18 @@
                     dvDistance.innerHTML = "";
                     dvDistance.innerHTML += "Distance: " + distance + "<br />";
                     dvDistance.innerHTML += "Duration:" + duration;
-
-                } else {
+                }
+                else {
                     alert("Unable to find the distance.");
                 }
             });
-
         }
-
         Date.prototype.yyyymmdd = function () {
             var yyyy = this.getFullYear().toString();
             var mm = (this.getMonth() + 1).toString();
             var dd = this.getDate().toString();
             return yyyy + "-" + (mm[1] ? mm : "0" + mm[0]) + "-" + (dd[1] ? dd : "0" + dd[0]);
         };
-
         var isExisting = true;
         $(document).ready(function () {
 
@@ -332,11 +332,9 @@
                     parent.FullCalenderPerformCallback(date);
                 }
             });
-
             if (getParameterByName('d').toString() != "") {
                 $('#datepicker').datepicker("setDate", new Date(getParameterByName('d')));
             }
-
             var eIds = getParameterByName('e');
             $.ajax({
                 url: "JsonResponse.ashx?eids=" + eIds,
@@ -353,7 +351,6 @@
                                 zoom: 6,
                                 center: new google.maps.LatLng(test[0].Latitude, test[0].Longitude),
                             };
-
                             map = new google.maps.Map($('#dvMap')[0], myOptions);
 
                             for (var x = 0; x < test.length; x++) {
@@ -370,21 +367,16 @@
                     }
                 },
             });
-
-
             // update Dialog
             $('#updatedialog').dialog({
                 autoOpen: false,
                 width: 470,
                 buttons: {
                     "update": function () {
-
                         var eventToUpdate = {
                             id: currentUpdateEvent.id,
-
                             status: $("#eventStatus").val()
                         };
-
                         if (checkForSpecialChars(eventToUpdate.title) || checkForSpecialChars(eventToUpdate.description)) {
                             alert("please enter characters: A to Z, a to z, 0 to 9, spaces");
                         }
@@ -393,22 +385,16 @@
                             $(this).dialog("close");
                             // loadCalender();
                             location.reload();
-
                         }
-
                     }
-
                 }
             });
-
-
             // new Dialog
             $('#NewEventDialog').dialog({
                 autoOpen: false,
                 width: 470,
                 height: 450
             });
-
             var date = new Date();
             var d = date.getDate();
             var m = date.getMonth();
@@ -417,11 +403,7 @@
                 weekday: "long", year: "numeric", month: "short",
                 day: "numeric", hour: "2-digit", minute: "2-digit"
             };
-
-
             LoadCalender();
-
-
             function formatDate(date) {
                 var hours = date.getHours();
                 var minutes = date.getMinutes();
@@ -439,31 +421,25 @@
                     var li = $(this).parent();
                     var heightParent = parseInt(elmnt.css('height').replace('px', '')) / 2;
                     var widthParent = parseInt(elmnt.css('width').replace('px', '')) - 10;
-
                     if (!li.hasClass('open')) li.addClass('open')
                     else li.removeClass('open');
                     $(this).next().css('top', heightParent + 'px');
                     $(this).next().css('left', widthParent + 'px');
-
                     return false;
                 }
             });
 
             $.getJSON("Customer.ashx?type=customer", function (data) {
-
                 var items = [];
                 $.each(data, function (key, val) {
                     // items.push("<li id='" + key + "'>" + val + "</li>");
                     items.push("  <li class='divider'></li> <li class='li-emp'><input type='checkbox' class='customer-check-box' customer_id='" + val.id + "' id='chk_" + val.id + "' />" + val.name + "</li>");
                 });
 
-
                 $("#ul-customer").append(items.join(""));
                 $('.customer-check-box').on('click', function () {
-
                     var addEventStartDate = formatDate(new Date($("#addEventStartDate").text()))
                     var addEventEndDate = $("#addEventEndDate").text();
-
                     if (isExisting) {
                         var customers = [];
                         if ($('#hdnCustomerIds').val() !== '')
@@ -471,7 +447,6 @@
                         if (this.checked) {
                             customers.push($(this).attr('customer_id'))
                             $('#hdnCustomerIds').val(JSON.stringify(customers));
-
                             window.top.location.href = "../Sr_App/Customer_Profile.aspx?CustomerId=" + $(this).attr('customer_id') + "&es=" + addEventStartDate + "&ee=" + addEventEndDate;
                         }
                     }
@@ -479,10 +454,8 @@
             });
 
             $('input[name=chkNewEvent]').on('change', function () {
-
                 var addEventStartDate = formatDate(new Date($("#addEventStartDate").text()))
                 var addEventEndDate = $("#addEventEndDate").text();
-
                 ClearCustomerCheckBox();
                 var chkBox = $('input[name=chkNewEvent]:checked').val();
                 ClearCustomerCheckBox();
@@ -495,26 +468,20 @@
                     //$(location).attr("href", "../Sr_App/new_customer.aspx");
                     window.top.location.href = "../Sr_App/new_customer.aspx?es=" + addEventStartDate + "&ee=" + addEventEndDate;
                 }
-
             });
-
         });
-
         function ClearCustomerCheckBox() {
             $('input:checkbox.customer-check-box').each(function () {
                 if (this.checked)
                     this.checked = false;
             });
         }
-
         function GetWay() {
-
             var philadelphia = new google.maps.LatLng(39.9526, 75.1652);
             var mapOptions = {
                 zoom: 7,
                 center: philadelphia
             };
-
             map = new google.maps.Map(document.getElementById('dvMap'), mapOptions);
             directionsDisplay.setMap(map);
 
@@ -523,7 +490,6 @@
             //*********DIRECTIONS AND ROUTE**********************//
             source = "3502 Scotts Ln Philadelphia, PA 19129";
             destination = "New York";
-
             var request = {
                 origin: source,
                 destination: destination,
@@ -552,7 +518,6 @@
                     //dvDistance.innerHTML = "";
                     //dvDistance.innerHTML += "Distance: " + distance + "<br />";
                     //dvDistance.innerHTML += "Duration:" + duration;
-
                 } else {
                     alert("Unable to find the distance.");
                 }
@@ -563,11 +528,8 @@
         var addStartDate;
         var addEndDate;
         var globalAllDay;
-
         function updateEvent(event, element) {
-
             if ($(this).data("qtip")) $(this).qtip("destroy");
-
             currentUpdateEvent = event;
             $('#updatedialog').dialog('open');
             $("#eventName").val(event.title);
@@ -575,34 +537,26 @@
             $("#eventId").val(event.id);
             $("#eventStart").text("" + event.start.toLocaleString());
             $("#eventStatus").val(event.status);
-
             $("#txtCustID").text(event.customerid);
-
             $("#txtlstName").text(event.lastname);
             $("#spnPrimaryPhone").text(event.primarycontact);
             $("#spnAddress").text(event.address);
             $("#spnZip").text(event.zipcode);
             $("#spnProductLine").text(event.productline);
             $("#spnAddedBy").text(event.addedby);
-
             if (event.end === null) {
                 $("#eventEnd").text("");
             }
             else {
                 $("#eventEnd").text("" + event.end.toLocaleString());
             }
-
             return false;
         }
-
         function updateSuccess(updateResult) {
         }
-
         function deleteSuccess(deleteResult) {
         }
-
         function addSuccess(addResult) {
-
             if (addResult != -1) {
                 $('#calendar').fullCalendar('renderEvent',
                                 {
@@ -615,28 +569,21 @@
                                 },
                                 true
                             );
-
-
                 $('#calendar').fullCalendar('unselect');
             }
         }
-
         function UpdateTimeSuccess(updateResult) {
         }
-
         function selectDate(start, end, allDay) {
-
             $('#NewEventDialog').dialog('open');
             $("#addEventStartDate").text("" + start.toLocaleString());
             $("#addEventEndDate").text("" + end.toLocaleString());
         }
-
         function updateEventOnDropResize(event, allDay) {
             var eventToUpdate = {
                 id: event.id,
                 start: event.start
             };
-
             if (event.end === null) {
                 eventToUpdate.end = eventToUpdate.start;
             }
@@ -651,35 +598,27 @@
             else {
                 endDate = eventToUpdate.end.toJSON();
             }
-
             eventToUpdate.start = eventToUpdate.start.toJSON();
             eventToUpdate.end = eventToUpdate.end.toJSON(); //endDate;
             eventToUpdate.allDay = event.allDay;
-
             PageMethods.UpdateEventTime(eventToUpdate, UpdateTimeSuccess);
         }
-
         function eventDropped(event, dayDelta, minuteDelta, allDay, revertFunc) {
             if ($(this).data("qtip")) $(this).qtip("destroy");
             updateEventOnDropResize(event);
         }
-
         function eventResized(event, dayDelta, minuteDelta, revertFunc) {
             if ($(this).data("qtip")) $(this).qtip("destroy");
 
             updateEventOnDropResize(event);
         }
-
         function checkForSpecialChars(stringToCheck) {
             var pattern = /[^A-Za-z0-9 ]/;
             return false;
-
             return pattern.test(stringToCheck);
         }
-
         function isAllDay(startDate, endDate) {
             var allDay;
-
             if (startDate.format("HH:mm:ss") == "00:00:00" && endDate.format("HH:mm:ss") == "00:00:00") {
                 allDay = true;
                 globalAllDay = true;
@@ -688,18 +627,14 @@
                 allDay = false;
                 globalAllDay = false;
             }
-
             return allDay;
         }
-
         function qTipText(start, end, description) {
             var text;
-
             if (end !== null)
                 text = "<strong>Start:</strong> " + start.format("MM/DD/YYYY hh:mm T") + "<br/><strong>End:</strong> " + end.format("MM/DD/YYYY hh:mm T") + "<br/><br/>" + description;
             else
                 text = "<strong>Start:</strong> " + start.format("MM/DD/YYYY hh:mm T") + "<br/><strong>End:</strong><br/><br/>" + description;
-
             return text;
         }
         function getParameterByName(name) {
@@ -708,8 +643,7 @@
                 results = regex.exec(location.search);
             return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
         }
-
-        // to save the selected status on change the dropdown value from event
+        // To Save the selected status on change the dropdown value from event
         function OnchangeEventStatus(obj, Id) {
             var eventToUpdate = {
                 id: Id,
@@ -725,7 +659,6 @@
                 location.reload();
             }
         }
-
         function LoadCalender() {
             var dateDefault = null;
             var viewDefault = 'agendaWeek'
@@ -743,7 +676,6 @@
                     center: 'title',
                     right: 'month,agendaWeek,agendaDay,agendaFourDay'
                 },
-
                 views: {
                     agendaFourDay: {
                         type: 'agenda',
@@ -751,7 +683,6 @@
                         buttonText: '4 day'
                     },
                 },
-
                 defaultView: viewDefault,
                 allDaySlot: false,
                 selectable: true,
@@ -784,7 +715,6 @@
                                 '<option value="Closed (sold)">Closed (sold)</option>' +
                                 '<option value="Rehash">Rehash</option>' +
                                 '<option value="cancelation-no rehash">cancelation-no rehash</option></select>');
-
                     //stop click event for the dropdown,
                     $(element).find('.event-dropdown').click(function (e) {
                         e.stopImmediatePropagation();
@@ -810,15 +740,11 @@
                     $('#event-dropdown-' + event.id + '').val(event.status); // to show the selected status on bind event                
                 }
             });
-
         }
-
         function GetUserWay(Destination) {
-
             var source, destination;
             var directionsDisplay;
             var directionsService = new google.maps.DirectionsService();
-
             directionsDisplay = new google.maps.DirectionsRenderer({ 'draggable': true });
             //debugger
             var philadelphia = new google.maps.LatLng(39.9526, 75.1652);
@@ -826,17 +752,12 @@
                 zoom: 7,
                 center: philadelphia
             };
-
-
             map = new google.maps.Map(document.getElementById('dvMap'), mapOptions);
             directionsDisplay.setMap(map);
-
             //directionsDisplay.setPanel(document.getElementById('dvPanel'));
-
             //*********DIRECTIONS AND ROUTE**********************//
             source = "3502 Scotts Ln Philadelphia, PA 19129";
             destination = Destination;
-
             var request = {
                 origin: source,
                 destination: destination,
@@ -847,7 +768,6 @@
                     directionsDisplay.setDirections(response);
                 }
             });
-
             //*********DISTANCE AND DURATION**********************//
             var service = new google.maps.DistanceMatrixService();
             service.getDistanceMatrix({
@@ -870,8 +790,6 @@
                 }
             });
         }
-
-
     </script>
 </body>
 </html>
