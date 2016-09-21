@@ -40,7 +40,14 @@ namespace JG_Prospect.BLL
         {
             return TaskGeneratorDAL.Instance.SaveTaskAssignedUsers(TaskId, UserIds);
         }
-
+        public bool SaveTaskAssignmentRequests(UInt64 TaskId, String UserIds)
+        {
+            return TaskGeneratorDAL.Instance.SaveTaskAssignmentRequests(TaskId, UserIds);
+        }
+        public bool AcceptTaskAssignmentRequests(UInt64 TaskId, String UserIds)
+        {
+            return TaskGeneratorDAL.Instance.AcceptTaskAssignmentRequests(TaskId, UserIds);
+        }
         public bool SaveOrDeleteTaskNotes(ref TaskUser objTaskUser)
         {
             return TaskGeneratorDAL.Instance.SaveOrDeleteTaskNotes(ref objTaskUser);
@@ -55,6 +62,21 @@ namespace JG_Prospect.BLL
         {
             return TaskGeneratorDAL.Instance.SaveOrDeleteTaskUserFiles(objTaskUser);
         }
+
+        public int InsertTaskWorkSpecification(TaskWorkSpecification objTaskWorkSpecification)
+        {
+            return TaskGeneratorDAL.Instance.InsertTaskWorkSpecification(objTaskWorkSpecification);
+        }
+
+        public int UpdateTaskWorkSpecification(TaskWorkSpecification objTaskWorkSpecification)
+        {
+            return TaskGeneratorDAL.Instance.UpdateTaskWorkSpecification(objTaskWorkSpecification);
+        }
+        
+        public DataSet GetLatestTaskWorkSpecification(Int32 TaskId, bool? bytStatus)
+        {
+            return TaskGeneratorDAL.Instance.GetLatestTaskWorkSpecification(TaskId, bytStatus);
+        }
         public DataSet GetTaskDetails(Int32 TaskId)
         {
             return TaskGeneratorDAL.Instance.GetTaskDetails(TaskId);
@@ -64,6 +86,12 @@ namespace JG_Prospect.BLL
         {
             return TaskGeneratorDAL.Instance.GetSubTasks(TaskId);
         }
+
+        public DataSet GetTaskUserFiles(Int32 TaskId)
+        {
+            return TaskGeneratorDAL.Instance.GetTaskUserFiles(TaskId);
+        }
+
         public DataSet GetTaskUserDetails(Int16 Mode)
         {
             return TaskGeneratorDAL.Instance.GetTaskUserDetails(Mode);
@@ -72,6 +100,11 @@ namespace JG_Prospect.BLL
         {
             return TaskGeneratorDAL.Instance.GetInstallUsers(key, Designation);
         }
+        public DataSet GetUserDetails(Int32 Id)
+        {
+            return TaskGeneratorDAL.Instance.GetUserDetails(Id);
+        }
+
         public DataSet GetInstallUserDetails(Int32 Id)
         {
             return TaskGeneratorDAL.Instance.GetInstallUserDetails(Id);

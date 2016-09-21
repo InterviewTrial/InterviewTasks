@@ -20,12 +20,12 @@ namespace JG_Prospect.Sr_App
         {
             if (Session["Username"] == null)
             {
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alsert('Your session has expired,login to contineu');window.location='../login.aspx'", true);
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alsert('Your session has expired,login to contineu');window.location='../login.aspx?returnurl=" + Request.Url.PathAndQuery + "'", true);
             }
             if (!IsPostBack)
             {
                 Session["dsToExportSrSales"] = "";
-                bindgrid("","Select All","","");
+                bindgrid("", "Select All", "", "");
                 txtEstDate.Attributes.Add("readonly", "readonly");
                 txtJrSalesReason.Attributes.Add("readonly", "readonly");
             }
@@ -39,15 +39,15 @@ namespace JG_Prospect.Sr_App
             }
         }
 
-        protected void bindgrid(string str_Search, string str_Criateria,string from,string to)
+        protected void bindgrid(string str_Search, string str_Criateria, string from, string to)
         {
             try
             {
                 DataSet ds = new DataSet();
                 //ds = AdminBLL.Instance.FetchALLcustomer();
-                ds = AdminBLL.Instance.BindGridForSrSales(str_Search, str_Criateria,from,to);
+                ds = AdminBLL.Instance.BindGridForSrSales(str_Search, str_Criateria, from, to);
                 Session["dsToExportSrSales"] = ds;
-                if(ds.Tables.Count>0)
+                if (ds.Tables.Count > 0)
                 {
                     Session["DataTableSrSales"] = ds.Tables[0];
                     if (ds.Tables[0].Rows.Count > 0)
@@ -64,7 +64,7 @@ namespace JG_Prospect.Sr_App
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 ErrorLog.Instance.writeToLog(ex, "Status Override", "");
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('" + ex.Message + "');", true);
@@ -198,42 +198,42 @@ namespace JG_Prospect.Sr_App
                         cell.BackColor = Color.SkyBlue;
                     }
                 }
-                   
+
             }
 
             //if (e.Row.RowType == DataControlRowType.DataRow)
             //{
-                //DropDownList ddlmeetingstatus = (DropDownList)e.Row.FindControl("ddlmeetingstatus");
-                //HiddenField hdfmeetingstatus = (HiddenField)e.Row.FindControl("hdfmeetingstatus");
-               // TextBox txtfollowup = (TextBox)e.Row.FindControl("txtfollowup");
+            //DropDownList ddlmeetingstatus = (DropDownList)e.Row.FindControl("ddlmeetingstatus");
+            //HiddenField hdfmeetingstatus = (HiddenField)e.Row.FindControl("hdfmeetingstatus");
+            // TextBox txtfollowup = (TextBox)e.Row.FindControl("txtfollowup");
 
-                //if (txtfollowup.Text == "01/01/1753")
-                //{
-                //    txtfollowup.Text = null;
-                //}
+            //if (txtfollowup.Text == "01/01/1753")
+            //{
+            //    txtfollowup.Text = null;
+            //}
 
-                //ddlmeetingstatus.Items.Clear();
-                //ddlmeetingstatus.Items.Add("Set");
-                //ddlmeetingstatus.Items.Add("Prospect");
-                //ddlmeetingstatus.Items.Add("est>$1000");
-                //ddlmeetingstatus.Items.Add("est<$1000");
-                //ddlmeetingstatus.Items.Add("sold>$1000");
-                //ddlmeetingstatus.Items.Add("sold<$1000");
-                //ddlmeetingstatus.Items.Add("Follow up");
-                //ddlmeetingstatus.Items.Add("Closed (not sold)");
-                //ddlmeetingstatus.Items.Add("Closed (sold)");
-                //ddlmeetingstatus.Items.Add("Rehash");
-                //ddlmeetingstatus.Items.Add("cancelation-no rehash");
-                //ddlmeetingstatus.SelectedValue = hdfmeetingstatus.Value;
+            //ddlmeetingstatus.Items.Clear();
+            //ddlmeetingstatus.Items.Add("Set");
+            //ddlmeetingstatus.Items.Add("Prospect");
+            //ddlmeetingstatus.Items.Add("est>$1000");
+            //ddlmeetingstatus.Items.Add("est<$1000");
+            //ddlmeetingstatus.Items.Add("sold>$1000");
+            //ddlmeetingstatus.Items.Add("sold<$1000");
+            //ddlmeetingstatus.Items.Add("Follow up");
+            //ddlmeetingstatus.Items.Add("Closed (not sold)");
+            //ddlmeetingstatus.Items.Add("Closed (sold)");
+            //ddlmeetingstatus.Items.Add("Rehash");
+            //ddlmeetingstatus.Items.Add("cancelation-no rehash");
+            //ddlmeetingstatus.SelectedValue = hdfmeetingstatus.Value;
 
-                //if (ddlmeetingstatus.SelectedValue == "PTW est" || ddlmeetingstatus.SelectedValue == "est>$1000" || ddlmeetingstatus.SelectedValue == "est<$1000" || ddlmeetingstatus.SelectedValue == "Follow up" || ddlmeetingstatus.SelectedValue == "EST-one legger")
-                //{
-                //    txtfollowup.Style.Add("display", "block");
-                //}
-                //else
-                //{
-                //    txtfollowup.Style.Add("display", "none");
-                //}
+            //if (ddlmeetingstatus.SelectedValue == "PTW est" || ddlmeetingstatus.SelectedValue == "est>$1000" || ddlmeetingstatus.SelectedValue == "est<$1000" || ddlmeetingstatus.SelectedValue == "Follow up" || ddlmeetingstatus.SelectedValue == "EST-one legger")
+            //{
+            //    txtfollowup.Style.Add("display", "block");
+            //}
+            //else
+            //{
+            //    txtfollowup.Style.Add("display", "none");
+            //}
 
             //}
         }
@@ -417,14 +417,14 @@ namespace JG_Prospect.Sr_App
             {
                 updateresult = AdminBLL.Instance.UpdateStatus(custid, newstatus, followupdate);
                 int userId = Convert.ToInt16(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
-                new_customerBLL.Instance.AddCustomerFollowUp(custid, Convert.ToDateTime(followupdate), newstatus, userId, false,0,"");
+                new_customerBLL.Instance.AddCustomerFollowUp(custid, Convert.ToDateTime(followupdate), newstatus, userId, false, 0, "");
             }
 
             catch (Exception ex)
             {
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('" + ex.Message + "');", true);
             }
-                //bindgrid();
+            //bindgrid();
         }
 
         protected void btnSearch_Click(object sender, EventArgs e)
@@ -482,7 +482,7 @@ namespace JG_Prospect.Sr_App
            
             Response.End();*/
             DataTable dt = (DataTable)(Session["DataTableSrSales"]);
-            
+
             string filename = "SrSales.xls";
             System.IO.StringWriter tw = new System.IO.StringWriter();
             System.Web.UI.HtmlTextWriter hw = new System.Web.UI.HtmlTextWriter(tw);
@@ -510,7 +510,7 @@ namespace JG_Prospect.Sr_App
             int QuoteId = Convert.ToInt32(Session["QuoteIdSrSalesApp"]);
             string Date = txtEstDate.Text;
             string Time = ddlEsttime.SelectedValue;
-            AdminBLL.Instance.MakeAppointments(Id, QuoteId, Date, Time,"SalesCal");
+            AdminBLL.Instance.MakeAppointments(Id, QuoteId, Date, Time, "SalesCal");
             bindgrid("", "Select All", "", "");
         }
 
@@ -729,7 +729,7 @@ namespace JG_Prospect.Sr_App
             int QuoteId = Convert.ToInt32(Session["QuoteIdSrSalesApp"]);
             string Reason = txtJrSalesReason.Text;
             string Status = Convert.ToString(Session["estStatus"]);
-            AdminBLL.Instance.UpdateSoldStatus(QuoteId, Reason,Status);
+            AdminBLL.Instance.UpdateSoldStatus(QuoteId, Reason, Status);
             bindgrid("", "Select All", "", "");
         }
 
@@ -739,7 +739,7 @@ namespace JG_Prospect.Sr_App
             int QuoteId = Convert.ToInt32(Session["QuoteIdSrSalesApp"]);
             string Reason = txtSetEstDate.Text;
             string Status = Convert.ToString(Session["estStatus"]);
-            AdminBLL.Instance.UpdateEstDate(QuoteId, Reason,Status);
+            AdminBLL.Instance.UpdateEstDate(QuoteId, Reason, Status);
             bindgrid("", "Select All", "", "");
         }
 

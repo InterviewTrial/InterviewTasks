@@ -32,8 +32,8 @@
     border-style: none;
     border-color: inherit;
     border-width: 0;
-    margin: 0 1 0 0;
-    padding: 0;
+    margin: 0 1px 0 0;
+    /*padding: 0;*/
 }
 
 a img {
@@ -457,7 +457,7 @@ form.inline {
 }
 
 .header {
-    min-height: 200px;    
+    min-height: 200px;
     position: relative;
     min-width: 600px;
 }
@@ -1373,9 +1373,9 @@ ul.left_nav {
 
 .tasklist {
     overflow: auto;
-    max-height: 178px;
+    max-height: 165px;
     margin-left: 220px !important;
-    width: 71%;
+    width: 75%;
     position: relative;
     z-index: 9;
 }
@@ -1388,17 +1388,53 @@ ul.left_nav {
         vertical-align: middle;
         width: 39px;
     }
-table tr.trHeader th {
-    border: 1px solid #FFF;
-    padding: 4px 4px 2px 4px;
+
+.fullwidth {
+    width: 100%;
 }
-.fullwidth {width:100%;}
-.mtop5 {margin-top:5px;}
-.mbot5 {margin-bottom:5px;}
-#taskGrid table.table tr.FirstRow td, #taskGrid table.table tr.AlternateRow td, #taskGrid table.table tr.dark-gray-background td {border-right: 1px solid #FFF; padding: 0 0 0 4px;}
-.ajax__html_editor_extender_container {background-color: white; margin-bottom: 10px;max-width: 755px;}
-.taskHtmlContent {padding: 2px 2px 2px 2px; border: 1px solid #c2c2c2;background-color: white;height:150px; overflow:auto; }
-.tasklistfieldset {     border-width: 1px;
+
+.mtop5 {
+    margin-top: 5px;
+}
+
+.mbot5 {
+    margin-bottom: 5px;
+}
+
+.ajax__html_editor_extender_container {
+    background-color: white;
+    margin-bottom: 10px;
+    max-width: 755px;
+}
+
+.taskHtmlContent {
+    padding: 2px 2px 2px 2px;
+    border: 1px solid #c2c2c2;
+    background-color: white;
+    height: 150px;
+    overflow: auto;
+}
+
+.tasklistfieldset {
+    border-width: 1px;
     border-style: solid;
-    border-color: lightgray;
-    padding: 5px;}
+    border-color: darkgrey;
+    padding: 5px;
+}
+
+table tr.trHeader th,
+table.table tr.FirstRow td,
+table.table tr.AlternateRow td,
+table.table tr.dark-gray-background td {
+    border-right: 1px solid #FFF;
+    padding: 5px;
+}
+
+table tr.trPager td,
+table tr.trFooter td {
+    padding: 5px;
+}
+
+.valigntop {
+    vertical-align: top;
+}

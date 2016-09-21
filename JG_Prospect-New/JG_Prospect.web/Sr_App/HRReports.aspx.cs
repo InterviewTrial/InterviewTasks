@@ -16,7 +16,7 @@ namespace JG_Prospect.Sr_App
         {
             if (Session["Username"] == null)
             {
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alsert('Your session has expired,login to contineu');window.location='../login.aspx'", true);
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alsert('Your session has expired,login to contineu');window.location='../login.aspx?returnurl=" + Request.Url.PathAndQuery + "'", true);
             }
             if (!IsPostBack)
             {
@@ -327,7 +327,8 @@ namespace JG_Prospect.Sr_App
                     }
                 }
             }
-            else {
+            else
+            {
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('To date should be Greater than from Date');", true);
             }
         }
@@ -343,23 +344,23 @@ namespace JG_Prospect.Sr_App
         }
 
         public void GetActiveUsers()
-        { 
+        {
             DataSet ds = InstallUserBLL.Instance.GetActiveUsers();
-                if (ds.Tables.Count > 0)
+            if (ds.Tables.Count > 0)
+            {
+                DataTable dtActiveUser = ds.Tables[0];
+                if (dtActiveUser.Rows.Count > 0)
                 {
-                    DataTable dtActiveUser = ds.Tables[0];
-                    if (dtActiveUser.Rows.Count > 0)
-                    {
-                        grdActiveUser.DataSource = dtActiveUser;
-                        grdActiveUser.DataBind();
-                    }
-                    else
-                    {
-                        grdActiveUser.DataSource = new List<string>();
-                        grdActiveUser.DataBind();
-                    }
+                    grdActiveUser.DataSource = dtActiveUser;
+                    grdActiveUser.DataBind();
                 }
-        
+                else
+                {
+                    grdActiveUser.DataSource = new List<string>();
+                    grdActiveUser.DataBind();
+                }
+            }
+
         }
 
         public void GetActiveContractors()

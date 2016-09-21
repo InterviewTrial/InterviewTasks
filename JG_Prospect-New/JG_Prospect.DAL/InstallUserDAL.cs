@@ -24,7 +24,9 @@ namespace JG_Prospect.DAL
             get { return m_InstallUserDAL; }
             private set { ;}
         }
+
         public DataSet returndata;
+
         #region userlogin
 
         public bool BulkUpdateIntsallUser(string xmlDoc)
@@ -70,14 +72,17 @@ namespace JG_Prospect.DAL
             return dsTemp;
         }
 
-        public bool AddIntsallUser(user objuser)
+        public Tuple<bool, Int32> AddIntsallUser(user objuser)
         {
+            var tupResult = Tuple.Create<bool, Int32>(false, 0);
             try
             {
                 SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
                     DbCommand command = database.GetStoredProcCommand("UDP_AddInstallUser");
                     command.CommandType = CommandType.StoredProcedure;
+                    #region SP Parameters
+
                     database.AddInParameter(command, "@FristName", DbType.String, objuser.fristname);
                     database.AddInParameter(command, "@LastName", DbType.String, objuser.lastname);
                     database.AddInParameter(command, "@Email", DbType.String, objuser.email);
@@ -228,21 +233,19 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@TC", DbType.Boolean, objuser.TC);
                     database.AddInParameter(command, "@AddedBy", DbType.Int32, objuser.AddedBy);
                     database.AddOutParameter(command, "@result", DbType.Int32, 1);
+                    database.AddOutParameter(command, "@Id", DbType.Int32, 0);
+                    #endregion
                     database.ExecuteScalar(command);
-                    int res = Convert.ToInt32(database.GetParameterValue(command, "@result"));
-                    if (res == 1)
-                        return true;
-                    else
-                        return false;
+                    bool blSuccess = Convert.ToInt32(database.GetParameterValue(command, "@result")) == 1 ? true : false;
+                    int id = Convert.ToInt32(database.GetParameterValue(command, "@Id"));
+                    tupResult = Tuple.Create<bool, Int32>(blSuccess, id);
                 }
             }
-
             catch (Exception ex)
             {
-                return false;
 
             }
-
+            return tupResult;
         }
 
         public void UpdateProspect(user objuser)
@@ -279,7 +282,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public DataSet ChangeSatatus(string Status, int StatusId, string RejectionDate, string RejectionTime, int RejectedUserId, string StatusReason = "")
+        public DataSet ChangeSatatus(string Status, int StatusId, string RejectionDate, string RejectionTime, int RejectedUserId,bool IsInstallUser, string StatusReason = "", string UserIds = "")
         {
             DataSet dsTemp = new DataSet();
             try
@@ -294,6 +297,13 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@RejectionTime", DbType.String, RejectionTime);
                     database.AddInParameter(command, "@RejectedUserId", DbType.Int32, RejectedUserId);
                     database.AddInParameter(command, "@StatusReason", DbType.String, StatusReason);
+                    database.AddInParameter(command, "@IsInstallUser", DbType.Boolean, IsInstallUser);
+
+                    if (!string.IsNullOrEmpty(UserIds))
+                    {
+                        database.AddInParameter(command, "@UserIds", DbType.String, UserIds);
+                    }
+
                     dsTemp = database.ExecuteDataSet(command);
                     return dsTemp;
                 }
@@ -303,10 +313,6 @@ namespace JG_Prospect.DAL
             }
             return dsTemp;
         }
-
-
-
-
 
         public DataSet addSkillUser(string Name, string Type, string PerOwner, string Phone, string Email, string Address, string UserId)
         {
@@ -527,6 +533,7 @@ namespace JG_Prospect.DAL
 
             }
         }
+
         public DataSet CheckRegistration(string UserName, string PhoneNo)
         {
             try
@@ -572,7 +579,6 @@ namespace JG_Prospect.DAL
 
             }
         }
-
 
         public DataSet GetProspectCount(int Id, string dt1, string dt2)
         {
@@ -675,7 +681,6 @@ namespace JG_Prospect.DAL
             }
         }
 
-
         public void DeleteAssessment(string Source)
         {
             try
@@ -745,8 +750,6 @@ namespace JG_Prospect.DAL
             }
         }
 
-
-
         public void DeleteWorkerComp(string Source)
         {
             try
@@ -802,7 +805,6 @@ namespace JG_Prospect.DAL
             }
         }
 
-
         public DataSet CheckDuplicateSource(string Source)
         {
             try
@@ -824,7 +826,6 @@ namespace JG_Prospect.DAL
 
             }
         }
-
 
         public DataSet getZip(string zip)
         {
@@ -1077,8 +1078,6 @@ namespace JG_Prospect.DAL
             }
         }
 
-
-
         public void ChangeStatusToInterviewDate(string Status, int id, string RejectionDate, string RejectionTime, int RejectedUserId, string time, string StatusReason = "")
         {
             try
@@ -1103,7 +1102,6 @@ namespace JG_Prospect.DAL
             {
             }
         }
-
 
         public bool InsertIntoHRReport(int SourceId, int InstallerId, string Status)
         {
@@ -1131,7 +1129,6 @@ namespace JG_Prospect.DAL
 
             }
         }
-
 
         public DataSet getallInstallusers()
         {
@@ -1201,7 +1198,6 @@ namespace JG_Prospect.DAL
             return returndata;
         }
 
-
         public DataSet ExportAllSalesUsersData()
         {
             try
@@ -1222,9 +1218,6 @@ namespace JG_Prospect.DAL
                 return null;
             }
         }
-
-
-
 
         public DataSet getTrade()
         {
@@ -1319,7 +1312,6 @@ namespace JG_Prospect.DAL
 
             }
         }
-
 
         public DataSet getalluserdetails()
         {
@@ -1454,9 +1446,6 @@ namespace JG_Prospect.DAL
             }
         }
 
-
-
-
         public void Activateuser(string loginid)
         {
             try
@@ -1498,7 +1487,6 @@ namespace JG_Prospect.DAL
 
             }
         }
-
 
         public int IsValidInstallerUser(string userid, string password)
         {
@@ -1571,7 +1559,6 @@ namespace JG_Prospect.DAL
             return result;
         }
 
-
         #endregion
 
         public DataSet GetInstallerAvailability(string referenceId, int installerId)
@@ -1596,6 +1583,7 @@ namespace JG_Prospect.DAL
             }
             return returndata;
         }
+
         public void AddEditInstallerAvailability(Availability a)
         {
             try
@@ -1649,7 +1637,6 @@ namespace JG_Prospect.DAL
 
         }
 
-
         public DataTable getEmailTemplate(string status, string Part)
         {
             try
@@ -1670,6 +1657,7 @@ namespace JG_Prospect.DAL
                 return null;
             }
         }
+
         public DataSet GetSalesTouchPointLogData(int CustomerId, int userid)
         {
             returndata = new DataSet();
@@ -1740,7 +1728,6 @@ namespace JG_Prospect.DAL
                 return false;
             }
         }
-
 
         public DataSet GetHrData(DateTime fromdate, DateTime todate, int userid)
         {

@@ -12,7 +12,14 @@ namespace JG_Prospect.Sr_App
 {
     public partial class ContractTemplate : System.Web.UI.Page
     {
+        #region '--Members--'
+
         private static int ProductID = 0;
+
+        #endregion
+
+        #region '--Page Events--'
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -35,6 +42,43 @@ namespace JG_Prospect.Sr_App
             }
         }
 
+        #endregion
+
+        #region '--Control Events--'
+
+        protected void btnsave_Click(object sender, EventArgs e)
+        {
+            string Editor_contentHeader = HeaderEditor.Content;
+            //Editor_contentHeader = Editor_contentHeader.Replace(@"width=""1000""", @"width=""100%""");
+            string Editor_contentBodyA = BodyEditor.Content;
+            string Editor_contentBodyB = "";
+            string Editor_contentFooter = FooterEditor.Content;
+            //Editor_contentFooter = Editor_contentFooter.Replace(@"width=""1000""", @"width=""100%""");
+            string Editor_contentBody2 = BodyEditor2.Content;
+            bool result = false;
+            if (ProductID == JG_Prospect.Common.JGConstant.ONE)
+            {
+                Editor_contentBodyB = BodyEditorB.Content;
+            }
+
+            int desigID = ProductID == 199 ? Convert.ToInt32(ddlDesignation.SelectedValue) : 0;
+
+            result = AdminBLL.Instance.UpdateContractTemplate(Editor_contentHeader, Editor_contentBodyA, Editor_contentBodyB, Editor_contentFooter, Editor_contentBody2, ProductID, desigID);
+            if (result)
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Contract Template Updated Successfully');", true);
+            }
+        }
+
+        protected void ddlDesignation_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            bind(199, Convert.ToInt32(ddlDesignation.SelectedValue));
+        }
+
+        #endregion
+
+        #region '--Methods--'
+
         protected void bind(int id)
         {
             DataSet ds = new DataSet();
@@ -43,11 +87,11 @@ namespace JG_Prospect.Sr_App
             if (ds != null)
             {
                 string header = ds.Tables[0].Rows[0][0].ToString();
-                header = header.Replace(@"width=""100%""", @"width=""1000""");
+                //header = header.Replace(@"width=""100%""", @"width=""1000""");
                 HeaderEditor.Content = header;
 
                 string footer = ds.Tables[0].Rows[0][2].ToString();
-                footer = footer.Replace(@"width=""100%""", @"width=""1000""");
+                //footer = footer.Replace(@"width=""100%""", @"width=""1000""");
                 FooterEditor.Content = footer;
 
                 #region Commented for Blank body template
@@ -95,21 +139,21 @@ namespace JG_Prospect.Sr_App
             if (ds != null)
             {
                 string header = ds.Tables[1].Rows[0]["HTMLHeader"].ToString();
-                header = header.Replace(@"width=""100%""", @"width=""1000""");
+                //header = header.Replace(@"width=""100%""", @"width=""1000""");
                 HeaderEditor.Content = header;
 
                 string footer = ds.Tables[1].Rows[0]["HTMLFooter"].ToString();
-                footer = footer.Replace(@"width=""100%""", @"width=""1000""");
+                //footer = footer.Replace(@"width=""100%""", @"width=""1000""");
                 FooterEditor.Content = footer;
 
                 string body = ds.Tables[1].Rows[0]["HTMLBody"].ToString();
-                body = body.Replace(@"width=""100%""", @"width=""1000""");
+                //body = body.Replace(@"width=""100%""", @"width=""1000""");
                 BodyEditor.Content = body;
 
                 string bodyEditor2 = ds.Tables[1].Rows[0]["HTMLBody2"].ToString();
-                bodyEditor2 = bodyEditor2.Replace(@"width=""100%""", @"width=""1000""");
+                //bodyEditor2 = bodyEditor2.Replace(@"width=""100%""", @"width=""1000""");
                 BodyEditor2.Content = bodyEditor2;
-                
+
                 if (id == JG_Prospect.Common.JGConstant.ONE)
                 {
                     BodyEditorB.Visible = true;
@@ -120,6 +164,7 @@ namespace JG_Prospect.Sr_App
                 }
             }
         }
+
         protected void bindData(string templateName)
         {
             DataSet ds = new DataSet();
@@ -127,11 +172,11 @@ namespace JG_Prospect.Sr_App
             if (ds != null)
             {
                 string header = ds.Tables[0].Rows[0][0].ToString();
-                header = header.Replace(@"width=""100%""", @"width=""1000""");
+                //header = header.Replace(@"width=""100%""", @"width=""1000""");
                 HeaderEditor.Content = header;
 
                 string footer = ds.Tables[0].Rows[0][2].ToString();
-                footer = footer.Replace(@"width=""100%""", @"width=""1000""");
+                //footer = footer.Replace(@"width=""100%""", @"width=""1000""");
                 FooterEditor.Content = footer;
 
                 #region Commented for Blank body template
@@ -164,33 +209,6 @@ namespace JG_Prospect.Sr_App
             }
         }
 
-        protected void btnsave_Click(object sender, EventArgs e)
-        {
-            string Editor_contentHeader = HeaderEditor.Content;
-            Editor_contentHeader = Editor_contentHeader.Replace(@"width=""1000""", @"width=""100%""");
-            string Editor_contentBodyA = BodyEditor.Content;
-            string Editor_contentBodyB = "";
-            string Editor_contentFooter = FooterEditor.Content;
-            Editor_contentFooter = Editor_contentFooter.Replace(@"width=""1000""", @"width=""100%""");
-            string Editor_contentBody2 = BodyEditor2.Content;
-            bool result = false;
-            if (ProductID == JG_Prospect.Common.JGConstant.ONE)
-            {
-                Editor_contentBodyB = BodyEditorB.Content;
-            }
-
-            int desigID = ProductID == 199 ? Convert.ToInt32(ddlDesignation.SelectedValue) : 0;
-
-            result = AdminBLL.Instance.UpdateContractTemplate(Editor_contentHeader, Editor_contentBodyA, Editor_contentBodyB, Editor_contentFooter, Editor_contentBody2, ProductID, desigID);
-            if (result)
-            {
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Contract Template Updated Successfully');", true);
-            }
-        }
-
-        protected void ddlDesignation_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            bind(199, Convert.ToInt32(ddlDesignation.SelectedValue));
-        }
+        #endregion
     }
 }

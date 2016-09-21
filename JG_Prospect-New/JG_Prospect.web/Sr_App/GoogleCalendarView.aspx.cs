@@ -6,7 +6,9 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
+using System.Net.Mail;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -16,6 +18,8 @@ namespace JG_Prospect.Sr_App
 {
     public partial class GoogleCalendarView : System.Web.UI.Page
     {
+        #region '--Members--'
+
         string strcon = ConfigurationManager.ConnectionStrings["JGPA"].ConnectionString;
         SqlConnection con = null;
         SqlCommand cmd = null;
@@ -23,6 +27,15 @@ namespace JG_Prospect.Sr_App
         DataSet ds = null;
         static string query = "";
         static string Admin = "Admin", usertType = "";
+
+        #endregion
+
+        #region '--Properties--'
+
+        #endregion
+
+        #region '--Page Events--'
+
         protected void Page_Load(object sender, EventArgs e)
         {
             RadWindow2.VisibleOnPageLoad = false;
@@ -51,102 +64,22 @@ namespace JG_Prospect.Sr_App
                     }
                 }
                 Session["AppType"] = "SrApp";
-                BindCalendar();
+                LoadCalendar();
             }
 
         }
 
-        public void BindCalendar()
-        {
-            DataSet ds = AdminBLL.Instance.GetAllAnnualEvent();
-            if (ds.Tables[0].Rows.Count > 0)
-            {
-                rsAppointments.DataSource = ds.Tables[0];
-                rsAppointments.DataBind();
-            }
-            RadWindow2.VisibleOnPageLoad = false;
-        }
-        public void BindHRCalendar()
-        {
-            DataSet ds = AdminBLL.Instance.GetHRCalendar();
-            if (ds.Tables[0].Rows.Count > 0)
-            {
-                rsAppointments.DataSource = ds.Tables[0];
-                rsAppointments.DataBind();
-            }
-            RadWindow2.VisibleOnPageLoad = false;
-        }
-        public void BindCompanyCalendar()
-        {
-            if (usertType == Admin)
-            {
-                DataSet ds = AdminBLL.Instance.GetCompanyCalendar();
-                if (ds.Tables[0].Rows.Count > 0)
-                {
-                    rsAppointments.DataSource = ds.Tables[0];
-                    rsAppointments.DataBind();
-                }
-            }
-            RadWindow2.VisibleOnPageLoad = false;
-        }
-        public void BindEventCalendar()
-        {
-            DataSet ds = AdminBLL.Instance.GetEventCalendar();
-            if (ds.Tables[0].Rows.Count > 0)
-            {
-                rsAppointments.DataSource = ds.Tables[0];
-                rsAppointments.DataBind();
-            }
-            RadWindow2.VisibleOnPageLoad = false;
-        }
-        public void BindHRCompanyCalendar()
-        {
-            DataSet ds = AdminBLL.Instance.GetHRCompanyCalendar();
-            if (ds.Tables[0].Rows.Count > 0)
-            {
-                rsAppointments.DataSource = ds.Tables[0];
-                rsAppointments.DataBind();
-            }
-            RadWindow2.VisibleOnPageLoad = false;
-        }
+        #endregion
 
-        public void BindHREventCalendar()
-        {
-            DataSet ds = AdminBLL.Instance.GetHRCompanyEventCalendar();
-            if (ds.Tables[0].Rows.Count > 0)
-            {
-                rsAppointments.DataSource = ds.Tables[0];
-                rsAppointments.DataBind();
-            }
-            RadWindow2.VisibleOnPageLoad = false;
-        }
-        public void BindCompanyEventCalendar()
-        {
-            DataSet ds = AdminBLL.Instance.GetEventCompanyCalendar();
-            if (ds.Tables[0].Rows.Count > 0)
-            {
-                rsAppointments.DataSource = ds.Tables[0];
-                rsAppointments.DataBind();
-            }
-            RadWindow2.VisibleOnPageLoad = false;
-        }
-        public void BindHRCompanyEventCalendar()
-        {
-            DataSet ds = AdminBLL.Instance.GetHRCompanyEventCalendar();
-            if (ds.Tables[0].Rows.Count > 0)
-            {
-                rsAppointments.DataSource = ds.Tables[0];
-                rsAppointments.DataBind();
-            }
-            RadWindow2.VisibleOnPageLoad = false;
-        }
+        #region '--Control Events--'
+
         protected void lbtCustomerID_Click(object sender, EventArgs e)
         {
             //Redirect to customer profile page....
             ScriptManager.RegisterStartupScript(Page, GetType(), "script1", "YetToDeveloped();", true);
             // Response.Redirect(lbtCustomerID.Text);
         }
-        //Update Annual Event...............
+
         protected void btnsave_Click(object sender, EventArgs e)
         {
             AnnualEvent a = new AnnualEvent();
@@ -289,6 +222,7 @@ namespace JG_Prospect.Sr_App
                             lblAddedBy.Text = Convert.ToString(dsid.Tables[0].Rows[0]["Username"]);
                         }
                         lbtLastName.Text = Convert.ToString(ds.Tables[0].Rows[0]["LastName"]);
+
                         RadWindow2.VisibleOnPageLoad = true;
                     }
                 }
@@ -350,134 +284,17 @@ namespace JG_Prospect.Sr_App
 
         protected void chkHR_CheckedChanged(object sender, EventArgs e)
         {
-
-            //For HR Calendar.....
-            if (chkHR.Checked == true && chkCompany.Checked == false && chkEvents.Checked == false)
-            {
-                BindHRCalendar();
-            }
-            //For Company Calendar.....
-            else if (chkCompany.Checked == true && chkHR.Checked == false && chkEvents.Checked == false)
-            {
-                BindCompanyCalendar();
-            }
-            //For Event Calendar.....
-            else if (chkEvents.Checked == true && chkHR.Checked == false && chkCompany.Checked == false)
-            {
-                BindEventCalendar();
-            }
-            //For HR Calendar AND Company Calendar.....
-            else if (chkHR.Checked == true && chkCompany.Checked == true && chkEvents.Checked == false)
-            {
-                BindHRCompanyCalendar();
-            }
-            //For HR Calendar AND Event Calendar.....
-            else if (chkHR.Checked == true && chkEvents.Checked == true && chkCompany.Checked == false)
-            {
-                BindHREventCalendar();
-            }
-            //For Company Calendar AND Event Calendar.....
-            else if (chkCompany.Checked == true && chkEvents.Checked == true && chkHR.Checked == false)
-            {
-                BindCompanyEventCalendar();
-            }
-            //For Company Calendar AND Event Calendar AND HR Calendar.....
-            else if (chkHR.Checked == true && chkCompany.Checked == true && chkEvents.Checked == true)
-            {
-                BindHRCompanyEventCalendar();
-            }
-            else if (chkHR.Checked == false && chkCompany.Checked == false && chkEvents.Checked == false)
-            {
-                BindCalendar();
-            }
+            LoadCalendar();
         }
 
         protected void chkCompany_CheckedChanged(object sender, EventArgs e)
         {
-
-            //For HR Calendar.....
-            if (chkHR.Checked == true && chkCompany.Checked == false && chkEvents.Checked == false)
-            {
-                BindHRCalendar();
-            }
-            //For Company Calendar.....
-            else if (chkCompany.Checked == true && chkHR.Checked == false && chkEvents.Checked == false)
-            {
-                BindCompanyCalendar();
-            }
-            //For Event Calendar.....
-            else if (chkEvents.Checked == true && chkHR.Checked == false && chkCompany.Checked == false)
-            {
-                BindEventCalendar();
-            }
-            //For HR Calendar AND Company Calendar.....
-            else if (chkHR.Checked == true && chkCompany.Checked == true && chkEvents.Checked == false)
-            {
-                BindHRCompanyCalendar();
-            }
-            //For HR Calendar AND Event Calendar.....
-            else if (chkHR.Checked == true && chkEvents.Checked == true && chkCompany.Checked == false)
-            {
-                BindHREventCalendar();
-            }
-            //For Company Calendar AND Event Calendar.....
-            else if (chkCompany.Checked == true && chkEvents.Checked == true && chkHR.Checked == false)
-            {
-                BindCompanyEventCalendar();
-            }
-            //For Company Calendar AND Event Calendar AND HR Calendar.....
-            else if (chkHR.Checked == true && chkCompany.Checked == true && chkEvents.Checked == true)
-            {
-                BindHRCompanyEventCalendar();
-            }
-            else if (chkHR.Checked == false && chkCompany.Checked == false && chkEvents.Checked == false)
-            {
-                BindCalendar();
-            }
+            LoadCalendar();
         }
 
         protected void chkEvents_CheckedChanged(object sender, EventArgs e)
         {
-
-            //For HR Calendar.....
-            if (chkHR.Checked == true && chkCompany.Checked == false && chkEvents.Checked == false)
-            {
-                BindHRCalendar();
-            }
-            //For Company Calendar.....
-            else if (chkCompany.Checked == true && chkHR.Checked == false && chkEvents.Checked == false)
-            {
-                BindCompanyCalendar();
-            }
-            //For Event Calendar.....
-            else if (chkEvents.Checked == true && chkHR.Checked == false && chkCompany.Checked == false)
-            {
-                BindEventCalendar();
-            }
-            //For HR Calendar AND Company Calendar.....
-            else if (chkHR.Checked == true && chkCompany.Checked == true && chkEvents.Checked == false)
-            {
-                BindHRCompanyCalendar();
-            }
-            //For HR Calendar AND Event Calendar.....
-            else if (chkHR.Checked == true && chkEvents.Checked == true && chkCompany.Checked == false)
-            {
-                BindHREventCalendar();
-            }
-            //For Company Calendar AND Event Calendar.....
-            else if (chkCompany.Checked == true && chkEvents.Checked == true && chkHR.Checked == false)
-            {
-                BindCompanyEventCalendar();
-            }
-            //For Company Calendar AND Event Calendar AND HR Calendar.....
-            else if (chkHR.Checked == true && chkCompany.Checked == true && chkEvents.Checked == true)
-            {
-                BindHRCompanyEventCalendar();
-            }
-            else if (chkHR.Checked == false && chkCompany.Checked == false && chkEvents.Checked == false)
-            {
-                BindCalendar();
-            }
+            LoadCalendar();
         }
 
         protected void lbtCustID_Click(object sender, EventArgs e)
@@ -502,7 +319,7 @@ namespace JG_Prospect.Sr_App
         {
             string selValue = ((System.Web.UI.WebControls.ListControl)(sender)).SelectedValue;
             LinkButton lnk = (LinkButton)((System.Web.UI.WebControls.ListControl)(sender)).Parent.FindControl("lbtCustID");
-            
+
             hidApplicantID.Value = lnk.Text;
             hidSelectedVal.Value = selValue;
 
@@ -510,6 +327,8 @@ namespace JG_Prospect.Sr_App
             {
                 LinkButton lnkEmail = (LinkButton)((System.Web.UI.WebControls.ListControl)(sender)).Parent.FindControl("lnkEmail");
                 txtOfferMail.Text = lnkEmail.Text;
+                txtOfferPassword.Attributes.Add("value", "jmgrove");
+                txtOfferConPassword.Attributes.Add("value", "jmgrove");
                 ViewState["Email"] = lnkEmail.Text;
 
                 if (selValue == "OfferMade")
@@ -523,11 +342,17 @@ namespace JG_Prospect.Sr_App
         protected void rsAppointments_AppointmentCreated(object sender, AppointmentCreatedEventArgs e)
         {
             string status = e.Appointment.Attributes["Status"];
-
+            //string status = Convert.ToString(DataBinder.Eval(e.Appointment.DataItem, "Status"));
             DropDownList ddlStatus = (DropDownList)e.Container.FindControl("ddlStatus");
-            if (ddlStatus != null)
+            if (ddlStatus != null && !string.IsNullOrEmpty(status) && ddlStatus.Items.FindByValue(status) != null)
             {
-                ddlStatus.SelectedIndex = ddlStatus.Items.IndexOf(ddlStatus.Items.FindByValue(status.ToString()));
+                ddlStatus.SelectedValue = status;
+            }
+
+            e.Appointment.Subject = e.Appointment.Attributes["EventName"];
+            if (!string.IsNullOrEmpty(e.Appointment.Attributes["AssignedUserFristNames"]))
+            {
+                e.Appointment.Subject = string.Concat(e.Appointment.Subject, " ", e.Appointment.Attributes["AssignedUserFristNames"]).Trim();
             }
         }
 
@@ -542,7 +367,7 @@ namespace JG_Prospect.Sr_App
                 DataSet ds = new DataSet();
                 string email = "", HireDate = "", EmpType = "", PayRates = "", Desig = "", reason = "", firstName = "", lastName = "";
 
-                ds = InstallUserBLL.Instance.ChangeStatus(hidSelectedVal.Value, EditId, DateTime.Today.ToString("yyyy-MM-dd"), DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), reason);
+                ds = InstallUserBLL.Instance.ChangeStatus(hidSelectedVal.Value, EditId, DateTime.Today.ToString("yyyy-MM-dd"), DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, reason);
                 if (ds.Tables.Count > 0)
                 {
                     if (ds.Tables[0].Rows.Count > 0)
@@ -556,8 +381,54 @@ namespace JG_Prospect.Sr_App
                         lastName = Convert.ToString(ds.Tables[0].Rows[0]["LastName"]) != "" ? Convert.ToString(ds.Tables[0].Rows[0]["LastName"]) : "";
                     }
                 }
-                CreateSalesUser obj = new CreateSalesUser();
-                obj.SendEmail(email, firstName, lastName, "Offer Made", reason, Desig, HireDate, EmpType, PayRates, 105);
+
+                string strHtml = JG_Prospect.App_Code.CommonFunction.GetContractTemplateContent(199, 0, Desig);
+                strHtml = strHtml.Replace("#CurrentDate#", DateTime.Now.ToShortDateString());
+                strHtml = strHtml.Replace("#FirstName#", firstName);
+                strHtml = strHtml.Replace("#LastName#", lastName);
+                strHtml = strHtml.Replace("#Address#", string.Empty);
+                strHtml = strHtml.Replace("#Designation#", Desig);
+                if (!string.IsNullOrEmpty(EmpType) && EmpType.Length > 1)
+                {
+                    strHtml = strHtml.Replace("#EmpType#", EmpType);
+                }
+                else
+                {
+                    strHtml = strHtml.Replace("#EmpType#", "________________");
+                }
+                strHtml = strHtml.Replace("#JoiningDate#", HireDate);
+                if (!string.IsNullOrEmpty(PayRates))
+                {
+                    strHtml = strHtml.Replace("#RatePerHour#", PayRates);
+                }
+                else
+                {
+                    strHtml = strHtml.Replace("#RatePerHour#", "____");
+                }
+                DateTime dtPayCheckDate;
+                if (!string.IsNullOrEmpty(HireDate))
+                {
+                    dtPayCheckDate = Convert.ToDateTime(HireDate);
+                }
+                else
+                {
+                    dtPayCheckDate = DateTime.Now;
+                }
+                dtPayCheckDate = new DateTime(dtPayCheckDate.Year, dtPayCheckDate.Month, DateTime.DaysInMonth(dtPayCheckDate.Year, dtPayCheckDate.Month));
+                strHtml = strHtml.Replace("#PayCheckDate#", dtPayCheckDate.ToShortDateString());
+
+                string strPath = JG_Prospect.App_Code.CommonFunction.ConvertHtmlToPdf(strHtml, Server.MapPath(@"~\Sr_App\MailDocument\MailAttachments\"), "Job acceptance letter");
+                List<Attachment> lstAttachments = new List<Attachment>();
+                if (File.Exists(strPath))
+                {
+                    Attachment attachment = new Attachment(strPath);
+                    attachment.Name = Path.GetFileName(strPath);
+                    lstAttachments.Add(attachment);
+                }
+
+                SendEmail(email, firstName, lastName, "Offer Made", reason, Desig, HireDate, EmpType, PayRates, 105, lstAttachments);
+
+                LoadCalendar();
             }
             catch (Exception ex)
             {
@@ -569,5 +440,221 @@ namespace JG_Prospect.Sr_App
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "ClosePopupOfferMade()", true);
             }
         }
+
+        #endregion
+
+        #region '--Methods--'
+
+        public void LoadCalendar()
+        {
+            //For HR Calendar.....
+            if (chkHR.Checked == true && chkCompany.Checked == false && chkEvents.Checked == false)
+            {
+                BindHRCalendar();
+            }
+            //For Company Calendar.....
+            else if (chkCompany.Checked == true && chkHR.Checked == false && chkEvents.Checked == false)
+            {
+                BindCompanyCalendar();
+            }
+            //For Event Calendar.....
+            else if (chkEvents.Checked == true && chkHR.Checked == false && chkCompany.Checked == false)
+            {
+                BindEventCalendar();
+            }
+            //For HR Calendar AND Company Calendar.....
+            else if (chkHR.Checked == true && chkCompany.Checked == true && chkEvents.Checked == false)
+            {
+                BindHRCompanyCalendar();
+            }
+            //For HR Calendar AND Event Calendar.....
+            else if (chkHR.Checked == true && chkEvents.Checked == true && chkCompany.Checked == false)
+            {
+                BindHREventCalendar();
+            }
+            //For Company Calendar AND Event Calendar.....
+            else if (chkCompany.Checked == true && chkEvents.Checked == true && chkHR.Checked == false)
+            {
+                BindCompanyEventCalendar();
+            }
+            //For Company Calendar AND Event Calendar AND HR Calendar.....
+            else if (chkHR.Checked == true && chkCompany.Checked == true && chkEvents.Checked == true)
+            {
+                BindHRCompanyEventCalendar();
+            }
+            else if (chkHR.Checked == false && chkCompany.Checked == false && chkEvents.Checked == false)
+            {
+                BindCalendar();
+            }
+        }
+
+        public void BindCalendar()
+        {
+            DataSet ds = AdminBLL.Instance.GetAllAnnualEvent();
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                rsAppointments.DataSource = ds.Tables[0];
+                rsAppointments.DataBind();
+            }
+            RadWindow2.VisibleOnPageLoad = false;
+        }
+
+        public void BindHRCalendar()
+        {
+            DataSet ds = AdminBLL.Instance.GetHRCalendar();
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                rsAppointments.DataSource = ds.Tables[0];
+                rsAppointments.DataBind();
+            }
+            RadWindow2.VisibleOnPageLoad = false;
+        }
+
+        public void BindCompanyCalendar()
+        {
+            if (usertType == Admin)
+            {
+                DataSet ds = AdminBLL.Instance.GetCompanyCalendar();
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    rsAppointments.DataSource = ds.Tables[0];
+                    rsAppointments.DataBind();
+                }
+            }
+            RadWindow2.VisibleOnPageLoad = false;
+        }
+
+        public void BindEventCalendar()
+        {
+            DataSet ds = AdminBLL.Instance.GetEventCalendar();
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                rsAppointments.DataSource = ds.Tables[0];
+                rsAppointments.DataBind();
+            }
+            RadWindow2.VisibleOnPageLoad = false;
+        }
+
+        public void BindHRCompanyCalendar()
+        {
+            DataSet ds = AdminBLL.Instance.GetHRCompanyCalendar();
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                rsAppointments.DataSource = ds.Tables[0];
+                rsAppointments.DataBind();
+            }
+            RadWindow2.VisibleOnPageLoad = false;
+        }
+
+        public void BindHREventCalendar()
+        {
+            DataSet ds = AdminBLL.Instance.GetHRCompanyEventCalendar();
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                rsAppointments.DataSource = ds.Tables[0];
+                rsAppointments.DataBind();
+            }
+            RadWindow2.VisibleOnPageLoad = false;
+        }
+
+        public void BindCompanyEventCalendar()
+        {
+            DataSet ds = AdminBLL.Instance.GetEventCompanyCalendar();
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                rsAppointments.DataSource = ds.Tables[0];
+                rsAppointments.DataBind();
+            }
+            RadWindow2.VisibleOnPageLoad = false;
+        }
+
+        public void BindHRCompanyEventCalendar()
+        {
+            DataSet ds = AdminBLL.Instance.GetHRCompanyEventCalendar();
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                rsAppointments.DataSource = ds.Tables[0];
+                rsAppointments.DataBind();
+            }
+            RadWindow2.VisibleOnPageLoad = false;
+        }
+
+        public void SendEmail(string emailId, string FName, string LName, string status, string Reason, string Designition, string HireDate, string EmpType, string PayRates, int htmlTempID, List<Attachment> Attachments = null)
+        {
+            try
+            {
+                string fullname = FName + " " + LName;
+                DataSet ds = AdminBLL.Instance.GetEmailTemplate(Designition, htmlTempID);// AdminBLL.Instance.FetchContractTemplate(104);
+
+                if (ds == null)
+                {
+                    ds = AdminBLL.Instance.GetEmailTemplate("Admin");
+                }
+                else if (ds.Tables[0].Rows.Count == 0)
+                {
+                    ds = AdminBLL.Instance.GetEmailTemplate("Admin");
+                }
+                string strHeader = ds.Tables[0].Rows[0]["HTMLHeader"].ToString(); //GetEmailHeader(status);
+                string strBody = ds.Tables[0].Rows[0]["HTMLBody"].ToString(); //GetEmailBody(status);
+                string strFooter = ds.Tables[0].Rows[0]["HTMLFooter"].ToString(); // GetFooter(status);
+                string strsubject = ds.Tables[0].Rows[0]["HTMLSubject"].ToString();
+
+                string userName = ConfigurationManager.AppSettings["VendorCategoryUserName"].ToString();
+                string password = ConfigurationManager.AppSettings["VendorCategoryPassword"].ToString();
+
+                strBody = strBody.Replace("#Name#", FName).Replace("#name#", FName);
+                //strBody = strBody.Replace("#Date#", dtInterviewDate.Text).Replace("#date#", dtInterviewDate.Text);
+                //strBody = strBody.Replace("#Time#", ddlInsteviewtime.SelectedValue).Replace("#time#", ddlInsteviewtime.SelectedValue);
+                strBody = strBody.Replace("#Designation#", Designition).Replace("#designation#", Designition);
+
+                strFooter = strFooter.Replace("#Name#", FName).Replace("#name#", FName);
+                //strFooter = strFooter.Replace("#Date#", dtInterviewDate.Text).Replace("#date#", dtInterviewDate.Text);
+                //strFooter = strFooter.Replace("#Time#", ddlInsteviewtime.SelectedValue).Replace("#time#", ddlInsteviewtime.SelectedValue);
+                strFooter = strFooter.Replace("#Designation#", Designition).Replace("#designation#", Designition);
+
+                strBody = strBody.Replace("Lbl Full name", fullname);
+                strBody = strBody.Replace("LBL position", Designition);
+                //strBody = strBody.Replace("lbl: start date", txtHireDate.Text);
+                //strBody = strBody.Replace("($ rate","$"+ txtHireDate.Text);
+                strBody = strBody.Replace("Reason", Reason);
+                //Hi #lblFName#, <br/><br/>You are requested to appear for an interview on #lblDate# - #lblTime#.<br/><br/>Regards,<br/>
+                strBody = strHeader + strBody + strFooter;
+
+                EditUser obj = new EditUser();
+                if (status == "OfferMade")
+                {
+                    obj.createForeMenForJobAcceptance(strBody, FName, LName, Designition, emailId, HireDate, EmpType, PayRates);
+                }
+                if (status == "Deactive")
+                {
+                    obj.CreateDeactivationAttachment(strBody, FName, LName, Designition, emailId, HireDate, EmpType, PayRates);
+                }
+
+                List<Attachment> lstAttachments = new List<Attachment>();
+
+                for (int i = 0; i < ds.Tables[1].Rows.Count; i++)
+                {
+                    string sourceDir = Server.MapPath(ds.Tables[1].Rows[i]["DocumentPath"].ToString());
+                    if (File.Exists(sourceDir))
+                    {
+                        Attachment attachment = new Attachment(sourceDir);
+                        attachment.Name = Path.GetFileName(sourceDir);
+                        lstAttachments.Add(attachment);
+                    }
+                }
+
+                lstAttachments.AddRange(Attachments);
+
+                JG_Prospect.App_Code.CommonFunction.SendEmail(Designition, emailId, strsubject, strBody, lstAttachments);
+
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "UserMsg", "alert('An email notification has sent on " + emailId + ".');", true);
+            }
+            catch (Exception ex)
+            {
+                UtilityBAL.AddException("CreateSalesUser-SendEmail", Session["loginid"] == null ? "" : Session["loginid"].ToString(), ex.Message, ex.StackTrace);
+            }
+        }
+
+        #endregion
     }
 }

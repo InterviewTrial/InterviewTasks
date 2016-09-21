@@ -133,6 +133,11 @@ namespace JG_Prospect.BLL
             return UserDAL.Instance.GetAllUsers();
         }
 
+        public DataSet GetAllUsersByDesignations(string[] arrDesignations)
+        {
+            return UserDAL.Instance.GetAllUsersByDesignations(arrDesignations);
+        }
+
         public DataSet getSrusers()
         {
             return UserDAL.Instance.getSrusers();

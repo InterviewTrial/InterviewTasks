@@ -56,7 +56,7 @@ namespace JG_Prospect.BLL
             //            var f = month + '/' + day + '/' + year + ' ' + hours + ':00 ' + ampm + ' to ' + addedHours + ':00 ' + ampmAddedHours;
             //            $(obj).val(f);
         }
-        public bool AddUser(user objuser)
+        public Tuple<bool, Int32> AddUser(user objuser)
         {
             return InstallUserDAL.Instance.AddIntsallUser(objuser);
         }
@@ -437,10 +437,10 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.UpdateInstallUserStatus(Status, StatusId);
         }
 
-        public DataSet ChangeStatus(string Status, int StatusId, string RejectionDate, string RejectionTime, int RejectedUserId, string StatusReason = "")
+        public DataSet ChangeStatus(string Status, int StatusId, string RejectionDate, string RejectionTime, int RejectedUserId,bool IsInstallUser, string StatusReason = "", string UserIds = "")
         {
 
-            return InstallUserDAL.Instance.ChangeSatatus(Status, StatusId, RejectionDate, RejectionTime, RejectedUserId, StatusReason);
+            return InstallUserDAL.Instance.ChangeSatatus(Status, StatusId, RejectionDate, RejectionTime, RejectedUserId, IsInstallUser, StatusReason, UserIds);
         }
 
         public void ChangeStatusToInterviewDate(string Status, int StatusId, string RejectionDate, string RejectionTime, int RejectedUserId, string time, string StatusReason = "")

@@ -98,7 +98,7 @@ namespace JG_Prospect.DAL
         }
         public DataSet getUser(string loginid)
         {
-            
+
             try
             {
                 SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
@@ -964,8 +964,6 @@ namespace JG_Prospect.DAL
 
         }
 
-
-
         public DataSet GetResources(string type)
         {
             try
@@ -1094,7 +1092,7 @@ namespace JG_Prospect.DAL
                 SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
                     int totalSeenEST = 0;
-                    DbCommand command = database.GetSqlStringCommand("SELECT dbo.UDF_CalculateTotalSeenEST(@UserId,@FromDate,@ToDate);");                    
+                    DbCommand command = database.GetSqlStringCommand("SELECT dbo.UDF_CalculateTotalSeenEST(@UserId,@FromDate,@ToDate);");
                     command.CommandType = CommandType.Text;
                     database.AddInParameter(command, "@UserId", DbType.Int16, userId);
                     database.AddInParameter(command, "@FromDate", DbType.Date, fromDate);
@@ -1370,6 +1368,27 @@ namespace JG_Prospect.DAL
                 return null;
             }
         }
+
+        public DataSet GetAllUsersByDesignations(string[] arrDesignations)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DataSet ds = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("GetAllUsersByDesignations");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@Designations", DbType.String, string.Join(",", arrDesignations));
+                    ds = database.ExecuteDataSet(command);
+                    return ds;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public DataSet fetchPrimaryContactDetails(int intContactId)
         {
             try

@@ -58,7 +58,7 @@ namespace JG_Prospect.Controls
             }
             else
             {
-                Response.Redirect("/login.aspx");
+                Response.Redirect("/login.aspx?returnurl=" + Request.Url.PathAndQuery);
             }
         }
 

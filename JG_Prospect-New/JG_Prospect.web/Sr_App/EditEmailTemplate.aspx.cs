@@ -13,16 +13,28 @@ namespace JG_Prospect.Sr_App
 {
     public partial class EditEmailTemplate : System.Web.UI.Page
     {
+        #region '--Members--'
+
+        #endregion
+
+        #region '--Properties--'
+
         public int HTMLTemplateID
         {
             get { return ViewState["HTMLTemplateID"] != null ? Convert.ToInt32(ViewState["HTMLTemplateID"].ToString()) : 0; }
             set { ViewState["HTMLTemplateID"] = value; }
         }
+
         public int SubHTMLTemplateID
         {
             get { return ViewState["SubHTMLTemplateID"] != null ? Convert.ToInt32(ViewState["SubHTMLTemplateID"].ToString()) : 0; }
             set { ViewState["SubHTMLTemplateID"] = value; }
         }
+
+        #endregion
+
+        #region '--Page Events--'
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!IsPostBack)
@@ -31,12 +43,17 @@ namespace JG_Prospect.Sr_App
                 InitialDataBind(0);
             }
         }
-        protected void lnkVendorCategory_Click(object sender, EventArgs e)
+
+        #endregion
+
+        #region '--Control Events--'
+
+        protected void drpChooseCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
+            SubHTMLTemplateID = Convert.ToInt32(drpChooseCategory.SelectedValue);
+            InitialDataBind(SubHTMLTemplateID);
         }
-        protected void lnkVendor_Click(object sender, EventArgs e)
-        {
-        }
+
         protected void btnUpdate_Click(object sender, EventArgs e)
         {
             string Editor_contentHeader = HeaderEditor.Content;
@@ -85,6 +102,7 @@ namespace JG_Prospect.Sr_App
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Auto Email Template Updated Successfully');", true);
             }
         }
+
         protected void DeleteFile(object sender, EventArgs e)
         {
             Int32 lAttachmentID = Convert.ToInt32((sender as LinkButton).CommandArgument);
@@ -97,9 +115,10 @@ namespace JG_Prospect.Sr_App
             }
             Response.Redirect(Request.Url.AbsoluteUri);
         }
-        protected void btnUpdateVendor_Click(object sender, EventArgs e)
-        {
-        }
+
+        #endregion
+
+        #region '--Methods--'
 
         private void InitialDataBind(int pSubHTMLTemplateID)
         {
@@ -127,10 +146,6 @@ namespace JG_Prospect.Sr_App
             }
         }
 
-        protected void drpChooseCategory_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            SubHTMLTemplateID = Convert.ToInt32(drpChooseCategory.SelectedValue);
-            InitialDataBind(SubHTMLTemplateID);
-        }
+        #endregion
     }
 }

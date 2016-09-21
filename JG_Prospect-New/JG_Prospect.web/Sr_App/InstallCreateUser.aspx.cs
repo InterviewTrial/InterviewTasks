@@ -37,7 +37,7 @@ namespace JG_Prospect.Sr_App
             //  CalendarExtender10.StartDate = DateTime.Now;
             if (Session["Username"] == null)
             {
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alsert('Your session has expired,login to contineu');window.location='../login.aspx'", true);
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alsert('Your session has expired,login to contineu');window.location='../login.aspx?returnurl=" + Request.Url.PathAndQuery + "'", true);
             }
             CalendarExtender4.StartDate = DateTime.Now;
             CalendarExtender5.EndDate = DateTime.Now;
@@ -2841,7 +2841,7 @@ namespace JG_Prospect.Sr_App
                         {
                             GeneratePDF();
                         }
-                        bool result = InstallUserBLL.Instance.AddUser(objuser);
+                        bool result = InstallUserBLL.Instance.AddUser(objuser).Item1;
 
                         GoogleCalendarEvent.CreateCalendar(txtemail.Text, txtaddress.Text);
                         //lblmsg.Visible = true;
@@ -11653,16 +11653,17 @@ namespace JG_Prospect.Sr_App
                 }
                 else
                 {
-                    if(txtpassword1.Text != txtpassword.Text){
+                    if (txtpassword1.Text != txtpassword.Text)
+                    {
                         lMessage += "Password and Confirm password does not match\n";
                     }
                 }
-                if (lMessage!="")
+                if (lMessage != "")
                 {
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('" + lMessage + "')", true);
                     return;
                 }
-                
+
 
                 //ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Fill new hire section above')", true);
                 //return;
@@ -11886,8 +11887,8 @@ namespace JG_Prospect.Sr_App
                 lblConfirmPass.Visible = false;
             }
             #endregion
-            InstallUserBLL.Instance.UpdateInstallUserStatus(ddlstatus.SelectedValue,  Convert.ToInt32(Session["ID"]));
-            
+            InstallUserBLL.Instance.UpdateInstallUserStatus(ddlstatus.SelectedValue, Convert.ToInt32(Session["ID"]));
+
         }
 
         //protected void btnPassword_Click(object sender, EventArgs e)
@@ -11907,7 +11908,7 @@ namespace JG_Prospect.Sr_App
             isvaliduser = UserBLL.Instance.chklogin(Convert.ToString(Session["loginid"]), txtUserPassword.Text);
             if (isvaliduser > 0)
             {
-                InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), Convert.ToInt32(Session["EditId"]), Convert.ToString(DateTime.Today.ToShortDateString()), DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), txtReson.Text);
+                InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), Convert.ToInt32(Session["EditId"]), Convert.ToString(DateTime.Today.ToShortDateString()), DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, txtReson.Text);
                 //Status changes....
                 string a = ddlstatus.SelectedValue;
                 if (a == "Rejected")

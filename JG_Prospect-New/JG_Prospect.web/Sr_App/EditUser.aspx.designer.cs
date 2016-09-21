@@ -427,6 +427,15 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.RequiredFieldValidator Requiretodate;
         
         /// <summary>
+        /// upGridViewUser control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel upGridViewUser;
+        
+        /// <summary>
         /// GridViewUser control.
         /// </summary>
         /// <remarks>
@@ -616,6 +625,24 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.DropDownList ddlInsteviewtime;
         
         /// <summary>
+        /// ddlUsers control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlUsers;
+        
+        /// <summary>
+        /// rfvddlUsers control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvddlUsers;
+        
+        /// <summary>
         /// btnSaveInterview control.
         /// </summary>
         /// <remarks>
@@ -623,6 +650,15 @@ namespace JG_Prospect {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnSaveInterview;
+        
+        /// <summary>
+        /// btnCancelInterview control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnCancelInterview;
         
         /// <summary>
         /// panel3 control.
@@ -794,6 +830,15 @@ namespace JG_Prospect {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnSaveOfferMade;
+        
+        /// <summary>
+        /// btnCancelOfferMade control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnCancelOfferMade;
         
         /// <summary>
         /// pnlUploadBulk control.

@@ -58,6 +58,15 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.HtmlControls.HtmlAnchor A4;
         
         /// <summary>
+        /// upContent control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel upContent;
+        
+        /// <summary>
         /// btnAddEvent control.
         /// </summary>
         /// <remarks>
@@ -110,6 +119,15 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::Telerik.Web.UI.RadWindow RadWindow1;
+        
+        /// <summary>
+        /// upRadWindowManager control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.UpdatePanel upRadWindowManager;
         
         /// <summary>
         /// RadWindowManager1 control.

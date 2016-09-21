@@ -1,5 +1,5 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Sr_App/SR_app.Master" AutoEventWireup="true"
-    CodeBehind="EditUser.aspx.cs" Inherits="JG_Prospect.EditUser" %>
+    CodeBehind="EditUser.aspx.cs" Inherits="JG_Prospect.EditUser" MaintainScrollPositionOnPostback="true" %>
 
 <%@ Register Assembly="System.Web.DataVisualization, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" Namespace="System.Web.UI.DataVisualization.Charting" TagPrefix="asp" %>
 
@@ -66,8 +66,10 @@
         }
 
         function overlayInterviewDate() {
+            
             document.getElementById('interviewDatelite').style.display = 'block';
             document.getElementById('interviewDatefade').style.display = 'block';
+            $('#interviewDatelite').focus();
         }
 
         function ClosePopupOfferMade() {
@@ -428,8 +430,8 @@
                 </tr>
             </table>
             <div class="grid">
-                <%-- <asp:UpdatePanel ID="updatepanel" runat="server">
-                    <ContentTemplate>--%>
+                 <asp:UpdatePanel ID="upGridViewUser" runat="server">
+                    <ContentTemplate>
                 <asp:GridView ID="GridViewUser" runat="server" AutoGenerateColumns="False" DataKeyNames="Id" AllowSorting="true"
                     OnRowCancelingEdit="GridViewUser_RowCancelingEdit" OnRowEditing="GridViewUser_RowEditing"
                     OnRowUpdating="GridViewUser_RowUpdating" OnRowDeleting="GridViewUser_RowDeleting"
@@ -488,6 +490,7 @@
                                 <asp:Label ID="lblFirstName" runat="server" Text='<%#Eval("FristName")%>'></asp:Label>
                                 <br />
                                 <asp:Label ID="lblLastName" runat="server" Text='<%# Bind("Lastname") %>'></asp:Label>
+                                <asp:Label ID="lblEmail" runat="server" Text='<%# Bind("Email") %>' Visible="false"></asp:Label>
                             </ItemTemplate>
                             <ControlStyle ForeColor="Black" />
                             <ControlStyle ForeColor="Black" />
@@ -531,8 +534,7 @@
                                 <asp:HiddenField ID="lblStatus" runat="server" Value='<%#Eval("Status")%>'></asp:HiddenField>
                                 <asp:HiddenField ID="lblOrderStatus" runat="server" Value='<%#(Eval("OrderStatus") == null || Eval("OrderStatus") == "") ? -99: Eval("OrderStatus")%>'></asp:HiddenField>
                                 <asp:DropDownList ID="ddlStatus" AutoPostBack="true" OnSelectedIndexChanged="ddlStatus_SelectedIndexChanged" runat="server" DataValueField='<%#Eval("Status")%>'>
-                                    <asp:ListItem Text="Applicant" Value="Applicant"></asp:ListItem>
-                                    <asp:ListItem Text="Phone/Video Screened" Value="PhoneScreened"></asp:ListItem>
+                                    <asp:ListItem Text="Applicant" Value="Applicant"></asp:ListItem><asp:ListItem Text="Phone/Video Screened" Value="PhoneScreened"></asp:ListItem>
                                     <asp:ListItem Text="Rejected" Value="Rejected"></asp:ListItem>
                                     <asp:ListItem Text="Interview Date" Value="InterviewDate"></asp:ListItem>
                                     <asp:ListItem Text="Offer Made" Value="OfferMade"></asp:ListItem>
@@ -599,8 +601,8 @@
                         --%>
                     </Columns>
                 </asp:GridView>
-                <%-- </ContentTemplate>
-                </asp:UpdatePanel>--%>
+                 </ContentTemplate>
+                </asp:UpdatePanel>
             </div>
             <table style="width: 100%">
                 <tr style="width: 100%">
@@ -666,7 +668,9 @@
         <div id="interviewDatelite" class="white_content" style="height: auto;">
             <h3>Interview Details
             </h3>
-            <a href="javascript:void(0)" onclick="document.getElementById('interviewDatelite').style.display='none';document.getElementById('interviewDatefade').style.display='none'">Close</a>
+            <%--<a href="javascript:void(0)" onclick="">Close</a>--%>
+            <asp:UpdatePanel runat="server" UpdateMode="Always">
+                <ContentTemplate>
             <table width="100%" style="border: Solid 3px #b04547; width: 100%; height: 300px;"
                 cellpadding="0" cellspacing="0">
                 <tr>
@@ -680,14 +684,25 @@
                     </td>
                 </tr>
                 <tr>
+                    <td align="center" colspan="2">Recruiter :
+                        <asp:DropDownList ID="ddlUsers" runat="server" />
+                        <asp:RequiredFieldValidator ID="rfvddlUsers" runat="server" ErrorMessage="Select Recruiter" ControlToValidate="ddlUsers" 
+                            ValidationGroup="InterviewDate" InitialValue="0" />
+                    </td>
+                </tr>
+                <tr>
                     <td align="center" colspan="2">
                         <asp:Button ID="btnSaveInterview" runat="server" BackColor="#327FB5" ForeColor="White" Height="32px"
-                            Style="height: 26px; font-weight: 700; line-height: 1em;" Text="Save" Width="100px" ValidationGroup="InterviewDate"
+                            Style="height: 26px; font-weight: 700; line-height: 1em;" Text="OK" Width="100px" ValidationGroup="InterviewDate"
                             TabIndex="119" OnClick="btnSaveInterview_Click" />
-                        <%--<asp:Button ID="Button2" runat="server" OnClick="" />--%>
+                        <asp:Button ID="btnCancelInterview" runat="server" Text="Cancel" OnClick="btnCancelInterview_Click" Width="100px"
+                            Style="height: 26px; font-weight: 700; line-height: 1em;" 
+                            OnClientClick="javascript:document.getElementById('interviewDatelite').style.display='none';document.getElementById('interviewDatefade').style.display='none'" />
                     </td>
                 </tr>
             </table>
+                    </ContentTemplate>
+            </asp:UpdatePanel>
         </div>
     </asp:Panel>
     <div id="interviewDatefade" class="black_overlay">
@@ -725,10 +740,11 @@
     <asp:Panel ID="panel4" runat="server">
         <div id="DivOfferMade" class="white_content" style="height: auto;">
             <h3>Offer Made Details</h3>
-            <a href="javascript:void(0)" onclick="document.getElementById('DivOfferMade').style.display='none';document.getElementById('DivOfferMadefade').style.display='none'">Close</a>
-            <asp:HiddenField ID="hdnFirstName" runat="server" />
-            <asp:HiddenField ID="hdnLastName" runat="server" />
-            <table width="100%" style="border: Solid 3px #b04547; width: 100%; height: 300px;"
+            <asp:UpdatePanel runat="server" UpdateMode="Always">
+                <ContentTemplate>
+                    <asp:HiddenField ID="hdnFirstName" runat="server" />
+                    <asp:HiddenField ID="hdnLastName" runat="server" />
+                    <table width="100%" style="border: Solid 3px #b04547; width: 100%; height: 300px;"
                 cellpadding="0" cellspacing="0">
                 <tr>
                     <td align="right" style="height: 15px;">
@@ -737,7 +753,8 @@
                             Email<span><asp:Label ID="lblReqEmail" Text="*" runat="server" ForeColor="Red"></asp:Label></span></label>
                     </td>
                     <td>
-                        <asp:TextBox ID="txtEmail" runat="server" MaxLength="40" Width="242px"></asp:TextBox>
+                        <asp:TextBox ID="txtEmail" runat="server" MaxLength="40" Width="242px"
+                            Enabled="false" ReadOnly="true"></asp:TextBox>
                         <br />
                         <asp:RequiredFieldValidator ID="rqEmail" Display="Dynamic" runat="server" ControlToValidate="txtEmail"
                             ValidationGroup="OfferMade" ForeColor="Red" ErrorMessage="Please Enter Email"></asp:RequiredFieldValidator>
@@ -787,10 +804,14 @@
                         <asp:Button ID="btnSaveOfferMade" runat="server" BackColor="#327FB5" ForeColor="White" Height="32px"
                             Style="height: 26px; font-weight: 700; line-height: 1em;" Text="Save" Width="100px" ValidationGroup="OfferMade"
                             TabIndex="119" OnClick="btnSaveOfferMade_Click" />
-                        <%--<asp:Button ID="Button2" runat="server" OnClick="" />--%>
+                        <asp:Button ID="btnCancelOfferMade" runat="server" Text="Cancel" OnClick="btnCancelInterview_Click" Width="100px"
+                            Style="height: 26px; font-weight: 700; line-height: 1em;" 
+                            OnClientClick="javascript:document.getElementById('DivOfferMade').style.display='none';document.getElementById('DivOfferMadefade').style.display='none'" />
                     </td>
                 </tr>
             </table>
+                </ContentTemplate>
+            </asp:UpdatePanel>
         </div>
     </asp:Panel>
     <div id="DivOfferMadefade" class="black_overlay">

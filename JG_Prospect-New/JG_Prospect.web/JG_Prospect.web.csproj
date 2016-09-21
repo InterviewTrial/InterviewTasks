@@ -56,30 +56,30 @@
   <ItemGroup>
     <Reference Include="AjaxControlToolkit, Version=3.5.60501.0, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>F:\SandeepJGPBackUp\JGP Publish\12 AUG 2015\bin\AjaxControlToolkit.dll</HintPath>
+      <HintPath>External Dependencies\AjaxControlToolkit.dll</HintPath>
     </Reference>
     <Reference Include="aspsnippets.facebookapi">
-      <HintPath>C:\Users\test\Desktop\UP\FaceBookLogin\Bin\aspsnippets.facebookapi.dll</HintPath>
+      <HintPath>External Dependencies\aspsnippets.facebookapi.dll</HintPath>
     </Reference>
     <Reference Include="ASPSnippets.GoogleAPI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\ASPSnippets.GoogleAPI.dll</HintPath>
+      <HintPath>External Dependencies\ASPSnippets.GoogleAPI.dll</HintPath>
     </Reference>
     <Reference Include="ASPSnippets.SmsAPI, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Users\test\Downloads\SendSMSASP.Net\Bin\ASPSnippets.SmsAPI.dll</HintPath>
+      <HintPath>External Dependencies\ASPSnippets.SmsAPI.dll</HintPath>
     </Reference>
     <Reference Include="ASPSnippets.TwitterAPI, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>\\192.168.0.223\New1\Sandeep\JGP\JG_Prospect.web\bin\ASPSnippets.TwitterAPI.dll</HintPath>
+      <HintPath>External Dependencies\ASPSnippets.TwitterAPI.dll</HintPath>
     </Reference>
     <Reference Include="BarcodeLib, Version=1.0.0.18, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>\\192.168.0.223\New1\Sandeep\JGP\JG_Prospect.web\bin\BarcodeLib.dll</HintPath>
+      <HintPath>External Dependencies\BarcodeLib.dll</HintPath>
     </Reference>
     <Reference Include="DropDownCheckBoxes, Version=1.1.0.27408, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Users\test\Desktop\DropDownCheckBoxes.dll</HintPath>
+      <HintPath>External Dependencies\DropDownCheckBoxes.dll</HintPath>
     </Reference>
     <Reference Include="Google.GData.AccessControl, Version=1.8.0.0, Culture=neutral, PublicKeyToken=b4b8eb9a7afc8328, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -102,11 +102,13 @@
     </Reference>
     <Reference Include="Ionic.Zip, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Ionic.Zip.dll</HintPath>
+      <HintPath>External Dependencies\Ionic.Zip.dll</HintPath>
     </Reference>
-    <Reference Include="itextsharp, Version=5.5.6.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\iTextSharpProject\itextsharp-all-5.5.6\itextsharp-src-core\bin\Debug_woDrawing\itextsharp.dll</HintPath>
+    <Reference Include="itextsharp">
+      <HintPath>External Dependencies\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp.xmlworker">
+      <HintPath>External Dependencies\itextsharp.xmlworker.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Office.Interop.Excel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
@@ -154,11 +156,11 @@
     </Reference>
     <Reference Include="Microsoft.Practices.Unity, Version=2.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>\\ANWAR-PC\Users\Public\screen\Microsoft.Practices.Unity.dll</HintPath>
+      <HintPath>External Dependencies\Microsoft.Practices.Unity.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.Unity.Interception, Version=2.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>\\ANWAR-PC\Users\Public\screen\Microsoft.Practices.Unity.Interception.dll</HintPath>
+      <HintPath>External Dependencies\Microsoft.Practices.Unity.Interception.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -186,7 +188,7 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Telerik.Web.UI, Version=2013.1.403.40, Culture=neutral, PublicKeyToken=121fae78165ba3d4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Telerik.Web.UI.dll</HintPath>
+      <HintPath>External Dependencies\Telerik.Web.UI.DLL</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
@@ -209,7 +211,6 @@
     <Content Include="bin\Google.GData.Extensions.dll" />
     <Content Include="bin\GoogleMaps.LocationServices.dll" />
     <Content Include="bin\Ionic.Zip.dll" />
-    <Content Include="bin\itextsharp.dll" />
     <Content Include="bin\JG_Prospect.BLL.dll" />
     <Content Include="bin\JG_Prospect.Common.dll" />
     <Content Include="bin\JG_Prospect.DAL.dll" />
@@ -266,6 +267,7 @@
     <Content Include="css\dropzone\css\dropzone.css" />
     <Content Include="css\dropzone\images\spritemap%402x.png" />
     <Content Include="css\dropzone\images\spritemap.png" />
+    <Content Include="css\dropzone\images\upload.png" />
     <Content Include="css\JCarousel.css" />
     <Content Include="css\jquery-ui.css" />
     <Content Include="css\jquery.multiselect.css" />
@@ -387,9 +389,116 @@
     <Content Include="JrAnnualCalendar.aspx" />
     <Content Include="js\connected-jcarousel.js" />
     <Content Include="js\dropzone.js" />
+    <Content Include="js\ice\ice-master.min.js" />
+    <Content Include="js\ice\lib\tinymce\changelog.txt" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\langs\en.js" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\license.txt" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\plugins\contextmenu\editor_plugin.js" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\plugins\contextmenu\editor_plugin_src.js" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\plugins\example\dialog.htm" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\plugins\example\editor_plugin.js" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\plugins\example\editor_plugin_src.js" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\plugins\example\img\example.gif" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\plugins\example\js\dialog.js" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\plugins\example\langs\en.js" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\plugins\example\langs\en_dlg.js" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\plugins\example_dependency\editor_plugin.js" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\plugins\example_dependency\editor_plugin_src.js" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\plugins\fullpage\css\fullpage.css" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\plugins\fullpage\editor_plugin.js" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\plugins\fullpage\editor_plugin_src.js" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\plugins\fullpage\fullpage.htm" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\plugins\fullpage\js\fullpage.js" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\plugins\fullpage\langs\en_dlg.js" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\plugins\fullscreen\editor_plugin.js" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\plugins\fullscreen\editor_plugin_src.js" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\plugins\fullscreen\fullscreen.htm" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\plugins\icesearchreplace\css\searchreplace.css" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\plugins\icesearchreplace\editor_plugin.js" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\plugins\icesearchreplace\js\searchreplace.js" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\plugins\icesearchreplace\langs\en_dlg.js" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\plugins\icesearchreplace\searchreplace.htm" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\plugins\ice\css\ice.css" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\plugins\ice\editor_plugin.js" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\plugins\ice\img\accept.gif" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\plugins\ice\img\ice-accept-change.png" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\plugins\ice\img\ice-accept.png" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\plugins\ice\img\ice-reject-change.png" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\plugins\ice\img\ice-reject.png" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\plugins\ice\img\ice-showchanges.png" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\plugins\ice\img\ice-togglechanges.png" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\plugins\ice\img\reject.gif" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\plugins\ice\js\ice.min.js" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\about.htm" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\anchor.htm" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\charmap.htm" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\color_picker.htm" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\editor_template.js" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\editor_template_src.js" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\image.htm" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\img\colorpicker.jpg" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\img\flash.gif" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\img\icons.gif" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\img\iframe.gif" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\img\pagebreak.gif" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\img\quicktime.gif" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\img\realmedia.gif" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\img\shockwave.gif" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\img\trans.gif" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\img\video.gif" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\img\windowsmedia.gif" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\js\about.js" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\js\anchor.js" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\js\charmap.js" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\js\color_picker.js" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\js\image.js" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\js\link.js" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\js\source_editor.js" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\langs\en.js" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\langs\en_dlg.js" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\link.htm" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\shortcuts.htm" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\skins\default\content.css" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\skins\default\dialog.css" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\skins\default\img\buttons.png" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\skins\default\img\items.gif" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\skins\default\img\menu_arrow.gif" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\skins\default\img\menu_check.gif" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\skins\default\img\progress.gif" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\skins\default\img\tabs.gif" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\skins\default\ui.css" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\skins\highcontrast\content.css" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\skins\highcontrast\dialog.css" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\skins\highcontrast\ui.css" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\skins\o2k7\content.css" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\skins\o2k7\dialog.css" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\skins\o2k7\img\button_bg.png" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\skins\o2k7\img\button_bg_black.png" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\skins\o2k7\img\button_bg_silver.png" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\skins\o2k7\ui.css" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\skins\o2k7\ui_black.css" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\skins\o2k7\ui_silver.css" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\advanced\source_editor.htm" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\simple\editor_template.js" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\simple\editor_template_src.js" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\simple\img\icons.gif" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\simple\langs\en.js" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\simple\skins\default\content.css" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\simple\skins\default\ui.css" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\simple\skins\o2k7\content.css" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\simple\skins\o2k7\img\button_bg.png" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\themes\simple\skins\o2k7\ui.css" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\tiny_mce.js" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\tiny_mce_popup.js" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\utils\editable_selects.js" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\utils\form_utils.js" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\utils\mctabs.js" />
+    <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\utils\validate.js" />
+    <Content Include="js\ice\src\ice.js" />
     <Content Include="js\JCarousel.js" />
     <Content Include="js\jquery-latest.js" />
     <Content Include="js\jquery-latest_old.js" />
+    <Content Include="js\jquery-migrate-1.0.0.js" />
     <Content Include="js\jquery-ui.js" />
     <Content Include="js\Jquery.Actual.min.js" />
     <Content Include="js\jquery.datetimepicker.css" />
@@ -476,6 +585,7 @@
     <Content Include="Sr_App\Maintenace.aspx" />
     <Content Include="Sr_App\MasterAppointment.aspx" />
     <Content Include="Sr_App\OverheadExp.aspx" />
+    <Content Include="Sr_App\Price_control.aspx" />
     <Content Include="Sr_App\Procurement.aspx" />
     <Content Include="Sr_App\r.aspx" />
     <Content Include="Sr_App\s.aspx" />
@@ -490,7 +600,9 @@
     <Content Include="Sr_App\SrAnnualCalendar.aspx" />
     <Content Include="Sr_App\StatusEmailTemplate.aspx" />
     <Content Include="Sr_App\StatusOverride.aspx" />
+    <Content Include="Sr_App\taskattachmentdownload.aspx" />
     <Content Include="Sr_App\taskattachmentupload.aspx" />
+    <Content Include="Sr_App\TaskGenerator.aspx" />
     <Content Include="Sr_App\TaskList.aspx" />
     <Content Include="Sr_App\Time_Material.aspx" />
     <Content Include="Sr_App\UploadedFile\6162015 114211 AMKoala.jpg" />
@@ -689,7 +801,6 @@
     <Content Include="Sr_App\Literature.aspx" />
     <Content Include="Sr_App\MaterialConfirmation.aspx" />
     <Content Include="Sr_App\new_customer.aspx" />
-    <Content Include="Sr_App\Price_control.aspx" />
     <Content Include="Sr_App\ProductEstimate.aspx" />
     <Content Include="Sr_App\Resources.aspx" />
     <Content Include="Sr_App\SalesReort.aspx" />
@@ -701,6 +812,7 @@
     <Content Include="Sr_App\Vendors.aspx" />
     <Content Include="Sr_App\video.aspx" />
     <Content Include="StaticReport.aspx" />
+    <Content Include="Styles\dd.css" />
     <Content Include="Styles\Site.css" />
     <Content Include="Global.asax" />
     <Content Include="Scripts\jquery-1.4.1-vsdoc.js" />
@@ -1125,6 +1237,13 @@
     <Compile Include="Sr_App\OverheadExp.aspx.designer.cs">
       <DependentUpon>OverheadExp.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Sr_App\Price_control.aspx.cs">
+      <DependentUpon>Price_control.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sr_App\Price_control.aspx.designer.cs">
+      <DependentUpon>Price_control.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Sr_App\Procurement.aspx.cs">
       <DependentUpon>Procurement.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1188,12 +1307,26 @@
     <Compile Include="Sr_App\StatusOverride.aspx.designer.cs">
       <DependentUpon>StatusOverride.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Sr_App\taskattachmentdownload.aspx.cs">
+      <DependentUpon>taskattachmentdownload.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sr_App\taskattachmentdownload.aspx.designer.cs">
+      <DependentUpon>taskattachmentdownload.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Sr_App\taskattachmentupload.aspx.cs">
       <DependentUpon>taskattachmentupload.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Sr_App\taskattachmentupload.aspx.designer.cs">
       <DependentUpon>taskattachmentupload.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Sr_App\TaskGenerator.aspx.cs">
+      <DependentUpon>TaskGenerator.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sr_App\TaskGenerator.aspx.designer.cs">
+      <DependentUpon>TaskGenerator.aspx</DependentUpon>
     </Compile>
     <Compile Include="Sr_App\TaskList.aspx.cs">
       <DependentUpon>TaskList.aspx</DependentUpon>
@@ -1246,7 +1379,6 @@
     </Compile>
     <Compile Include="Sr_App\EditUser.aspx.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Sr_App\EditUser.aspx.designer.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>
@@ -1381,13 +1513,6 @@
     </Compile>
     <Compile Include="Sr_App\new_customer.aspx.designer.cs">
       <DependentUpon>new_customer.aspx</DependentUpon>
-    </Compile>
-    <Compile Include="Sr_App\Price_control.aspx.cs">
-      <DependentUpon>Price_control.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Sr_App\Price_control.aspx.designer.cs">
-      <DependentUpon>Price_control.aspx</DependentUpon>
     </Compile>
     <Compile Include="Sr_App\ProductEstimate.aspx.cs">
       <DependentUpon>ProductEstimate.aspx</DependentUpon>
@@ -1537,7 +1662,7 @@
     <Folder Include="CustomerDocs\VendorQuotes\" />
     <Folder Include="InvoicePdf\" />
     <Folder Include="Resources\" />
-    <Folder Include="Sr_App\MailDocument\" />
+    <Folder Include="Sr_App\MailDocument\MailAttachments\" />
     <Folder Include="UserImages\" />
   </ItemGroup>
   <ItemGroup>

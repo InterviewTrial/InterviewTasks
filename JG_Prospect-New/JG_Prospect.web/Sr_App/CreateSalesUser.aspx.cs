@@ -26,12 +26,30 @@ namespace JG_Prospect.Sr_App
 {
     public partial class CreateSalesUser : System.Web.UI.Page
     {
+        #region '--Members--'
+
+        string fn;
         private static int UserId = 0;
         private static int ColorFlag = 0;
         user objuser = new user();
-        string fn;
         List<string> newAttachments = new List<string>();
         DataTable dtDeduction = new DataTable();
+
+        #endregion
+
+        #region '--Properties--'
+
+        #endregion
+
+        #region '--Page Events--'
+
+        protected override void OnPreRender(EventArgs e)
+        {
+            txtpassword.Attributes["value"] = txtpassword.Text;
+            txtpassword1.Attributes["value"] = txtpassword1.Text;
+            base.OnPreRender(e);
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (Session["Username"] != null)
@@ -40,8 +58,9 @@ namespace JG_Prospect.Sr_App
             }
             else
             {
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alsert('Your session has expired,login to contineu');window.location='../login.aspx'", true);
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alsert('Your session has expired,login to contineu');window.location='../login.aspx?returnurl=" + Request.Url.PathAndQuery + "'", true);
             }
+
             CalendarExtender4.StartDate = DateTime.Now;
             CalendarExtender5.EndDate = DateTime.Now;
             //createForeMenForJobAcceptance();
@@ -55,10 +74,17 @@ namespace JG_Prospect.Sr_App
                 {
                     UserId = Convert.ToInt16(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
                 }
+                
+                Session["ID"] = Convert.ToInt32(Request.QueryString["ID"]);
+
                 bindGrid();
             }
             else
             {
+                if (!IsPostBack)
+                {
+                    Session["ID"] = "";
+                }
                 touchPointlogPanel.Visible = false;
             }
             if (!IsPostBack)
@@ -338,8 +364,17 @@ namespace JG_Prospect.Sr_App
                         Session["Zip"] = str;
                         txtpassword.Text = ds.Tables[0].Rows[0][7].ToString();
                         txtpassword1.Text = ds.Tables[0].Rows[0][7].ToString();
-                        ddldesignation.SelectedValue = ds.Tables[0].Rows[0][5].ToString();
-                        Session["PrevDesig"] = ds.Tables[0].Rows[0][5].ToString();
+
+                        System.Web.UI.WebControls.ListItem lstDesig = ddldesignation.Items.FindByText(ds.Tables[0].Rows[0]["Designation"].ToString());
+
+                        if (lstDesig != null)
+                        {
+                            ddldesignation.SelectedIndex = ddldesignation.Items.IndexOf(lstDesig);
+
+                            Session["PrevDesig"] = ds.Tables[0].Rows[0]["Designation"].ToString();
+
+                        }
+
                         if (ddldesignation.SelectedItem.Text == "ForeMan" || ddldesignation.SelectedItem.Text == "Installer")
                         {
                             lnkW9.Visible = false;
@@ -357,6 +392,7 @@ namespace JG_Prospect.Sr_App
                             lnkI9.Visible = true;
                             lnkW4.Visible = false;
                         }
+                        txtDateSourced.Text = Convert.ToString(ds.Tables[0].Rows[0]["DateSourced"]);
                         if (Convert.ToString(ds.Tables[0].Rows[0][6]) != "")
                         {
                             ddlstatus.SelectedValue = ds.Tables[0].Rows[0][6].ToString();
@@ -1085,21 +1121,9 @@ namespace JG_Prospect.Sr_App
 
         }
 
-        public List<string> GetTimeIntervals()
-        {
-            List<string> timeIntervals = new List<string>();
-            TimeSpan startTime = new TimeSpan(0, 0, 0);
-            DateTime startDate = new DateTime(DateTime.MinValue.Ticks); // Date to be used to get shortTime format.
-            for (int i = 0; i < 48; i++)
-            {
-                int minutesToBeAdded = 30 * i;      // Increasing minutes by 30 minutes interval
-                TimeSpan timeToBeAdded = new TimeSpan(0, minutesToBeAdded, 0);
-                TimeSpan t = startTime.Add(timeToBeAdded);
-                DateTime result = startDate + t;
-                timeIntervals.Add(result.ToShortTimeString());      // Use Date.ToShortTimeString() method to get the desired format                
-            }
-            return timeIntervals;
-        }
+        #endregion
+
+        #region '--Control Events--'
 
         protected void btnUploadSkills_Click(object sender, EventArgs e)
         {
@@ -1202,388 +1226,11 @@ namespace JG_Prospect.Sr_App
             //}
         }
 
-        protected void AsyncFileUploadCustomerAttachment_UploadedComplete(object sender, AjaxControlToolkit.AsyncFileUploadEventArgs e)
-        {
-            //if (Convert.ToInt32(Session["UploadFileCountSkill"]) == 0)
-            //{
-            //    string fileNameall = "";
-            //    string filename = Path.GetFileName(AsyncFileUploadCustomerAttachment.FileName);
-            //    filename = DateTime.Now.ToString() + filename;
-            //    filename = filename.Replace("/", "");
-            //    filename = filename.Replace(":", "");
-            //    filename = filename.Replace(" ", "");
-            //    flpPqLicense.SaveAs(Server.MapPath("~/Sr_App/UploadedFile/" + filename));
-            //    Session["SkillAttachment"] = null;
-            //    Session["SkillAttachmentName"] = null;
-            //    Session["SkillAttachmentName"] = filename;
-            //    Session["SkillAttachment"] = "~/Sr_App/UploadedFile/" + filename;
-            //}
-            //else
-            //{
-            //    Session["UploadFileCountSkill"] = 0;
-            //}
-        }
-
-        private void BindProducts1()
-        {
-            DataSet ds = UserBLL.Instance.GetAllProducts();
-            ddlBestTradeOne.DataSource = ds;
-            ddlBestTradeOne.DataTextField = "ProductName";
-            ddlBestTradeOne.DataValueField = "ProductId";
-            ddlBestTradeOne.DataBind();
-            ddlBestTradeOne.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select", "0)"));
-        }
-
-        private void BindProducts2()
-        {
-            DataSet ds = UserBLL.Instance.GetAllProducts();
-            ddlBestTradeTwo.DataSource = ds;
-            ddlBestTradeTwo.DataTextField = "ProductName";
-            ddlBestTradeTwo.DataValueField = "ProductId";
-            ddlBestTradeTwo.DataBind();
-            ddlBestTradeTwo.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select", "0)"));
-        }
-
-        private void BindProducts3()
-        {
-            DataSet ds = UserBLL.Instance.GetAllProducts();
-            ddlBestTradeThree.DataSource = ds;
-            ddlBestTradeThree.DataTextField = "ProductName";
-            ddlBestTradeThree.DataValueField = "ProductId";
-            ddlBestTradeThree.DataBind();
-            ddlBestTradeThree.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select", "0)"));
-        }
-
-
-        private void GetValueToDisplay(DataTable dt, string Reason, string Amount, string Type)
-        {
-            try
-            {
-                DataRow drNew = dt.NewRow();
-                Session["loop1"] = "";
-                Session["loop2"] = "";
-                Session["loop3"] = "";
-                string[] str_Reason = Reason.Split(',');
-                string[] str_Amt = Amount.Split(',');
-                string[] str_Type = Type.Split(',');
-            label:
-                drNew = dt.NewRow();
-                for (int i = 0; i < str_Reason.Length; i++)
-                {
-                    if (Convert.ToString(Session["loop1"]) != "")
-                    {
-                        i = Convert.ToInt32(Session["loop1"]) + 1;
-                    }
-                    if (str_Reason[i] != "")
-                    {
-                        drNew["DeductionFor"] = str_Reason[i];
-                        Session["loop1"] = i;
-                        break;
-                    }
-                }
-                for (int j = 0; j < str_Type.Length; j++)
-                {
-                    if (Convert.ToString(Session["loop2"]) != "")
-                    {
-                        j = Convert.ToInt32(Session["loop2"]) + 1;
-                    }
-                    if (str_Type[j] != "")
-                    {
-                        drNew["Type"] = str_Type[j];
-                        Session["loop2"] = j;
-                        break;
-                    }
-                }
-                for (int k = 0; k < str_Amt.Length; k++)
-                {
-                    if (Convert.ToString(Session["loop3"]) != "")
-                    {
-                        k = Convert.ToInt32(Session["loop3"]) + 1;
-                    }
-                    if (str_Amt[k] != "")
-                    {
-                        drNew["Amount"] = str_Amt[k];
-                        Session["loop3"] = k;
-                        if (k == str_Amt.Length - 1)
-                        {
-
-                            dt.Rows.Add(drNew);
-                            goto label1;
-                        }
-                        break;
-                    }
-                }
-                dt.Rows.Add(drNew);
-                goto label;
-            label1:
-                Session["DtTemp"] = null;
-                Session["DtTemp"] = dt;
-                GridView1.DataSource = dt;
-                GridView1.DataBind();
-            }
-            catch (Exception ex)
-            {
-
-            }
-        }
-
-        private void GetPersonToDisplay(DataTable dt, string PersonName, string PersonType)
-        {
-            DataRow drNew = dt.NewRow();
-            Session["loop4"] = "";
-            Session["loop5"] = "";
-            string[] str_PersonName = PersonName.Split(',');
-            string[] str_PersonType = PersonType.Split(',');
-        label:
-            drNew = dt.NewRow();
-            for (int i = 0; i < str_PersonName.Length; i++)
-            {
-                if (Convert.ToString(Session["loop4"]) != "")
-                {
-                    i = Convert.ToInt32(Session["loop4"]) + 1;
-                }
-                if (str_PersonName[i] != "")
-                {
-                    drNew["PersonName"] = str_PersonName[i];
-                    Session["loop4"] = i;
-                    break;
-                }
-            }
-            for (int k = 0; k < str_PersonType.Length; k++)
-            {
-                if (Convert.ToString(Session["loop5"]) != "")
-                {
-                    k = Convert.ToInt32(Session["loop5"]) + 1;
-                }
-                if (str_PersonType[k] != "")
-                {
-                    drNew["PersonType"] = str_PersonType[k];
-                    Session["loop5"] = k;
-                    if (k == str_PersonType.Length - 1)
-                    {
-                        dt.Rows.Add(drNew);
-                        goto label1;
-                    }
-                    break;
-                }
-            }
-            dt.Rows.Add(drNew);
-            goto label;
-        label1:
-            Session["PersonTypeData"] = null;
-            Session["PersonTypeData"] = dt;
-            //GridView2.DataSource = dt;
-            //GridView2.DataBind();
-        }
-
-        private void CreateDeductionDatatable()
-        {
-            dtDeduction.Columns.Add("Deduction For", typeof(string));
-            dtDeduction.Columns.Add("Type", typeof(string));
-            dtDeduction.Columns.Add("Ammount", typeof(string));
-            Session["dtDeduction"] = dtDeduction;
-        }
-
-        private void FillDocument()
-        {
-            string attach = Session["attachments"] as string;
-            if (Convert.ToString(Session["ResumeName"]) != "" && attach != null && attach != "")
-            {
-                attach = attach + "," + Convert.ToString(Session["ResumeName"]);
-            }
-            else if (Convert.ToString(Session["ResumeName"]) != "")
-            {
-                attach = Convert.ToString(Session["ResumeName"]);
-            }
-            if (Convert.ToString(Session["CirtificationName"]) != "" && attach != null && attach != "")
-            {
-                attach = attach + "," + Convert.ToString(Session["CirtificationName"]);
-            }
-            else if (Convert.ToString(Session["CirtificationName"]) != "")
-            {
-                attach = Convert.ToString(Session["CirtificationName"]);
-            }
-            if (Convert.ToString(Session["SkillAttachmentName"]) != "" && attach != null && attach != "")
-            {
-                attach = attach + "," + Convert.ToString(Session["SkillAttachmentName"]);
-            }
-            else if (Convert.ToString(Session["SkillAttachmentName"]) != "")
-            {
-                attach = Convert.ToString(Session["SkillAttachmentName"]);
-            }
-            if (Convert.ToString(Session["UploadedPictureName"]) != "" && attach != null && attach != "")
-            {
-                attach = attach + "," + Convert.ToString(Session["UploadedPictureName"]);
-            }
-            else if (Convert.ToString(Session["UploadedPictureName"]) != "")
-            {
-                attach = Convert.ToString(Session["UploadedPictureName"]);
-            }
-            if (Convert.ToString(Session["PqLicenseFileName"]) != "" && attach != null && attach != "")
-            {
-                attach = attach + "," + Convert.ToString(Session["PqLicenseFileName"]);
-            }
-            else if (Convert.ToString(Session["PqLicenseFileName"]) != "")
-            {
-                attach = Convert.ToString(Session["PqLicenseFileName"]);
-            }
-            if (attach != "")
-            {
-                string[] att = attach.Split(',');
-                var data = att.Select(s => new { FileName = s }).ToList();
-                if (string.IsNullOrWhiteSpace(attach))
-                {
-                    data.Clear();
-                }
-                gvUploadedFiles.DataSource = data;
-                gvUploadedFiles.DataBind();
-                gvUploadedFiles.Visible = true;
-            }
-            else
-            {
-                //DataTable data = null;
-                //gvUploadedFiles.DataSource = data;
-                //gvUploadedFiles.DataBind();
-                gvUploadedFiles.Visible = false;
-            }
-        }
-        private void FillListBoxImage(string imageName)
-        {
-            string[] arr = imageName.Split(',');
-            if (flpUplaodPicture != null)
-            {
-                foreach (string img in arr)
-                {
-                    //  lstboxUploadedImages.Items.Add(img);
-                }
-                //lstboxUploadedImages.SelectedIndex = 0;
-            }
-            else
-            {
-                foreach (string img in arr)
-                {
-                    //  lstboxUploadedImages.SelectedIndex =-2;
-                }
-
-            }
-        }
-
         protected void btnreset_Click(object sender, EventArgs e)
         {
             clearcontrols();
             //lblmsg.Visible = false;
             Response.Redirect("../Sr_App/InstallCreateUser.aspx");
-        }
-
-        private void clearcontrols()
-        {
-
-            Session["ExtraIncomeName"] = Session["ExtraIncomeAmt"] = lblDoller.Text = lblExtra.Text = "";
-            Session["DtTemp"] = "";
-            txtReson.Text = ""; dtInterviewDate.Text = "";
-            GridView1.DataSource = null;
-            ddlcitizen.SelectedValue = "0";
-            ddldesignation.SelectedValue = "Jr. Sales";
-            ddlstatus.SelectedValue = "Applicant";
-            ddlInstallerType.SelectedValue = "Foreman";
-            txtHireDate.Text = DateTime.Today.ToShortDateString();
-            ddlWorkerCompCode.SelectedValue = "0";
-            txtRoutingNo.Text = txtDeduction.Text = txtDeducReason.Text = txtAccountNo.Text = txtAccountType.Text = txtExtraIncome.Text = dtReviewDate.Text = "";
-            ddlExtraEarning.SelectedValue = ddlEmpType.SelectedValue = "0";
-            dtLastDate.Text = "";
-            txtPayRates.Text = txtfirstname.Text = txtlastname.Text = dtResignation.Text = txtemail.Text = txtpassword.Text = txtpassword1.Text = txtPhone.Text = txtZip.Text = txtState.Text = txtCity.Text = txtaddress.Text = null;
-            gvUploadedFiles.Visible = false;
-            // lstboxUploadedImages.Items.Clear();
-            Image2.Visible = false;
-            lnkEscrow.Visible = lnkFacePage.Visible = lnkI9.Visible = lnkW4.Visible = lnkW9.Visible = false;
-            txtFullTimePos.Enabled = true;
-            //txtContractor1.Enabled = true;
-            //txtContractor2.Enabled = true;
-            //txtContractor3.Enabled = true;
-            //txtMajorTools.Enabled = true;
-            rdoDrugtestYes.Enabled = true;
-            rdoDrugtestNo.Enabled = true;
-            //rdoDriveLicenseYes.Enabled = true;
-            //rdoDriveLicenseNo.Enabled = true;
-            //rdoTruckToolsYes.Enabled = true;
-            //rdoTruckToolsNo.Enabled = true;
-            rdoJMApplyYes.Enabled = true;
-            rdoJMApplyNo.Enabled = true;
-            rdoLicenseYes.Enabled = true;
-            rdoLicenseNo.Enabled = true;
-            //rdoGuiltyNo.Enabled = true;
-            //rdoGuiltyYes.Enabled = true;
-            //txtStartDateNew.Enabled = true;
-            txtSalRequirement.Enabled = true;
-            //txtAvailability.Enabled = true;
-            //txtWarrantyPolicy.Enabled = true;
-            //txtYrs.Enabled = true;
-            //txtCurrentComp.Enabled = true;
-            //txtWebsiteUrl.Enabled = true;
-            //ddlType.Enabled = true;
-            //txtName.Enabled = true;
-            //txtPrinciple.Enabled = true;
-            //btnAddEmpPartner.Enabled = true;
-            if (ddldesignation.SelectedItem.Text == "Installer")
-            {
-                lblInstallerType.Visible = true;
-                ddlInstallerType.Visible = true;
-            }
-            else
-            {
-                lblInstallerType.Visible = false;
-                ddlInstallerType.Visible = false;
-            }
-            txtFullTimePos.Text = "";
-            //txtContractor1.Text = "";
-            //txtContractor2.Text = "";
-            //txtContractor3.Text = "";
-            //txtMajorTools.Text = "";
-            rdoDrugtestYes.Checked = false;
-            rdoDrugtestNo.Checked = false;
-            //rdoDriveLicenseYes.Checked = false;
-            //rdoDriveLicenseNo.Checked = false;
-            //rdoTruckToolsYes.Checked = false;
-            //rdoTruckToolsNo.Checked = false;
-            rdoJMApplyYes.Checked = false;
-            rdoJMApplyNo.Checked = false;
-            rdoLicenseYes.Checked = false;
-            rdoLicenseNo.Checked = false;
-            //rdoGuiltyNo.Checked = false;
-            //rdoGuiltyYes.Checked = false;
-            //txtStartDateNew.Text = "";
-            txtSalRequirement.Text = "";
-            //txtAvailability.Text = "";
-            //txtWarrantyPolicy.Text = "";
-            //txtYrs.Text = "";
-            //txtCurrentComp.Text = "";
-            //txtWebsiteUrl.Text = "";
-            //ddlType.SelectedValue = "0";
-            //txtName.Text = "";
-            //txtPrinciple.Text = "";
-            //btnAddEmpPartner.Enabled = true;
-            Session["SkillAttachment"] = null;
-            Session["SkillAttachmentName"] = null;
-            Session["ResumePath"] = null;
-            Session["ResumeName"] = null;
-            Session["CirtificationName"] = "";
-            Session["CirtificationPath"] = "";
-            Session["PersonType"] = Session["PersonTypeData"] = "";
-            //GridView2.DataSource = null;
-            Session["PersonName"] = "";
-        }
-
-        [System.Web.Services.WebMethodAttribute(), System.Web.Script.Services.ScriptMethodAttribute()]
-        public static string[] GetZipcodes(string prefixText)
-        {
-            List<string> ZipCodes = new List<string>();
-            DataSet dds = new DataSet();
-            dds = UserBLL.Instance.fetchzipcode(prefixText);
-            foreach (DataRow dr in dds.Tables[0].Rows)
-            {
-                ZipCodes.Add(dr[0].ToString());
-            }
-            return ZipCodes.ToArray();
         }
 
         protected void txtZip_TextChanged(object sender, EventArgs e)
@@ -1614,7 +1261,6 @@ namespace JG_Prospect.Sr_App
                 ViewState["zipEsrow"] = txtZip.Text;
             }
         }
-
 
         protected void ddldesignation_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -1932,12 +1578,6 @@ namespace JG_Prospect.Sr_App
 
             }
         }
-
-
-
-        // New code change -HR change for fields and touch point log
-
-        //Save functionality......
         protected void btncreate_Click(object sender, EventArgs e)
         {
             if (!Page.IsValid)
@@ -2325,19 +1965,30 @@ namespace JG_Prospect.Sr_App
                 {
                     try
                     {
-                        bool result = InstallUserBLL.Instance.AddUser(objuser);
+                        var result = InstallUserBLL.Instance.AddUser(objuser);
+                        Session["ID"] = result.Item2;
 
                         //GoogleCalendarEvent.CreateCalendar(txtemail.Text, txtaddress.Text);
                         //lblmsg.Visible = true;
                         //lblmsg.CssClass = "success";
                         //lblmsg.Text = "User has been created successfully";
-                        if (ddlstatus.SelectedValue == "InterviewDate" || ddlstatus.SelectedValue == "OfferMade" || ddlstatus.SelectedValue == "Deactive")
+                        //if (ddlstatus.SelectedValue == "InterviewDate" || ddlstatus.SelectedValue == "OfferMade" || ddlstatus.SelectedValue == "Deactive")
+                        if (ddlstatus.SelectedValue == "Deactive")
                         {
                             SendEmail(txtemail.Text, txtfirstname.Text, txtlastname.Text, ddlstatus.SelectedValue, str_Reason);
                         }
 
+                        if (ddlstatus.SelectedValue == "InterviewDate")
+                        {
+                            btnSaveInterview_Click(sender, e);
+                        }
+                        if (ddlstatus.SelectedValue == "OfferMade")
+                        {
+                            btnSaveOfferMade_Click(sender, e);
+                        }
                         //
                         Session["installId"] = "";
+                        Session["ID"] = "";
                         //ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('User has been created successfully');", true);
                         ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('User has been created successfully');window.location ='EditUser.aspx';", true);
                         clearcontrols();
@@ -2366,373 +2017,6 @@ namespace JG_Prospect.Sr_App
 
         }
 
-        private void GenerateBarCode(string Id)
-        {
-            if (Id != "")
-            {
-                string barCode = Id;
-                string strImageURL = "GenerateBarcodeImage.aspx?d=" + Id + "&h=" + 40 + "&w=" + 195 + "&bc=" + "" + "&fc=" + "" + "&t=" + "Code 39 Extended" + "&il=" + "" + "&if=" + "PNG" + "&align=" + "C";
-                this.BarcodeImage.ImageUrl = strImageURL;
-                this.BarcodeImage.Width = Convert.ToInt32(195);
-                this.BarcodeImage.Height = Convert.ToInt32(40);
-                this.BarcodeImage.Visible = true;
-                //lblBarcode.Text=Id;
-                //barcode.InnerHtml = Id;
-                //System.Web.UI.WebControls.Image imgBarCode = new System.Web.UI.WebControls.Image();
-                //using (Bitmap bitMap = new Bitmap(barCode.Length * 40, 80))
-                //{
-                //    using (Graphics graphics = Graphics.FromImage(bitMap))
-                //    {
-                //        System.Drawing.Font oFont = new System.Drawing.Font("IDAutomationHC39M", 16);
-                //        PointF point = new PointF(2f, 2f);
-                //        SolidBrush blackBrush = new SolidBrush(Color.Black);
-                //        SolidBrush whiteBrush = new SolidBrush(Color.White);
-                //        graphics.FillRectangle(whiteBrush, 0, 0, bitMap.Width, bitMap.Height);
-                //        graphics.DrawString("*" + barCode + "*", oFont, blackBrush, point);
-                //    }
-                //    using (MemoryStream ms = new MemoryStream())
-                //    {
-                //        bitMap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
-                //        byte[] byteImage = ms.ToArray();
-
-                //        Convert.ToBase64String(byteImage);
-                //        imgBarCode.ImageUrl = "data:image/png;base64," + Convert.ToBase64String(byteImage);
-                //    }
-                //    plBarCode.Controls.Add(imgBarCode);
-                //}
-            }
-        }
-
-        private string GetUpdatedId(string PrevId)
-        {
-            string LastInt = "";
-            DataTable dtId;
-            int IndexA = 0;
-            int IndexS = 0;
-            string previouPrefix = string.Empty;
-            string PrefixId = string.Empty;
-            string SalesId = PrevId;
-            string PrevDesig = string.Empty;
-            string newId = string.Empty;
-            if ((ddldesignation.SelectedValue == "Admin" || ddldesignation.SelectedValue == "Office Manager" || ddldesignation.SelectedValue == "Recruiter") && (ddlstatus.SelectedValue != "Deactive"))
-            {
-                if (SalesId != "")
-                {
-                    if (SalesId.Contains("SLE"))
-                    {
-                        IndexS = SalesId.IndexOf("SLE");
-                        PrefixId = SalesId.Substring(IndexS, 1);
-                        previouPrefix = SalesId.Substring(0, IndexS);
-                        PrefixId = previouPrefix + PrefixId;
-                        newId = SalesId.Substring(IndexS + (SalesId.Length - 4));
-                        newId = Convert.ToString(Convert.ToUInt32(newId) + 1);
-                        PrefixId = PrefixId + "ADM000" + newId;
-                    }
-                    else if (SalesId.Contains("ADM"))
-                    {
-                        IndexA = SalesId.IndexOf("ADM");
-                        PrefixId = SalesId.Substring(IndexA, 1);
-                        previouPrefix = SalesId.Substring(0, IndexA);
-                        PrefixId = previouPrefix + PrefixId;
-                        newId = SalesId.Substring(IndexA + (SalesId.Length - 4));
-                        newId = Convert.ToString(Convert.ToUInt32(newId) + 1);
-                        PrefixId = PrefixId + "ADM000" + newId;
-                    }
-                }
-                else
-                {
-                    SalesId = "ADM0001";
-                }
-            }
-            else if ((ddldesignation.SelectedValue == "Admin" || ddldesignation.SelectedValue == "Office Manager" || ddldesignation.SelectedValue == "Recruiter") && (ddlstatus.SelectedValue == "Deactive") && (SalesId != ""))
-            {
-                SalesId = SalesId + "-X";
-            }
-            else if ((ddldesignation.SelectedValue == "Jr. Sales" || ddldesignation.SelectedValue == "Jr Project Manager" || ddldesignation.SelectedValue == "Sales Manager" || ddldesignation.SelectedValue == "Sr. Sales") && (ddlstatus.SelectedValue != "Deactive"))
-            {
-                if (SalesId != "")
-                {
-                    if (SalesId.Contains("SLE"))
-                    {
-                        IndexS = SalesId.IndexOf("SLE");
-                        PrefixId = SalesId.Substring(IndexS, 1);
-                        previouPrefix = SalesId.Substring(0, IndexS);
-                        PrefixId = previouPrefix + PrefixId;
-                        newId = SalesId.Substring(IndexS + (SalesId.Length - 4));
-                        newId = Convert.ToString(Convert.ToUInt32(newId) + 1);
-                        PrefixId = PrefixId + "ADM000" + newId;
-                    }
-                    else if (SalesId.Contains("ADM"))
-                    {
-                        IndexA = SalesId.IndexOf("ADM");
-                        PrefixId = SalesId.Substring(IndexA, 1);
-                        previouPrefix = SalesId.Substring(0, IndexA);
-                        PrefixId = previouPrefix + PrefixId;
-                        newId = SalesId.Substring(IndexA + (SalesId.Length - 4));
-                        newId = Convert.ToString(Convert.ToUInt32(newId) + 1);
-                        PrefixId = PrefixId + "ADM000" + newId;
-                    }
-                }
-                else
-                {
-                    SalesId = "SLE0001";
-                }
-            }
-            else if ((ddldesignation.SelectedValue == "Jr. Sales" || ddldesignation.SelectedValue == "Jr Project Manager" || ddldesignation.SelectedValue == "Sales Manager" || ddldesignation.SelectedValue == "Sr. Sales") && (ddlstatus.SelectedValue == "Deactive") && (SalesId != ""))
-            {
-                SalesId = SalesId + "-X";
-            }
-
-            return SalesId;
-        }
-
-        private string GetId(string Desig)
-        {
-            string LastInt = "";
-            DataTable dtId;
-            string SalesId = string.Empty;
-            dtId = InstallUserBLL.Instance.GetMaxSalesId(Desig);
-            if (dtId.Rows.Count > 0)
-            {
-                SalesId = Convert.ToString(dtId.Rows[0][0]);
-            }
-            if ((Desig == "Admin" || Desig == "Office Manager" || Desig == "Recruiter") && (ddlstatus.SelectedValue != "Deactive"))
-            {
-                if (SalesId != "")
-                {
-                    LastInt = SalesId.Substring(SalesId.Length - 4);
-                    SalesId = "ADM000" + Convert.ToString(Convert.ToInt32(LastInt) + 1);
-                }
-                else
-                {
-                    SalesId = "ADM0001";
-                }
-            }
-            else if ((Desig == "Admin" || Desig == "Office Manager" || Desig == "Recruiter") && (ddlstatus.SelectedValue == "Deactive") && (SalesId != ""))
-            {
-                SalesId = SalesId + "-X";
-            }
-            else if ((Desig == "Jr. Sales" || Desig == "Jr Project Manager" || Desig == "Sales Manager" || Desig == "Sr. Sales") && (ddlstatus.SelectedValue != "Deactive"))
-            {
-                if (SalesId != "")
-                {
-                    LastInt = SalesId.Substring(SalesId.Length - 4);
-                    SalesId = "SLE000" + Convert.ToString(Convert.ToInt32(LastInt) + 1);
-                }
-                else
-                {
-                    SalesId = "SLE0001";
-                }
-            }
-            else if ((Desig == "Jr. Sales" || Desig == "Jr Project Manager" || Desig == "Sales Manager" || Desig == "Sr. Sales") && (ddlstatus.SelectedValue == "Deactive") && (SalesId != ""))
-            {
-                SalesId = SalesId + "-X";
-            }
-
-            return SalesId;
-        }
-
-        private void SendEmail(string emailId, string FName, string LName, string status, string Reason)
-        {
-            try
-            {
-                string fullname = FName + " " + LName;
-                string HTML_TAG_PATTERN = "<.*?>";
-                string strHeader = GetEmailHeader(status);
-                string strBody = GetEmailBody(status);
-                string strFooter = GetFooter(status);
-                strBody = strBody.Replace("LBL name", FName);
-                strBody = strBody.Replace("Lbl Full name", fullname);
-                strBody = strBody.Replace("LBL position", ddldesignation.SelectedItem.Text);
-                strBody = strBody.Replace("lbl: start date", txtHireDate.Text);
-                //strBody = strBody.Replace("($ rate","$"+ txtHireDate.Text);
-                strBody = strBody.Replace("Reason", Reason);
-                //strBody = Regex.Replace(strBody, HTML_TAG_PATTERN, string.Empty);
-                //strHeader = Regex.Replace(strHeader, HTML_TAG_PATTERN, string.Empty);
-                //strFooter = Regex.Replace(strFooter, HTML_TAG_PATTERN, string.Empty);
-                StringBuilder Body = new StringBuilder();
-                //MailMessage Msg = new MailMessage();
-                // Sender e-mail address.
-                //Msg.From = new MailAddress("qat2015team@gmail.com");
-                // Recipient e-mail address.
-                //Msg.To.Add(emailId);
-                //Msg.Subject = "JG Prospect Notification";
-                //StringBuilder Body = new StringBuilder();
-                //Body.Append("Hello " + FName + " " + LName + ",");
-                //Body.Append("<br>");
-                //Body.Append("Your stattus for the JG Prospect is :" + status);
-                //Body.Append("<br>");
-                ////if (status == "Source" || status == "Rejected" || status == "Interview Date" || status == "Offer Made")
-                ////{
-                //Body.Append(Reason);
-                ////}
-                //Body.Append("<br>");
-                //Body.Append("Tanking you");
-                Body.Append(strHeader);
-                Body.Append("<br>");
-                Body.Append(strBody);
-                Body.Append("<br>");
-                //if (status == "Source" || status == "Rejected" || status == "Interview Date" || status == "Offer Made")
-                //{
-                //Body.Append(Reason);
-                //}
-                Body.Append("<br>");
-                Body.Append(strFooter);
-                if (ddlstatus.SelectedValue == "OfferMade")
-                {
-                    createForeMenForJobAcceptance(Convert.ToString(Body));
-                }
-                if (ddlstatus.SelectedValue == "Deactive")
-                {
-                    CreateDeactivationAttachment(Convert.ToString(Body));
-                }
-                //Msg.Body = Convert.ToString(Body);
-                //// your remote SMTP server IP.
-                //SmtpClient smtp = new SmtpClient();
-                //smtp.Host = "smtp.gmail.com";
-                //smtp.Port = 587;
-                //smtp.Credentials = new System.Net.NetworkCredential("qat2015team@gmail.com", "q$7@wt%j*65ba#3M@9P6");
-                //smtp.EnableSsl = true;
-                //smtp.Send(Msg);
-                //Msg = null;
-                //Page.RegisterStartupScript("UserMsg", "<script>alert('Mail sent thank you...');if(alert){ window.location='SendMail.aspx';}</script>");
-            }
-            catch (Exception ex)
-            {
-                UtilityBAL.AddException("CreateSalesUser-SendEmail", Session["loginid"] == null ? "" : Session["loginid"].ToString(), ex.Message, ex.StackTrace);
-            }
-            #region CommentedArea
-            // //SmtpClient smtp = new SmtpClient();
-            // //MailMessage email_msg = new MailMessage();
-            // //email_msg.To.Add(emailId);
-            // //email_msg.From = new MailAddress("customsoft.test@gmail.com", "Credit Chex");
-            // StringBuilder Body = new StringBuilder();
-            // Body.Append("Hello " + FName + " " + LName + ",");
-            // Body.Append("<br>");
-            // Body.Append("Your stattus for the JG Prospect is :" + status);
-            // Body.Append("<br>");
-            // //if (status == "Source" || status == "Rejected" || status == "Interview Date" || status == "Offer Made")
-            // //{
-            //     Body.Append(Reason);
-            // //}
-            // Body.Append("<br>");
-            // Body.Append("Tanking you");
-            //// AlternateView htmlView = AlternateView.CreateAlternateViewFromString(Body, null, "text/html");
-            //// LinkedResource imagelink3 = new LinkedResource(HttpContext.Current.Server.MapPath("~/images/logo.png"), "image/png");
-            // //imagelink3.ContentId = "imageId1";
-            // //imagelink3.TransferEncoding = System.Net.Mime.TransferEncoding.Base64;
-            // //htmlView.LinkedResources.Add(imagelink3);
-            // var smtp = new System.Net.Mail.SmtpClient();
-            // {
-            //     smtp.Host = "smtp.gmail.com";
-            //     smtp.Port = 587;
-            //     smtp.EnableSsl = true;
-            //     smtp.DeliveryMethod = System.Net.Mail.SmtpDeliveryMethod.Network;
-            //     smtp.Credentials = new NetworkCredential("","q$7@wt%j*j*65ba#3M@9P6");
-            //     smtp.Timeout = 20000;
-            // }
-            // // Passing values to smtp object
-            // smtp.Send("", emailId, "JG Prospect Notification", Convert.ToString(Body));
-#endregion
-        }
-
-        private void CreateDeactivationAttachment(string MailBody)
-        {
-            string str_date = DateTime.Now.ToString().Replace("/", "");
-            str_date = str_date.Replace(":", "");
-            str_date = str_date.Replace("-", "");
-            str_date = str_date.Replace(" ", "");
-            string SourcePath = @"~/Sr_App/MailDocSample/DeactivationMail.doc";
-            string TargetPath = @"~/Sr_App/MailDocument/" + str_date + txtfirstname.Text + "DeactivationMail.doc";
-            System.IO.File.Copy(Server.MapPath(SourcePath), Server.MapPath(TargetPath), true);
-            //modify word document
-            object missing = System.Reflection.Missing.Value;
-            Word.Application wordApp = new Word.Application();
-            Word.Document aDoc = null;
-            object Target = Server.MapPath(TargetPath);
-            if (File.Exists(Server.MapPath(TargetPath)))
-            {
-                DateTime today = DateTime.Now;
-                object readonlyNew = false;
-                object isVisible = false;
-                wordApp.Visible = false;
-                FileInfo objFInfo = new FileInfo(Server.MapPath(TargetPath));
-                objFInfo.IsReadOnly = false;
-                aDoc = wordApp.Documents.Open(ref Target, ref missing, ref readonlyNew, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref isVisible, ref missing, ref missing, ref missing, ref missing);
-                aDoc.Activate();
-                this.FindAndReplace(wordApp, "name", txtfirstname.Text + " " + txtlastname.Text);
-                this.FindAndReplace(wordApp, "HireDate", txtHireDate.Text);
-                this.FindAndReplace(wordApp, "full time or part  time", ddlEmpType.SelectedValue);
-                this.FindAndReplace(wordApp, "HourlyRate", txtPayRates);
-                if (dtResignation.Text != "")
-                {
-                    this.FindAndReplace(wordApp, "WorkingStatus", "No");
-                    this.FindAndReplace(wordApp, "LastWorkingDay", dtResignation.Text);
-                }
-                else
-                {
-                    this.FindAndReplace(wordApp, "WorkingStatus", "No");
-                    this.FindAndReplace(wordApp, "LastWorkingDay", dtResignation.Text);
-                }
-                //this.FindAndReplace(wordApp, "$ rate", txtPayRates.Text);
-                //this.FindAndReplace(wordApp, "lbl: next pay period", "");
-                //this.FindAndReplace(wordApp, "lbl: paycheck date", "");
-                aDoc.SaveAs(ref Target, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing);
-                aDoc.Close(ref missing, ref missing, ref missing);
-            }
-            using (MailMessage mm = new MailMessage("hr@jmgrove.com", txtemail.Text))
-            {
-                mm.Subject = "Deactivation";
-                mm.Body = MailBody;
-                mm.Attachments.Add(new Attachment(Server.MapPath(TargetPath)));
-                mm.IsBodyHtml = true;
-                SmtpClient smtp = new SmtpClient();
-                smtp.Host = "smtp.gmail.com";
-                smtp.EnableSsl = true;
-                NetworkCredential NetworkCred = new NetworkCredential("Customsofttest@gmail.com", "customsoft567");
-                smtp.UseDefaultCredentials = true;
-                smtp.Credentials = NetworkCred;
-                smtp.Port = 587;
-                smtp.Send(mm);
-            }
-        }
-
-        private string GetFooter(string status)
-        {
-            string Footer = string.Empty;
-            DataTable DtFooter;
-            DtFooter = InstallUserBLL.Instance.getTemplate(status, "footer");
-            if (DtFooter.Rows.Count > 0)
-            {
-                Footer = DtFooter.Rows[0][0].ToString();
-            }
-            return Footer;
-        }
-
-        private string GetEmailBody(string status)
-        {
-            string Body = string.Empty;
-            DataTable DtBody;
-            DtBody = InstallUserBLL.Instance.getTemplate(status, "Body");
-            if (DtBody.Rows.Count > 0)
-            {
-                Body = DtBody.Rows[0][0].ToString();
-            }
-            return Body;
-        }
-
-        private string GetEmailHeader(string status)
-        {
-            string Header = string.Empty;
-            DataTable DtHeader;
-            DtHeader = InstallUserBLL.Instance.getTemplate(status, "Header");
-            if (DtHeader.Rows.Count > 0)
-            {
-                Header = DtHeader.Rows[0][0].ToString();
-            }
-            return Header;
-        }
-
         protected void lnkFacePage_Click(object sender, EventArgs e)
         {
             var pdfPath = Path.Combine(Server.MapPath("~/PDFTemplates/face page.pdf"));
@@ -2749,6 +2033,7 @@ namespace JG_Prospect.Sr_App
             //string path = PdflDirectory + "\\" + Filename;
             PDFHelper.ReturnPDF(pdfContents, Filename);
         }
+
         protected void lnkEscrow_Click(object sender, EventArgs e)
         {
             var pdfPath = Path.Combine(Server.MapPath("~/PDFTemplates/Escrow Signature page.pdf"));
@@ -2769,6 +2054,7 @@ namespace JG_Prospect.Sr_App
             //string path = PdflDirectory + "\\" + Filename;
             PDFHelper.ReturnPDF(pdfContents, Filename);
         }
+
         protected void lnkW9_Click(object sender, EventArgs e)
         {
             var pdfPath = Path.Combine(Server.MapPath("~/PDFTemplates/w9.pdf"));
@@ -2799,11 +2085,13 @@ namespace JG_Prospect.Sr_App
             Session["FirstName"] = txtfirstname.Text;
             txtlastname.Focus();
         }
+
         protected void txtlastname_TextChanged(object sender, EventArgs e)
         {
             Session["LastName"] = txtlastname.Text;
             txtemail.Focus();
         }
+
         protected void txtaddress_TextChanged(object sender, EventArgs e)
         {
             Session["Address"] = txtaddress.Text;
@@ -2814,7 +2102,6 @@ namespace JG_Prospect.Sr_App
             txtZip.Focus();
 
         }
-
 
         protected void btn_UploadPicture_Click(object sender, EventArgs e)
         {
@@ -2931,11 +2218,13 @@ namespace JG_Prospect.Sr_App
             btnMinus.Visible = false;
             pnl4.Visible = false;
         }
+
         protected void lstbxImages_SelectedIndexChanged1(object sender, EventArgs e)
         {
             // string curItem = lstboxUploadedImages.SelectedItem.ToString();
             //  Image2.ImageUrl = "~/CustomerDocs/LocationPics/" + curItem;
         }
+
         protected void btnUpdate_Click(object sender, EventArgs e)
         {
             try
@@ -3275,6 +2564,7 @@ namespace JG_Prospect.Sr_App
                     //lblmsg.CssClass = "success";
                     //lblmsg.Text = "User has been created successfully";
                     //ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('InstallUser  Update successfully');", true);
+                    Session["ID"] = "";
                     clearcontrols();
                     if (ddldesignation.SelectedItem.Text == "Installer")
                     {
@@ -3295,6 +2585,7 @@ namespace JG_Prospect.Sr_App
 
             }
         }
+
         protected void btn_UploadFiles_Click(object sender, EventArgs e)
         {
             HttpFileCollection uploads = Request.Files;
@@ -3397,12 +2688,6 @@ namespace JG_Prospect.Sr_App
             pnl4.Visible = false;
         }
 
-        protected override void OnPreRender(EventArgs e)
-        {
-            txtpassword.Attributes["value"] = txtpassword.Text;
-            txtpassword1.Attributes["value"] = txtpassword1.Text;
-            base.OnPreRender(e);
-        }
         protected void btnDelete_Click(object sender, EventArgs e)
         {
 
@@ -3494,222 +2779,6 @@ namespace JG_Prospect.Sr_App
                     response.End();
                 }
             }
-        }
-
-        public void save_file_from_url(string file_name, string url)
-        {
-            byte[] content;
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-            WebResponse response = request.GetResponse();
-
-            Stream stream = response.GetResponseStream();
-
-            using (BinaryReader br = new BinaryReader(stream))
-            {
-                content = br.ReadBytes(500000);
-                br.Close();
-            }
-            response.Close();
-
-            FileStream fs = new FileStream(file_name, FileMode.Create);
-            BinaryWriter bw = new BinaryWriter(fs);
-            try
-            {
-                bw.Write(content);
-            }
-            finally
-            {
-                fs.Close();
-                bw.Close();
-            }
-        }
-
-
-        private void DeleteAttachment()
-        {
-            if (ViewState["FilesToDelete"] != null)
-            {
-                string filesTodeleteString = Convert.ToString(ViewState["FilesToDelete"]);
-                List<string> filesTodelete = new List<string> { filesTodeleteString };
-                try
-                {
-                    if (Convert.ToString(Session["ResumePath"]).Contains(filesTodeleteString))
-                    {
-                        if (Convert.ToString(Session["ResumePath"]).Contains("http"))
-                        {
-                            string url = Convert.ToString(Session["ResumePath"]);
-                            string str_fileName = Path.GetFileName(Convert.ToString(Session["ResumePath"]));
-                            string file_name = Server.MapPath("~/Sr_App/UploadedFile/") + str_fileName;
-                            Session["ResumePath"] = file_name;
-                            save_file_from_url(file_name, url);
-                            var path = Server.MapPath("~/Sr_App/UploadedFile/" + filesTodeleteString);
-                            System.IO.File.Delete(path);
-                            string attachmentsString = Convert.ToString(Session["attachments"]);
-                            var updatedAttachments = attachmentsString.Split(',').Except(filesTodelete).ToArray();
-                            Session["attachments"] = string.Join(",", updatedAttachments);
-                            if (Convert.ToString(ViewState["FilesToDelete"]).Equals(Convert.ToString(Session["UploadedPictureName"])))
-                            {
-                                DeleteImageFile(path);
-                                Session["UploadedPictureName"] = "";
-                            }
-                            else if (Convert.ToString(ViewState["FilesToDelete"]).Equals(Convert.ToString(Session["PqLicenseFileName"])))
-                            {
-                                DeleteDLFile(path);
-                                Session["PqLicenseFileName"] = "";
-                            }
-                            else if (Convert.ToString(ViewState["FilesToDelete"]).Equals(Convert.ToString(Session["ResumeName"])))
-                            {
-                                DeleteResume(path);
-                                Session["ResumeName"] = "";
-                            }
-                            else if (Convert.ToString(ViewState["FilesToDelete"]).Equals(Convert.ToString(Session["CirtificationName"])))
-                            {
-                                DeleteCirtification(path);
-                                Session["CirtificationName"] = "";
-                            }
-                            else if (Convert.ToString(ViewState["FilesToDelete"]).Equals(Convert.ToString(Session["SkillAttachmentName"])))
-                            {
-                                DeleteAssessment(path);
-                                Session["SkillAttachmentName"] = "";
-                            }
-                        }
-                        else
-                        {
-                            var path = Server.MapPath("~/Sr_App/UploadedFile/" + filesTodeleteString);
-                            System.IO.File.Delete(path);
-                            string attachmentsString = Convert.ToString(Session["attachments"]);
-                            var updatedAttachments = attachmentsString.Split(',').Except(filesTodelete).ToArray();
-                            Session["attachments"] = string.Join(",", updatedAttachments);
-                            if (Convert.ToString(ViewState["FilesToDelete"]).Equals(Convert.ToString(Session["UploadedPictureName"])))
-                            {
-                                DeleteImageFile(path);
-                                Session["UploadedPictureName"] = "";
-                            }
-                            else if (Convert.ToString(ViewState["FilesToDelete"]).Equals(Convert.ToString(Session["PqLicenseFileName"])))
-                            {
-                                DeleteDLFile(path);
-                                Session["PqLicenseFileName"] = "";
-                            }
-                            else if (Convert.ToString(ViewState["FilesToDelete"]).Equals(Convert.ToString(Session["ResumeName"])))
-                            {
-                                DeleteResume(path);
-                                Session["ResumeName"] = "";
-                            }
-                            else if (Convert.ToString(ViewState["FilesToDelete"]).Equals(Convert.ToString(Session["CirtificationName"])))
-                            {
-                                DeleteCirtification(path);
-                                Session["CirtificationName"] = "";
-                            }
-                            else if (Convert.ToString(ViewState["FilesToDelete"]).Equals(Convert.ToString(Session["SkillAttachmentName"])))
-                            {
-                                DeleteAssessment(path);
-                                Session["SkillAttachmentName"] = "";
-                            }
-                        }
-                    }
-                    else
-                    {
-                        var path = Server.MapPath("~/Sr_App/UploadedFile/" + filesTodeleteString);
-                        System.IO.File.Delete(path);
-                        string attachmentsString = Convert.ToString(Session["attachments"]);
-                        var updatedAttachments = attachmentsString.Split(',').Except(filesTodelete).ToArray();
-                        Session["attachments"] = string.Join(",", updatedAttachments);
-                        if (Convert.ToString(ViewState["FilesToDelete"]).Equals(Convert.ToString(Session["UploadedPictureName"])))
-                        {
-                            DeleteImageFile(path);
-                            Session["UploadedPictureName"] = "";
-                        }
-                        else if (Convert.ToString(ViewState["FilesToDelete"]).Equals(Convert.ToString(Session["PqLicenseFileName"])))
-                        {
-                            DeleteDLFile(path);
-                            Session["PqLicenseFileName"] = "";
-                        }
-                        else if (Convert.ToString(ViewState["FilesToDelete"]).Equals(Convert.ToString(Session["ResumeName"])))
-                        {
-                            DeleteResume(path);
-                            Session["ResumeName"] = "";
-                        }
-                        else if (Convert.ToString(ViewState["FilesToDelete"]).Equals(Convert.ToString(Session["CirtificationName"])))
-                        {
-                            DeleteCirtification(path);
-                            Session["CirtificationName"] = "";
-                        }
-                        else if (Convert.ToString(ViewState["FilesToDelete"]).Equals(Convert.ToString(Session["SkillAttachmentName"])))
-                        {
-                            DeleteAssessment(path);
-                            Session["SkillAttachmentName"] = "";
-                        }
-                    }
-                }
-                catch (Exception)
-                {
-
-
-                }
-            }
-        }
-
-        private void DeleteDLFile(string DLPath)
-        {
-            InstallUserBLL.Instance.DeletePLLic(DLPath);
-
-        }
-
-        private void DeleteAssessment(string Path)
-        {
-            InstallUserBLL.Instance.DeleteAssessment(Path);
-        }
-
-        private void DeleteResume(string Path)
-        {
-            InstallUserBLL.Instance.DeleteResume(Path);
-        }
-        private void UpdateDocPath(string NewPath, string OldPath)
-        {
-            InstallUserBLL.Instance.UpdateDocPath(NewPath, OldPath);
-        }
-
-        private void DeleteCirtification(string Path)
-        {
-            InstallUserBLL.Instance.DeleteCirtification(Path);
-        }
-
-        private void DeleteImageFile(string ImagePath)
-        {
-            InstallUserBLL.Instance.DeleteImage(ImagePath);
-            Image2.ImageUrl = "";
-        }
-
-        private string GetUpdateAttachments()
-        {
-            //string attach = string.Empty;
-            string CsvAttachments = string.Empty;
-            var filesTodelete = new List<string>();
-            if (ViewState["FilesToDelete"] != null)
-            {
-                filesTodelete = ViewState["FilesToDelete"] as List<string>;
-            }
-            try
-            {
-                string attachments = Session["attachments"] as string;
-                string attach = Session["attachments"] as string;
-                attachments = attachments.Trim(',').TrimEnd(',');
-                ViewState["FileName"] = attach;
-                if (attach != null)
-                {
-                    string[] att = attachments.Split(',');
-                    var data = att.Select(s => new { FileName = s }).ToList();
-                    gvUploadedFiles.DataSource = data;
-                    gvUploadedFiles.DataBind();
-                }
-                var updatedAttachments = attachments.Split(',');
-                CsvAttachments = string.Join(",", updatedAttachments);
-                CsvAttachments = CsvAttachments.TrimStart(',');
-            }
-            catch (Exception)
-            {
-            }
-            return CsvAttachments;
         }
         protected void btndelete_Click1(object sender, EventArgs e)
         {
@@ -3853,7 +2922,6 @@ namespace JG_Prospect.Sr_App
             //ViewState["ein"] = strein;
         }
 
-
         protected void lnkw4Details_Click(object sender, EventArgs e)
         {
             ModalPopupExtender1.Show();
@@ -3975,11 +3043,14 @@ namespace JG_Prospect.Sr_App
             }
             else if (ddlstatus.SelectedValue == "InterviewDate")
             {
+                LoadUsersByRecruiterDesgination();
                 txtReson.Visible = false;
+                RequiredFieldValidator7.Enabled = false;
                 dtInterviewDate.Visible = true;
                 dtInterviewDate.Text = DateTime.Now.AddDays(1).ToShortDateString();
                 ddlInsteviewtime.Visible = true;
                 ddlInsteviewtime.SelectedValue = "10:00 AM";
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "overlayInterviewDate();", true);
             }
             else if (ddlstatus.SelectedValue == "Deactive")
             {
@@ -3992,7 +3063,7 @@ namespace JG_Prospect.Sr_App
             {
                 ddlInsteviewtime.Visible = false;
                 txtReson.Visible = false;
-                RequiredFieldValidator7.Enabled = true;
+                RequiredFieldValidator7.Enabled = false;
                 dtInterviewDate.Visible = false;
                 pnlnewHire.Visible = true;
                 pnlNew2.Visible = true;
@@ -4043,6 +3114,21 @@ namespace JG_Prospect.Sr_App
                 btnNewMinus.Visible = true;
                 //rqDtNewReview.Enabled = false;
                 //rqLastReviewDate.Enabled = false;
+
+                if (Session["ID"] != null && !string.IsNullOrEmpty(Convert.ToString(Session["ID"])))
+                {
+                    txtOfferReqMail.Enabled = false;
+                    txtOfferReqMail.ReadOnly = true;
+                    txtOfferConPassword.Attributes.Add("value", "jmgrove");
+                    txtOfferPassword.Attributes.Add("value", "jmgrove");
+                }
+                else
+                {
+                    txtOfferReqMail.Enabled = true;
+                    txtOfferReqMail.ReadOnly = false;
+                    txtOfferConPassword.Attributes.Add("value", "jmgrove");
+                    txtOfferPassword.Attributes.Add("value", "jmgrove");
+                }
 
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "OverlayPopupOfferMade();", true);
                 return;
@@ -5099,23 +4185,6 @@ namespace JG_Prospect.Sr_App
             pnl4.Visible = false;
         }
 
-        private DataTable GetTable()
-        {
-            DataTable table = new DataTable();
-            table.Columns.Add("DeductionFor", typeof(String));
-            table.Columns.Add("Type", typeof(string));
-            table.Columns.Add("Amount", typeof(string));
-            return table;
-        }
-
-        private DataTable GetTableForPersonType()
-        {
-            DataTable table = new DataTable();
-            table.Columns.Add("PersonName", typeof(String));
-            table.Columns.Add("PersonType", typeof(string));
-            return table;
-        }
-
         protected void ddldesignation_SelectedIndexChanged1(object sender, EventArgs e)
         {
             if (ddlstatus.SelectedValue == "Active" && (ddldesignation.SelectedItem.Text == "ForeMan" || ddldesignation.SelectedItem.Text == "Installer"))
@@ -5371,8 +4440,6 @@ namespace JG_Prospect.Sr_App
             btnMinus.Visible = false;
             pnl4.Visible = false;
         }
-
-
 
         protected void btnResume_Click(object sender, EventArgs e)
         {
@@ -5659,86 +4726,6 @@ namespace JG_Prospect.Sr_App
             //}
         }
 
-        public void createForeMenForJobAcceptance(string str_Body)
-        {
-            //copy sample file for Foreman Job Acceptance letter template
-            string str_date = DateTime.Now.ToString().Replace("/", "");
-            str_date = str_date.Replace(":", "");
-            str_date = str_date.Replace("-", "");
-            str_date = str_date.Replace(" ", "");
-            string SourcePath = @"~/Sr_App/MailDocSample/ForemanJobAcceptancelettertemplate.docx";
-            string TargetPath = @"~/Sr_App/MailDocument/" + str_date + txtfirstname.Text + "ForemanJobAcceptanceletter.docx";
-            System.IO.File.Copy(Server.MapPath(SourcePath), Server.MapPath(TargetPath), true);
-            //modify word document
-            object missing = System.Reflection.Missing.Value;
-            Word.Application wordApp = new Word.Application();
-            Word.Document aDoc = null;
-            object Target = Server.MapPath(TargetPath);
-            if (File.Exists(Server.MapPath(TargetPath)))
-            {
-                DateTime today = DateTime.Now;
-                object readonlyNew = false;
-                object isVisible = false;
-                wordApp.Visible = false;
-                FileInfo objFInfo = new FileInfo(Server.MapPath(TargetPath));
-                objFInfo.IsReadOnly = false;
-                aDoc = wordApp.Documents.Open(ref Target, ref missing, ref readonlyNew, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref isVisible, ref missing, ref missing, ref missing, ref missing);
-                aDoc.Activate();
-                this.FindAndReplace(wordApp, "LBL Date", DateTime.Now.ToShortDateString());
-                this.FindAndReplace(wordApp, "Lbl Full name", txtfirstname.Text + " " + txtlastname.Text);
-                this.FindAndReplace(wordApp, "LBL name", txtfirstname.Text + " " + txtlastname.Text);
-                this.FindAndReplace(wordApp, "LBL position", ddldesignation.SelectedValue);
-                this.FindAndReplace(wordApp, "lbl fulltime", ddlEmpType.SelectedValue);
-                this.FindAndReplace(wordApp, "lbl: start date", txtHireDate.Text);
-                this.FindAndReplace(wordApp, "$ rate", txtPayRates.Text);
-                this.FindAndReplace(wordApp, "lbl: next pay period", "");
-                this.FindAndReplace(wordApp, "lbl: paycheck date", "");
-                aDoc.SaveAs(ref Target, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing);
-                aDoc.Close(ref missing, ref missing, ref missing);
-            }
-            using (MailMessage mm = new MailMessage("hr@jmgrove.com", txtemail.Text))
-            {
-                mm.Subject = "Foreman Job Acceptance";
-                mm.Body = str_Body;
-                mm.Attachments.Add(new Attachment(Server.MapPath(TargetPath)));
-                mm.IsBodyHtml = true;
-                SmtpClient smtp = new SmtpClient();
-                smtp.Host = "smtp.gmail.com";
-                smtp.EnableSsl = true;
-                NetworkCredential NetworkCred = new NetworkCredential("Customsofttest@gmail.com", "customsoft567");
-                smtp.UseDefaultCredentials = true;
-                smtp.Credentials = NetworkCred;
-                smtp.Port = 587;
-                smtp.Send(mm);
-                //ClientScript.RegisterStartupScript(GetType(), "alert", "alert('Email sent.');", true);
-            }
-        }
-
-        private void FindAndReplace(Word.Application wordApp, object findText, object replaceText)
-        {
-            object matchCase = true;
-            object matchWholeWord = true;
-            object matchWildCards = false;
-            object matchSoundsLike = false;
-            object matchAllWordForms = false;
-            object forward = true;
-            object format = false;
-            object matchKashida = false;
-            object matchDiacritics = false;
-            object matchAlefHamza = false;
-            object matchControl = false;
-            object read_only = false;
-            object visible = true;
-            object replace = 2;
-            object wrap = 1;
-            wordApp.Selection.Find.Execute(ref findText, ref matchCase,
-                ref matchWholeWord, ref matchWildCards, ref matchSoundsLike,
-                ref matchAllWordForms, ref forward, ref wrap, ref format,
-                ref replaceText, ref replace, ref matchKashida,
-                        ref matchDiacritics,
-                ref matchAlefHamza, ref matchControl);
-        }
-
         protected void rdoAttchmentNo_CheckedChanged(object sender, EventArgs e)
         {
             //if (rdoAttchmentNo.Checked)
@@ -5868,7 +4855,6 @@ namespace JG_Prospect.Sr_App
             }
         }
 
-
         protected void grdTouchPointLog_RowDataBound(object sender, GridViewRowEventArgs e)
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
@@ -5886,15 +4872,6 @@ namespace JG_Prospect.Sr_App
             }
         }
 
-        protected void bindGrid()
-        {
-            int CustomerId = Convert.ToInt32(Session["ID"]);
-            DataSet ds = InstallUserBLL.Instance.GetSalesTouchPointLogData(CustomerId, UserId);
-            grdTouchPointLog.DataSource = ds;
-            grdTouchPointLog.DataBind();
-            // txtAddNotes.Text = "";
-        }
-
         protected void btnAddNotes_Click(object sender, EventArgs e)
         {
             string note = txtAddNotes.Text.Trim();
@@ -5910,16 +4887,145 @@ namespace JG_Prospect.Sr_App
             {
                 int EditId = 0;
                 int.TryParse(Convert.ToString(Session["ID"]), out EditId);
-                InstallUserBLL.Instance.UpdateOfferMade(EditId, txtOfferReqMail.Text, txtOfferPassword.Text);
+                if (!string.IsNullOrEmpty(txtOfferReqMail.Text))
+                {
+                    ViewState["txtOfferReqMail"] = txtOfferReqMail.Text;
+                }
+                if (!string.IsNullOrEmpty(txtOfferPassword.Text))
+                {
+                    ViewState["txtOfferPassword"] = txtOfferPassword.Text;
+                }
 
-                DataSet ds = new DataSet();
+                if (EditId > 0)
+                {
+                    InstallUserBLL.Instance.UpdateOfferMade(EditId, Convert.ToString(ViewState["txtOfferReqMail"]), Convert.ToString(ViewState["txtOfferPassword"]));
+
+                    DataSet ds = new DataSet();
+                    string email = "";
+                    string HireDate = "";
+                    string EmpType = "";
+                    string PayRates = "";
+                    string Desig = "";
+                    string reason = "";
+                    ds = InstallUserBLL.Instance.ChangeStatus(Convert.ToString(ddlstatus.SelectedValue), EditId, DateTime.Today.ToString("yyyy-MM-dd"), DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, reason);
+                    if (ds.Tables.Count > 0)
+                    {
+                        if (ds.Tables[0].Rows.Count > 0)
+                        {
+                            if (Convert.ToString(ds.Tables[0].Rows[0][0]) != "")
+                            {
+                                email = Convert.ToString(ds.Tables[0].Rows[0][0]);
+                            }
+                            if (Convert.ToString(ds.Tables[0].Rows[0][1]) != "")
+                            {
+                                HireDate = Convert.ToString(ds.Tables[0].Rows[0][1]);
+                            }
+                            if (Convert.ToString(ds.Tables[0].Rows[0][2]) != "")
+                            {
+                                EmpType = Convert.ToString(ds.Tables[0].Rows[0][2]);
+                            }
+                            if (Convert.ToString(ds.Tables[0].Rows[0][3]) != "")
+                            {
+                                PayRates = Convert.ToString(ds.Tables[0].Rows[0][3]);
+                            }
+                            if (Convert.ToString(ds.Tables[0].Rows[0]["Designation"]) != "")
+                            {
+                                Desig = Convert.ToString(ds.Tables[0].Rows[0]["Designation"]);
+                            }
+                        }
+                    }
+                    string strHtml = JG_Prospect.App_Code.CommonFunction.GetContractTemplateContent(199, 0, Desig);
+                    strHtml = strHtml.Replace("#CurrentDate#", DateTime.Now.ToShortDateString());
+                    strHtml = strHtml.Replace("#FirstName#", txtfirstname.Text);
+                    strHtml = strHtml.Replace("#LastName#", txtlastname.Text);
+                    strHtml = strHtml.Replace("#Address#", string.Empty);
+                    strHtml = strHtml.Replace("#Designation#", Desig);
+                    if (!string.IsNullOrEmpty(EmpType) && EmpType.Length > 1)
+                    {
+                        strHtml = strHtml.Replace("#EmpType#", EmpType);
+                    }
+                    else
+                    {
+                        strHtml = strHtml.Replace("#EmpType#", "________________");
+                    }
+                    strHtml = strHtml.Replace("#JoiningDate#", HireDate);
+                    if (!string.IsNullOrEmpty(PayRates))
+                    {
+                        strHtml = strHtml.Replace("#RatePerHour#", PayRates);
+                    }
+                    else
+                    {
+                        strHtml = strHtml.Replace("#RatePerHour#", "____");
+                    }
+                    DateTime dtPayCheckDate;
+                    if (!string.IsNullOrEmpty(HireDate))
+                    {
+                        dtPayCheckDate = Convert.ToDateTime(HireDate);
+                    }
+                    else
+                    {
+                        dtPayCheckDate = DateTime.Now;
+                    }
+                    dtPayCheckDate = new DateTime(dtPayCheckDate.Year, dtPayCheckDate.Month, DateTime.DaysInMonth(dtPayCheckDate.Year, dtPayCheckDate.Month));
+                    strHtml = strHtml.Replace("#PayCheckDate#", dtPayCheckDate.ToShortDateString());
+
+                    string strPath = JG_Prospect.App_Code.CommonFunction.ConvertHtmlToPdf(strHtml, Server.MapPath(@"~\Sr_App\MailDocument\MailAttachments\"), "Job acceptance letter");
+                    List<Attachment> lstAttachments = new List<Attachment>();
+                    if (File.Exists(strPath))
+                    {
+                        Attachment attachment = new Attachment(strPath);
+                        attachment.Name = Path.GetFileName(strPath);
+                        lstAttachments.Add(attachment);
+                    }
+
+                    SendEmail(email, txtfirstname.Text, txtlastname.Text, "Offer Made", reason, Desig, HireDate, EmpType, PayRates, 105, lstAttachments);
+                }
+                else
+                {
+                    txtemail.Text = txtOfferReqMail.Text;
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("{0} Exception caught.", ex);
+            }
+            finally
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "ClosePopupOfferMade()", true);
+            }
+        }
+
+        protected void btnSaveInterview_Click(object sender, EventArgs e)
+        {
+            int EditId = 0;
+            int.TryParse(Convert.ToString(Session["ID"]), out EditId);
+            if (!string.IsNullOrEmpty(dtInterviewDate.Text))
+            {
+                ViewState["dtInterviewDate"] = dtInterviewDate.Text;
+            }
+            if (!string.IsNullOrEmpty(ddlInsteviewtime.SelectedItem.Text))
+            {
+                ViewState["ddlInsteviewtime"] = ddlInsteviewtime.SelectedItem.Text;
+            }
+
+            if (EditId > 0)
+            {
                 string email = "";
                 string HireDate = "";
                 string EmpType = "";
                 string PayRates = "";
                 string Desig = "";
-                string reason = "";
-                ds = InstallUserBLL.Instance.ChangeStatus(Convert.ToString(ddlstatus.SelectedValue), EditId, DateTime.Today.ToString("yyyy-MM-dd"), DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), reason);
+
+                //string InterviewDate = dtInterviewDate.Text;
+                DateTime interviewDate;
+                DateTime.TryParse(Convert.ToString(ViewState["dtInterviewDate"]), out interviewDate);
+                if (interviewDate == null)
+                {
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "alert('Invalid Interview Date, Please verify');", true);
+                    return;
+                }
+                //ds = InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), Convert.ToInt32(Session["EditId"]), interviewDate.ToString("yyyy-MM-dd"), ddlInsteviewtime.SelectedItem.Text, Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), txtReason.Text);
+                DataSet ds = InstallUserBLL.Instance.ChangeStatus(Convert.ToString(ddlstatus.SelectedValue), EditId, interviewDate.ToString("yyyy-MM-dd"), Convert.ToString(ViewState["ddlInsteviewtime"]), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, string.Empty, ddlUsers.SelectedValue);
                 if (ds.Tables.Count > 0)
                 {
                     if (ds.Tables[0].Rows.Count > 0)
@@ -5946,24 +5052,1127 @@ namespace JG_Prospect.Sr_App
                         }
                     }
                 }
-                SendEmail(email, txtfirstname.Text, txtlastname.Text, "Offer Made", reason, Desig, HireDate, EmpType, PayRates, 105);
+                SendEmail(email, txtfirstname.Text, txtlastname.Text, "Interview Date Auto Email", string.Empty, Desig, HireDate, EmpType, PayRates, 104);
+                //SendEmail(email, Convert.ToString(Session["FirstNameNewSC"]), Convert.ToString(Session["LastNameNewSC"]), "Interview Date Auto Email", txtReason.Text, Convert.ToString(Session["DesignitionSC"]), HireDate, EmpType, PayRates, 104);
+                //binddata();
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "ClosePopupInterviewDate()", true);
+                return;
+            }
+        }
+
+        protected void btnCancelInterview_Click(object sender, EventArgs e)
+        {
+            //binddata();
+        }
+
+        #endregion
+
+        #region '--Methods--'
+
+        [System.Web.Services.WebMethodAttribute(), System.Web.Script.Services.ScriptMethodAttribute()]
+        public static string[] GetZipcodes(string prefixText)
+        {
+            List<string> ZipCodes = new List<string>();
+            DataSet dds = new DataSet();
+            dds = UserBLL.Instance.fetchzipcode(prefixText);
+            foreach (DataRow dr in dds.Tables[0].Rows)
+            {
+                ZipCodes.Add(dr[0].ToString());
+            }
+            return ZipCodes.ToArray();
+        }
+
+        private void LoadUsersByRecruiterDesgination()
+        {
+            DataSet dsUsers;
+
+            dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, "Admin,Office Manager,Recruiter");
+
+            ddlUsers.DataSource = dsUsers;
+            ddlUsers.DataTextField = "FristName";
+            ddlUsers.DataValueField = "Id";
+            ddlUsers.DataBind();
+
+            ddlUsers.Items.Insert(0, new System.Web.UI.WebControls.ListItem("--All--", "0"));
+        }
+
+        public List<string> GetTimeIntervals()
+        {
+            List<string> timeIntervals = new List<string>();
+            TimeSpan startTime = new TimeSpan(0, 0, 0);
+            DateTime startDate = new DateTime(DateTime.MinValue.Ticks); // Date to be used to get shortTime format.
+            for (int i = 0; i < 48; i++)
+            {
+                int minutesToBeAdded = 30 * i;      // Increasing minutes by 30 minutes interval
+                TimeSpan timeToBeAdded = new TimeSpan(0, minutesToBeAdded, 0);
+                TimeSpan t = startTime.Add(timeToBeAdded);
+                DateTime result = startDate + t;
+                timeIntervals.Add(result.ToShortTimeString());      // Use Date.ToShortTimeString() method to get the desired format                
+            }
+            return timeIntervals;
+        }
+
+        protected void AsyncFileUploadCustomerAttachment_UploadedComplete(object sender, AjaxControlToolkit.AsyncFileUploadEventArgs e)
+        {
+            //if (Convert.ToInt32(Session["UploadFileCountSkill"]) == 0)
+            //{
+            //    string fileNameall = "";
+            //    string filename = Path.GetFileName(AsyncFileUploadCustomerAttachment.FileName);
+            //    filename = DateTime.Now.ToString() + filename;
+            //    filename = filename.Replace("/", "");
+            //    filename = filename.Replace(":", "");
+            //    filename = filename.Replace(" ", "");
+            //    flpPqLicense.SaveAs(Server.MapPath("~/Sr_App/UploadedFile/" + filename));
+            //    Session["SkillAttachment"] = null;
+            //    Session["SkillAttachmentName"] = null;
+            //    Session["SkillAttachmentName"] = filename;
+            //    Session["SkillAttachment"] = "~/Sr_App/UploadedFile/" + filename;
+            //}
+            //else
+            //{
+            //    Session["UploadFileCountSkill"] = 0;
+            //}
+        }
+
+        private void BindProducts1()
+        {
+            DataSet ds = UserBLL.Instance.GetAllProducts();
+            ddlBestTradeOne.DataSource = ds;
+            ddlBestTradeOne.DataTextField = "ProductName";
+            ddlBestTradeOne.DataValueField = "ProductId";
+            ddlBestTradeOne.DataBind();
+            ddlBestTradeOne.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select", "0)"));
+        }
+
+        private void BindProducts2()
+        {
+            DataSet ds = UserBLL.Instance.GetAllProducts();
+            ddlBestTradeTwo.DataSource = ds;
+            ddlBestTradeTwo.DataTextField = "ProductName";
+            ddlBestTradeTwo.DataValueField = "ProductId";
+            ddlBestTradeTwo.DataBind();
+            ddlBestTradeTwo.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select", "0)"));
+        }
+
+        private void BindProducts3()
+        {
+            DataSet ds = UserBLL.Instance.GetAllProducts();
+            ddlBestTradeThree.DataSource = ds;
+            ddlBestTradeThree.DataTextField = "ProductName";
+            ddlBestTradeThree.DataValueField = "ProductId";
+            ddlBestTradeThree.DataBind();
+            ddlBestTradeThree.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select", "0)"));
+        }
+
+        private void GetValueToDisplay(DataTable dt, string Reason, string Amount, string Type)
+        {
+            try
+            {
+                DataRow drNew = dt.NewRow();
+                Session["loop1"] = "";
+                Session["loop2"] = "";
+                Session["loop3"] = "";
+                string[] str_Reason = Reason.Split(',');
+                string[] str_Amt = Amount.Split(',');
+                string[] str_Type = Type.Split(',');
+            label:
+                drNew = dt.NewRow();
+                for (int i = 0; i < str_Reason.Length; i++)
+                {
+                    if (Convert.ToString(Session["loop1"]) != "")
+                    {
+                        i = Convert.ToInt32(Session["loop1"]) + 1;
+                    }
+                    if (str_Reason[i] != "")
+                    {
+                        drNew["DeductionFor"] = str_Reason[i];
+                        Session["loop1"] = i;
+                        break;
+                    }
+                }
+                for (int j = 0; j < str_Type.Length; j++)
+                {
+                    if (Convert.ToString(Session["loop2"]) != "")
+                    {
+                        j = Convert.ToInt32(Session["loop2"]) + 1;
+                    }
+                    if (str_Type[j] != "")
+                    {
+                        drNew["Type"] = str_Type[j];
+                        Session["loop2"] = j;
+                        break;
+                    }
+                }
+                for (int k = 0; k < str_Amt.Length; k++)
+                {
+                    if (Convert.ToString(Session["loop3"]) != "")
+                    {
+                        k = Convert.ToInt32(Session["loop3"]) + 1;
+                    }
+                    if (str_Amt[k] != "")
+                    {
+                        drNew["Amount"] = str_Amt[k];
+                        Session["loop3"] = k;
+                        if (k == str_Amt.Length - 1)
+                        {
+
+                            dt.Rows.Add(drNew);
+                            goto label1;
+                        }
+                        break;
+                    }
+                }
+                dt.Rows.Add(drNew);
+                goto label;
+            label1:
+                Session["DtTemp"] = null;
+                Session["DtTemp"] = dt;
+                GridView1.DataSource = dt;
+                GridView1.DataBind();
             }
             catch (Exception ex)
             {
-                Console.WriteLine("{0} Exception caught.", ex);
-            }
-            finally
-            {
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "ClosePopupOfferMade()", true);
+
             }
         }
-        
-        public void SendEmail(string emailId, string FName, string LName, string status, string Reason, string Designition, string HireDate, string EmpType, string PayRates, int htmlTempID)
+
+        private void GetPersonToDisplay(DataTable dt, string PersonName, string PersonType)
+        {
+            DataRow drNew = dt.NewRow();
+            Session["loop4"] = "";
+            Session["loop5"] = "";
+            string[] str_PersonName = PersonName.Split(',');
+            string[] str_PersonType = PersonType.Split(',');
+        label:
+            drNew = dt.NewRow();
+            for (int i = 0; i < str_PersonName.Length; i++)
+            {
+                if (Convert.ToString(Session["loop4"]) != "")
+                {
+                    i = Convert.ToInt32(Session["loop4"]) + 1;
+                }
+                if (str_PersonName[i] != "")
+                {
+                    drNew["PersonName"] = str_PersonName[i];
+                    Session["loop4"] = i;
+                    break;
+                }
+            }
+            for (int k = 0; k < str_PersonType.Length; k++)
+            {
+                if (Convert.ToString(Session["loop5"]) != "")
+                {
+                    k = Convert.ToInt32(Session["loop5"]) + 1;
+                }
+                if (str_PersonType[k] != "")
+                {
+                    drNew["PersonType"] = str_PersonType[k];
+                    Session["loop5"] = k;
+                    if (k == str_PersonType.Length - 1)
+                    {
+                        dt.Rows.Add(drNew);
+                        goto label1;
+                    }
+                    break;
+                }
+            }
+            dt.Rows.Add(drNew);
+            goto label;
+        label1:
+            Session["PersonTypeData"] = null;
+            Session["PersonTypeData"] = dt;
+            //GridView2.DataSource = dt;
+            //GridView2.DataBind();
+        }
+
+        private void CreateDeductionDatatable()
+        {
+            dtDeduction.Columns.Add("Deduction For", typeof(string));
+            dtDeduction.Columns.Add("Type", typeof(string));
+            dtDeduction.Columns.Add("Ammount", typeof(string));
+            Session["dtDeduction"] = dtDeduction;
+        }
+
+        private void FillDocument()
+        {
+            string attach = Session["attachments"] as string;
+            if (Convert.ToString(Session["ResumeName"]) != "" && attach != null && attach != "")
+            {
+                attach = attach + "," + Convert.ToString(Session["ResumeName"]);
+            }
+            else if (Convert.ToString(Session["ResumeName"]) != "")
+            {
+                attach = Convert.ToString(Session["ResumeName"]);
+            }
+            if (Convert.ToString(Session["CirtificationName"]) != "" && attach != null && attach != "")
+            {
+                attach = attach + "," + Convert.ToString(Session["CirtificationName"]);
+            }
+            else if (Convert.ToString(Session["CirtificationName"]) != "")
+            {
+                attach = Convert.ToString(Session["CirtificationName"]);
+            }
+            if (Convert.ToString(Session["SkillAttachmentName"]) != "" && attach != null && attach != "")
+            {
+                attach = attach + "," + Convert.ToString(Session["SkillAttachmentName"]);
+            }
+            else if (Convert.ToString(Session["SkillAttachmentName"]) != "")
+            {
+                attach = Convert.ToString(Session["SkillAttachmentName"]);
+            }
+            if (Convert.ToString(Session["UploadedPictureName"]) != "" && attach != null && attach != "")
+            {
+                attach = attach + "," + Convert.ToString(Session["UploadedPictureName"]);
+            }
+            else if (Convert.ToString(Session["UploadedPictureName"]) != "")
+            {
+                attach = Convert.ToString(Session["UploadedPictureName"]);
+            }
+            if (Convert.ToString(Session["PqLicenseFileName"]) != "" && attach != null && attach != "")
+            {
+                attach = attach + "," + Convert.ToString(Session["PqLicenseFileName"]);
+            }
+            else if (Convert.ToString(Session["PqLicenseFileName"]) != "")
+            {
+                attach = Convert.ToString(Session["PqLicenseFileName"]);
+            }
+            if (attach != "")
+            {
+                string[] att = attach.Split(',');
+                var data = att.Select(s => new { FileName = s }).ToList();
+                if (string.IsNullOrWhiteSpace(attach))
+                {
+                    data.Clear();
+                }
+                gvUploadedFiles.DataSource = data;
+                gvUploadedFiles.DataBind();
+                gvUploadedFiles.Visible = true;
+            }
+            else
+            {
+                //DataTable data = null;
+                //gvUploadedFiles.DataSource = data;
+                //gvUploadedFiles.DataBind();
+                gvUploadedFiles.Visible = false;
+            }
+        }
+
+        private void FillListBoxImage(string imageName)
+        {
+            string[] arr = imageName.Split(',');
+            if (flpUplaodPicture != null)
+            {
+                foreach (string img in arr)
+                {
+                    //  lstboxUploadedImages.Items.Add(img);
+                }
+                //lstboxUploadedImages.SelectedIndex = 0;
+            }
+            else
+            {
+                foreach (string img in arr)
+                {
+                    //  lstboxUploadedImages.SelectedIndex =-2;
+                }
+
+            }
+        }
+
+        private void clearcontrols()
+        {
+
+            Session["ExtraIncomeName"] = Session["ExtraIncomeAmt"] = lblDoller.Text = lblExtra.Text = "";
+            Session["DtTemp"] = "";
+            txtReson.Text = ""; dtInterviewDate.Text = "";
+            GridView1.DataSource = null;
+            ddlcitizen.SelectedValue = "0";
+            ddldesignation.SelectedValue = "Jr. Sales";
+            ddlstatus.SelectedValue = "Applicant";
+            ddlInstallerType.SelectedValue = "Foreman";
+            txtHireDate.Text = DateTime.Today.ToShortDateString();
+            ddlWorkerCompCode.SelectedValue = "0";
+            txtRoutingNo.Text = txtDeduction.Text = txtDeducReason.Text = txtAccountNo.Text = txtAccountType.Text = txtExtraIncome.Text = dtReviewDate.Text = "";
+            ddlExtraEarning.SelectedValue = ddlEmpType.SelectedValue = "0";
+            dtLastDate.Text = "";
+            txtPayRates.Text = txtfirstname.Text = txtlastname.Text = dtResignation.Text = txtemail.Text = txtpassword.Text = txtpassword1.Text = txtPhone.Text = txtZip.Text = txtState.Text = txtCity.Text = txtaddress.Text = null;
+            gvUploadedFiles.Visible = false;
+            // lstboxUploadedImages.Items.Clear();
+            Image2.Visible = false;
+            lnkEscrow.Visible = lnkFacePage.Visible = lnkI9.Visible = lnkW4.Visible = lnkW9.Visible = false;
+            txtFullTimePos.Enabled = true;
+            //txtContractor1.Enabled = true;
+            //txtContractor2.Enabled = true;
+            //txtContractor3.Enabled = true;
+            //txtMajorTools.Enabled = true;
+            rdoDrugtestYes.Enabled = true;
+            rdoDrugtestNo.Enabled = true;
+            //rdoDriveLicenseYes.Enabled = true;
+            //rdoDriveLicenseNo.Enabled = true;
+            //rdoTruckToolsYes.Enabled = true;
+            //rdoTruckToolsNo.Enabled = true;
+            rdoJMApplyYes.Enabled = true;
+            rdoJMApplyNo.Enabled = true;
+            rdoLicenseYes.Enabled = true;
+            rdoLicenseNo.Enabled = true;
+            //rdoGuiltyNo.Enabled = true;
+            //rdoGuiltyYes.Enabled = true;
+            //txtStartDateNew.Enabled = true;
+            txtSalRequirement.Enabled = true;
+            //txtAvailability.Enabled = true;
+            //txtWarrantyPolicy.Enabled = true;
+            //txtYrs.Enabled = true;
+            //txtCurrentComp.Enabled = true;
+            //txtWebsiteUrl.Enabled = true;
+            //ddlType.Enabled = true;
+            //txtName.Enabled = true;
+            //txtPrinciple.Enabled = true;
+            //btnAddEmpPartner.Enabled = true;
+            if (ddldesignation.SelectedItem.Text == "Installer")
+            {
+                lblInstallerType.Visible = true;
+                ddlInstallerType.Visible = true;
+            }
+            else
+            {
+                lblInstallerType.Visible = false;
+                ddlInstallerType.Visible = false;
+            }
+            txtFullTimePos.Text = "";
+            //txtContractor1.Text = "";
+            //txtContractor2.Text = "";
+            //txtContractor3.Text = "";
+            //txtMajorTools.Text = "";
+            rdoDrugtestYes.Checked = false;
+            rdoDrugtestNo.Checked = false;
+            //rdoDriveLicenseYes.Checked = false;
+            //rdoDriveLicenseNo.Checked = false;
+            //rdoTruckToolsYes.Checked = false;
+            //rdoTruckToolsNo.Checked = false;
+            rdoJMApplyYes.Checked = false;
+            rdoJMApplyNo.Checked = false;
+            rdoLicenseYes.Checked = false;
+            rdoLicenseNo.Checked = false;
+            //rdoGuiltyNo.Checked = false;
+            //rdoGuiltyYes.Checked = false;
+            //txtStartDateNew.Text = "";
+            txtSalRequirement.Text = "";
+            //txtAvailability.Text = "";
+            //txtWarrantyPolicy.Text = "";
+            //txtYrs.Text = "";
+            //txtCurrentComp.Text = "";
+            //txtWebsiteUrl.Text = "";
+            //ddlType.SelectedValue = "0";
+            //txtName.Text = "";
+            //txtPrinciple.Text = "";
+            //btnAddEmpPartner.Enabled = true;
+            Session["SkillAttachment"] = null;
+            Session["SkillAttachmentName"] = null;
+            Session["ResumePath"] = null;
+            Session["ResumeName"] = null;
+            Session["CirtificationName"] = "";
+            Session["CirtificationPath"] = "";
+            Session["PersonType"] = Session["PersonTypeData"] = "";
+            //GridView2.DataSource = null;
+            Session["PersonName"] = "";
+        }
+
+        private void GenerateBarCode(string Id)
+        {
+            if (Id != "")
+            {
+                string barCode = Id;
+                string strImageURL = "GenerateBarcodeImage.aspx?d=" + Id + "&h=" + 40 + "&w=" + 195 + "&bc=" + "" + "&fc=" + "" + "&t=" + "Code 39 Extended" + "&il=" + "" + "&if=" + "PNG" + "&align=" + "C";
+                this.BarcodeImage.ImageUrl = strImageURL;
+                this.BarcodeImage.Width = Convert.ToInt32(195);
+                this.BarcodeImage.Height = Convert.ToInt32(40);
+                this.BarcodeImage.Visible = true;
+                //lblBarcode.Text=Id;
+                //barcode.InnerHtml = Id;
+                //System.Web.UI.WebControls.Image imgBarCode = new System.Web.UI.WebControls.Image();
+                //using (Bitmap bitMap = new Bitmap(barCode.Length * 40, 80))
+                //{
+                //    using (Graphics graphics = Graphics.FromImage(bitMap))
+                //    {
+                //        System.Drawing.Font oFont = new System.Drawing.Font("IDAutomationHC39M", 16);
+                //        PointF point = new PointF(2f, 2f);
+                //        SolidBrush blackBrush = new SolidBrush(Color.Black);
+                //        SolidBrush whiteBrush = new SolidBrush(Color.White);
+                //        graphics.FillRectangle(whiteBrush, 0, 0, bitMap.Width, bitMap.Height);
+                //        graphics.DrawString("*" + barCode + "*", oFont, blackBrush, point);
+                //    }
+                //    using (MemoryStream ms = new MemoryStream())
+                //    {
+                //        bitMap.Save(ms, System.Drawing.Imaging.ImageFormat.Png);
+                //        byte[] byteImage = ms.ToArray();
+
+                //        Convert.ToBase64String(byteImage);
+                //        imgBarCode.ImageUrl = "data:image/png;base64," + Convert.ToBase64String(byteImage);
+                //    }
+                //    plBarCode.Controls.Add(imgBarCode);
+                //}
+            }
+        }
+
+        private string GetUpdatedId(string PrevId)
+        {
+            string LastInt = "";
+            DataTable dtId;
+            int IndexA = 0;
+            int IndexS = 0;
+            string previouPrefix = string.Empty;
+            string PrefixId = string.Empty;
+            string SalesId = PrevId;
+            string PrevDesig = string.Empty;
+            string newId = string.Empty;
+            if ((ddldesignation.SelectedValue == "Admin" || ddldesignation.SelectedValue == "Office Manager" || ddldesignation.SelectedValue == "Recruiter") && (ddlstatus.SelectedValue != "Deactive"))
+            {
+                if (SalesId != "")
+                {
+                    if (SalesId.Contains("SLE"))
+                    {
+                        IndexS = SalesId.IndexOf("SLE");
+                        PrefixId = SalesId.Substring(IndexS, 1);
+                        previouPrefix = SalesId.Substring(0, IndexS);
+                        PrefixId = previouPrefix + PrefixId;
+                        newId = SalesId.Substring(IndexS + (SalesId.Length - 4));
+                        newId = Convert.ToString(Convert.ToUInt32(newId) + 1);
+                        PrefixId = PrefixId + "ADM000" + newId;
+                    }
+                    else if (SalesId.Contains("ADM"))
+                    {
+                        IndexA = SalesId.IndexOf("ADM");
+                        PrefixId = SalesId.Substring(IndexA, 1);
+                        previouPrefix = SalesId.Substring(0, IndexA);
+                        PrefixId = previouPrefix + PrefixId;
+                        newId = SalesId.Substring(IndexA + (SalesId.Length - 4));
+                        newId = Convert.ToString(Convert.ToUInt32(newId) + 1);
+                        PrefixId = PrefixId + "ADM000" + newId;
+                    }
+                }
+                else
+                {
+                    SalesId = "ADM0001";
+                }
+            }
+            else if ((ddldesignation.SelectedValue == "Admin" || ddldesignation.SelectedValue == "Office Manager" || ddldesignation.SelectedValue == "Recruiter") && (ddlstatus.SelectedValue == "Deactive") && (SalesId != ""))
+            {
+                SalesId = SalesId + "-X";
+            }
+            else if ((ddldesignation.SelectedValue == "Jr. Sales" || ddldesignation.SelectedValue == "Jr Project Manager" || ddldesignation.SelectedValue == "Sales Manager" || ddldesignation.SelectedValue == "Sr. Sales") && (ddlstatus.SelectedValue != "Deactive"))
+            {
+                if (SalesId != "")
+                {
+                    if (SalesId.Contains("SLE"))
+                    {
+                        IndexS = SalesId.IndexOf("SLE");
+                        PrefixId = SalesId.Substring(IndexS, 1);
+                        previouPrefix = SalesId.Substring(0, IndexS);
+                        PrefixId = previouPrefix + PrefixId;
+                        newId = SalesId.Substring(IndexS + (SalesId.Length - 4));
+                        newId = Convert.ToString(Convert.ToUInt32(newId) + 1);
+                        PrefixId = PrefixId + "ADM000" + newId;
+                    }
+                    else if (SalesId.Contains("ADM"))
+                    {
+                        IndexA = SalesId.IndexOf("ADM");
+                        PrefixId = SalesId.Substring(IndexA, 1);
+                        previouPrefix = SalesId.Substring(0, IndexA);
+                        PrefixId = previouPrefix + PrefixId;
+                        newId = SalesId.Substring(IndexA + (SalesId.Length - 4));
+                        newId = Convert.ToString(Convert.ToUInt32(newId) + 1);
+                        PrefixId = PrefixId + "ADM000" + newId;
+                    }
+                }
+                else
+                {
+                    SalesId = "SLE0001";
+                }
+            }
+            else if ((ddldesignation.SelectedValue == "Jr. Sales" || ddldesignation.SelectedValue == "Jr Project Manager" || ddldesignation.SelectedValue == "Sales Manager" || ddldesignation.SelectedValue == "Sr. Sales") && (ddlstatus.SelectedValue == "Deactive") && (SalesId != ""))
+            {
+                SalesId = SalesId + "-X";
+            }
+
+            return SalesId;
+        }
+
+        private string GetId(string Desig)
+        {
+            string LastInt = "";
+            DataTable dtId;
+            string SalesId = string.Empty;
+            dtId = InstallUserBLL.Instance.GetMaxSalesId(Desig);
+            if (dtId.Rows.Count > 0)
+            {
+                SalesId = Convert.ToString(dtId.Rows[0][0]);
+            }
+            if ((Desig == "Admin" || Desig == "Office Manager" || Desig == "Recruiter") && (ddlstatus.SelectedValue != "Deactive"))
+            {
+                if (SalesId != "")
+                {
+                    LastInt = SalesId.Substring(SalesId.Length - 4);
+                    SalesId = "ADM000" + Convert.ToString(Convert.ToInt32(LastInt) + 1);
+                }
+                else
+                {
+                    SalesId = "ADM0001";
+                }
+            }
+            else if ((Desig == "Admin" || Desig == "Office Manager" || Desig == "Recruiter") && (ddlstatus.SelectedValue == "Deactive") && (SalesId != ""))
+            {
+                SalesId = SalesId + "-X";
+            }
+            else if ((Desig == "Jr. Sales" || Desig == "Jr Project Manager" || Desig == "Sales Manager" || Desig == "Sr. Sales") && (ddlstatus.SelectedValue != "Deactive"))
+            {
+                if (SalesId != "")
+                {
+                    LastInt = SalesId.Substring(SalesId.Length - 4);
+                    SalesId = "SLE000" + Convert.ToString(Convert.ToInt32(LastInt) + 1);
+                }
+                else
+                {
+                    SalesId = "SLE0001";
+                }
+            }
+            else if ((Desig == "Jr. Sales" || Desig == "Jr Project Manager" || Desig == "Sales Manager" || Desig == "Sr. Sales") && (ddlstatus.SelectedValue == "Deactive") && (SalesId != ""))
+            {
+                SalesId = SalesId + "-X";
+            }
+
+            return SalesId;
+        }
+
+        private void SendEmail(string emailId, string FName, string LName, string status, string Reason)
         {
             try
             {
                 string fullname = FName + " " + LName;
                 string HTML_TAG_PATTERN = "<.*?>";
+                string strHeader = GetEmailHeader(status);
+                string strBody = GetEmailBody(status);
+                string strFooter = GetFooter(status);
+                strBody = strBody.Replace("LBL name", FName);
+                strBody = strBody.Replace("Lbl Full name", fullname);
+                strBody = strBody.Replace("LBL position", ddldesignation.SelectedItem.Text);
+                strBody = strBody.Replace("lbl: start date", txtHireDate.Text);
+                //strBody = strBody.Replace("($ rate","$"+ txtHireDate.Text);
+                strBody = strBody.Replace("Reason", Reason);
+                //strBody = Regex.Replace(strBody, HTML_TAG_PATTERN, string.Empty);
+                //strHeader = Regex.Replace(strHeader, HTML_TAG_PATTERN, string.Empty);
+                //strFooter = Regex.Replace(strFooter, HTML_TAG_PATTERN, string.Empty);
+                StringBuilder Body = new StringBuilder();
+                //MailMessage Msg = new MailMessage();
+                // Sender e-mail address.
+                //Msg.From = new MailAddress("qat2015team@gmail.com");
+                // Recipient e-mail address.
+                //Msg.To.Add(emailId);
+                //Msg.Subject = "JG Prospect Notification";
+                //StringBuilder Body = new StringBuilder();
+                //Body.Append("Hello " + FName + " " + LName + ",");
+                //Body.Append("<br>");
+                //Body.Append("Your stattus for the JG Prospect is :" + status);
+                //Body.Append("<br>");
+                ////if (status == "Source" || status == "Rejected" || status == "Interview Date" || status == "Offer Made")
+                ////{
+                //Body.Append(Reason);
+                ////}
+                //Body.Append("<br>");
+                //Body.Append("Tanking you");
+                Body.Append(strHeader);
+                Body.Append("<br>");
+                Body.Append(strBody);
+                Body.Append("<br>");
+                //if (status == "Source" || status == "Rejected" || status == "Interview Date" || status == "Offer Made")
+                //{
+                //Body.Append(Reason);
+                //}
+                Body.Append("<br>");
+                Body.Append(strFooter);
+                if (ddlstatus.SelectedValue == "OfferMade")
+                {
+                    createForeMenForJobAcceptance(Convert.ToString(Body));
+                }
+                if (ddlstatus.SelectedValue == "Deactive")
+                {
+                    CreateDeactivationAttachment(Convert.ToString(Body));
+                }
+                //Msg.Body = Convert.ToString(Body);
+                //// your remote SMTP server IP.
+                //SmtpClient smtp = new SmtpClient();
+                //smtp.Host = "smtp.gmail.com";
+                //smtp.Port = 587;
+                //smtp.Credentials = new System.Net.NetworkCredential("qat2015team@gmail.com", "q$7@wt%j*65ba#3M@9P6");
+                //smtp.EnableSsl = true;
+                //smtp.Send(Msg);
+                //Msg = null;
+                //Page.RegisterStartupScript("UserMsg", "<script>alert('Mail sent thank you...');if(alert){ window.location='SendMail.aspx';}</script>");
+            }
+            catch (Exception ex)
+            {
+                UtilityBAL.AddException("CreateSalesUser-SendEmail", Session["loginid"] == null ? "" : Session["loginid"].ToString(), ex.Message, ex.StackTrace);
+            }
+            #region CommentedArea
+            // //SmtpClient smtp = new SmtpClient();
+            // //MailMessage email_msg = new MailMessage();
+            // //email_msg.To.Add(emailId);
+            // //email_msg.From = new MailAddress("customsoft.test@gmail.com", "Credit Chex");
+            // StringBuilder Body = new StringBuilder();
+            // Body.Append("Hello " + FName + " " + LName + ",");
+            // Body.Append("<br>");
+            // Body.Append("Your stattus for the JG Prospect is :" + status);
+            // Body.Append("<br>");
+            // //if (status == "Source" || status == "Rejected" || status == "Interview Date" || status == "Offer Made")
+            // //{
+            //     Body.Append(Reason);
+            // //}
+            // Body.Append("<br>");
+            // Body.Append("Tanking you");
+            //// AlternateView htmlView = AlternateView.CreateAlternateViewFromString(Body, null, "text/html");
+            //// LinkedResource imagelink3 = new LinkedResource(HttpContext.Current.Server.MapPath("~/images/logo.png"), "image/png");
+            // //imagelink3.ContentId = "imageId1";
+            // //imagelink3.TransferEncoding = System.Net.Mime.TransferEncoding.Base64;
+            // //htmlView.LinkedResources.Add(imagelink3);
+            // var smtp = new System.Net.Mail.SmtpClient();
+            // {
+            //     smtp.Host = "smtp.gmail.com";
+            //     smtp.Port = 587;
+            //     smtp.EnableSsl = true;
+            //     smtp.DeliveryMethod = System.Net.Mail.SmtpDeliveryMethod.Network;
+            //     smtp.Credentials = new NetworkCredential("","q$7@wt%j*j*65ba#3M@9P6");
+            //     smtp.Timeout = 20000;
+            // }
+            // // Passing values to smtp object
+            // smtp.Send("", emailId, "JG Prospect Notification", Convert.ToString(Body));
+            #endregion
+        }
+
+        private void CreateDeactivationAttachment(string MailBody)
+        {
+            string str_date = DateTime.Now.ToString().Replace("/", "");
+            str_date = str_date.Replace(":", "");
+            str_date = str_date.Replace("-", "");
+            str_date = str_date.Replace(" ", "");
+            string SourcePath = @"~/Sr_App/MailDocSample/DeactivationMail.doc";
+            string TargetPath = @"~/Sr_App/MailDocument/" + str_date + txtfirstname.Text + "DeactivationMail.doc";
+            System.IO.File.Copy(Server.MapPath(SourcePath), Server.MapPath(TargetPath), true);
+            //modify word document
+            object missing = System.Reflection.Missing.Value;
+            Word.Application wordApp = new Word.Application();
+            Word.Document aDoc = null;
+            object Target = Server.MapPath(TargetPath);
+            if (File.Exists(Server.MapPath(TargetPath)))
+            {
+                DateTime today = DateTime.Now;
+                object readonlyNew = false;
+                object isVisible = false;
+                wordApp.Visible = false;
+                FileInfo objFInfo = new FileInfo(Server.MapPath(TargetPath));
+                objFInfo.IsReadOnly = false;
+                aDoc = wordApp.Documents.Open(ref Target, ref missing, ref readonlyNew, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref isVisible, ref missing, ref missing, ref missing, ref missing);
+                aDoc.Activate();
+                this.FindAndReplace(wordApp, "name", txtfirstname.Text + " " + txtlastname.Text);
+                this.FindAndReplace(wordApp, "HireDate", txtHireDate.Text);
+                this.FindAndReplace(wordApp, "full time or part  time", ddlEmpType.SelectedValue);
+                this.FindAndReplace(wordApp, "HourlyRate", txtPayRates);
+                if (dtResignation.Text != "")
+                {
+                    this.FindAndReplace(wordApp, "WorkingStatus", "No");
+                    this.FindAndReplace(wordApp, "LastWorkingDay", dtResignation.Text);
+                }
+                else
+                {
+                    this.FindAndReplace(wordApp, "WorkingStatus", "No");
+                    this.FindAndReplace(wordApp, "LastWorkingDay", dtResignation.Text);
+                }
+                //this.FindAndReplace(wordApp, "$ rate", txtPayRates.Text);
+                //this.FindAndReplace(wordApp, "lbl: next pay period", "");
+                //this.FindAndReplace(wordApp, "lbl: paycheck date", "");
+                aDoc.SaveAs(ref Target, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing);
+                aDoc.Close(ref missing, ref missing, ref missing);
+            }
+            using (MailMessage mm = new MailMessage("hr@jmgrove.com", txtemail.Text))
+            {
+                mm.Subject = "Deactivation";
+                mm.Body = MailBody;
+                mm.Attachments.Add(new Attachment(Server.MapPath(TargetPath)));
+                mm.IsBodyHtml = true;
+                SmtpClient smtp = new SmtpClient();
+                smtp.Host = "smtp.gmail.com";
+                smtp.EnableSsl = true;
+                NetworkCredential NetworkCred = new NetworkCredential("Customsofttest@gmail.com", "customsoft567");
+                smtp.UseDefaultCredentials = true;
+                smtp.Credentials = NetworkCred;
+                smtp.Port = 587;
+                smtp.Send(mm);
+            }
+        }
+
+        private string GetFooter(string status)
+        {
+            string Footer = string.Empty;
+            DataTable DtFooter;
+            DtFooter = InstallUserBLL.Instance.getTemplate(status, "footer");
+            if (DtFooter.Rows.Count > 0)
+            {
+                Footer = DtFooter.Rows[0][0].ToString();
+            }
+            return Footer;
+        }
+
+        private string GetEmailBody(string status)
+        {
+            string Body = string.Empty;
+            DataTable DtBody;
+            DtBody = InstallUserBLL.Instance.getTemplate(status, "Body");
+            if (DtBody.Rows.Count > 0)
+            {
+                Body = DtBody.Rows[0][0].ToString();
+            }
+            return Body;
+        }
+
+        private string GetEmailHeader(string status)
+        {
+            string Header = string.Empty;
+            DataTable DtHeader;
+            DtHeader = InstallUserBLL.Instance.getTemplate(status, "Header");
+            if (DtHeader.Rows.Count > 0)
+            {
+                Header = DtHeader.Rows[0][0].ToString();
+            }
+            return Header;
+        }
+
+        public void save_file_from_url(string file_name, string url)
+        {
+            byte[] content;
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+            WebResponse response = request.GetResponse();
+
+            Stream stream = response.GetResponseStream();
+
+            using (BinaryReader br = new BinaryReader(stream))
+            {
+                content = br.ReadBytes(500000);
+                br.Close();
+            }
+            response.Close();
+
+            FileStream fs = new FileStream(file_name, FileMode.Create);
+            BinaryWriter bw = new BinaryWriter(fs);
+            try
+            {
+                bw.Write(content);
+            }
+            finally
+            {
+                fs.Close();
+                bw.Close();
+            }
+        }
+
+        private void DeleteAttachment()
+        {
+            if (ViewState["FilesToDelete"] != null)
+            {
+                string filesTodeleteString = Convert.ToString(ViewState["FilesToDelete"]);
+                List<string> filesTodelete = new List<string> { filesTodeleteString };
+                try
+                {
+                    if (Convert.ToString(Session["ResumePath"]).Contains(filesTodeleteString))
+                    {
+                        if (Convert.ToString(Session["ResumePath"]).Contains("http"))
+                        {
+                            string url = Convert.ToString(Session["ResumePath"]);
+                            string str_fileName = Path.GetFileName(Convert.ToString(Session["ResumePath"]));
+                            string file_name = Server.MapPath("~/Sr_App/UploadedFile/") + str_fileName;
+                            Session["ResumePath"] = file_name;
+                            save_file_from_url(file_name, url);
+                            var path = Server.MapPath("~/Sr_App/UploadedFile/" + filesTodeleteString);
+                            System.IO.File.Delete(path);
+                            string attachmentsString = Convert.ToString(Session["attachments"]);
+                            var updatedAttachments = attachmentsString.Split(',').Except(filesTodelete).ToArray();
+                            Session["attachments"] = string.Join(",", updatedAttachments);
+                            if (Convert.ToString(ViewState["FilesToDelete"]).Equals(Convert.ToString(Session["UploadedPictureName"])))
+                            {
+                                DeleteImageFile(path);
+                                Session["UploadedPictureName"] = "";
+                            }
+                            else if (Convert.ToString(ViewState["FilesToDelete"]).Equals(Convert.ToString(Session["PqLicenseFileName"])))
+                            {
+                                DeleteDLFile(path);
+                                Session["PqLicenseFileName"] = "";
+                            }
+                            else if (Convert.ToString(ViewState["FilesToDelete"]).Equals(Convert.ToString(Session["ResumeName"])))
+                            {
+                                DeleteResume(path);
+                                Session["ResumeName"] = "";
+                            }
+                            else if (Convert.ToString(ViewState["FilesToDelete"]).Equals(Convert.ToString(Session["CirtificationName"])))
+                            {
+                                DeleteCirtification(path);
+                                Session["CirtificationName"] = "";
+                            }
+                            else if (Convert.ToString(ViewState["FilesToDelete"]).Equals(Convert.ToString(Session["SkillAttachmentName"])))
+                            {
+                                DeleteAssessment(path);
+                                Session["SkillAttachmentName"] = "";
+                            }
+                        }
+                        else
+                        {
+                            var path = Server.MapPath("~/Sr_App/UploadedFile/" + filesTodeleteString);
+                            System.IO.File.Delete(path);
+                            string attachmentsString = Convert.ToString(Session["attachments"]);
+                            var updatedAttachments = attachmentsString.Split(',').Except(filesTodelete).ToArray();
+                            Session["attachments"] = string.Join(",", updatedAttachments);
+                            if (Convert.ToString(ViewState["FilesToDelete"]).Equals(Convert.ToString(Session["UploadedPictureName"])))
+                            {
+                                DeleteImageFile(path);
+                                Session["UploadedPictureName"] = "";
+                            }
+                            else if (Convert.ToString(ViewState["FilesToDelete"]).Equals(Convert.ToString(Session["PqLicenseFileName"])))
+                            {
+                                DeleteDLFile(path);
+                                Session["PqLicenseFileName"] = "";
+                            }
+                            else if (Convert.ToString(ViewState["FilesToDelete"]).Equals(Convert.ToString(Session["ResumeName"])))
+                            {
+                                DeleteResume(path);
+                                Session["ResumeName"] = "";
+                            }
+                            else if (Convert.ToString(ViewState["FilesToDelete"]).Equals(Convert.ToString(Session["CirtificationName"])))
+                            {
+                                DeleteCirtification(path);
+                                Session["CirtificationName"] = "";
+                            }
+                            else if (Convert.ToString(ViewState["FilesToDelete"]).Equals(Convert.ToString(Session["SkillAttachmentName"])))
+                            {
+                                DeleteAssessment(path);
+                                Session["SkillAttachmentName"] = "";
+                            }
+                        }
+                    }
+                    else
+                    {
+                        var path = Server.MapPath("~/Sr_App/UploadedFile/" + filesTodeleteString);
+                        System.IO.File.Delete(path);
+                        string attachmentsString = Convert.ToString(Session["attachments"]);
+                        var updatedAttachments = attachmentsString.Split(',').Except(filesTodelete).ToArray();
+                        Session["attachments"] = string.Join(",", updatedAttachments);
+                        if (Convert.ToString(ViewState["FilesToDelete"]).Equals(Convert.ToString(Session["UploadedPictureName"])))
+                        {
+                            DeleteImageFile(path);
+                            Session["UploadedPictureName"] = "";
+                        }
+                        else if (Convert.ToString(ViewState["FilesToDelete"]).Equals(Convert.ToString(Session["PqLicenseFileName"])))
+                        {
+                            DeleteDLFile(path);
+                            Session["PqLicenseFileName"] = "";
+                        }
+                        else if (Convert.ToString(ViewState["FilesToDelete"]).Equals(Convert.ToString(Session["ResumeName"])))
+                        {
+                            DeleteResume(path);
+                            Session["ResumeName"] = "";
+                        }
+                        else if (Convert.ToString(ViewState["FilesToDelete"]).Equals(Convert.ToString(Session["CirtificationName"])))
+                        {
+                            DeleteCirtification(path);
+                            Session["CirtificationName"] = "";
+                        }
+                        else if (Convert.ToString(ViewState["FilesToDelete"]).Equals(Convert.ToString(Session["SkillAttachmentName"])))
+                        {
+                            DeleteAssessment(path);
+                            Session["SkillAttachmentName"] = "";
+                        }
+                    }
+                }
+                catch (Exception)
+                {
+
+
+                }
+            }
+        }
+
+        private void DeleteDLFile(string DLPath)
+        {
+            InstallUserBLL.Instance.DeletePLLic(DLPath);
+
+        }
+
+        private void DeleteAssessment(string Path)
+        {
+            InstallUserBLL.Instance.DeleteAssessment(Path);
+        }
+
+        private void DeleteResume(string Path)
+        {
+            InstallUserBLL.Instance.DeleteResume(Path);
+        }
+
+        private void UpdateDocPath(string NewPath, string OldPath)
+        {
+            InstallUserBLL.Instance.UpdateDocPath(NewPath, OldPath);
+        }
+
+        private void DeleteCirtification(string Path)
+        {
+            InstallUserBLL.Instance.DeleteCirtification(Path);
+        }
+
+        private void DeleteImageFile(string ImagePath)
+        {
+            InstallUserBLL.Instance.DeleteImage(ImagePath);
+            Image2.ImageUrl = "";
+        }
+
+        private string GetUpdateAttachments()
+        {
+            //string attach = string.Empty;
+            string CsvAttachments = string.Empty;
+            var filesTodelete = new List<string>();
+            if (ViewState["FilesToDelete"] != null)
+            {
+                filesTodelete = ViewState["FilesToDelete"] as List<string>;
+            }
+            try
+            {
+                string attachments = Session["attachments"] as string;
+                string attach = Session["attachments"] as string;
+                attachments = attachments.Trim(',').TrimEnd(',');
+                ViewState["FileName"] = attach;
+                if (attach != null)
+                {
+                    string[] att = attachments.Split(',');
+                    var data = att.Select(s => new { FileName = s }).ToList();
+                    gvUploadedFiles.DataSource = data;
+                    gvUploadedFiles.DataBind();
+                }
+                var updatedAttachments = attachments.Split(',');
+                CsvAttachments = string.Join(",", updatedAttachments);
+                CsvAttachments = CsvAttachments.TrimStart(',');
+            }
+            catch (Exception)
+            {
+            }
+            return CsvAttachments;
+        }
+
+        private DataTable GetTable()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("DeductionFor", typeof(String));
+            table.Columns.Add("Type", typeof(string));
+            table.Columns.Add("Amount", typeof(string));
+            return table;
+        }
+
+        private DataTable GetTableForPersonType()
+        {
+            DataTable table = new DataTable();
+            table.Columns.Add("PersonName", typeof(String));
+            table.Columns.Add("PersonType", typeof(string));
+            return table;
+        }
+
+        public void createForeMenForJobAcceptance(string str_Body)
+        {
+            //copy sample file for Foreman Job Acceptance letter template
+            string str_date = DateTime.Now.ToString().Replace("/", "");
+            str_date = str_date.Replace(":", "");
+            str_date = str_date.Replace("-", "");
+            str_date = str_date.Replace(" ", "");
+            string SourcePath = @"~/Sr_App/MailDocSample/ForemanJobAcceptancelettertemplate.docx";
+            string TargetPath = @"~/Sr_App/MailDocument/" + str_date + txtfirstname.Text + "ForemanJobAcceptanceletter.docx";
+            System.IO.File.Copy(Server.MapPath(SourcePath), Server.MapPath(TargetPath), true);
+            //modify word document
+            object missing = System.Reflection.Missing.Value;
+            Word.Application wordApp = new Word.Application();
+            Word.Document aDoc = null;
+            object Target = Server.MapPath(TargetPath);
+            if (File.Exists(Server.MapPath(TargetPath)))
+            {
+                DateTime today = DateTime.Now;
+                object readonlyNew = false;
+                object isVisible = false;
+                wordApp.Visible = false;
+                FileInfo objFInfo = new FileInfo(Server.MapPath(TargetPath));
+                objFInfo.IsReadOnly = false;
+                aDoc = wordApp.Documents.Open(ref Target, ref missing, ref readonlyNew, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref isVisible, ref missing, ref missing, ref missing, ref missing);
+                aDoc.Activate();
+                this.FindAndReplace(wordApp, "LBL Date", DateTime.Now.ToShortDateString());
+                this.FindAndReplace(wordApp, "Lbl Full name", txtfirstname.Text + " " + txtlastname.Text);
+                this.FindAndReplace(wordApp, "LBL name", txtfirstname.Text + " " + txtlastname.Text);
+                this.FindAndReplace(wordApp, "LBL position", ddldesignation.SelectedValue);
+                this.FindAndReplace(wordApp, "lbl fulltime", ddlEmpType.SelectedValue);
+                this.FindAndReplace(wordApp, "lbl: start date", txtHireDate.Text);
+                this.FindAndReplace(wordApp, "$ rate", txtPayRates.Text);
+                this.FindAndReplace(wordApp, "lbl: next pay period", "");
+                this.FindAndReplace(wordApp, "lbl: paycheck date", "");
+                aDoc.SaveAs(ref Target, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing);
+                aDoc.Close(ref missing, ref missing, ref missing);
+            }
+            using (MailMessage mm = new MailMessage("hr@jmgrove.com", txtemail.Text))
+            {
+                mm.Subject = "Foreman Job Acceptance";
+                mm.Body = str_Body;
+                mm.Attachments.Add(new Attachment(Server.MapPath(TargetPath)));
+                mm.IsBodyHtml = true;
+                SmtpClient smtp = new SmtpClient();
+                smtp.Host = "smtp.gmail.com";
+                smtp.EnableSsl = true;
+                NetworkCredential NetworkCred = new NetworkCredential("Customsofttest@gmail.com", "customsoft567");
+                smtp.UseDefaultCredentials = true;
+                smtp.Credentials = NetworkCred;
+                smtp.Port = 587;
+                smtp.Send(mm);
+                //ClientScript.RegisterStartupScript(GetType(), "alert", "alert('Email sent.');", true);
+            }
+        }
+
+        private void FindAndReplace(Word.Application wordApp, object findText, object replaceText)
+        {
+            object matchCase = true;
+            object matchWholeWord = true;
+            object matchWildCards = false;
+            object matchSoundsLike = false;
+            object matchAllWordForms = false;
+            object forward = true;
+            object format = false;
+            object matchKashida = false;
+            object matchDiacritics = false;
+            object matchAlefHamza = false;
+            object matchControl = false;
+            object read_only = false;
+            object visible = true;
+            object replace = 2;
+            object wrap = 1;
+            wordApp.Selection.Find.Execute(ref findText, ref matchCase,
+                ref matchWholeWord, ref matchWildCards, ref matchSoundsLike,
+                ref matchAllWordForms, ref forward, ref wrap, ref format,
+                ref replaceText, ref replace, ref matchKashida,
+                        ref matchDiacritics,
+                ref matchAlefHamza, ref matchControl);
+        }
+
+        protected void bindGrid()
+        {
+            if (!String.IsNullOrEmpty(Session["ID"].ToString()))
+            {
+                int CustomerId = Convert.ToInt32(Session["ID"]);
+                DataSet ds = InstallUserBLL.Instance.GetSalesTouchPointLogData(CustomerId, UserId);
+                grdTouchPointLog.DataSource = ds;
+                grdTouchPointLog.DataBind();
+            }
+            // txtAddNotes.Text = "";
+        }
+
+        public void SendEmail(string emailId, string FName, string LName, string status, string Reason, string Designition, string HireDate, string EmpType, string PayRates, int htmlTempID, List<Attachment> Attachments = null)
+        {
+            try
+            {
+                string fullname = FName + " " + LName;
                 DataSet ds = AdminBLL.Instance.GetEmailTemplate(Designition, htmlTempID);// AdminBLL.Instance.FetchContractTemplate(104);
 
                 if (ds == null)
@@ -5983,13 +6192,13 @@ namespace JG_Prospect.Sr_App
                 string password = ConfigurationManager.AppSettings["VendorCategoryPassword"].ToString();
 
                 strBody = strBody.Replace("#Name#", FName).Replace("#name#", FName);
-                //strBody = strBody.Replace("#Date#", dtInterviewDate.Text).Replace("#date#", dtInterviewDate.Text);
-                //strBody = strBody.Replace("#Time#", ddlInsteviewtime.SelectedValue).Replace("#time#", ddlInsteviewtime.SelectedValue);
+                strBody = strBody.Replace("#Date#", dtInterviewDate.Text).Replace("#date#", dtInterviewDate.Text);
+                strBody = strBody.Replace("#Time#", ddlInsteviewtime.SelectedValue).Replace("#time#", ddlInsteviewtime.SelectedValue);
                 strBody = strBody.Replace("#Designation#", Designition).Replace("#designation#", Designition);
 
                 strFooter = strFooter.Replace("#Name#", FName).Replace("#name#", FName);
                 //strFooter = strFooter.Replace("#Date#", dtInterviewDate.Text).Replace("#date#", dtInterviewDate.Text);
-                // strFooter = strFooter.Replace("#Time#", ddlInsteviewtime.SelectedValue).Replace("#time#", ddlInsteviewtime.SelectedValue);
+                //strFooter = strFooter.Replace("#Time#", ddlInsteviewtime.SelectedValue).Replace("#time#", ddlInsteviewtime.SelectedValue);
                 strFooter = strFooter.Replace("#Designation#", Designition).Replace("#designation#", Designition);
 
                 strBody = strBody.Replace("Lbl Full name", fullname);
@@ -5998,32 +6207,19 @@ namespace JG_Prospect.Sr_App
                 //strBody = strBody.Replace("($ rate","$"+ txtHireDate.Text);
                 strBody = strBody.Replace("Reason", Reason);
                 //Hi #lblFName#, <br/><br/>You are requested to appear for an interview on #lblDate# - #lblTime#.<br/><br/>Regards,<br/>
-                StringBuilder Body = new StringBuilder();
-                MailMessage Msg = new MailMessage();
-                //Sender e-mail address.
-                Msg.From = new MailAddress(userName, "JGrove Construction");
-                // Recipient e-mail address.
-                Msg.To.Add(emailId);
-                Msg.Bcc.Add(new MailAddress("shabbir.kanchwala@straitapps.com", "Shabbir Kanchwala"));
-                Msg.CC.Add(new MailAddress("jgrove.georgegrove@gmail.com", "Justin Grove"));
-
-                Msg.Subject = strsubject;// "JG Prospect Notification";
-                Body.Append(strHeader);
-                Body.Append(strBody);
-                Body.Append(strFooter);
+                strBody = strHeader + strBody + strFooter;
 
                 EditUser obj = new EditUser();
                 if (status == "OfferMade")
                 {
-                    obj.createForeMenForJobAcceptance(Convert.ToString(Body), FName, LName, Designition, emailId, HireDate, EmpType, PayRates);
+                    obj.createForeMenForJobAcceptance(strBody, FName, LName, Designition, emailId, HireDate, EmpType, PayRates);
                 }
                 if (status == "Deactive")
                 {
-                    obj.CreateDeactivationAttachment(Convert.ToString(Body), FName, LName, Designition, emailId, HireDate, EmpType, PayRates);
+                    obj.CreateDeactivationAttachment(strBody, FName, LName, Designition, emailId, HireDate, EmpType, PayRates);
                 }
-                Msg.Body = Convert.ToString(Body);
-                Msg.IsBodyHtml = true;
-                // your remote SMTP server IP.
+
+                List<Attachment> lstAttachments = new List<Attachment>();
 
                 for (int i = 0; i < ds.Tables[1].Rows.Count; i++)
                 {
@@ -6032,37 +6228,22 @@ namespace JG_Prospect.Sr_App
                     {
                         Attachment attachment = new Attachment(sourceDir);
                         attachment.Name = Path.GetFileName(sourceDir);
-                        Msg.Attachments.Add(attachment);
+                        lstAttachments.Add(attachment);
                     }
                 }
 
+                lstAttachments.AddRange(Attachments);
 
-                SmtpClient sc = new SmtpClient(ConfigurationManager.AppSettings["smtpHost"].ToString(), Convert.ToInt32(ConfigurationManager.AppSettings["smtpPort"].ToString()));
+                JG_Prospect.App_Code.CommonFunction.SendEmail(Designition, emailId, strsubject, strBody, lstAttachments);
 
-
-                NetworkCredential ntw = new System.Net.NetworkCredential(userName, password);
-                sc.UseDefaultCredentials = false;
-                sc.Credentials = ntw;
-
-                sc.DeliveryMethod = SmtpDeliveryMethod.Network;
-                sc.EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["enableSSL"].ToString()); // runtime encrypt the SMTP communications using SSL
-                try
-                {
-                    sc.Send(Msg);
-                }
-                catch (Exception ex)
-                {
-                }
-
-                Msg = null;
-                sc.Dispose();
-                sc = null;
-                Page.RegisterStartupScript("UserMsg", "<script>alert('An email notification has sent on " + emailId + ".');}</script>");
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "UserMsg", "alert('An email notification has sent on " + emailId + ".');", true);
             }
             catch (Exception ex)
             {
                 UtilityBAL.AddException("CreateSalesUser-SendEmail", Session["loginid"] == null ? "" : Session["loginid"].ToString(), ex.Message, ex.StackTrace);
             }
         }
+
+        #endregion
     }
 }

@@ -22,6 +22,16 @@
             document.getElementById('DivOfferMadefade').style.display = 'block';
         }
 
+        function ClosePopupInterviewDate() {
+            document.getElementById('interviewDatelite').style.display = 'none';
+            document.getElementById('interviewDatefade').style.display = 'none';
+        }
+
+        function overlayInterviewDate() {
+            document.getElementById('interviewDatelite').style.display = 'block';
+            document.getElementById('interviewDatefade').style.display = 'block';
+        }
+
     </script>
     <script type="text/javascript">
         $(function () {
@@ -2168,11 +2178,11 @@
                                         <asp:RequiredFieldValidator ID="RequiredFieldValidator7" ControlToValidate="txtReson" runat="server" ErrorMessage="Enter Reason" ForeColor="Red" Display="Dynamic" ValidationGroup="submit"></asp:RequiredFieldValidator>
                                         <br />
                                         <label></label>
-                                        <asp:TextBox ID="dtInterviewDate" placeholder="Select Date" runat="server" ClientIDMode="Static" onkeypress="return false" Width="127px"></asp:TextBox><%--TabIndex="104"--%>
-                                        <asp:DropDownList ID="ddlInsteviewtime" runat="server" Width="112px">
+                                        <%--<asp:TextBox ID="dtInterviewDate" placeholder="Select Date" runat="server" ClientIDMode="Static" onkeypress="return false" Width="127px"></asp:TextBox>--%><%--TabIndex="104"--%>
+                                        <%--<asp:DropDownList ID="ddlInsteviewtime" runat="server" Width="112px">--%>
                                             <%--TabIndex="105"--%>
-                                        </asp:DropDownList>
-                                        <ajaxToolkit:CalendarExtender ID="CalendarExtender1" TargetControlID="dtInterviewDate" runat="server"></ajaxToolkit:CalendarExtender>
+                                        <%--</asp:DropDownList>--%>
+                                        <%--<ajaxToolkit:CalendarExtender ID="CalendarExtender1" TargetControlID="dtInterviewDate" runat="server"></ajaxToolkit:CalendarExtender>--%>
                                         <%--OnTextChanged="DOBdatepicker_TextChanged"--%>
                                         &nbsp;<br />
                                         <%--</ContentTemplate>
@@ -3584,7 +3594,50 @@
                 </asp:Panel>
                 <div id="fade" class="black_overlay">
                 </div>
-
+                
+                <asp:Panel ID="panel7" runat="server">
+                    <div id="interviewDatelite" class="white_content" style="height: auto;">
+                        <h3>Interview Details
+                        </h3>
+                        <%--<a href="javascript:void(0)" onclick="">Close</a>--%>
+                        <asp:UpdatePanel runat="server" UpdateMode="Always">
+                            <ContentTemplate>
+                        <table width="100%" style="border: Solid 3px #b04547; width: 100%; height: 300px;"
+                            cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td align="center" style="height: 15px;">Date :
+                                <asp:TextBox ID="dtInterviewDate" placeholder="Select Date" runat="server" ClientIDMode="Static" onkeypress="return false" TabIndex="104" Width="127px"></asp:TextBox>
+                                    <ajaxToolkit:CalendarExtender ID="CalendarExtender1" TargetControlID="dtInterviewDate" Format="MM/dd/yyyy" runat="server"></ajaxToolkit:CalendarExtender>
+                                    <asp:RequiredFieldValidator ID="RequiredFieldValidator10" runat="server" ErrorMessage="Select Date" ControlToValidate="dtInterviewDate" ValidationGroup="InterviewDate"></asp:RequiredFieldValidator>
+                                </td>
+                                <td>Time :
+                                    <asp:DropDownList ID="ddlInsteviewtime" runat="server" TabIndex="105" Width="112px"></asp:DropDownList>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="center" colspan="2">Recruiter :
+                                    <asp:DropDownList ID="ddlUsers" runat="server" />
+                                    <asp:RequiredFieldValidator ID="rfvddlUsers" runat="server" ErrorMessage="Select Recruiter" ControlToValidate="ddlUsers" 
+                                        ValidationGroup="InterviewDate" InitialValue="0" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="center" colspan="2">
+                                    <asp:Button ID="btnSaveInterview" runat="server" BackColor="#327FB5" ForeColor="White" Height="32px"
+                                        Style="height: 26px; font-weight: 700; line-height: 1em;" Text="OK" Width="100px" ValidationGroup="InterviewDate"
+                                        TabIndex="119" OnClick="btnSaveInterview_Click" />
+                                    <asp:Button ID="btnCancelInterview" runat="server" Text="Cancel" OnClick="btnCancelInterview_Click" Width="100px"
+                                        Style="height: 26px; font-weight: 700; line-height: 1em;" 
+                                        OnClientClick="javascript:document.getElementById('interviewDatelite').style.display='none';document.getElementById('interviewDatefade').style.display='none'" />
+                                </td>
+                            </tr>
+                        </table>
+                                </ContentTemplate>
+                        </asp:UpdatePanel>
+                    </div>
+                </asp:Panel>
+                <div id="interviewDatefade" class="black_overlay">
+                </div>
 
                 <asp:Panel ID="panel5" runat="server">
                     <div id="litePassword" class="white_content">

@@ -133,23 +133,21 @@
     background: rgba(0, 0, 0, 0.03) none repeat scroll 0 0;
     border: 1px solid rgba(0, 0, 0, 0.03);
     border-radius: 3px;
-    min-height: 360px;
-    padding: 23px;
+    height: 60px;
+    padding: 8px;
+    max-width:425px;
 }
 .dropzone .dz-default.dz-message {
-    background-image: url("../images/spritemap.png");
+    background-image: url("../images/upload.png");
     background-position: 0 0;
     background-repeat: no-repeat;
     filter: none;
-    height: 123px;
-    left: 50%;
-    margin-left: -214px;
-    margin-top: -61.5px;
+    height: 50px;
+    
     opacity: 1;
-    position: absolute;
-    top: 50%;
+    
     transition: opacity 0.3s ease-in-out 0s;
-    width: 428px;
+    width: 400px;
 }
 @media not all, (min--moz-device-pixel-ratio: 1.5), not all, not all, (min-resolution: 138dpi), (min-resolution: 1.5dppx) {
 .dropzone .dz-default.dz-message {

@@ -3,7 +3,8 @@
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <%--<%@ Register Src="~/Controls/left.ascx" TagName="leftmenu" TagPrefix="uc1" %>--%>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-
+    <script src="../datetime/js/jquery.ptTimeSelect.js" type="text/javascript"></script>
+    <link href="../datetime/js/jquery.ptTimeSelect.css" rel="stylesheet" type="text/css" />
     <style type="text/css">
         .rsAptDelete {
             display: none;
@@ -188,119 +189,128 @@
         </ul>
         <h1>
             <b>Dashboard</b></h1>
-        <h2>Master  Calendar             
-            <asp:Button ID="btnAddEvent" runat="server" Text="Add Event" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" Height="30px" Width="75px" OnClick="btnAddEvent_Click" Visible="false" />
-            &nbsp;&nbsp;&nbsp;&nbsp;<asp:CheckBox ID="chkHR" runat="server" OnCheckedChanged="chkHR_CheckedChanged" Text="HR" AutoPostBack="true" />&nbsp;&nbsp;&nbsp;&nbsp;<asp:CheckBox ID="chkCompany" runat="server" OnCheckedChanged="chkCompany_CheckedChanged" Text="Company" AutoPostBack="true" />&nbsp;&nbsp;&nbsp;&nbsp;<asp:CheckBox ID="chkEvents" runat="server" Text="Events" OnCheckedChanged="chkEvents_CheckedChanged" AutoPostBack="true" /></h2>
-        <div class="calendar" style="margin: 0;">
+        <asp:UpdatePanel ID="upContent" runat="server" UpdateMode="Always">
+            <ContentTemplate>
+                <h2>Master  Calendar             
+                    <asp:Button ID="btnAddEvent" runat="server" Text="Add Event" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" Height="30px" Width="75px" OnClick="btnAddEvent_Click" Visible="false" />
+                    &nbsp;&nbsp;&nbsp;&nbsp;<asp:CheckBox ID="chkHR" runat="server" OnCheckedChanged="chkHR_CheckedChanged" Text="HR" AutoPostBack="true" />&nbsp;&nbsp;&nbsp;&nbsp;<asp:CheckBox ID="chkCompany" runat="server" OnCheckedChanged="chkCompany_CheckedChanged" Text="Company" AutoPostBack="true" />&nbsp;&nbsp;&nbsp;&nbsp;<asp:CheckBox ID="chkEvents" runat="server" Text="Events" OnCheckedChanged="chkEvents_CheckedChanged" AutoPostBack="true" /></h2>
+                <div class="calendar" style="margin: 0;">
 
-            <div id="calendarBodyDiv">
-                <telerik:RadScheduler ID="rsAppointments" runat="server" DataKeyField="id" DayStartTime="7:00:00" DayEndTime="20:59:59"
-                    AllowEdit="false" DataStartField="EventDate" DataEndField="EventDate" DataSubjectField="EventName"
-                    ShowHeader="true" Width="100%" Height="100%" TimelineView-NumberOfSlots="0" TimelineView-ShowDateHeaders="false"
-                    EnableExactTimeRendering="true" EnableDatePicker="true" SelectedView="WeekView" CustomAttributeNames="EventName,id,LastName,ApplicantId,Designation,Status, Email"
-                    AppointmentContexcalendarBodyDivtMenuSettings-EnableDefault="true" TimelineView-GroupingDirection="Vertical"
-                    TimelineView-ReadOnly="true" DisplayDeleteConfirmation="false" OnAppointmentCreated="rsAppointments_AppointmentCreated">
-                    <%-- OnClientAppointmentClick="OnClientAppointmentClick" OnClientTimeSlotClick="OnClientTimeSlotClick"      OnAppointmentClick="rsAppointments_AppointmentClick"--%>
-                    <AdvancedForm Modal="True" />
-                    <AppointmentTemplate>
-                        <%--<%#Eval("EventName") %>--%>
-                        <asp:LinkButton ID="lbtCustID" runat="server" OnClick="lbtCustID_Click" Text='<%#Eval("ApplicantId") %>' ForeColor="Black"></asp:LinkButton>
+                    <div id="calendarBodyDiv">
+                        <telerik:RadScheduler ID="rsAppointments" runat="server" DataKeyField="id" DayStartTime="7:00:00" DayEndTime="20:59:59"
+                            AllowEdit="false" DataStartField="EventDate" DataEndField="EventDate" DataSubjectField="EventName"
+                            ShowHeader="true" Width="100%" Height="100%" TimelineView-NumberOfSlots="0" TimelineView-ShowDateHeaders="false"
+                            EnableExactTimeRendering="true" EnableDatePicker="true" SelectedView="WeekView" 
+                            CustomAttributeNames="EventName,id,LastName,ApplicantId,Designation,Status, Email, AssignedUserFristNames"
+                            AppointmentContexcalendarBodyDivtMenuSettings-EnableDefault="true" TimelineView-GroupingDirection="Vertical"
+                            TimelineView-ReadOnly="true" DisplayDeleteConfirmation="false" OnAppointmentCreated="rsAppointments_AppointmentCreated">
+                            <%-- OnClientAppointmentClick="OnClientAppointmentClick" OnClientTimeSlotClick="OnClientTimeSlotClick"      OnAppointmentClick="rsAppointments_AppointmentClick"--%>
+                            <AdvancedForm Modal="True" />
+                            <AppointmentTemplate>
+                                <%--<%#Eval("EventName") %>--%>
+                                <asp:LinkButton ID="lbtCustID" runat="server" OnClick="lbtCustID_Click" Text='<%#Eval("ApplicantId") %>' ForeColor="Black"></asp:LinkButton>
 
-                        <asp:LinkButton ID="lnkEmail" Visible="false" runat="server" Text='<%#Eval("Email") %>'></asp:LinkButton>
-                        <%#Eval("LastName") %>, <%#Eval("Designation") %>
-                        <asp:DropDownList ID="ddlStatus" AutoPostBack="true" OnSelectedIndexChanged="ddlStatus_SelectedIndexChanged" runat="server">
-                            <asp:ListItem Text="Applicant" Value="Applicant"></asp:ListItem>
-                            <asp:ListItem Text="Phone/Video Screened" Value="PhoneScreened"></asp:ListItem>
-                            <asp:ListItem Text="Rejected" Value="Rejected"></asp:ListItem>
-                            <asp:ListItem Text="Interview Date" Value="InterviewDate"></asp:ListItem>
-                            <asp:ListItem Text="Offer Made" Value="OfferMade"></asp:ListItem>
-                            <asp:ListItem Text="Active" Value="Active"></asp:ListItem>
-                            <asp:ListItem Text="Deactive" Value="Deactive"></asp:ListItem>
-                            <asp:ListItem Text="Install Prospect" Value="Install Prospect"></asp:ListItem>
-                        </asp:DropDownList>
-                    </AppointmentTemplate>
-                </telerik:RadScheduler>
-                <telerik:RadWindow ID="RadWindow1" runat="server" Modal="true" Title="No Appointment available"
-                    Behaviors="Close">
-                </telerik:RadWindow>
+                                <asp:LinkButton ID="lnkEmail" Visible="false" runat="server" Text='<%#Eval("Email") %>'></asp:LinkButton>
+                                <%#Eval("LastName") %>, <%#Eval("Designation") %>, <%#Eval("AssignedUserFristNames") %>
+                                <asp:DropDownList ID="ddlStatus" AutoPostBack="true" OnSelectedIndexChanged="ddlStatus_SelectedIndexChanged" runat="server">
+                                    <asp:ListItem Text="Applicant" Value="Applicant"></asp:ListItem>
+                                    <asp:ListItem Text="Phone/Video Screened" Value="PhoneScreened"></asp:ListItem>
+                                    <asp:ListItem Text="Rejected" Value="Rejected"></asp:ListItem>
+                                    <asp:ListItem Text="Interview Date" Value="InterviewDate"></asp:ListItem>
+                                    <asp:ListItem Text="Offer Made" Value="OfferMade"></asp:ListItem>
+                                    <asp:ListItem Text="Active" Value="Active"></asp:ListItem>
+                                    <asp:ListItem Text="Deactive" Value="Deactive"></asp:ListItem>
+                                    <asp:ListItem Text="Install Prospect" Value="Install Prospect"></asp:ListItem>
+                                </asp:DropDownList>
+                            </AppointmentTemplate>
+                        </telerik:RadScheduler>
+                        <telerik:RadWindow ID="RadWindow1" runat="server" Modal="true" Title="No Appointment available"
+                            Behaviors="Close">
+                        </telerik:RadWindow>
 
-            </div>
-            <%-- <iframe src="https://www.google.com/calendar/embed?mode=WEEK&amp;src=kf0evh90ibsidlkgur33a0s0h4%40group.calendar.google.com&ctz=America/St_Thomas"
-                style="border: 0; width: 100%; height: 800px;" frameborder="0" scrolling="no">
-            </iframe>--%>
-            <%--  <iframe src="https://www.google.com/calendar/embed?mode=WEEK&amp;src=j3h50vq9am0at74sopc8dferk4%40group.calendar.google.com&ctz=America/St_Thomas"  style="border: 0; width: 100%; height: 800px;" frameborder="0" scrolling="no"></iframe>--%>
-        </div>
+                    </div>
+                    <%-- <iframe src="https://www.google.com/calendar/embed?mode=WEEK&amp;src=kf0evh90ibsidlkgur33a0s0h4%40group.calendar.google.com&ctz=America/St_Thomas"
+                        style="border: 0; width: 100%; height: 800px;" frameborder="0" scrolling="no">
+                    </iframe>--%>
+                    <%--  <iframe src="https://www.google.com/calendar/embed?mode=WEEK&amp;src=j3h50vq9am0at74sopc8dferk4%40group.calendar.google.com&ctz=America/St_Thomas"  style="border: 0; width: 100%; height: 800px;" frameborder="0" scrolling="no"></iframe>--%>
+                </div>
+            </ContentTemplate>
+        </asp:UpdatePanel>
     </div>
+    
+    <asp:UpdatePanel ID="upRadWindowManager" runat="server" UpdateMode="Always">
+        <ContentTemplate>
+            <telerik:RadWindowManager ID="RadWindowManager1" runat="server" EnableShadow="true">
+                <Windows>
+                    <telerik:RadWindow ID="RadWindow2" runat="server" ShowContentDuringLoad="false" Width="400px"
+                        Height="400px" Title="Annual Event Calendar" Behaviors="Default">
+                        <ContentTemplate>
+                            <br />
+                            <br />
+                            <br />
+                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                              <asp:Label ID="Label1" runat="server" Text="Event Id : " Visible="false"></asp:Label>
+                            <asp:LinkButton ID="lbtCustomerID" runat="server" OnClick="lbtCustomerID_Click" Visible="false"></asp:LinkButton>
+                            <%--Text='<%#Eval("id")%>'--%>
+                            <br />
+                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                            <asp:Label ID="Label2" runat="server" Text="Event Name : "></asp:Label>
+                            <asp:TextBox ID="txtEventName" runat="server"></asp:TextBox>
+                            <asp:RequiredFieldValidator ID="RequiredFieldValidator1" ValidationGroup="Submit"
+                                runat="server" ControlToValidate="txtEventName" ForeColor="Red" ErrorMessage="Please Enter Event Name" Display="None">                                 
+                            </asp:RequiredFieldValidator>
+                            <br />
+                            <br />
+                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                            <asp:Label ID="Label3" runat="server" Text="Event Date   :  "></asp:Label>
+                            <%--<asp:Label ID="lblPhone" runat="server"></asp:Label><br />--%>
+                            &nbsp;&nbsp;<asp:TextBox ID="txtHolidayDate" CssClass="date" onkeypress="return false" MaxLength="10"
+                                TabIndex="1" runat="server"></asp:TextBox>
+                            <asp:RequiredFieldValidator ID="RequiredFieldValidator2" ValidationGroup="Submit" runat="server"
+                                ControlToValidate="txtHolidayDate" ForeColor="Red" ErrorMessage="Please Enter Event Date" Display="None">
+                            </asp:RequiredFieldValidator>
 
-    <telerik:RadWindowManager ID="RadWindowManager1" runat="server" EnableShadow="true">
-        <Windows>
-            <telerik:RadWindow ID="RadWindow2" runat="server" ShowContentDuringLoad="false" Width="400px"
-                Height="400px" Title="Annual Event Calendar" Behaviors="Default">
-                <ContentTemplate>
-                    <br />
-                    <br />
-                    <br />
-                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                      <asp:Label ID="Label1" runat="server" Text="Event Id : " Visible="false"></asp:Label>
-                    <asp:LinkButton ID="lbtCustomerID" runat="server" OnClick="lbtCustomerID_Click" Visible="false"></asp:LinkButton>
-                    <%--Text='<%#Eval("id")%>'--%>
-                    <br />
-                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                    <asp:Label ID="Label2" runat="server" Text="Event Name : "></asp:Label>
-                    <asp:TextBox ID="txtEventName" runat="server"></asp:TextBox>
-                    <asp:RequiredFieldValidator ID="RequiredFieldValidator1" ValidationGroup="Submit"
-                        runat="server" ControlToValidate="txtEventName" ForeColor="Red" ErrorMessage="Please Enter Event Name" Display="None">                                 
-                    </asp:RequiredFieldValidator>
-                    <br />
-                    <br />
-                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                    <asp:Label ID="Label3" runat="server" Text="Event Date   :  "></asp:Label>
-                    <%--<asp:Label ID="lblPhone" runat="server"></asp:Label><br />--%>
-                    &nbsp;&nbsp;<asp:TextBox ID="txtHolidayDate" CssClass="date" onkeypress="return false" MaxLength="10"
-                        TabIndex="1" runat="server"></asp:TextBox>
-                    <asp:RequiredFieldValidator ID="RequiredFieldValidator2" ValidationGroup="Submit" runat="server"
-                        ControlToValidate="txtHolidayDate" ForeColor="Red" ErrorMessage="Please Enter Event Date" Display="None">
-                    </asp:RequiredFieldValidator>
 
+                            <br />
+                            <br />
+                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                            <asp:Label ID="lblApplicant" runat="server" Text="Name of Applicant : " Visible="false"></asp:Label>
+                            <asp:Label ID="lblAplicantfirstName" runat="server" Visible="false"></asp:Label>
+                            <asp:LinkButton ID="lbtLastName" runat="server" OnClick="lbtLastName_Click" Visible="false"></asp:LinkButton>
 
-                    <br />
-                    <br />
-                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                    <asp:Label ID="lblApplicant" runat="server" Text="Name of Applicant : " Visible="false"></asp:Label>
-                    <asp:Label ID="lblAplicantfirstName" runat="server" Visible="false"></asp:Label>
-                    <asp:LinkButton ID="lbtLastName" runat="server" OnClick="lbtLastName_Click" Visible="false"></asp:LinkButton>
+                            <br />
+                            <br />
+                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                            <asp:Label ID="lblPhone" runat="server" Text="Phone Number: " Visible="false"></asp:Label>
+                            <asp:Label ID="lblPhoneNo" runat="server" Visible="false"></asp:Label>
 
-                    <br />
-                    <br />
-                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                    <asp:Label ID="lblPhone" runat="server" Text="Phone Number: " Visible="false"></asp:Label>
-                    <asp:Label ID="lblPhoneNo" runat="server" Visible="false"></asp:Label>
+                            <br />
+                            <br />
+                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                            <asp:Label ID="lblDesigna" runat="server" Text="Designation: " Visible="false"></asp:Label>
+                            <asp:Label ID="lblDesignation" runat="server" Visible="false"></asp:Label>
 
-                    <br />
-                    <br />
-                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                    <asp:Label ID="lblDesigna" runat="server" Text="Designation: " Visible="false"></asp:Label>
-                    <asp:Label ID="lblDesignation" runat="server" Visible="false"></asp:Label>
+                            <br />
+                            <br />
+                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                            <asp:Label ID="lblAdded" runat="server" Text="Added By: " Visible="false"></asp:Label>
+                            <asp:Label ID="lblAddedBy" runat="server" Visible="false"></asp:Label>
+                            <br />
+                            <br />
 
-                    <br />
-                    <br />
-                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                    <asp:Label ID="lblAdded" runat="server" Text="Added By: " Visible="false"></asp:Label>
-                    <asp:Label ID="lblAddedBy" runat="server" Visible="false"></asp:Label>
-                    <br />
-                    <br />
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <asp:Button ID="btnsave" runat="server" ValidationGroup="Submit" OnClick="btnsave_Click" Text="Update" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" Height="30px" Width="75px" />
+                            &nbsp; &nbsp;
+                            <asp:Button ID="btnDelete" runat="server" ValidationGroup="Submit" Text="Delete" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" Height="30px" Width="75px" OnClick="btnDelete_Click" />
+                            &nbsp; &nbsp;&nbsp; &nbsp;
+                            <asp:Button ID="btnClose" runat="server" OnClick="btnClose_Click" Text="Close" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" Height="30px" Width="75px" />
 
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <asp:Button ID="btnsave" runat="server" ValidationGroup="Submit" OnClick="btnsave_Click" Text="Update" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" Height="30px" Width="75px" />
-                    &nbsp; &nbsp;
-                    <asp:Button ID="btnDelete" runat="server" ValidationGroup="Submit" Text="Delete" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" Height="30px" Width="75px" OnClick="btnDelete_Click" />
-                    &nbsp; &nbsp;&nbsp; &nbsp;
-                    <asp:Button ID="btnClose" runat="server" OnClick="btnClose_Click" Text="Close" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" Height="30px" Width="75px" />
-
-                </ContentTemplate>
-            </telerik:RadWindow>
-        </Windows>
-    </telerik:RadWindowManager>
+                        </ContentTemplate>
+                    </telerik:RadWindow>
+                </Windows>
+            </telerik:RadWindowManager>
+        </ContentTemplate>
+    </asp:UpdatePanel>
 
     <asp:Panel ID="panel1" runat="server">
         <div id="DivOfferMade" class="white_content" style="height: auto;">
@@ -308,6 +318,7 @@
             <a href="javascript:void(0)" onclick="document.getElementById('DivOfferMade').style.display='none';document.getElementById('DivOfferMadefade').style.display='none'">Close</a>
             <asp:HiddenField ID="hidSelectedVal" runat="server" />
             <asp:HiddenField ID="hidApplicantID" runat="server" />
+            <asp:UpdatePanel runat="server" UpdateMode="Always"><ContentTemplate>
             <table width="100%" style="border: Solid 3px #b04547; width: 100%; height: 300px;"
                 cellpadding="0" cellspacing="0">
                 <tr>
@@ -317,7 +328,8 @@
                             Email<span><asp:Label ID="lblOfferEmail" Text="*" runat="server" ForeColor="Red"></asp:Label></span></label>
                     </td>
                     <td>
-                        <asp:TextBox ID="txtOfferMail" runat="server" MaxLength="40" Width="242px"></asp:TextBox>
+                        <asp:TextBox ID="txtOfferMail" runat="server" MaxLength="40" Width="242px"
+                            Enabled="false" ReadOnly="true"></asp:TextBox>
                         <br />
                         <asp:RequiredFieldValidator ID="RequiredFieldValidator3" Display="Dynamic" runat="server" ControlToValidate="txtOfferMail"
                             ValidationGroup="OfferPopUp" ForeColor="Red" ErrorMessage="Please Enter Email"></asp:RequiredFieldValidator>
@@ -371,6 +383,7 @@
                     </td>
                 </tr>
             </table>
+                </ContentTemplate></asp:UpdatePanel>
         </div>
     </asp:Panel>
     <div id="DivOfferMadefade" class="black_overlay">
