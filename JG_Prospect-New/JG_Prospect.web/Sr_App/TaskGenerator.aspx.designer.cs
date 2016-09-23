@@ -121,6 +121,15 @@ namespace JG_Prospect.Sr_App {
         protected global::Saplin.Controls.DropDownCheckBoxes ddcbAssigned;
         
         /// <summary>
+        /// chkTechTask control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkTechTask;
+        
+        /// <summary>
         /// txtTaskTitle control.
         /// </summary>
         /// <remarks>

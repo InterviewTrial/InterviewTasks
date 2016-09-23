@@ -64,6 +64,7 @@ namespace JG_Prospect.DAL
                     {
                         database.AddInParameter(command, "@TaskPriority", DbType.Int16, objTask.TaskPriority.Value);
                     }
+                    database.AddInParameter(command, "@IsTechTask", DbType.Int16, objTask.IsTechTask);
 
                     database.AddOutParameter(command, "@Result", DbType.Int32, 0);
 
@@ -583,6 +584,27 @@ namespace JG_Prospect.DAL
             }
 
         }
+
+        public DataSet GetAllActiveTechTask()
+        {
+            DataSet result = new DataSet();
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("SP_GetAllActiveTechTask");
+                    command.CommandType = CommandType.StoredProcedure;                    
+                    result = database.ExecuteDataSet(command);
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
+
         public DataSet GetTaskUserDetails(Int16 TaskID)
         {
             try

@@ -100,6 +100,11 @@ namespace JG_Prospect.BLL
         {
             return TaskGeneratorDAL.Instance.GetInstallUsers(key, Designation);
         }
+        public DataSet GetAllActiveTechTask()
+        {
+            return TaskGeneratorDAL.Instance.GetAllActiveTechTask();
+        }
+
         public DataSet GetUserDetails(Int32 Id)
         {
             return TaskGeneratorDAL.Instance.GetUserDetails(Id);

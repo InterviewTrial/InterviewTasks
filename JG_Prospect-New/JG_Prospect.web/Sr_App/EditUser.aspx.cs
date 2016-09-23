@@ -19,6 +19,7 @@ using System.Net.Mail;
 using System.Web.UI.DataVisualization.Charting;
 using System.Xml.Serialization;
 using System.Xml;
+using JG_Prospect.App_Code;
 
 namespace JG_Prospect
 {
@@ -367,6 +368,7 @@ namespace JG_Prospect
             else if (ddl.SelectedValue == "InterviewDate")
             {
                 LoadUsersByRecruiterDesgination();
+                FillTechTaskDropDown();
                 ddlInsteviewtime.DataSource = GetTimeIntervals();
                 ddlInsteviewtime.DataBind();
                 dtInterviewDate.Text = DateTime.Now.AddDays(1).ToShortDateString();
@@ -625,11 +627,108 @@ namespace JG_Prospect
                     }
                 }
             }
+
+            //AssignedTask if any or Default
             SendEmail(email, Convert.ToString(Session["FirstNameNewSC"]), Convert.ToString(Session["LastNameNewSC"]), "Interview Date Auto Email", txtReason.Text, Convert.ToString(Session["DesignitionSC"]), HireDate, EmpType, PayRates, 104);
+
+            AssignedTaskToUser();
+            
             binddata();
             ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "ClosePopupInterviewDate()", true);
             return;
         }
+
+
+        #region 'Private Methods - Assigned Task ToUser '
+
+        private void AssignedTaskToUser()
+        {
+            //If dropdown has any value then assigne it to user else. return 
+            if (ddlTechTask.Items.Count > 0)
+            {
+                // save (insert / delete) assigned users.
+                bool isSuccessful = TaskGeneratorBLL.Instance.SaveTaskAssignedUsers(Convert.ToUInt64(ddlTechTask.SelectedValue), Session["EditId"].ToString());
+
+                if (isSuccessful)
+                {
+                    // Change task status to assigned = 3.
+                    
+                    UpdateTaskStatus(Convert.ToInt32(ddlTechTask.SelectedValue), Convert.ToUInt16(TaskStatus.Assigned));
+                    
+                    SendEmailToAssignedUsers(Session["EditId"].ToString(), ddlTechTask.SelectedValue);
+                }
+            }
+        }
+
+        private void UpdateTaskStatus(Int32 taskId, UInt16 Status)
+        {
+            Task task = new Task();
+            task.TaskId = taskId;
+            task.Status = Status;
+
+            int result = TaskGeneratorBLL.Instance.UpdateTaskStatus(task);    // save task master details
+            
+            //String AlertMsg;
+
+            //if (result > 0)
+            //{
+            //    AlertMsg = "Status changed successfully!";
+            //}
+            //else
+            //{
+            //    AlertMsg = "Status change was not successfull, Please try again later.";
+            //}
+        }
+
+        private void SendEmailToAssignedUsers(string strInstallUserIDs , string strTaskId)
+        {
+            try
+            {
+                string strHTMLTemplateName = "Task Generator Auto Email";
+                DataSet dsEmailTemplate = AdminBLL.Instance.GetEmailTemplate(strHTMLTemplateName, 108);
+                foreach (string userID in strInstallUserIDs.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    DataSet dsUser = TaskGeneratorBLL.Instance.GetInstallUserDetails(Convert.ToInt32(userID));
+
+                    string emailId = dsUser.Tables[0].Rows[0]["Email"].ToString();
+                    string FName = dsUser.Tables[0].Rows[0]["FristName"].ToString();
+                    string LName = dsUser.Tables[0].Rows[0]["LastName"].ToString();
+                    string fullname = FName + " " + LName;
+
+                    string strHeader = dsEmailTemplate.Tables[0].Rows[0]["HTMLHeader"].ToString();
+                    string strBody = dsEmailTemplate.Tables[0].Rows[0]["HTMLBody"].ToString();
+                    string strFooter = dsEmailTemplate.Tables[0].Rows[0]["HTMLFooter"].ToString();
+                    string strsubject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString();
+
+                    strBody = strBody.Replace("#Fname#", fullname);
+                    strBody = strBody.Replace("#TaskLink#", string.Format("{0}?TaskId={1}", Request.Url.ToString().Split('?')[0], strTaskId));
+
+                    strBody = strHeader + strBody + strFooter;
+
+                    List<Attachment> lstAttachments = new List<Attachment>();
+                    // your remote SMTP server IP.
+                    for (int i = 0; i < dsEmailTemplate.Tables[1].Rows.Count; i++)
+                    {
+                        string sourceDir = Server.MapPath(dsEmailTemplate.Tables[1].Rows[i]["DocumentPath"].ToString());
+                        if (File.Exists(sourceDir))
+                        {
+                            Attachment attachment = new Attachment(sourceDir);
+                            attachment.Name = Path.GetFileName(sourceDir);
+                            lstAttachments.Add(attachment);
+                        }
+                    }
+
+                    CommonFunction.SendEmail(strHTMLTemplateName, emailId, strsubject, strBody, lstAttachments);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("{0} Exception caught.", ex);
+            }
+        }
+
+        #endregion
+
 
         protected void btnCancelInterview_Click(object sender, EventArgs e)
         {
@@ -1797,6 +1896,19 @@ namespace JG_Prospect
 
             ddlUsers.Items.Insert(0, new ListItem("--All--", "0"));
         }
+
+        private void FillTechTaskDropDown()
+        {
+            DataSet dsTechTask;
+
+            dsTechTask = TaskGeneratorBLL.Instance.GetAllActiveTechTask();
+
+            ddlTechTask.DataSource = dsTechTask;
+            ddlTechTask.DataTextField = "Title";
+            ddlTechTask.DataValueField = "TaskId";
+            ddlTechTask.DataBind();
+        }
+
         private void BindGrid()
         {
             ShowHRData();

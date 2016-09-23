@@ -137,7 +137,7 @@ namespace JG_Prospect.Sr_App
             ScriptManager scriptManager = ScriptManager.GetCurrent(this.Page);
             scriptManager.RegisterPostBackControl(this.gdTaskUsers);
 
-            if (!IsPostBack)
+                if (!IsPostBack)
             {
                 this.IsAdminMode = CommonFunction.CheckAdminMode();
 
@@ -1108,6 +1108,8 @@ namespace JG_Prospect.Sr_App
             task.Mode = Convert.ToInt32(controlMode.Value);
             task.InstallId = GetInstallIdFromDesignation(ddlUserDesignation.SelectedItem.Text);
 
+            task.IsTechTask = chkTechTask.Checked;
+
             Int64 ItaskId = TaskGeneratorBLL.Instance.SaveOrDeleteTask(task);    // save task master details
 
             if (controlMode.Value == "0")
@@ -1656,7 +1658,7 @@ namespace JG_Prospect.Sr_App
         private void SetMasterTaskDetails(DataTable dtTaskMasterDetails)
         {
             this.TaskCreatedBy = Convert.ToInt32(dtTaskMasterDetails.Rows[0]["CreatedBy"]);
-
+            chkTechTask.Checked = Convert.ToBoolean(dtTaskMasterDetails.Rows[0]["IsTechTask"]);
             if (this.IsAdminMode)
             {
                 txtTaskTitle.Text = Server.HtmlDecode(dtTaskMasterDetails.Rows[0]["Title"].ToString());
@@ -1672,7 +1674,7 @@ namespace JG_Prospect.Sr_App
 
                 txtDueDate.Text = CommonFunction.FormatToShortDateString(dtTaskMasterDetails.Rows[0]["DueDate"]);
                 txtHours.Text = dtTaskMasterDetails.Rows[0]["Hours"].ToString();
-
+                
                 //hide user view table.
                 tblUserTaskView.Visible = false;
             }

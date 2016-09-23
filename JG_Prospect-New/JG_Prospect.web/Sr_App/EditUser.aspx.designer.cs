@@ -643,6 +643,15 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvddlUsers;
         
         /// <summary>
+        /// ddlTechTask control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlTechTask;
+        
+        /// <summary>
         /// btnSaveInterview control.
         /// </summary>
         /// <remarks>
