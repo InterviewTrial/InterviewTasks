@@ -44,6 +44,12 @@ namespace JG_Prospect.JGCalender
                 " description : " + cevent.description;
         }
 
+        //this will return html content of the user profile's page
+        [System.Web.Services.WebMethod(true)]
+        public static string ReturnHtml(string url)
+        {
+            return (new System.Net.WebClient()).DownloadString(url);
+        }
         //this method only updates start and end time
         //this is called when a event is dragged or resized in the calendar
         [System.Web.Services.WebMethod(true)]

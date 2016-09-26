@@ -33,13 +33,13 @@ namespace JG_Prospect.Sr_App
             }
             else
             {
-                Response.Redirect("~/login.aspx?returnurl=" + Request.Url.PathAndQuery);
+                Response.Redirect("~/login.aspx");
             }
         }
-
+      
 
         protected void searchbutton_Click(object sender, EventArgs e)
-        {
+        {            
             Response.Redirect("http://www.google.com/search");
         }
 
@@ -50,7 +50,7 @@ namespace JG_Prospect.Sr_App
                 System.Diagnostics.Process objP = new System.Diagnostics.Process();
                 objP.StartInfo.UseShellExecute = false;
                 objP.StartInfo.UserName = "en12";
-                objP.StartInfo.FileName = @"D:\FileZilla FTP Client\filezilla.exe";
+                objP.StartInfo.FileName = @"D:\FileZilla FTP Client\filezilla.exe";               
                 objP.Start();
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Process started successfully');", true);
             }

@@ -25,12 +25,12 @@
     <%--<script type="text/javascript" src="../js/jquery.js"></script>
     <script type="text/javascript" src="../js/jquery-latest.js" ></script>--%>
     <%--<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js"></script>--%>
-    <%--<script src="//code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>--%>
-    <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+    <script src="//code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
     <%--<script type="text/javascript" src="../js/jquery.ui.core.js"></script>--%>
     <%--<script type="text/javascript" src="../js/jquery.ui.widget.js"></script>--%>
     <script type="text/javascript" src="../js/jquery.watermarkinput.js"></script>
-    <script src="http://code.jquery.com/ui/1.10.1/jquery-ui.js" type="text/javascript"></script>        
+    <script src="http://code.jquery.com/ui/1.10.1/jquery-ui.js" type="text/javascript"></script>
+
     <%--<script src="../datetime/js/jquery.ptDayOnlySelect.js" type="text/javascript"></script>
     <script src="../datetime/js/jquery.ptTimeOnlySelect.js" type="text/javascript"></script>--%>
     <!--tabs jquery ends-->
@@ -515,8 +515,8 @@
                         <h4>Customer</h4>
                         <uc2:LeftPanel ID="LeftPanel1" runat="server" />
                         <br />
+                        <!--Email moved to the header-->
                         <ul class="left_nav">
-                            <li><a href="javascript:window.open('http://www.fatcow.com/mail/','mywindow','width=600,height=400')" target="_blank">Email</a></li>
                             <li><a href="ShowResources.aspx">Resources</a></li>
                             <li><a href="#">ADMIN </a>
                                 <ul>
@@ -600,16 +600,6 @@
             });
 
         });
-        function downloadfile(filename, originalfilename) {
-
-            var url = "taskattachmentdownload.aspx?file=" + filename.trim() + "&Ofile=" + originalfilename.trim();
-
-            alert('downloading from ' + url);
-            $.fileDownload(url, {});
-
-            return false; //this is critical to stop the click event which will trigger a normal file download!            
-
-        }
         $('#searchbutton').click(function () {
             var search_result = $('#qfront').val();
             window.open('http://www.google.com/search?q=' + search_result);
