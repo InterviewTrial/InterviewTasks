@@ -218,6 +218,8 @@
     <Content Include="bin\JG_Prospect.BLL.dll" />
     <Content Include="bin\JG_Prospect.Common.dll" />
     <Content Include="bin\JG_Prospect.DAL.dll" />
+    <Content Include="bin\JG_Prospect.dll" />
+    <Content Include="bin\JG_Prospect.pdb" />
     <Content Include="bin\JG_Prospect.WebAPI.dll" />
     <Content Include="bin\Microsoft.Data.Edm.dll" />
     <Content Include="bin\Microsoft.Data.OData.dll" />
@@ -235,6 +237,8 @@
     <Content Include="bin\Microsoft.Practices.Unity.Interception.dll" />
     <Content Include="bin\Microsoft.Web.Infrastructure.dll" />
     <Content Include="bin\Microsoft.Web.Mvc.FixedDisplayModes.dll" />
+    <Content Include="bin\msvcp120.dll" />
+    <Content Include="bin\msvcr120.dll" />
     <Content Include="bin\Newtonsoft.Json.dll" />
     <Content Include="bin\NReco.PdfGenerator.dll" />
     <Content Include="bin\NReco.PdfGenerator.xml" />
