@@ -548,6 +548,10 @@ namespace JG_Prospect.Sr_App
 
                 if (dtFirstNameId.Rows[i]["RowId"].ToString() == dtPrimaryContactId.Rows[i]["RowId"].ToString())
                 {
+                    //Added on 15092016 :: skip null and empty field
+                    if (string.IsNullOrEmpty(dtFirstNameId.Rows[i]["FirstName"].ToString()))
+                        continue;
+
                     strFName = dtFirstNameId.Rows[i]["FirstName"].ToString();
                     strIsPrimaryContactType = dtPrimaryContactId.Rows[i]["ISPrimaryContact"].ToString();
                 }
@@ -578,6 +582,10 @@ namespace JG_Prospect.Sr_App
                     {
                         if (dtPrimaryContactId.Rows[i]["RowId"].ToString() == dvPhoneNumberId[j]["RowId"].ToString())
                         {
+                            //Added on 15092016 :: skip null and empty field
+                            if (string.IsNullOrEmpty(dvPhoneNumberId[j]["Phone"].ToString()))
+                                continue;
+
                             strPhoneNumber = dvPhoneNumberId[j]["Phone"].ToString().Replace("-", "");
                             strPhoneType = dvPhoneTypeId[j]["PhoneType"].ToString();
                         }
@@ -612,19 +620,22 @@ namespace JG_Prospect.Sr_App
 
                     if (j < dvPhoneNumberId.Count || j < dvEMailId.Count)
                     {
-                        dRowNew["FirstName"] = strFName;
-                        dRowNew["PhoneNumber"] = strPhoneNumber;
-                        dRowNew["PhoneType"] = strPhoneType;
-                        dRowNew["Email"] = strEMail;
-                        dRowNew["LastName"] = strLName;
-                        dRowNew["IsPrimaryContact"] = strIsPrimaryContactType;
-                        dRowNew["ContactType"] = strContactType;
+                        //Added on 15092016 :: skip null and empty field
+                        if (!string.IsNullOrEmpty(strFName) && !string.IsNullOrEmpty(strPhoneNumber))
+                        {
+                            dRowNew["FirstName"] = strFName;
+                            dRowNew["PhoneNumber"] = strPhoneNumber;
+                            dRowNew["PhoneType"] = strPhoneType;
+                            dRowNew["Email"] = strEMail;
+                            dRowNew["LastName"] = strLName;
+                            dRowNew["IsPrimaryContact"] = strIsPrimaryContactType;
+                            dRowNew["ContactType"] = strContactType;
 
-                        dtDetails.Rows.Add(dRowNew);
-                        dRowNew = dtDetails.NewRow();
+                            dtDetails.Rows.Add(dRowNew);
+                            dRowNew = dtDetails.NewRow();
+                        }
                     }
                 }
-
             }
 
             DataTable dtPhoneNumber = new DataTable();
@@ -661,10 +672,22 @@ namespace JG_Prospect.Sr_App
             //}
 
 
-            DataTable dtFirstName = new DataTable();
-            dtFirstName = GetAllValues(formVars, "FirstName", "txtFName");
+            //start changes on 15.09.2016
+            //DataTable dtFirstName = new DataTable();
+            //dtFirstName = GetAllValues(formVars, "FirstName", "txtFName");
 
-            foreach (DataRow drow in dtFirstName.Rows)
+            //foreach (DataRow drow in dtFirstName.Rows)
+            //{
+            //    if (drow["FirstName"] == "")
+            //    {
+
+            //        strResult = "Please fill First Name";
+            //        return strResult;
+            //    }
+            //}
+            //end changes on 15.09.2016
+
+            foreach (DataRow drow in dtDetails.Rows)
             {
                 if (drow["FirstName"] == "")
                 {
@@ -673,6 +696,7 @@ namespace JG_Prospect.Sr_App
                     return strResult;
                 }
             }
+
 
             int CustomerId = 0;
             DataSet dsCustomerDuplication = new_customerBLL.Instance.CheckCustomerDuplication(dtCusAddress, dtDetails, CustomerId);
@@ -850,6 +874,7 @@ namespace JG_Prospect.Sr_App
         public static string GetCityState(string strZip)
         {
             DataSet ds = new DataSet();
+           
             ds = UserBLL.Instance.fetchcitystate(strZip);
             if (ds != null)
             {
