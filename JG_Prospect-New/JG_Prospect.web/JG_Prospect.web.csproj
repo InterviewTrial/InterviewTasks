@@ -62,6 +62,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>External Dependencies\AjaxControlToolkit.dll</HintPath>
     </Reference>
+    <Reference Include="Ajaxified, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\Ajaxified.dll</HintPath>
+    </Reference>
     <Reference Include="aspsnippets.facebookapi">
       <HintPath>External Dependencies\aspsnippets.facebookapi.dll</HintPath>
     </Reference>
@@ -200,6 +204,7 @@
     <Content Include="AddResourcesJr.aspx" />
     <Content Include="AssignProspect.aspx" />
     <Content Include="bin\AjaxControlToolkit.dll" />
+    <Content Include="bin\Ajaxified.dll" />
     <Content Include="bin\Antlr3.Runtime.dll" />
     <Content Include="bin\aspsnippets.facebookapi.dll" />
     <Content Include="bin\ASPSnippets.GoogleAPI.dll" />
@@ -218,6 +223,8 @@
     <Content Include="bin\JG_Prospect.BLL.dll" />
     <Content Include="bin\JG_Prospect.Common.dll" />
     <Content Include="bin\JG_Prospect.DAL.dll" />
+    <Content Include="bin\JG_Prospect.dll" />
+    <Content Include="bin\JG_Prospect.pdb" />
     <Content Include="bin\JG_Prospect.WebAPI.dll" />
     <Content Include="bin\Microsoft.Data.Edm.dll" />
     <Content Include="bin\Microsoft.Data.OData.dll" />
@@ -235,6 +242,8 @@
     <Content Include="bin\Microsoft.Practices.Unity.Interception.dll" />
     <Content Include="bin\Microsoft.Web.Infrastructure.dll" />
     <Content Include="bin\Microsoft.Web.Mvc.FixedDisplayModes.dll" />
+    <Content Include="bin\msvcp120.dll" />
+    <Content Include="bin\msvcr120.dll" />
     <Content Include="bin\Newtonsoft.Json.dll" />
     <Content Include="bin\NReco.PdfGenerator.dll" />
     <Content Include="bin\NReco.PdfGenerator.xml" />
@@ -276,6 +285,8 @@
     <Content Include="css\jquery-ui.css" />
     <Content Include="css\jquery.multiselect.css" />
     <Content Include="css\pgwslideshow.min.css" />
+    <Content Include="datetime\css\timeStyle.css" />
+    <Content Include="datetime\img\header.jpg" />
     <Content Include="Employment_Redirect.aspx" />
     <Content Include="External Dependencies\Microsoft.Practices.EnterpriseLibrary.Caching.Database.dll" />
     <Content Include="External Dependencies\Microsoft.Practices.EnterpriseLibrary.Caching.dll" />

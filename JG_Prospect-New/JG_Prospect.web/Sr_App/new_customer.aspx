@@ -3,6 +3,7 @@
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajaxToolkit" %>
 <%@ Register Src="~/UserControl/UCAddress.ascx" TagPrefix="uc1" TagName="UCAddress" %>
+<%@ Register TagPrefix="Ajaxified" Assembly="ajaxified" Namespace="Ajaxified" %>
 <script runat="server">
 
 </script>
@@ -298,6 +299,17 @@
                 }
 
                 else {
+                   //added on 15092016 :: check validate values
+                    if (node.name == "txtFName1") {
+                        alert("Please enter First Name")
+                        return false;
+                    }
+
+                    if (node.name == "txtPhone1") {
+                        alert("Please enter the Phone Number")
+                        return false;
+                    }
+
                     formPushData.push({
                         key: node.name,
                         value: node.value
@@ -504,30 +516,91 @@
         }
 
         function CheckDuplicateCustomerCred(obj, type) {
+            debugger;
+            var valueForValid = "";
+            if (type == 1) {
+                var contact = obj.value
+                valueForValid = contact.replace('-', '');
+                valueForValid = valueForValid.replace('-', '');
+            }
+            else {
+                valueForValid = obj.value;
+            }
             $.ajax({
                 type: "POST",
                 url: "new_customer.aspx/CheckDuplicateCustomerCredentials",
                 contentType: "application/json; charset=utf-8",
                 dataType: "JSON",
-                data: "{'pValueForValidation':'" + obj.value + "', 'pValidationType':"+type+"}",
-                
+                data: "{'pValueForValidation':'" + valueForValid + "', 'pValidationType':" + type + "}",
+
                 success: function (data) {
                     debugger;
+
                     var dataInput = (data.d);
+
                     if (dataInput != '') {
-                        alert(dataInput);
+                        debugger;
+                        var title = "";
+                        var existsMessage = "";
+                        $("#dialog")[0].innerHTML = "";
+                        if (type == 1) {
+                            existsMessage = "Contact " + obj.value;
+                            $("#dialog")[0].innerHTML = existsMessage + " " + "already exists: would you like to redirect to this customer profile page?";;
+                            title = "Contact already exists";
+                        }
+                        else {
+                            existsMessage = "Email " + obj.value;
+                            $("#dialog")[0].innerHTML = existsMessage + " " + "already exists: would you like to redirect to this customer profile page?";
+                            title = "Email already exists";
+                        }
+
+                        $("#dialog").dialog({
+                            modal: true,
+                            autoOpen: false,
+                            title: title,
+                            width: 350,
+                            height: 160,
+                            buttons: [
+                            {
+                                id: "Yes",
+                                text: "Yes",
+                                click: function () {
+                                    //do Redirect logic
+                                }
+                            },
+                            {
+                                id: "Cancel",
+                                text: "Cancel",
+                                click: function () {
+                                    $(this).dialog('close');
+                                }
+                            }
+                            ]
+                        });
+
+                        $('#dialog').dialog('open');
+
+                        //alert(dataInput);
                         obj.value = '';
                     }
                 }
             });
         }
 
-        function CheckDuplicatePhone(obj){
-            CheckDuplicateCustomerCred(obj, 1);
+        function CheckDuplicatePhone(obj) {
+            //added on 14092016 :: checked not empty value 
+            debugger;
+            if (obj.value != "") {
+                CheckDuplicateCustomerCred(obj, 1);
+            }
         }
 
         function CheckDuplicateEmail(obj) {
-            CheckDuplicateCustomerCred(obj, 2);
+            //added on 14092016 :: checked not empty value 
+            debugger;
+            if (obj.value != "") {
+                CheckDuplicateCustomerCred(obj, 2);
+            }
         }
         function AddTemplate(e) {
             debugger;
@@ -709,8 +782,29 @@
             SecondaryRadio++;
         }
        
+
     </script>
 
+    <%--<link href="../SiteStyle.css" rel="stylesheet" />--%>
+    <link href="../datetime/css/timeStyle.css" rel="stylesheet" />
+
+    <script language="javascript" type="text/javascript">
+        function clientShowing(sender) {
+
+        }
+        function clientShown(sender) {
+
+        }
+        function clientHiding(sender) {
+
+        }
+        function clientHidden(sender) {
+
+        }
+        function selectionChanged(sender) {
+            //alert(sender._selectedTime);
+        }
+    </script>
     <%---------end script for Datetime Picker----------%>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -1026,14 +1120,56 @@
                             </td>
                         </tr>
                         <tr>
-                            <td>
-                              
-                                <label style="line-height:40px;vertical-align:top;padding-top:0px;">
-                                    Estimate Time</label>
-                                <asp:TextBox ID="txtestimate_time" CssClass="time" runat="server" TabIndex="6"
-                                    onkeypress="return false"></asp:TextBox>
-                                <label>
-                                </label>
+                            <td class="login_form_panel" style="background:none !important;min-height:0px !important;border-top:none !important;padding:0px !important">
+
+                                <%--<label style="line-height: 40px; vertical-align: top; padding-top: 0px;">
+                                    Estimate Time</label>--%>
+                                <%--<asp:TextBox ID="txtestimate_time" runat="server" TabIndex="6"
+                                    onkeypress="return false"></asp:TextBox>--%>
+
+                             <%--   <div >--%>
+                                
+                                    <ul>
+                                        <li>
+                                            <table border="0" cellspacing="0" cellpadding="0" class="last">
+
+                                                <tr>
+                                                    <td>
+                                                        <label style="line-height: 40px; vertical-align: top; padding-top: 0px;">
+                                                            Estimate Time</label>
+                                                   
+
+
+                                                        <%--<asp:TextBox ID="TextBox2" runat="server" Text="">
+                                    </asp:TextBox>
+                                    <Ajaxified:TimePicker runat="server" TargetControlID="TextBox2" CssClass="timepicker"
+                                        HeaderCssClass="header" TitleCssClass="title" ItemCssClass="item" SelectedItemCssClass="selecteditem"
+                                        TabCssClass="tab" SelectedTabCssClass="selectedtab" CloseOnSelection="true" OnClientShowing="clientShowing"
+                                        OnClientShown="clientShown" OnClientHiding="clientHiding" OnClientHidden="clientHidden"
+                                        OnClientSelectionChanged="selectionChanged"></Ajaxified:TimePicker>
+                                    <br />
+                                    <br />--%>
+
+                                                        <asp:TextBox ID="txtestimate_time" runat="server" Text="" TabIndex="6">
+                                                        </asp:TextBox>
+                                                        <Ajaxified:TimePicker ID="TimePicker1" runat="server" TargetControlID="txtestimate_time" MinuteStep="15" CloseOnSelection="true"></Ajaxified:TimePicker>
+
+                                                    </td>
+                                                </tr>
+
+                                            </table>
+
+                                        </li>
+                                    </ul>
+
+                              <%--  </div>--%>
+                                <%--<input id="basicExample" type="text" class="time" runat="server" />
+
+                                <script>
+                                    $('#basicExample').timepicker();
+                                </script>--%>
+
+                                
                             </td>
                         </tr>
                         <tr>
@@ -1290,6 +1426,10 @@
 
             </div>
             <!-- Tabs endss -->
+
+          <div id="dialog" style="display: none" align="center">
+           <%-- already exists: would you like to redirect to this customer profile page?--%>
+        </div>
     </div>
    <%-- </asp:Panel>--%>
     <link href="../datetime/jq/ui-lightness/jquery-ui-1.10.0.custom.min.css" rel="stylesheet" />
