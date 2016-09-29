@@ -183,7 +183,9 @@ namespace JG_Prospect.Common.modal
     public class user1
     {
         public int Id;
-        public string Email; 
+        public string Email;
+        public string Email2;//Add By ratnakar
+        public string Notes; // Add By ratnakar
         public string Designation;
         public string usertype;
         public string status;
