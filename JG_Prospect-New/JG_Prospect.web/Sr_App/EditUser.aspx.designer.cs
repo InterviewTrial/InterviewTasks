@@ -427,22 +427,22 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.RequiredFieldValidator Requiretodate;
         
         /// <summary>
-        /// upGridViewUser control.
+        /// upUsers control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.UpdatePanel upGridViewUser;
+        protected global::System.Web.UI.UpdatePanel upUsers;
         
         /// <summary>
-        /// GridViewUser control.
+        /// grdUsers control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView GridViewUser;
+        protected global::System.Web.UI.WebControls.GridView grdUsers;
         
         /// <summary>
         /// lnkDownload control.
@@ -571,13 +571,13 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.RequiredFieldValidator reqReason;
         
         /// <summary>
-        /// btnSave control.
+        /// btnSaveReason control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnSave;
+        protected global::System.Web.UI.WebControls.Button btnSaveReason;
         
         /// <summary>
         /// panel2 control.
@@ -643,15 +643,6 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvddlUsers;
         
         /// <summary>
-        /// ddlTechTask control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlTechTask;
-        
-        /// <summary>
         /// btnSaveInterview control.
         /// </summary>
         /// <remarks>
@@ -697,13 +688,13 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator2;
         
         /// <summary>
-        /// btnPassword control.
+        /// btnChangeStatus control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnPassword;
+        protected global::System.Web.UI.WebControls.Button btnChangeStatus;
         
         /// <summary>
         /// panel4 control.

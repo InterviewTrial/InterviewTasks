@@ -25,7 +25,7 @@
             filter: alpha(opacity=80);
             overflow-y: hidden;
         }
-
+        /*#327FB5*/
         .white_content {
             display: none;
             position: absolute;
@@ -34,7 +34,7 @@
             width: 60%;
             min-height: 10%;
             padding: 16px;
-            border: 10px solid #327FB5;
+            border: 10px solid #000000;
             background-color: white;
             z-index: 1002;
             overflow: auto;
@@ -430,13 +430,13 @@
                 </tr>
             </table>
             <div class="grid">
-                 <asp:UpdatePanel ID="upGridViewUser" runat="server">
+                 <asp:UpdatePanel ID="upUsers" runat="server">
                     <ContentTemplate>
-                <asp:GridView ID="GridViewUser" runat="server" AutoGenerateColumns="False" DataKeyNames="Id" AllowSorting="true"
-                    OnRowCancelingEdit="GridViewUser_RowCancelingEdit" OnRowEditing="GridViewUser_RowEditing"
-                    OnRowUpdating="GridViewUser_RowUpdating" OnRowDeleting="GridViewUser_RowDeleting"
-                    OnRowDataBound="GridViewUser_RowDataBound" OnSelectedIndexChanged="GridViewUser_SelectedIndexChanged"
-                    OnRowCommand="GridViewUser_RowCommand" OnSorting="GridViewUser_Sorting" EmptyDataText="No Data">
+                <asp:GridView ID="grdUsers" runat="server" AutoGenerateColumns="False" DataKeyNames="Id" AllowSorting="true"
+                    OnRowCancelingEdit="grdUsers_RowCancelingEdit" OnRowEditing="grdUsers_RowEditing"
+                    OnRowUpdating="grdUsers_RowUpdating" OnRowDeleting="grdUsers_RowDeleting"
+                    OnRowDataBound="grdUsers_RowDataBound" OnSelectedIndexChanged="grdUsers_SelectedIndexChanged"
+                    OnRowCommand="grdUsers_RowCommand" OnSorting="grdUsers_Sorting" EmptyDataText="No Data">
                     <Columns>
                         <asp:TemplateField HeaderText="Action" ControlStyle-Width="40px">
                             <ItemTemplate>
@@ -533,7 +533,7 @@
                             <ItemTemplate>
                                 <asp:HiddenField ID="lblStatus" runat="server" Value='<%#Eval("Status")%>'></asp:HiddenField>
                                 <asp:HiddenField ID="lblOrderStatus" runat="server" Value='<%#(Eval("OrderStatus") == null || Eval("OrderStatus") == "") ? -99: Eval("OrderStatus")%>'></asp:HiddenField>
-                                <asp:DropDownList ID="ddlStatus" AutoPostBack="true" OnSelectedIndexChanged="ddlStatus_SelectedIndexChanged" runat="server" DataValueField='<%#Eval("Status")%>'>
+                                <asp:DropDownList ID="ddlStatus" AutoPostBack="true" OnSelectedIndexChanged="grdUsers_ddlStatus_SelectedIndexChanged" runat="server" DataValueField='<%#Eval("Status")%>'>
                                     <asp:ListItem Text="Applicant" Value="Applicant"></asp:ListItem><asp:ListItem Text="Phone/Video Screened" Value="PhoneScreened"></asp:ListItem>
                                     <asp:ListItem Text="Rejected" Value="Rejected"></asp:ListItem>
                                     <asp:ListItem Text="Interview Date" Value="InterviewDate"></asp:ListItem>
@@ -653,9 +653,9 @@
                 </tr>
                 <tr>
                     <td align="center">
-                        <asp:Button ID="btnSave" runat="server" BackColor="#327FB5" ForeColor="White" Height="32px"
+                        <asp:Button ID="btnSaveReason" runat="server" BackColor="#327FB5" ForeColor="White" Height="32px"
                             Style="height: 26px; font-weight: 700; line-height: 1em;" Text="Save" Width="100px" ValidationGroup="Reason"
-                            TabIndex="119" OnClick="btnSave_Click" />
+                            TabIndex="119" OnClick="btnSaveReason_Click" />
                         <%--<asp:Button ID="Button2" runat="server" OnClick="" />--%>
                     </td>
                 </tr>
@@ -679,29 +679,19 @@
                         <cc1:CalendarExtender ID="CalendarExtender1" TargetControlID="dtInterviewDate" Format="MM/dd/yyyy" runat="server"></cc1:CalendarExtender>
                         <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ErrorMessage="Select Date" ControlToValidate="dtInterviewDate" ValidationGroup="InterviewDate"></asp:RequiredFieldValidator>
                     </td>
-                    <td align="center"></td>
                     <td>Time :
                         <asp:DropDownList ID="ddlInsteviewtime" runat="server" TabIndex="105" Width="112px"></asp:DropDownList>
                     </td>
                 </tr>
                 <tr>
-                    <td  align="right">Recruiter</td>
-                    <td> : </td>
-                    <td align="left" >
+                    <td align="center" colspan="2">Recruiter :
                         <asp:DropDownList ID="ddlUsers" runat="server" />
                         <asp:RequiredFieldValidator ID="rfvddlUsers" runat="server" ErrorMessage="Select Recruiter" ControlToValidate="ddlUsers" 
                             ValidationGroup="InterviewDate" InitialValue="0" />
                     </td>
                 </tr>
                 <tr>
-                    <td  align="right">Task</td>
-                    <td> : </td>
-                    <td align="left">
-                        <asp:DropDownList ID="ddlTechTask" runat="server" />
-                    </td>
-                </tr>
-                <tr>
-                    <td align="center" colspan="3">
+                    <td align="center" colspan="2">
                         <asp:Button ID="btnSaveInterview" runat="server" BackColor="#327FB5" ForeColor="White" Height="32px"
                             Style="height: 26px; font-weight: 700; line-height: 1em;" Text="OK" Width="100px" ValidationGroup="InterviewDate"
                             TabIndex="119" OnClick="btnSaveInterview_Click" />
@@ -735,9 +725,9 @@
                 </tr>
                 <tr>
                     <td align="center" colspan="2" style="height: 54px;">
-                        <asp:Button ID="btnPassword" runat="server" BackColor="#327FB5" ForeColor="White" Height="32px"
+                        <asp:Button ID="btnChangeStatus" runat="server" BackColor="#327FB5" ForeColor="White" Height="32px"
                             Style="height: 26px; font-weight: 700; line-height: 1em;" Text="Save" Width="100px" ValidationGroup="Password"
-                            TabIndex="119" OnClick="btnPassword_Click" />
+                            TabIndex="119" OnClick="btnChangeStatus_Click" />
                         <%--<asp:Button ID="Button2" runat="server" OnClick="" />--%>
                     </td>
                 </tr>
@@ -851,7 +841,7 @@
                     <asp:ListView ID="listDuplicateUsers" runat="server">
                         <ItemTemplate>
                             <tr>
-                                <td><span><%#Eval("firstname")%>&nbsp;<%#Eval("lastname")%></span></td>
+                                <td><span><%#Eval("FirstName")%>&nbsp;<%#Eval("LastName")%></span></td>
                                 <td><span><%#Eval("Email")%></span></td>
                                 <td><span><%#Eval("phone")%></span></td>
                             </tr>
@@ -859,12 +849,12 @@
                     </asp:ListView>
                 </table>
             </div>
-            <div style="padding: 10px; margin: auto;">
-                <asp:Button ID="btnYesEdit" runat="server" BackColor="#327FB5" ForeColor="White" Height="32px"
+             <div style="padding: 10px; margin: auto;">
+                <asp:Button ID="btnYesEdit" runat="server" BackColor="#bb0000" ForeColor="White" Height="32px"
                     Style="height: 26px; font-weight: 700; line-height: 1em;" Text="Yes" Width="100px"
                     ValidationGroup="IndiCred" TabIndex="119" OnClick="btnYesEdit_Click" />
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <asp:Button ID="btnNoEdit" runat="server" BackColor="#327FB5" ForeColor="White" Height="32px"
+            <asp:Button ID="btnNoEdit" runat="server" BackColor="#bb0000" ForeColor="White" Height="32px"
                 Style="height: 26px; font-weight: 700; line-height: 1em;" Text="No" Width="100px"
                 ValidationGroup="IndiCred" TabIndex="119" OnClick="btnNoEdit_Click" />
             </div>
