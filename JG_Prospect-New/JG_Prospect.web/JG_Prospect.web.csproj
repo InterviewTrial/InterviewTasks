@@ -64,7 +64,7 @@
     </Reference>
     <Reference Include="Ajaxified, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Ajaxified.dll</HintPath>
+      <HintPath>External Dependencies\Ajaxified.dll</HintPath>
     </Reference>
     <Reference Include="aspsnippets.facebookapi">
       <HintPath>External Dependencies\aspsnippets.facebookapi.dll</HintPath>
@@ -288,20 +288,7 @@
     <Content Include="datetime\css\timeStyle.css" />
     <Content Include="datetime\img\header.jpg" />
     <Content Include="Employment_Redirect.aspx" />
-    <Content Include="External Dependencies\AjaxControlToolkit.dll" />
-    <Content Include="External Dependencies\aspsnippets.facebookapi.dll" />
-    <Content Include="External Dependencies\ASPSnippets.GoogleAPI.dll" />
-    <Content Include="External Dependencies\ASPSnippets.SmsAPI.dll" />
-    <Content Include="External Dependencies\ASPSnippets.TwitterAPI.dll" />
-    <Content Include="External Dependencies\BarcodeLib.dll" />
-    <Content Include="External Dependencies\DropDownCheckBoxes.dll" />
-    <Content Include="External Dependencies\Google.GData.AccessControl.dll" />
-    <Content Include="External Dependencies\Google.GData.Calendar.dll" />
-    <Content Include="External Dependencies\Google.GData.Client.dll" />
-    <Content Include="External Dependencies\Google.GData.Extensions.dll" />
-    <Content Include="External Dependencies\Ionic.Zip.dll" />
-    <Content Include="External Dependencies\itextsharp.dll" />
-    <Content Include="External Dependencies\itextsharp.xmlworker.dll" />
+    <Content Include="External Dependencies\Ajaxified.dll" />
     <Content Include="External Dependencies\Microsoft.Practices.EnterpriseLibrary.Caching.Database.dll" />
     <Content Include="External Dependencies\Microsoft.Practices.EnterpriseLibrary.Caching.dll" />
     <Content Include="External Dependencies\Microsoft.Practices.EnterpriseLibrary.Common.dll" />
@@ -1708,7 +1695,6 @@
     <Content Include="fonts\barcodefont-webfont.woff" />
     <Content Include="fonts\barcodefont-webfont.woff2" />
     <Content Include="customer_panel.php" />
-    <Content Include="External Dependencies\ice-master.zip" />
     <None Include="img\notes\review.jpg.mno" />
     <Content Include="Sr_App\SR_app.Master" />
     <Content Include="Installer\InstallerMaster.Master" />
