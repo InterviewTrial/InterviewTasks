@@ -64,7 +64,7 @@
     </Reference>
     <Reference Include="Ajaxified, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Ajaxified.dll</HintPath>
+      <HintPath>External Dependencies\Ajaxified.dll</HintPath>
     </Reference>
     <Reference Include="aspsnippets.facebookapi">
       <HintPath>External Dependencies\aspsnippets.facebookapi.dll</HintPath>
@@ -288,6 +288,7 @@
     <Content Include="datetime\css\timeStyle.css" />
     <Content Include="datetime\img\header.jpg" />
     <Content Include="Employment_Redirect.aspx" />
+    <Content Include="External Dependencies\Ajaxified.dll" />
     <Content Include="External Dependencies\Microsoft.Practices.EnterpriseLibrary.Caching.Database.dll" />
     <Content Include="External Dependencies\Microsoft.Practices.EnterpriseLibrary.Caching.dll" />
     <Content Include="External Dependencies\Microsoft.Practices.EnterpriseLibrary.Common.dll" />
