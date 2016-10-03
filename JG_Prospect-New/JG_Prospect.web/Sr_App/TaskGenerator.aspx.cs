@@ -694,28 +694,86 @@ namespace JG_Prospect.Sr_App
 
         protected void btnSaveWorkSpecification_Click(object sender, EventArgs e)
         {
-            TaskWorkSpecification objTaskWorkSpecification = new TaskWorkSpecification();
-            objTaskWorkSpecification.Id = Convert.ToInt32(hdnWorkSpecificationId.Value);
-            objTaskWorkSpecification.TaskId = Convert.ToInt64(hdnTaskId.Value);
+            ScriptManager.RegisterStartupScript(
+                                                      (sender as Control),
+                                                      this.GetType(),
+                                                      "ShowPopupForPasswordAuthentication",
+                                                      string.Format(
+                                                                      "ShowPopupForPasswordAuthentication(\"#{0}\", \"{1}\");",
+                                                                      divFreez.ClientID,
+                                                                      ""
+                                                                  ),
+                                                      true
+                                                );
+            //old code
+            //TaskWorkSpecification objTaskWorkSpecification = new TaskWorkSpecification();
+            //objTaskWorkSpecification.Id = Convert.ToInt32(hdnWorkSpecificationId.Value);
+            //objTaskWorkSpecification.TaskId = Convert.ToInt64(hdnTaskId.Value);
 
-            TaskWorkSpecificationVersions objTaskWorkSpecificationVersions = new TaskWorkSpecificationVersions();
-            objTaskWorkSpecificationVersions.TaskWorkSpecificationId = objTaskWorkSpecification.Id;
-            objTaskWorkSpecificationVersions.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
-            objTaskWorkSpecificationVersions.Content = txtWorkSpecification.Text;
-            objTaskWorkSpecificationVersions.IsInstallUser = JGSession.IsInstallUser.Value;
-            objTaskWorkSpecificationVersions.Status = chkFreeze.Checked;
+            //TaskWorkSpecificationVersions objTaskWorkSpecificationVersions = new TaskWorkSpecificationVersions();
+            //objTaskWorkSpecificationVersions.TaskWorkSpecificationId = objTaskWorkSpecification.Id;
+            //objTaskWorkSpecificationVersions.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+            //objTaskWorkSpecificationVersions.Content = txtWorkSpecification.Text;
+            //objTaskWorkSpecificationVersions.IsInstallUser = JGSession.IsInstallUser.Value;
+            //objTaskWorkSpecificationVersions.Status = chkFreeze.Checked;
 
-            objTaskWorkSpecification.TaskWorkSpecificationVersions.Add(objTaskWorkSpecificationVersions);
+            //objTaskWorkSpecification.TaskWorkSpecificationVersions.Add(objTaskWorkSpecificationVersions);
 
-            if (objTaskWorkSpecification.Id == 0)
+            //if (objTaskWorkSpecification.Id == 0)
+            //{
+            //    TaskGeneratorBLL.Instance.InsertTaskWorkSpecification(objTaskWorkSpecification);
+            //}
+            //else
+            //{
+            //    TaskGeneratorBLL.Instance.UpdateTaskWorkSpecification(objTaskWorkSpecification);
+            //}
+            //ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "HidePopup", string.Format("HidePopup('#{0}');", divWorkSpecifications.ClientID), true);
+        }
+
+        private void SendEmailToManagerNUsers(string strUserIDs)
+        {
+            try
             {
-                TaskGeneratorBLL.Instance.InsertTaskWorkSpecification(objTaskWorkSpecification);
+                string strHTMLTemplateName = "Work Speciication Auto Email";
+                DataSet dsEmailTemplate = AdminBLL.Instance.GetEmailTemplate(strHTMLTemplateName, 108);
+                foreach (string userID in strUserIDs.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    DataSet dsUser = TaskGeneratorBLL.Instance.GetTaskUserFiles(Convert.ToInt32(userID));
+
+                    string emailId = dsUser.Tables[0].Rows[0]["Email"].ToString();
+                    string FName = dsUser.Tables[0].Rows[0]["FristName"].ToString();
+                    string LName = dsUser.Tables[0].Rows[0]["LastName"].ToString();
+                    string fullname = FName + " " + LName;
+
+                    string strHeader = dsEmailTemplate.Tables[0].Rows[0]["HTMLHeader"].ToString();
+                    string strBody = dsEmailTemplate.Tables[0].Rows[0]["HTMLBody"].ToString();
+                    string strFooter = dsEmailTemplate.Tables[0].Rows[0]["HTMLFooter"].ToString();
+                    string strsubject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString();
+
+                    strBody = strBody.Replace("#Fname#", fullname);
+                    strBody = strBody.Replace("#TaskLink#", string.Format("{0}?TaskId={1}", Request.Url.ToString().Split('?')[0], hdnTaskId.Value));
+
+                    strBody = strHeader + strBody + strFooter;
+
+                    List<Attachment> lstAttachments = new List<Attachment>();
+                    // your remote SMTP server IP.
+                    for (int i = 0; i < dsEmailTemplate.Tables[1].Rows.Count; i++)
+                    {
+                        string sourceDir = Server.MapPath(dsEmailTemplate.Tables[1].Rows[i]["DocumentPath"].ToString());
+                        if (File.Exists(sourceDir))
+                        {
+                            Attachment attachment = new Attachment(sourceDir);
+                            attachment.Name = Path.GetFileName(sourceDir);
+                            lstAttachments.Add(attachment);
+                        }
+                    }
+                    CommonFunction.SendEmail(strHTMLTemplateName, emailId, strsubject, strBody, lstAttachments);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                TaskGeneratorBLL.Instance.UpdateTaskWorkSpecification(objTaskWorkSpecification);
+                Console.WriteLine("{0} Exception caught.", ex);
             }
-            ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "HidePopup", string.Format("HidePopup('#{0}');", divWorkSpecifications.ClientID), true);
         }
 
         protected void lbtnDownloadWorkSpecificationFilePreview_Click(object sender, EventArgs e)
@@ -749,7 +807,60 @@ namespace JG_Prospect.Sr_App
                 }
             }
         }
+        protected void btnSetApproval_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                if (!string.IsNullOrEmpty(txtAuthenticateUser.Text.Trim()))
+                {
+                    //check accesibility with KERConsultancy and jmgrove 
+                    string jmPass = string.Empty;
+                    string KerPass = string.Empty;
+                    jmPass = TaskGeneratorBLL.Instance.GetAdminUserPass("jgrove@jmgroveconstruction.com").Tables[0].Rows[0][0].ToString();
+                    KerPass = TaskGeneratorBLL.Instance.GetInstallUserDetailByLogin("kerconsultancy@hotmail.com").Tables[0].Rows[0][0].ToString();
+                    if (txtAuthenticateUser.Text.Trim() == KerPass || txtAuthenticateUser.Text.Trim() == jmPass)
+                    {
+                        TaskWorkSpecification objTaskWorkSpecification = new TaskWorkSpecification();
+                        objTaskWorkSpecification.Id = Convert.ToInt32(hdnWorkSpecificationId.Value);
+                        objTaskWorkSpecification.TaskId = Convert.ToInt64(hdnTaskId.Value);
 
+                        TaskWorkSpecificationVersions objTaskWorkSpecificationVersions = new TaskWorkSpecificationVersions();
+                        objTaskWorkSpecificationVersions.TaskWorkSpecificationId = objTaskWorkSpecification.Id;
+                        objTaskWorkSpecificationVersions.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                        objTaskWorkSpecificationVersions.Content = txtWorkSpecification.Text;
+                        objTaskWorkSpecificationVersions.IsInstallUser = JGSession.IsInstallUser.Value;
+                        objTaskWorkSpecificationVersions.Status = chkFreeze.Checked;
+
+                        objTaskWorkSpecification.TaskWorkSpecificationVersions.Add(objTaskWorkSpecificationVersions);
+
+                        if (objTaskWorkSpecification.Id == 0)
+                        {
+                            TaskGeneratorBLL.Instance.InsertTaskWorkSpecification(objTaskWorkSpecification);
+                        }
+                        else
+                        {
+                            TaskGeneratorBLL.Instance.UpdateTaskWorkSpecification(objTaskWorkSpecification);
+                        }
+                        //Send Notification to concern user and manager
+                        string stremail = "jgrove@jmgroveconstruction.com" + "," + "ratn8177@gmail.com";
+                        SendEmailToManagerNUsers(stremail);
+                        ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "HidePopup1", string.Format("HidePopup1('#{0}');", divFreez.ClientID), true);
+                        ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "HidePopup", string.Format("HidePopup('#{0}');", divWorkSpecifications.ClientID), true);
+                    }
+                    else
+                    {
+                        ScriptManager.RegisterStartupScript(this.Page, GetType(), "al", "alert('UnAthorised Password');", true);
+
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("{0} Exception caught.", ex);
+            }
+
+        }
         protected void rptWorkFiles_ItemCommand(object source, RepeaterCommandEventArgs e)
         {
             if (e.CommandName == "DownloadFile")
