@@ -127,11 +127,12 @@ namespace JG_Prospect.JGCalender
             {
                 con.Open();
                 SqlDataAdapter adp = new SqlDataAdapter(cmd);
-                adp.Fill(dt);
+                if (start != System.DateTime.MinValue && end != System.DateTime.MinValue)
+                    adp.Fill(dt);
             }
             foreach (DataRow reader in dt.Rows)
             {
-                
+
                 CalendarEvent cevent = new CalendarEvent();
                 if (reader["status"].ToString() == "est<$1000" || reader["status"].ToString() == "est>$1000")
                 {
@@ -141,7 +142,7 @@ namespace JG_Prospect.JGCalender
                 {
                     cevent.backgroundColor = "red";
                 }
-                else 
+                else
                 {
                     cevent.backgroundColor = "gray";
                 }

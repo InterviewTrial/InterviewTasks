@@ -15,6 +15,7 @@
     <script src="jquery/jquery-ui-1.11.1.js" type="text/javascript"></script>
     <script src="jquery/jquery.qtip-2.2.0.js" type="text/javascript"></script>
     <script src="fullcalendar/fullcalendar-2.6.0.js" type="text/javascript"></script>
+    <script src="scripts/calendarscript.js" type="text/javascript"></script>
     <script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false&libraries=places&key=AIzaSyCKkBhvDXVd3K53AdMRXjbKpE0utScfWZM"></script>
 
@@ -104,10 +105,6 @@
         .fc-time {
             display: none;
         }
-        .ui-datepicker {
-            height:300px;
-            width:100%;
-        }
     </style>
 </head>
 <body>
@@ -121,13 +118,12 @@
         <div class="col-sm-12">
             <div class="divmap" id="dvMap" style="width: 50%; height: 300px; margin-top: 20px; margin-left: 20px; margin-bottom: 20px; float: left">
             </div>
-            <div style="float: right; margin-right: 20px; margin-bottom: 20px; width: 32%; height: 300px; margin-top: 20px;">
+            <div style="float: right; height: 300px; margin-top: 20px;">
                 <div class="date dateCalender" id="datepicker"></div>
             </div>
         </div>
 
-        <div style="float: left; width: 100%; padding: 0 0 0 10px;">
-
+        <div style="float: left; width: 100%; padding: 0 0 0 0px;">
             <div style="float: left; width: 45%">
                 <table style="font-family: Verdana; font-size: small;" width="100%">
                     <tbody>
@@ -146,7 +142,7 @@
                         <tr>
                             <td>
                                 <div id="direction_steps_holder" style="width: 100%">
-                                    <div id="dvDistance" style="padding: 5px;">
+                                    <div id="dvDistance" style="padding: 5px; padding-bottom:0px;">
                                     </div>
                                 </div>
                             </td>
@@ -856,7 +852,7 @@
 
             directionsDisplay = new google.maps.DirectionsRenderer({ 'draggable': true });
             //debugger
-            var philadelphia = new google.maps.LatLng(39.9526, -75.1652);
+            var philadelphia = new google.maps.LatLng(39.9526, 75.1652);
             var mapOptions = {
                 zoom: 7,
                 center: philadelphia

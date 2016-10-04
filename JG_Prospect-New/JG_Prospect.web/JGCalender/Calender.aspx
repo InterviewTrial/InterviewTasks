@@ -10,78 +10,9 @@
     <link rel="stylesheet" href="css/jquery-ui.css" />
     <script src="jquery/jquery-2.1.1.js" type="text/javascript"></script>
     <script src="jquery/jquery-ui-1.11.1.js" type="text/javascript"></script>
-    <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false&libraries=places&key=AIzaSyCKkBhvDXVd3K53AdMRXjbKpE0utScfWZM"></script>
-    <script type="text/javascript">
-        var source, destination;
-        var directionsDisplay;
-        var directionsService = new google.maps.DirectionsService();
-
-        google.maps.event.addDomListener(window, 'load', function () {
-            new google.maps.places.SearchBox(document.getElementById('txtFromLocation'));
-            new google.maps.places.SearchBox(document.getElementById('txtToLocation'));
-            directionsDisplay = new google.maps.DirectionsRenderer({ 'draggable': true });
-        });
-
-        function GetRoute() {
-            // var mumbai = new google.maps.LatLng(18.9750, 72.8258);
-            var philadelphia = new google.maps.LatLng(39.9526, 75.1652);
-            var mapOptions = {
-                zoom: 7,
-                center: philadelphia
-            };
-
-            map = new google.maps.Map(document.getElementById('dvMap'), mapOptions);
-            directionsDisplay.setMap(map);
-
-            //directionsDisplay.setPanel(document.getElementById('dvPanel'));
-
-            //*********DIRECTIONS AND ROUTE**********************//
-            source = document.getElementById("txtFromLocation").value;
-            destination = document.getElementById("txtToLocation").value;
-
-            var request = {
-                origin: source,
-                destination: destination,
-                travelMode: google.maps.TravelMode.DRIVING
-            };
-            directionsService.route(request, function (response, status) {
-                if (status == google.maps.DirectionsStatus.OK) {
-                    directionsDisplay.setDirections(response);
-                }
-            });
-
-            //*********DISTANCE AND DURATION**********************//
-            var service = new google.maps.DistanceMatrixService();
-            service.getDistanceMatrix({
-                origins: [source],
-                destinations: [destination],
-                travelMode: google.maps.TravelMode.DRIVING,
-                unitSystem: google.maps.UnitSystem.METRIC,
-                avoidHighways: false,
-                avoidTolls: false
-            }, function (response, status) {
-                if (status == google.maps.DistanceMatrixStatus.OK && response.rows[0].elements[0].status != "ZERO_RESULTS") {
-                    var distance = response.rows[0].elements[0].distance.text;
-                    var duration = response.rows[0].elements[0].duration.text;
-                    var dvDistance = document.getElementById("dvDistance");
-                    dvDistance.innerHTML = "";
-                    dvDistance.innerHTML += "Distance: " + distance + "<br />";
-                    dvDistance.innerHTML += "Duration:" + duration;
-
-                } else {
-                    alert("Unable to find the distance.");
-                }
-            });
-        }
-    </script>
     <link href="datetime/css/jquery-ui-1.7.1.custom.css" rel="stylesheet" type="text/css" />
-
     <link href="datetime/css/stylesheet.css" rel="stylesheet" type="text/css" />
-    <%--
-    <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-        <script src="//code.jquery.com/jquery-1.10.2.js"></script>
-  <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>--%>
-
+    <%-- Areef 10/02 - Removed previous code here, since it is not required in this page. --%>
     <script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <style>
         .caret-right {
@@ -125,19 +56,14 @@
                         <table>
                             <tr>
                                 <td style="width: 1200px;">
-
-                                    <div style="float: left">
-                                        <div class="date dateCalender" id="datepicker"></div>
-                                    </div>
-
-                                    <div style="margin-left: auto; width: 55%; padding-top: 10px;">
-                                        <div class="form-group has-feedback" style="align-self: center">
+                                    <div style="margin-left: 5px; width: 55%; padding-top: 5px;">
+                                        <div class="form-group has-feedback" style="align-self: center; margin-bottom: 0px;">
                                             <input type="text" class="form-control" name="txtSearch" id="txtSearch" placeholder="Search Calendar" />
                                             <span class="glyphicon glyphicon-search form-control-feedback"></span>
                                         </div>
                                     </div>
-                                    <div class="calender-header" style="padding: 5px; margin-left: 43%">
-                                        <ul class="nav navbar-nav" style="display: -webkit-inline-box">
+                                    <div class="calender-header" style="padding: 5px; padding-top: 0px; margin-left: 0px">
+                                        <ul class="nav navbar-nav" style="display: -webkit-inline-box; padding-top: 0px;">
                                             <li>
                                                 <a>
                                                     <label>
@@ -154,7 +80,7 @@
                                             </li>
                                             <li>
                                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Sales Calendar <b class="caret"></b></a>
-                                                <ul id="ul-customer" class="dropdown-menu" style="width: 250px; height: 250px; overflow-y: scroll;">
+                                                <ul id="ul-customer" class="dropdown-menu" style="width: 325px; height: auto; overflow-y: scroll;">
                                             </li>
                                         </ul>
                                     </div>
@@ -162,58 +88,22 @@
                             </tr>
                             <tr>
                                 <td>
-                                    <iframe src="SalesCalender.aspx" id="iframeSalesCalender" width="100%" height="600" style="border: 0;"></iframe>
+                                    <iframe src="SalesCalender.aspx" id="iframeSalesCalender" width="80%" height="1600" style="border: 0;margin-top:-25px;margin-left:10px;"></iframe>
                                 </td>
 
                             </tr>
                             <tr>
-
-                                <td style="width: 100%;">
-                                    <div style="float: left; width: 45%">
-                                        <table style="font-family: Verdana; font-size: small;" width="100%">
-                                            <tbody>
-                                                <tr>
-                                                    <td style="font-family: Verdana; font-size: 11pt; color: red;">
-                                                        <b>A:</b><textarea name="txtFromLocation" rows="2" cols="10" id="txtFromLocation" style="color: Black; width: 93%;">3502 Scotts Ln Philadelphia, PA 19129</textarea>
-                                                        <br />
-                                                        <br />
-                                                        <b>B:</b><textarea name="txtToLocation" rows="2" cols="10" id="txtToLocation" style="color: Black; width: 93%;"></textarea>
-                                                        <br />
-                                                        <div class="btn_sec">
-                                                            <input type="submit" name="btnGetDirection" value="Get Direction" id="btnGetDirection" onclick="GetRoute();" tabindex="3" style="height: 40px; width: 190px; margin: 6px 17px;" />
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>
-                                                        <div id="direction_steps_holder" style="width: 100%">
-                                                            <div id="dvDistance" style="padding: 5px;">
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div style="float: left; width: 53%; padding: 0 0 0 10px;">
-                                        <div id="dvMap" style="width: 100%; height: 400px;">
-                                            <%--<tr>
-                                                    <td colspan="2">
-                                                        <div id="map_canvasMarkers" style="width: 500px; height: 400px"></div>
-                                                    </td>
-                                                </tr>--%>
-                                        </div>
-                                    </div>
-                                </td>
+                                <td style="width: 100%;"></td>
                             </tr>
                         </table>
                     </td>
+
                     <td style="vertical-align: top;"></td>
                 </tr>
             </table>
-
-
         </div>
+
+
     </form>
     <script type="text/javascript">
         Date.prototype.yyyymmdd = function () {
@@ -334,6 +224,24 @@
 
             date = '';
         }
+
+        function doIframe() {
+            var $iframes = $("iframe");
+            $iframes.each(function () {
+                var iframe = this;
+                $(iframe).load(function () {
+                    setHeight(iframe);
+                });
+            });
+        }
+
+        function setHeight(e) {
+            e.height = e.contentWindow.document.body.scrollHeight + 35;
+        }
+
+        $(window).load(function () {
+            doIframe();
+        });
 
     </script>
 </body>
