@@ -91,6 +91,17 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.GetSubTasks(TaskId);
         }
 
+        public DataSet GetAdminUserPass(string loginId)
+        {
+            return TaskGeneratorDAL.Instance.GetAdmUserPassword(loginId);
+        }
+
+        public DataSet GetInstallUserDetailByLogin(string loginId)
+        {
+            return TaskGeneratorDAL.Instance.GetInstallUserDetailByLoginID(loginId);
+        }
+
+
         public DataSet GetTaskUserFiles(Int32 TaskId)
         {
             return TaskGeneratorDAL.Instance.GetTaskUserFiles(TaskId);

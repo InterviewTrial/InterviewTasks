@@ -519,7 +519,51 @@ namespace JG_Prospect.DAL
                 return null;
             }
         }
+        public DataSet GetAdmUserPassword(string LoginId)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("USP_GetPassword");
+                    command.CommandType = CommandType.StoredProcedure;
 
+                    database.AddInParameter(command, "@Login_Id", DbType.String, LoginId);
+                    returndata = database.ExecuteDataSet(command);
+
+                    return returndata;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public DataSet GetInstallUserDetailByLoginID(string LoginId)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("UDP_GetInstallerUserDetailsByLoginId");
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@loginId", DbType.String, LoginId);
+                    returndata = database.ExecuteDataSet(command);
+
+                    return returndata;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
         //Get details for task with user and attachments
         public DataSet GetTaskDetails(Int32 TaskId)
         {

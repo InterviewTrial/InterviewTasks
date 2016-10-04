@@ -718,6 +718,42 @@
         </div>
     </div>
     <%--Popup Ends--%>
+    <%--Popup ForFreez Approvel--%>
+    <div class="hide">
+        <div id="divFreez" runat="server">
+            <asp:UpdatePanel ID="UpWorkspecApprooval" runat="server" UpdateMode="Conditional">
+                <ContentTemplate>
+                    <table style="width:100%">
+                        <tr>
+                            <td style="text-align:center">Password:
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:center"><asp:TextBox ID="txtAuthenticateUser" runat="server"  Width="150px" TextMode="Password" ></asp:TextBox>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:center"> <div class="btn_sec">
+                                                <asp:Button ID="btnSetApproval" runat="server" Text="Approve" CssClass="ui-button"
+                                          
+                                                    OnClick="btnSetApproval_Click" />
+                                                <asp:HiddenField ID="HiddenField1" runat="server" Value="0" />
+                                            </div>
+                            </td>
+                        </tr>
+              
+                    </table>
+                </ContentTemplate>
+                <%--<Triggers>
+                    <asp:PostBackTrigger ControlID="lbtnDownloadWorkSpecificationFile" />
+                    <asp:PostBackTrigger ControlID="lbtnDownloadWorkSpecificationFilePreview" />
+                </Triggers>--%>
+            </asp:UpdatePanel>
+        </div>
+       
+    </div>
+    <%--Popup ForFreez Approvel Ends--%>
+
     <%--<script type="text/javascript" src="../js/jquery-migrate-1.0.0.js"></script>--%>
     <script type="text/javascript" src='../js/ice/lib/rangy/rangy-core.js'></script>
     <script type="text/javascript" src='../js/ice/src/polyfills.js'></script>
@@ -814,10 +850,20 @@
             objDialog.parent().appendTo(jQuery("form:first"));
         }
 
+        //Add By Ratnakar
+        function ShowPopupForPasswordAuthentication(varControlID,strTitle) {
+            var objDialog = $(varControlID).dialog({ width: "300px", height: "auto",margin:"0 auto" });
+            $('.ui-dialog-title').html(strTitle);
+            // this will enable postback from dialog buttons.
+            objDialog.parent().appendTo(jQuery("form:first"));
+            
+        }
         function HidePopup(varControlID) {
             $(varControlID).dialog("close");
         }
-
+        function HidePopup1(varControlID) {
+            $(varControlID).dialog("close");
+        }
         // check if user has selected any designations or not.
         function checkDesignations(oSrc, args) {
             args.IsValid = ($("#<%= ddlUserDesignation.ClientID%> input:checked").length > 0);
