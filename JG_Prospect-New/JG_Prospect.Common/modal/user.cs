@@ -61,6 +61,7 @@ namespace JG_Prospect.Common.modal
         public string maritalstatus;
         public int PrimeryTradeId;
         public int SecondoryTradeId;
+        public string sSecondoryTradeId;
         public string Notes;
         public string Source;
         public string Reason;
