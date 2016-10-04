@@ -13,6 +13,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using Telerik.Web.UI;
+using JG_Prospect.App_Code;
 
 namespace JG_Prospect.Sr_App
 {
@@ -314,6 +315,7 @@ namespace JG_Prospect.Sr_App
 
             Response.Redirect("InstallCreateUser.aspx?ID=" + ViewState["ApplicantId"]);
         }
+        
 
         protected void ddlStatus_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -322,7 +324,8 @@ namespace JG_Prospect.Sr_App
 
             hidApplicantID.Value = lnk.Text;
             hidSelectedVal.Value = selValue;
-
+            
+            
             if (ViewState["Email"] == null)
             {
                 LinkButton lnkEmail = (LinkButton)((System.Web.UI.WebControls.ListControl)(sender)).Parent.FindControl("lnkEmail");
@@ -344,9 +347,15 @@ namespace JG_Prospect.Sr_App
             string status = e.Appointment.Attributes["Status"];
             //string status = Convert.ToString(DataBinder.Eval(e.Appointment.DataItem, "Status"));
             DropDownList ddlStatus = (DropDownList)e.Container.FindControl("ddlStatus");
+            LinkButton lbtnReSchedule = (LinkButton)e.Container.FindControl("lbtnReSchedule");
             if (ddlStatus != null && !string.IsNullOrEmpty(status) && ddlStatus.Items.FindByValue(status) != null)
             {
                 ddlStatus.SelectedValue = status;
+
+                if (ddlStatus.SelectedValue == "InterviewDate")
+                    lbtnReSchedule.Visible = true;
+                else
+                    lbtnReSchedule.Visible = false;
             }
 
             e.Appointment.Subject = e.Appointment.Attributes["EventName"];
@@ -441,9 +450,206 @@ namespace JG_Prospect.Sr_App
             }
         }
 
+        protected void lbtnReSchedule_Click(object sender, CommandEventArgs e)
+        {
+            int intApplicantID = 0;
+
+            string[] commandArgs = e.CommandArgument.ToString().Split(new char[] { ',' });
+
+            int.TryParse(commandArgs[0].ToString(), out intApplicantID);
+            Session["ApplicantDesignation"] = commandArgs[1];
+            Session["ApplicantId"] = intApplicantID;
+            ReScheduleInterviewDate(Convert.ToInt32(intApplicantID));
+
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "overlayInterviewDate()", true);
+            return;
+        }
+
+        /// <summary>
+        /// Reschedule Interviw Date and send respective emails
+        ///  Task ID#: ITSN034 ?TaskId=117
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected void btnSaveInterview_Click(object sender, EventArgs e)
+        {
+
+            DataSet ds = new DataSet();
+            string strEmail = string.Empty;
+            string strFristName = string.Empty;
+            string strLastName = string.Empty;
+            string strHireDate = string.Empty;
+             
+            DateTime interviewDate;
+            DateTime.TryParse(dtInterviewDate.Text, out interviewDate);
+            if (interviewDate == null)
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "alert('Invalid Interview Date, Please verify');", true);
+                return;
+            }
+            ds = InstallUserBLL.Instance.ReSchedule_Interivew( Convert.ToInt32(Session["ApplicantId"])
+                , interviewDate.ToString("yyyy-MM-dd")
+                , ddlInsteviewtime.SelectedItem.Text
+                , Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]));
+             
+
+            if (ds != null)
+            {
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    strEmail = ds.Tables[0].Rows[0]["Email"].ToString();
+                    strFristName = ds.Tables[0].Rows[0]["FristName"].ToString();
+                    strLastName = ds.Tables[0].Rows[0]["LastName"].ToString();
+                    strHireDate = ds.Tables[0].Rows[0]["LastName"].ToString();  
+                }
+            }
+            
+            //AssignedTask if any or Default
+            
+            SendEmail(strEmail, strFristName, strLastName, "Interview Date Auto Email", "" ,
+                Convert.ToString(Session["ApplicantDesignation"]), strHireDate, "", "", 104);
+
+            AssignedTaskToUser(); 
+
+            Session["ApplicantId"] = null;
+
+            Response.Redirect(JG_Prospect.Common.JGConstant.PG_PATH_MASTER_CALENDAR);
+
+
+            //ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "ClosePopupInterviewDate()", true);
+            //return;
+        }
+        
         #endregion
 
         #region '--Methods--'
+
+        #region ' -- Re-Schedule Interivew Helper Methods--'
+
+        private void ReScheduleInterviewDate(int CandidateUserId)
+        {
+            LoadUsersByRecruiterDesgination();            
+
+            ddlTechTask = Utilits.FullDropDown.FillTechTaskDropDown(ddlTechTask);
+            ddlInsteviewtime = Utilits.FullDropDown.GetTimeIntervals(ddlInsteviewtime);
+
+            lblCurrentTask.Text = GetUserCurrentTask(CandidateUserId);
+            
+            dtInterviewDate.Text = DateTime.Now.AddDays(1).ToShortDateString();
+            ddlInsteviewtime.SelectedValue = "10:00 AM";
+            
+        }
+        
+        private string GetUserCurrentTask(int UserId)
+        {
+            string strUserTask = "No Task Assigned";
+
+            DataSet ds = InstallUserBLL.Instance.GetTechTaskByUser(UserId);
+
+            if (ds != null)
+            {
+                if (ds.Tables[0].Rows.Count > 0)
+                {
+                    strUserTask = ds.Tables[0].Rows[0]["Title"].ToString();
+                }
+            }
+
+            return strUserTask;
+        }
+
+        private void LoadUsersByRecruiterDesgination()
+        {
+            DataSet dsUsers;
+
+            dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, "Admin,Office Manager,Recruiter");
+
+            ddlUsers.DataSource = dsUsers;
+            ddlUsers.DataTextField = "FristName";
+            ddlUsers.DataValueField = "Id";
+            ddlUsers.DataBind();
+
+            ddlUsers.Items.Insert(0, new ListItem("--All--", "0"));
+        }
+
+        private void AssignedTaskToUser()
+        {
+            //If dropdown has any value then assigned it to user else. return 
+            if (ddlTechTask.Items.Count > 0)
+            {
+                string ApplicantId = Session["ApplicantId"].ToString();
+                // save (insert / delete) assigned users.
+                //bool isSuccessful = TaskGeneratorBLL.Instance.SaveTaskAssignedUsers(Convert.ToUInt64(ddlTechTask.SelectedValue), Session["EditId"].ToString());
+
+                // save assigned user a TASK.
+                bool isSuccessful = TaskGeneratorBLL.Instance.SaveTaskAssignedToMultipleUsers(Convert.ToUInt64(ddlTechTask.SelectedValue), ApplicantId);
+
+                // Change task status to assigned = 3.
+                if (isSuccessful)
+                    UpdateTaskStatus(Convert.ToInt32(ddlTechTask.SelectedValue), Convert.ToUInt16(TaskStatus.Assigned));
+
+                if (ddlTechTask.SelectedValue != "" || ddlTechTask.SelectedValue != "0")
+                    SendEmailToAssignedUsers(ApplicantId, ddlTechTask.SelectedValue);
+                
+            }
+        }
+
+        private void UpdateTaskStatus(Int32 taskId, UInt16 Status)
+        {
+            Task task = new Task();
+            task.TaskId = taskId;
+            task.Status = Status;
+
+            int result = TaskGeneratorBLL.Instance.UpdateTaskStatus(task);    // save task master details
+        }
+        
+        private void SendEmailToAssignedUsers(string strInstallUserIDs, string strTaskId)
+        {
+            try
+            {
+                string strHTMLTemplateName = "Task Generator Auto Email";
+                DataSet dsEmailTemplate = AdminBLL.Instance.GetEmailTemplate(strHTMLTemplateName, 108);
+                foreach (string userID in strInstallUserIDs.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    DataSet dsUser = TaskGeneratorBLL.Instance.GetInstallUserDetails(Convert.ToInt32(userID));
+
+                    string emailId = dsUser.Tables[0].Rows[0]["Email"].ToString();
+                    string FName = dsUser.Tables[0].Rows[0]["FristName"].ToString();
+                    string LName = dsUser.Tables[0].Rows[0]["LastName"].ToString();
+                    string fullname = FName + " " + LName;
+
+                    string strHeader = dsEmailTemplate.Tables[0].Rows[0]["HTMLHeader"].ToString();
+                    string strBody = dsEmailTemplate.Tables[0].Rows[0]["HTMLBody"].ToString();
+                    string strFooter = dsEmailTemplate.Tables[0].Rows[0]["HTMLFooter"].ToString();
+                    string strsubject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString();
+
+                    strBody = strBody.Replace("#Fname#", fullname);
+                    strBody = strBody.Replace("#TaskLink#", string.Format("{0}?TaskId={1}", Request.Url.ToString().Split('?')[0], strTaskId));
+
+                    strBody = strHeader + strBody + strFooter;
+
+                    List<Attachment> lstAttachments = new List<Attachment>();
+                    // your remote SMTP server IP.
+                    for (int i = 0; i < dsEmailTemplate.Tables[1].Rows.Count; i++)
+                    {
+                        string sourceDir = Server.MapPath(dsEmailTemplate.Tables[1].Rows[i]["DocumentPath"].ToString());
+                        if (File.Exists(sourceDir))
+                        {
+                            Attachment attachment = new Attachment(sourceDir);
+                            attachment.Name = Path.GetFileName(sourceDir);
+                            lstAttachments.Add(attachment);
+                        }
+                    }
+
+                    CommonFunction.SendEmail(strHTMLTemplateName, emailId, strsubject, strBody, lstAttachments);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("{0} Exception caught.", ex);
+            }
+        }
+
+        #endregion
 
         public void LoadCalendar()
         {
@@ -643,6 +849,7 @@ namespace JG_Prospect.Sr_App
                     }
                 }
 
+                if (Attachments != null)
                 lstAttachments.AddRange(Attachments);
 
                 JG_Prospect.App_Code.CommonFunction.SendEmail(Designition, emailId, strsubject, strBody, lstAttachments);

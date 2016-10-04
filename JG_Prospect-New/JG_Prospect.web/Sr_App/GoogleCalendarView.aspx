@@ -1,6 +1,9 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="GoogleCalendarView.aspx.cs" MasterPageFile="~/Sr_App/SR_app.Master" Inherits="JG_Prospect.Sr_App.GoogleCalendarView" %>
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
+
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
+
 <%--<%@ Register Src="~/Controls/left.ascx" TagName="leftmenu" TagPrefix="uc1" %>--%>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <script src="../datetime/js/jquery.ptTimeSelect.js" type="text/javascript"></script>
@@ -20,6 +23,10 @@
             overflow: hidden;
             text-indent: -9999px;
             width: 21px;
+        }
+        .rsAptContent ,.rsAptOut
+        {
+            height:63px !important;
         }
 
         *, *:before, *:after {
@@ -95,7 +102,7 @@
             filter: alpha(opacity=80);
             overflow-y: hidden;
         }
-
+          
         .white_content {
             display: none;
             position: absolute;
@@ -139,6 +146,27 @@
                     }
                 }
             });
+
+
+            // === Int 
+
+            //$("#btnSaveInterview").click(function () {
+            //    alert('d');
+            //    var isduplicate = document.getElementById('hdnisduplicate').value;
+            //    var custid = document.getElementById('hdnCustId').value;
+            //    if (isduplicate.toString() == "1") {
+            //        if (confirm('Duplicate contact, Press Ok to add the another appointment for existing customer.')) {
+            //            window.open("../Prospectmaster.aspx?title=" + custid);
+            //        }
+            //        else {
+            //            // alert('false');
+            //        }
+            //    }
+            //});
+
+
+
+
         });
 
         function fnCheckOne(me) {
@@ -160,7 +188,22 @@
         function OverlayPopupOfferMade() {
             document.getElementById('DivOfferMade').style.display = 'block';
             document.getElementById('DivOfferMadefade').style.display = 'block';
+            $("html, body").animate({ scrollTop: 0 }, "slow");
         }
+
+        function overlayInterviewDate() {
+
+            document.getElementById('interviewDatelite').style.display = 'block';
+            document.getElementById('interviewDatefade').style.display = 'block';
+            //$('#interviewDatelite').focus();
+            $("html, body").animate({ scrollTop: 0 }, "slow");
+        }
+
+        function overlayInterviewDate_Close() {
+            document.getElementById('interviewDatelite').style.display = 'none';
+            document.getElementById('interviewDatefade').style.display = 'none'
+        }
+
 
     </script>
     <code>$('#time1 input').ptTimeSelect({ onBeforeShow: function(i){ $('#time1 #time1-data').append('onBeforeShow(event)
@@ -222,6 +265,8 @@
                                     <asp:ListItem Text="Deactive" Value="Deactive"></asp:ListItem>
                                     <asp:ListItem Text="Install Prospect" Value="Install Prospect"></asp:ListItem>
                                 </asp:DropDownList>
+
+                                <asp:LinkButton ID="lbtnReSchedule" runat="server" OnCommand="lbtnReSchedule_Click" Text='Re-Schedule' CommandArgument='<%#Eval("ApplicantId") +","+ Eval("Designation")%> ' ></asp:LinkButton>
                             </AppointmentTemplate>
                         </telerik:RadScheduler>
                         <telerik:RadWindow ID="RadWindow1" runat="server" Modal="true" Title="No Appointment available"
@@ -386,8 +431,71 @@
                 </ContentTemplate></asp:UpdatePanel>
         </div>
     </asp:Panel>
+
+    <asp:Panel ID="pnlReScheduleInterviewDate" runat="server">
+        <div id="interviewDatelite" class="white_content" style="height: auto;">
+            <h3>Interview Details</h3>            
+            <asp:UpdatePanel runat="server" UpdateMode="Always">
+                <ContentTemplate>
+            <table width="100%" style="border: Solid 3px #b04547; width: 100%; height: 300px;"
+                cellpadding="0" cellspacing="0">
+                <tr>
+                    <td align="center" style="height: 15px;">Re-Schedule Date :
+                    <asp:TextBox ID="dtInterviewDate" placeholder="Select Date" runat="server" ClientIDMode="Static" onkeypress="return false" TabIndex="104" Width="127px"></asp:TextBox>
+                        <cc1:CalendarExtender ID="CalendarExtender1" TargetControlID="dtInterviewDate" Format="MM/dd/yyyy" runat="server"></cc1:CalendarExtender>
+                        <asp:RequiredFieldValidator ID="RequiredFieldValidator4" runat="server" ErrorMessage="Select Date" ControlToValidate="dtInterviewDate" ValidationGroup="InterviewDate"></asp:RequiredFieldValidator>
+                    </td>
+                    <td align="center"></td>
+                    <td>Re-Schedule Time :
+                        <asp:DropDownList ID="ddlInsteviewtime" runat="server" TabIndex="105" Width="112px"></asp:DropDownList>
+                    </td>
+                </tr>
+                <tr>
+                    <td  align="right">Recruiter</td>
+                    <td> : </td>
+                    <td align="left" >
+                        <asp:DropDownList ID="ddlUsers" runat="server" />
+                        <asp:RequiredFieldValidator ID="rfvddlUsers" runat="server" ErrorMessage="Select Recruiter" ControlToValidate="ddlUsers" 
+                            ValidationGroup="InterviewDate" InitialValue="0" />
+                    </td>
+                </tr>
+                <tr>
+                    <td  align="right">Task</td>
+                    <td> : </td>
+                    <td align="left">
+                        <asp:DropDownList ID="ddlTechTask" runat="server" />
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right">Current Assigned Task</td>
+                    <td>:</td>
+                    <td align="left">
+                        <b>
+                            <asp:Label ID="lblCurrentTask" runat="server"></asp:Label>
+                        </b>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center" colspan="3">
+
+                        
+                        <asp:Button ID="btnSaveInterview" runat="server" BackColor="#327FB5" ForeColor="White" Height="32px"
+                            Style="height: 26px; font-weight: 700; line-height: 1em;" Text="OK" Width="100px" ValidationGroup="InterviewDate"
+                            TabIndex="119" OnClick="btnSaveInterview_Click" />
+                        <input type="button" value="Cancel" onclick="overlayInterviewDate_Close()" style="Width:100px;height: 26px; font-weight: 700; line-height: 1em;" />                        
+                    </td>
+                </tr>
+            </table>
+                    </ContentTemplate>
+            </asp:UpdatePanel>
+        </div>
+    </asp:Panel>
+    <div id="interviewDatefade" class="black_overlay">
+    </div>
     <div id="DivOfferMadefade" class="black_overlay">
     </div>
     <asp:ValidationSummary ID="ValidationSummary1" runat="server" ValidationGroup="Submit" ShowSummary="False" ShowMessageBox="True" />
 </asp:Content>
+
+
 

@@ -443,6 +443,12 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.ChangeSatatus(Status, StatusId, RejectionDate, RejectionTime, RejectedUserId, IsInstallUser, StatusReason, UserIds);
         }
 
+        public DataSet ReSchedule_Interivew(int ApplicantId, string ReSheduleDate , string ReSheduleTime, int ReSheduleByUserId)
+        {
+
+            return InstallUserDAL.Instance.ReSchedule_Interivew(ApplicantId, ReSheduleDate, ReSheduleTime, ReSheduleByUserId);
+        } 
+
         public void ChangeStatusToInterviewDate(string Status, int StatusId, string RejectionDate, string RejectionTime, int RejectedUserId, string time, string StatusReason = "")
         {
             InstallUserDAL.Instance.ChangeStatusToInterviewDate(Status, StatusId, RejectionDate, RejectionTime, RejectedUserId, time, StatusReason);
@@ -478,6 +484,9 @@ namespace JG_Prospect.BLL
 
         }
 
-
+        public DataSet GetTechTaskByUser(int UserId)
+        {
+            return InstallUserDAL.Instance.GetTechTaskByUser(UserId);
+        }
     }
 }

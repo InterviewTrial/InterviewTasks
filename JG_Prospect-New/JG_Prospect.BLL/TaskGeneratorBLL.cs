@@ -40,6 +40,10 @@ namespace JG_Prospect.BLL
         {
             return TaskGeneratorDAL.Instance.SaveTaskAssignedUsers(TaskId, UserIds);
         }
+        public bool SaveTaskAssignedToMultipleUsers(UInt64 TaskId, String UserId)
+        {
+            return TaskGeneratorDAL.Instance.SaveTaskAssignedToMultipleUsers(TaskId, UserId);
+        }
         public bool SaveTaskAssignmentRequests(UInt64 TaskId, String UserIds)
         {
             return TaskGeneratorDAL.Instance.SaveTaskAssignmentRequests(TaskId, UserIds);
@@ -138,5 +142,7 @@ namespace JG_Prospect.BLL
         {
             return TaskGeneratorDAL.Instance.DeleteTask(TaskId);
         }
+
+        
     }
 }

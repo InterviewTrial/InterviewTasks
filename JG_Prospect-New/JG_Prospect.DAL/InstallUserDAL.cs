@@ -247,6 +247,29 @@ namespace JG_Prospect.DAL
             }
             return tupResult;
         }
+        
+
+        public DataSet GetTechTaskByUser(int UserId)
+        {
+            DataSet dsTemp = new DataSet();
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("sp_Get_TaskAssignByUserID");
+                    command.CommandType = CommandType.StoredProcedure;                    
+                    database.AddInParameter(command, "@UserId", DbType.Int32, UserId);
+
+                    dsTemp = database.ExecuteDataSet(command);
+                    return dsTemp;
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return dsTemp;
+        }
 
         public void UpdateProspect(user objuser)
         {
@@ -303,6 +326,30 @@ namespace JG_Prospect.DAL
                     {
                         database.AddInParameter(command, "@UserIds", DbType.String, UserIds);
                     }
+
+                    dsTemp = database.ExecuteDataSet(command);
+                    return dsTemp;
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+            return dsTemp;
+        }
+
+        public DataSet ReSchedule_Interivew(int applicantId, string reSheduleDate, string reSheduleTime, int reSheduleByUserId)
+        {
+            DataSet dsTemp = new DataSet();
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("Sp_ReSchedule_Interivew");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@ApplicantId", DbType.Int32, applicantId);
+                    database.AddInParameter(command, "@ReSheduleDate", DbType.String, reSheduleDate);
+                    database.AddInParameter(command, "@ReSheduleTime", DbType.String, reSheduleTime);
+                    database.AddInParameter(command, "@ReSheduleByUserId", DbType.Int32, reSheduleByUserId);
 
                     dsTemp = database.ExecuteDataSet(command);
                     return dsTemp;

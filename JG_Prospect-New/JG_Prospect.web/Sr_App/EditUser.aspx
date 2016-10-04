@@ -69,7 +69,8 @@
             
             document.getElementById('interviewDatelite').style.display = 'block';
             document.getElementById('interviewDatefade').style.display = 'block';
-            $('#interviewDatelite').focus();
+            //$('#interviewDatelite').focus();
+            $("html, body").animate({ scrollTop: 0 }, "slow");
         }
 
         function ClosePopupOfferMade() {
@@ -80,6 +81,7 @@
         function OverlayPopupOfferMade() {
             document.getElementById('DivOfferMade').style.display = 'block';
             document.getElementById('DivOfferMadefade').style.display = 'block';
+            $("html, body").animate({ scrollTop: 0 }, "slow");
         }
 
         function ClosePopupUploadBulk() {
@@ -679,19 +681,29 @@
                         <cc1:CalendarExtender ID="CalendarExtender1" TargetControlID="dtInterviewDate" Format="MM/dd/yyyy" runat="server"></cc1:CalendarExtender>
                         <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ErrorMessage="Select Date" ControlToValidate="dtInterviewDate" ValidationGroup="InterviewDate"></asp:RequiredFieldValidator>
                     </td>
+                    <td align="center"></td>
                     <td>Time :
                         <asp:DropDownList ID="ddlInsteviewtime" runat="server" TabIndex="105" Width="112px"></asp:DropDownList>
                     </td>
                 </tr>
                 <tr>
-                    <td align="center" colspan="2">Recruiter :
+                    <td  align="right">Recruiter</td>
+                    <td> : </td>
+                    <td align="left" >
                         <asp:DropDownList ID="ddlUsers" runat="server" />
                         <asp:RequiredFieldValidator ID="rfvddlUsers" runat="server" ErrorMessage="Select Recruiter" ControlToValidate="ddlUsers" 
                             ValidationGroup="InterviewDate" InitialValue="0" />
                     </td>
                 </tr>
                 <tr>
-                    <td align="center" colspan="2">
+                    <td  align="right">Task</td>
+                    <td> : </td>
+                    <td align="left">
+                        <asp:DropDownList ID="ddlTechTask" runat="server" />
+                    </td>
+                </tr>
+                <tr>
+                    <td align="center" colspan="3">
                         <asp:Button ID="btnSaveInterview" runat="server" BackColor="#327FB5" ForeColor="White" Height="32px"
                             Style="height: 26px; font-weight: 700; line-height: 1em;" Text="OK" Width="100px" ValidationGroup="InterviewDate"
                             TabIndex="119" OnClick="btnSaveInterview_Click" />

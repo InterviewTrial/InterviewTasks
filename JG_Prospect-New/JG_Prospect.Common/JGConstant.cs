@@ -69,6 +69,8 @@ namespace JG_Prospect.Common
         public const string DROPDOWNLIST = "DROPDOWNLIST";
         public const string TEXTBOX = "TEXTBOX";
 
+        public const string RESHEDULE_INTERVIEW_DATE = "RESHEDULEINTERVIEWDATE";
+
         public enum ProductType
         {
             shutter = 1,
@@ -91,5 +93,15 @@ namespace JG_Prospect.Common
             ReOpened = 4,
             Closed = 5
         }
+
+        #region '-- Page Name --'
+
+        /// <summary>
+        /// Master Calendar Direct URL 
+        /// </summary>
+        public const string PG_PATH_MASTER_CALENDAR = "~/Sr_App/GoogleCalendarView.aspx";
+
+
+        #endregion
     }
 }

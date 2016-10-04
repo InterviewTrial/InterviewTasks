@@ -1,6 +1,6 @@
 ﻿using JG_Prospect.BLL;
 using JG_Prospect.Common.modal;
-using Microsoft.Office.Interop.Excel;
+//using Microsoft.Office.Interop.Excel;
 using System;
 using System.Collections.Generic;
 using System.Configuration;

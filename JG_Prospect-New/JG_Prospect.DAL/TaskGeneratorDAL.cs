@@ -211,6 +211,37 @@ namespace JG_Prospect.DAL
             }
         }
 
+        public bool SaveTaskAssignedToMultipleUsers(UInt64 TaskId, String UserId)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_InsertTaskAssignedToMultipleUsers");
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@TaskId", SqlDbType.BigInt, TaskId);
+                    database.AddInParameter(command, "@UserIds", SqlDbType.VarChar, UserId);
+
+                    int result = database.ExecuteNonQuery(command);
+
+                    if (result > 0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         public bool SaveTaskAssignmentRequests(UInt64 TaskId, String UserIds)
         {
             try

@@ -3050,6 +3050,8 @@ namespace JG_Prospect.Sr_App
                 dtInterviewDate.Text = DateTime.Now.AddDays(1).ToShortDateString();
                 ddlInsteviewtime.Visible = true;
                 ddlInsteviewtime.SelectedValue = "10:00 AM";
+                ddlTechTask = Utilits.FullDropDown.FillTechTaskDropDown(ddlTechTask);
+
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "overlayInterviewDate();", true);
             }
             else if (ddlstatus.SelectedValue == "Deactive")
@@ -5055,10 +5057,21 @@ namespace JG_Prospect.Sr_App
                 SendEmail(email, txtfirstname.Text, txtlastname.Text, "Interview Date Auto Email", string.Empty, Desig, HireDate, EmpType, PayRates, 104);
                 //SendEmail(email, Convert.ToString(Session["FirstNameNewSC"]), Convert.ToString(Session["LastNameNewSC"]), "Interview Date Auto Email", txtReason.Text, Convert.ToString(Session["DesignitionSC"]), HireDate, EmpType, PayRates, 104);
                 //binddata();
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "ClosePopupInterviewDate()", true);
-                return;
+
+                //AssignedTask if any or Default
+                AssignedTaskToUser();
+
+                Session["installId"] = "";
+                Session["ID"] = "";
+
+                Response.Redirect(JG_Prospect.Common.JGConstant.PG_PATH_MASTER_CALENDAR);
+
+                //ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "ClosePopupInterviewDate()", true);
+                //return;
             }
         }
+
+        
 
         protected void btnCancelInterview_Click(object sender, EventArgs e)
         {
@@ -5068,6 +5081,91 @@ namespace JG_Prospect.Sr_App
         #endregion
 
         #region '--Methods--'
+
+        #region 'Private Methods - Assigned Task ToUser '
+
+        private void AssignedTaskToUser()
+        {
+            //If dropdown has any value then Assigned it to user else. return 
+            string ApplicantId = Session["ID"].ToString(); 
+
+            if (ddlTechTask.Items.Count > 0)
+            {
+                // save (insert / delete) assigned users.
+                //bool isSuccessful = TaskGeneratorBLL.Instance.SaveTaskAssignedUsers(Convert.ToUInt64(ddlTechTask.SelectedValue), Session["EditId"].ToString());
+
+                // save assigned user a TASK.
+                bool isSuccessful = TaskGeneratorBLL.Instance.SaveTaskAssignedToMultipleUsers(Convert.ToUInt64(ddlTechTask.SelectedValue), ApplicantId);
+
+                // Change task status to assigned = 3.
+                if (isSuccessful)
+                    UpdateTaskStatus(Convert.ToInt32(ddlTechTask.SelectedValue), Convert.ToUInt16(TaskStatus.Assigned));
+
+                if (ddlTechTask.SelectedValue != "" || ddlTechTask.SelectedValue != "0")
+                    SendEmailToAssignedUsers(ApplicantId, ddlTechTask.SelectedValue);
+
+            }
+        }
+
+        private void UpdateTaskStatus(Int32 taskId, UInt16 Status)
+        {
+            Task task = new Task();
+            task.TaskId = taskId;
+            task.Status = Status;
+
+            int result = TaskGeneratorBLL.Instance.UpdateTaskStatus(task);    // save task master details
+
+            
+        }
+
+        private void SendEmailToAssignedUsers(string strInstallUserIDs, string strTaskId)
+        {
+            try
+            {
+                string strHTMLTemplateName = "Task Generator Auto Email";
+                DataSet dsEmailTemplate = AdminBLL.Instance.GetEmailTemplate(strHTMLTemplateName, 108);
+                foreach (string userID in strInstallUserIDs.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    DataSet dsUser = TaskGeneratorBLL.Instance.GetInstallUserDetails(Convert.ToInt32(userID));
+
+                    string emailId = dsUser.Tables[0].Rows[0]["Email"].ToString();
+                    string FName = dsUser.Tables[0].Rows[0]["FristName"].ToString();
+                    string LName = dsUser.Tables[0].Rows[0]["LastName"].ToString();
+                    string fullname = FName + " " + LName;
+
+                    string strHeader = dsEmailTemplate.Tables[0].Rows[0]["HTMLHeader"].ToString();
+                    string strBody = dsEmailTemplate.Tables[0].Rows[0]["HTMLBody"].ToString();
+                    string strFooter = dsEmailTemplate.Tables[0].Rows[0]["HTMLFooter"].ToString();
+                    string strsubject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString();
+
+                    strBody = strBody.Replace("#Fname#", fullname);
+                    strBody = strBody.Replace("#TaskLink#", string.Format("{0}?TaskId={1}", Request.Url.ToString().Split('?')[0], strTaskId));
+
+                    strBody = strHeader + strBody + strFooter;
+
+                    List<Attachment> lstAttachments = new List<Attachment>();
+                    // your remote SMTP server IP.
+                    for (int i = 0; i < dsEmailTemplate.Tables[1].Rows.Count; i++)
+                    {
+                        string sourceDir = Server.MapPath(dsEmailTemplate.Tables[1].Rows[i]["DocumentPath"].ToString());
+                        if (File.Exists(sourceDir))
+                        {
+                            Attachment attachment = new Attachment(sourceDir);
+                            attachment.Name = Path.GetFileName(sourceDir);
+                            lstAttachments.Add(attachment);
+                        }
+                    }
+
+                    CommonFunction.SendEmail(strHTMLTemplateName, emailId, strsubject, strBody, lstAttachments);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("{0} Exception caught.", ex);
+            }
+        }
+
+        #endregion
 
         [System.Web.Services.WebMethodAttribute(), System.Web.Script.Services.ScriptMethodAttribute()]
         public static string[] GetZipcodes(string prefixText)
@@ -6231,7 +6329,7 @@ namespace JG_Prospect.Sr_App
                         lstAttachments.Add(attachment);
                     }
                 }
-
+                if(Attachments != null)
                 lstAttachments.AddRange(Attachments);
 
                 JG_Prospect.App_Code.CommonFunction.SendEmail(Designition, emailId, strsubject, strBody, lstAttachments);
