@@ -746,7 +746,7 @@ form.inline {
         margin: 0 0 50px 0;
         padding: 0;
         list-style-type: none;
-        overflow: auto;
+        /*overflow: auto;*/
     }
 
         .form_panel_custom ul li {
@@ -755,6 +755,8 @@ form.inline {
             width: 37%;
             float: left;
             border-right: #fff 1px solid;
+             height: 80px;
+
         }
 
             .form_panel_custom ul li.last {
@@ -1437,4 +1439,20 @@ table tr.trFooter td {
 
 .valigntop {
     vertical-align: top;
+}
+
+	.btnCommon {
+    text-align: center;
+    background: url(../img/btn.png) no-repeat;
+    line-height: 39px;
+    padding: 0;
+    color: #fff;
+    font-weight: bold;
+    font-size: 16px;
+    margin: 0px 10px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #a1a0a0;
 }

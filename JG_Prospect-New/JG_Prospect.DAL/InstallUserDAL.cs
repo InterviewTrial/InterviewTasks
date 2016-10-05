@@ -92,6 +92,11 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@Zip", DbType.String, objuser.zip);
                     database.AddInParameter(command, "@State", DbType.String, objuser.state);
                     database.AddInParameter(command, "@City", DbType.String, objuser.city);
+
+                    database.AddInParameter(command, "@Zip2", DbType.String, objuser.Zip2);//added by Ramya
+                    database.AddInParameter(command, "@State2", DbType.String, objuser.State2);//added by Ramya
+                    database.AddInParameter(command, "@City2", DbType.String, objuser.City2);//added by Ramya
+
                     database.AddInParameter(command, "@password", DbType.String, objuser.password);
                     database.AddInParameter(command, "@designation", DbType.String, objuser.designation);
                     database.AddInParameter(command, "@status", DbType.String, objuser.status);
@@ -119,7 +124,10 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@k", DbType.String, objuser.k);
                     database.AddInParameter(command, "@maritalstatus", DbType.String, objuser.maritalstatus);
                     database.AddInParameter(command, "@PrimeryTradeId", DbType.Int32, objuser.PrimeryTradeId);
-                    database.AddInParameter(command, "@SecondoryTradeId", DbType.Int32, objuser.SecondoryTradeId);
+                    //database.AddInParameter(command, "@SecondoryTradeId", DbType.Int32, objuser.SecondoryTradeId);
+
+                    database.AddInParameter(command, "@SecondoryTradeId", DbType.String, objuser.sSecondoryTradeId);//added by Ramya
+
                     database.AddInParameter(command, "@Source", DbType.String, objuser.Source);
                     database.AddInParameter(command, "@Notes", DbType.String, objuser.Notes);
                     database.AddInParameter(command, "@StatusReason", DbType.String, objuser.Reason);
