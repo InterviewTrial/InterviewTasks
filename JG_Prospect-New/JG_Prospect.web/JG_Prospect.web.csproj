@@ -1395,6 +1395,7 @@
     </Compile>
     <Compile Include="Sr_App\EditUser.aspx.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Sr_App\EditUser.aspx.designer.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>
@@ -1642,6 +1643,7 @@
     <Compile Include="UserControl\UCAddress.ascx.designer.cs">
       <DependentUpon>UCAddress.ascx</DependentUpon>
     </Compile>
+    <Compile Include="Utilits\FullDropDown.cs" />
     <Compile Include="WeatherControl.ascx.cs">
       <DependentUpon>WeatherControl.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
