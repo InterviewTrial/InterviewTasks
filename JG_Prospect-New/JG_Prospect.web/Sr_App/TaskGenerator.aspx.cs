@@ -128,6 +128,7 @@ namespace JG_Prospect.Sr_App
             }
         }
 
+
         #endregion
 
         #region "--Page methods--"
@@ -136,8 +137,9 @@ namespace JG_Prospect.Sr_App
         {
             ScriptManager scriptManager = ScriptManager.GetCurrent(this.Page);
             scriptManager.RegisterPostBackControl(this.gdTaskUsers);
+            scriptManager.RegisterPostBackControl(this.gdTaskUsers1);
 
-                if (!IsPostBack)
+            if (!IsPostBack)
             {
                 this.IsAdminMode = CommonFunction.CheckAdminMode();
 
@@ -163,16 +165,18 @@ namespace JG_Prospect.Sr_App
                 ddlTUStatus.DataBind();
 
                 this.LastSubTaskSequence = string.Empty;
-
+                
                 // edit mode, if task id is provided in query string parameter.
                 if (!string.IsNullOrEmpty(Request.QueryString["TaskId"]))
                 {
                     controlMode.Value = "1";
                     hdnTaskId.Value = Request.QueryString["TaskId"].ToString();
                     LoadTaskData(hdnTaskId.Value);
+                    btnAddNote.Visible = true;
                 }
                 else
                 {
+                    btnAddNote.Visible = false;
                     controlMode.Value = "0";
                 }
             }
@@ -491,13 +495,13 @@ namespace JG_Prospect.Sr_App
             //Save details of users to whom task is assgined.
             SaveAssignedTaskUsers(ddcbAssigned, (TaskStatus)Convert.ToByte(cmbStatus.SelectedItem.Value));
 
-            if (controlMode.Value == "0")
-            {
-                foreach (DataRow drTaskUserFiles in this.dtTaskUserFiles.Rows)
-                {
-                    UploadUserAttachements(null, Convert.ToInt64(hdnTaskId.Value), Convert.ToString(drTaskUserFiles["attachment"]));
-                }
-            }
+            //if (controlMode.Value == "0")
+            //{
+            //    foreach (DataRow drTaskUserFiles in this.dtTaskUserFiles.Rows)
+            //    {
+            //        UploadUserAttachements(null, Convert.ToInt64(hdnTaskId.Value), Convert.ToString(drTaskUserFiles["attachment"]));
+            //    }
+            //}
 
             if (this.lstSubTasks.Any())
             {
@@ -533,6 +537,22 @@ namespace JG_Prospect.Sr_App
 
         protected void btnAddNote_Click(object sender, EventArgs e)
         {
+            string notes = string.Empty;
+            if (!string.IsNullOrEmpty(Request.QueryString["TaskId"]))
+            {
+                if (Session[JG_Prospect.Common.SessionKey.Key.usertype.ToString()] == "Admin")
+                    notes = txtNote.Text;
+                else
+                    notes = txtNote1.Text;
+            }
+            else
+            {
+                notes = Server.HtmlEncode(txtDescription.Text);
+            }
+
+            if (string.IsNullOrEmpty(notes))
+                return;
+
             SaveTaskNotesNAttachments();
             hdnAttachments.Value = "";
         }
@@ -1177,7 +1197,10 @@ namespace JG_Prospect.Sr_App
             txtHours.Text = string.Empty;
             gdTaskUsers.DataSource = null;
             gdTaskUsers.DataBind();
+            gdTaskUsers1.DataSource = null;
+            gdTaskUsers1.DataBind();
             txtNote.Text = string.Empty;
+            txtNote1.Text = string.Empty;
             hdnTaskId.Value = "0";
             controlMode.Value = "0";
         }
@@ -1222,6 +1245,13 @@ namespace JG_Prospect.Sr_App
             task.IsTechTask = chkTechTask.Checked;
 
             Int64 ItaskId = TaskGeneratorBLL.Instance.SaveOrDeleteTask(task);    // save task master details
+
+            // Save task notes and user information,
+            Int32 TaskUpdateId = SaveTaskNote(ItaskId, false, null, string.Empty, task.Description);
+
+            // Save task related user's attachment.
+            //UploadUserAttachements(TaskUpdateId, null, string.Empty);
+            LoadTaskData(ItaskId.ToString());
 
             if (controlMode.Value == "0")
             {
@@ -1434,7 +1464,8 @@ namespace JG_Prospect.Sr_App
                 }
 
                 // Save task notes and user information, returns TaskUpdateId for reference to add in user attachments.
-                Int32 TaskUpdateId = SaveTaskNote(Convert.ToInt64(hdnTaskId.Value), isCreatorUser, null, string.Empty);
+
+                Int32 TaskUpdateId = SaveTaskNote(Convert.ToInt64(hdnTaskId.Value), isCreatorUser, null, string.Empty, string.Empty);
 
                 // Save task related user's attachment.
                 UploadUserAttachements(TaskUpdateId, null, string.Empty);
@@ -1442,7 +1473,7 @@ namespace JG_Prospect.Sr_App
                 LoadTaskData(hdnTaskId.Value);
 
                 txtNote.Text = string.Empty;
-
+                txtNote1.Text = string.Empty;
                 //clearAllFormData();
 
                 // Refresh task list on top header.
@@ -1499,7 +1530,7 @@ namespace JG_Prospect.Sr_App
         /// </summary>
         /// <param name="Designame"></param>
         /// <param name="ItaskId"></param>
-        private Int32 SaveTaskNote(long ItaskId, Boolean? IsCreated, Int32? UserId, String UserName)
+        private Int32 SaveTaskNote(long ItaskId, Boolean? IsCreated, Int32? UserId, String UserName, String taskDescription)
         {
             Int32 TaskUpdateId = 0;
 
@@ -1519,8 +1550,16 @@ namespace JG_Prospect.Sr_App
 
 
 
-            //taskUser.UserType = userType.Text;
-            taskUser.Notes = txtNote.Text;
+            if (string.IsNullOrEmpty(taskDescription))
+            {
+                //taskUser.UserType = userType.Text;
+                if (Session[JG_Prospect.Common.SessionKey.Key.usertype.ToString()] == "Admin")
+                    taskUser.Notes = txtNote.Text;
+                else
+                    taskUser.Notes = txtNote1.Text;
+            }
+            else
+                taskUser.Notes = taskDescription;
 
             // if user has just created task then send entry with iscreator= true to distinguish record from other user's log.
 
@@ -1745,6 +1784,9 @@ namespace JG_Prospect.Sr_App
         {
             gdTaskUsers.DataSource = dtTaskUserDetails;
             gdTaskUsers.DataBind();
+
+            gdTaskUsers1.DataSource = dtTaskUserDetails;
+            gdTaskUsers1.DataBind();
         }
 
         private void SetSubTaskDetails(DataTable dtSubTaskDetails)
@@ -1785,7 +1827,7 @@ namespace JG_Prospect.Sr_App
 
                 txtDueDate.Text = CommonFunction.FormatToShortDateString(dtTaskMasterDetails.Rows[0]["DueDate"]);
                 txtHours.Text = dtTaskMasterDetails.Rows[0]["Hours"].ToString();
-                
+
                 //hide user view table.
                 tblUserTaskView.Visible = false;
             }
