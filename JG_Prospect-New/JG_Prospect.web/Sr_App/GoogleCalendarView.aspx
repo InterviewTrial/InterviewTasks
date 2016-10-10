@@ -4,6 +4,8 @@
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 
+<%@ Register Src="~/UserControl/ucStatusChangePopup.ascx" TagPrefix="ucStatusChange" TagName="PoPup" %>
+
 <%--<%@ Register Src="~/Controls/left.ascx" TagName="leftmenu" TagPrefix="uc1" %>--%>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <script src="../datetime/js/jquery.ptTimeSelect.js" type="text/javascript"></script>
@@ -11,7 +13,7 @@
     <style type="text/css">
         .rsAptDelete {
             display: none;
-        }
+        } 
 
         .RadScheduler .rsHeader .rsHeaderTimeline {
             background-position: -228px -31px;
@@ -267,6 +269,7 @@
                                 </asp:DropDownList>
 
                                 <asp:LinkButton ID="lbtnReSchedule" runat="server" OnCommand="lbtnReSchedule_Click" Text='Re-Schedule' CommandArgument='<%#Eval("ApplicantId") +","+ Eval("Designation")%> ' ></asp:LinkButton>
+                                
                             </AppointmentTemplate>
                         </telerik:RadScheduler>
                         <telerik:RadWindow ID="RadWindow1" runat="server" Modal="true" Title="No Appointment available"
@@ -431,7 +434,7 @@
                 </ContentTemplate></asp:UpdatePanel>
         </div>
     </asp:Panel>
-
+    <ucStatusChange:PoPup id="UcStatusPopUp" runat="server" ></ucStatusChange:PoPup>
     <asp:Panel ID="pnlReScheduleInterviewDate" runat="server">
         <div id="interviewDatelite" class="white_content" style="height: auto;">
             <h3>Interview Details</h3>            

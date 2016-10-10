@@ -2,6 +2,8 @@
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajaxToolkit" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajaxToolkit" %>
+<%@ Register Src="~/UserControl/ucStatusChangePopup.ascx" TagPrefix="ucStatusChange" TagName="PoPup" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <link href="../Styles/dd.css" rel="stylesheet" />
 
@@ -3540,6 +3542,7 @@
                         <table>
                             <tr>
                                 <td>
+                                    
                                     <asp:CheckBox ID="chkboxcondition" runat="server" /><%--TabIndex="148" --%>
 
                                     <asp:Label ID="lblTerms" runat="server" Text="I accept Term and Conditions of the above mentioned Subcontract"></asp:Label>
@@ -3594,7 +3597,7 @@
                 </asp:Panel>
                 <div id="fade" class="black_overlay">
                 </div>
-                
+                <ucStatusChange:PoPup id="UcStatusPopUp" runat="server" ></ucStatusChange:PoPup>             
                 <asp:Panel ID="panel7" runat="server">
                     <div id="interviewDatelite" class="white_content" style="height: auto;">
                         <h3>Interview Details

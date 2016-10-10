@@ -2554,6 +2554,8 @@ namespace JG_Prospect.Sr_App
                 }
                 else
                 {
+                    objuser.SourceUser = Convert.ToString(Session["userid"]);
+
                     bool result = InstallUserBLL.Instance.UpdateInstallUser(objuser, id);
                     if (ddlstatus.SelectedValue == "InterviewDate" || ddlstatus.SelectedValue == "OfferMade" || ddlstatus.SelectedValue == "Deactive")
                     {
@@ -3701,6 +3703,14 @@ namespace JG_Prospect.Sr_App
                 #endregion
                 //ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Fill new hire section above')", true);
                 //return;
+
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "showStatusChangePopUp()", true);
+                return;
+            }
+            else if (ddlstatus.SelectedValue == "Active")
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "showStatusChangePopUp()", true);
+                return;
             }
             #endregion
         }

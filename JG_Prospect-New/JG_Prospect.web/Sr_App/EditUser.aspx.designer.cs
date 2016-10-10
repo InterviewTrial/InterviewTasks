@@ -580,6 +580,15 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.Button btnSaveReason;
         
         /// <summary>
+        /// UcStatusPopUp control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::JG_Prospect.UserControl.ucStatusChangePopup UcStatusPopUp;
+        
+        /// <summary>
         /// panel2 control.
         /// </summary>
         /// <remarks>

@@ -463,6 +463,15 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.Button btnSaveOfferMade;
         
         /// <summary>
+        /// UcStatusPopUp control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::JG_Prospect.UserControl.ucStatusChangePopup UcStatusPopUp;
+        
+        /// <summary>
         /// pnlReScheduleInterviewDate control.
         /// </summary>
         /// <remarks>

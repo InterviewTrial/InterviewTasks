@@ -5,6 +5,8 @@
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 
+<%@ Register Src="~/UserControl/ucStatusChangePopup.ascx" TagPrefix="ucStatusChange" TagName="PoPup" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <style type="text/css">
         .wordBreak {
@@ -666,6 +668,7 @@
     </asp:Panel>
     <div id="fade" class="black_overlay">
     </div>
+    <ucStatusChange:PoPup id="UcStatusPopUp" runat="server" ></ucStatusChange:PoPup>
     <asp:Panel ID="panel2" runat="server">
         <div id="interviewDatelite" class="white_content" style="height: auto;">
             <h3>Interview Details

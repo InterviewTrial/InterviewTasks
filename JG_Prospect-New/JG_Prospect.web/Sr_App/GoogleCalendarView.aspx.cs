@@ -324,8 +324,13 @@ namespace JG_Prospect.Sr_App
 
             hidApplicantID.Value = lnk.Text;
             hidSelectedVal.Value = selValue;
-            
-            
+
+            if ((selValue == "Active") || (selValue == "Deactive"))
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "showStatusChangePopUp()", true);
+                return;
+            }
+
             if (ViewState["Email"] == null)
             {
                 LinkButton lnkEmail = (LinkButton)((System.Web.UI.WebControls.ListControl)(sender)).Parent.FindControl("lnkEmail");
@@ -449,7 +454,7 @@ namespace JG_Prospect.Sr_App
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "ClosePopupOfferMade()", true);
             }
         }
-
+        
         protected void lbtnReSchedule_Click(object sender, CommandEventArgs e)
         {
             int intApplicantID = 0;

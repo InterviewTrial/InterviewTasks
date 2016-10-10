@@ -457,8 +457,13 @@ namespace JG_Prospect
             }
             else
             {
+                // Adding a popUp...
+                
                 InstallUserBLL.Instance.ChangeStatus(Convert.ToString(Session["EditStatus"]), Convert.ToInt32(Session["EditId"]), Convert.ToString(DateTime.Today.ToShortDateString()), DateTime.Now.ToShortTimeString(), Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]), JGSession.IsInstallUser.Value, txtReason.Text);
                 binddata();
+
+                if ((ddl.SelectedValue == "Active") || (ddl.SelectedValue == "Deactive"))
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "showStatusChangePopUp()", true);
                 return;
             }
 
