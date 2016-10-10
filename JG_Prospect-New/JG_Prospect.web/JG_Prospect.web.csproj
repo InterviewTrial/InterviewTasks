@@ -841,6 +841,7 @@
     <Content Include="UploadedFiles\7162015111634AMKoala.jpg" />
     <Content Include="UploadedFiles\7162015111655AMJellyfish.jpg" />
     <Content Include="UserControl\UCAddress.ascx" />
+    <Content Include="UserControl\ucStatusChangePopup.ascx" />
     <Content Include="WeatherControl.ascx" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
@@ -1394,7 +1395,6 @@
     </Compile>
     <Compile Include="Sr_App\EditUser.aspx.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Sr_App\EditUser.aspx.designer.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>
@@ -1641,6 +1641,13 @@
     </Compile>
     <Compile Include="UserControl\UCAddress.ascx.designer.cs">
       <DependentUpon>UCAddress.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl\ucStatusChangePopup.ascx.cs">
+      <DependentUpon>ucStatusChangePopup.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UserControl\ucStatusChangePopup.ascx.designer.cs">
+      <DependentUpon>ucStatusChangePopup.ascx</DependentUpon>
     </Compile>
     <Compile Include="Utilits\FullDropDown.cs" />
     <Compile Include="WeatherControl.ascx.cs">

@@ -537,20 +537,20 @@ namespace JG_Prospect.Sr_App
 
         protected void btnAddNote_Click(object sender, EventArgs e)
         {
-            string notes = string.Empty;
-            if (!string.IsNullOrEmpty(Request.QueryString["TaskId"]))
-            {
-                if (Session[JG_Prospect.Common.SessionKey.Key.usertype.ToString()] == "Admin")
-                    notes = txtNote.Text;
-                else
-                    notes = txtNote1.Text;
-            }
-            else
-            {
-                notes = Server.HtmlEncode(txtDescription.Text);
-            }
+            //string notes = string.Empty;
+            //if (!string.IsNullOrEmpty(Request.QueryString["TaskId"]))
+            //{
+            //    if (Session[JG_Prospect.Common.SessionKey.Key.usertype.ToString()] == "Admin")
+            //        notes = txtNote.Text;
+            //    else
+            //        notes = txtNote1.Text;
+            //}
+            //else
+            //{
+            //    notes = Server.HtmlEncode(txtDescription.Text);
+            //}
 
-            if (string.IsNullOrEmpty(notes))
+            if (string.IsNullOrEmpty(txtDescription.Text))
                 return;
 
             SaveTaskNotesNAttachments();
@@ -1474,6 +1474,8 @@ namespace JG_Prospect.Sr_App
 
                 txtNote.Text = string.Empty;
                 txtNote1.Text = string.Empty;
+
+                txtDescription.Text = string.Empty;
                 //clearAllFormData();
 
                 // Refresh task list on top header.
@@ -1553,10 +1555,12 @@ namespace JG_Prospect.Sr_App
             if (string.IsNullOrEmpty(taskDescription))
             {
                 //taskUser.UserType = userType.Text;
-                if (Session[JG_Prospect.Common.SessionKey.Key.usertype.ToString()] == "Admin")
-                    taskUser.Notes = txtNote.Text;
-                else
-                    taskUser.Notes = txtNote1.Text;
+                //if (Session[JG_Prospect.Common.SessionKey.Key.usertype.ToString()] == "Admin")
+                //    taskUser.Notes = txtNote.Text;
+                //else
+                //    taskUser.Notes = txtNote1.Text;
+                taskUser.Notes = txtDescription.Text;
+
             }
             else
                 taskUser.Notes = taskDescription;
@@ -1901,7 +1905,7 @@ namespace JG_Prospect.Sr_App
                 Response.AddHeader("Content-Disposition", "attachment; filename=DownloadedFile.zip");
                 Response.ContentType = "application/zip";
                 zip.Save(Response.OutputStream);
-
+                //Test
                 Response.End();
 
 

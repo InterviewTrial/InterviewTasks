@@ -129,7 +129,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="2">Task Description <span style="color: red;">*</span>:<br />
+                            <td colspan="2">Notes <span style="color: red;">*</span>:<br />
                                 <asp:TextBox ID="txtDescription" TextMode="MultiLine" runat="server" CssClass="textbox" Width="98%" Rows="10"></asp:TextBox>
                                 <%--<ajax:Editor ID="txtDescription" Width="100%" Height="100px" runat="server" ActiveMode="Design" AutoFocus="true" />--%>
                                 <asp:RequiredFieldValidator ID="rfvDesc" ValidationGroup="Submit"
@@ -137,7 +137,7 @@
                                 </asp:RequiredFieldValidator>
                             </td>
                         </tr>
-
+                       <%-- Add Notes or Comments inside the log section :: 07-10-2016 --%>
                         <tr>
                             <td colspan="2">
                                 <fieldset class="tasklistfieldset">
@@ -231,7 +231,7 @@
                                         </div>
                                         <br />
                                         <table cellspacing="0" cellpadding="0" width="950px" border="1" style="width: 100%; border-collapse: collapse;">
-                                            <tr>
+                                            <tr style="display:none">
                                                 <td>Notes:
                                                 </td>
                                                 <td>
@@ -585,7 +585,9 @@
                                         </div>
                                         <br />
                                         <table cellspacing="0" cellpadding="0" width="950px" border="1" style="width: 100%; border-collapse: collapse;">
-                                            <tr>
+
+                                             <%-- Add Notes or Comments inside the log section :: 07-10-2016 --%>
+                                            <tr style="display:none">
                                                 <td>Notes:
                                                 </td>
                                                 <td>
