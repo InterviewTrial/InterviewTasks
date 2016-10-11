@@ -12,7 +12,7 @@
     <script src="jquery/jquery-ui-1.11.1.js" type="text/javascript"></script>
     <link href="datetime/css/jquery-ui-1.7.1.custom.css" rel="stylesheet" type="text/css" />
     <link href="datetime/css/stylesheet.css" rel="stylesheet" type="text/css" />
-    <%-- Areef 10/02 - Removed previous code here, since it is not required in this page. --%>
+    <%-- Areef 10/11 - Removed previous code here, since it is not required in this page. --%>
     <script src="http://netdna.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <style>
         .caret-right {

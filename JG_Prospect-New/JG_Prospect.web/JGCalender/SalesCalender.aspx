@@ -243,6 +243,7 @@
                     </a>
                 </li>
                 <li>
+					<%-- Areef 10/11 - Adjusted the width to align with textbox above. --%>
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Sales Calendar <b class="caret"></b></a>
                     <ul id="ul-customer" class="dropdown-menu" style="width: 250px; height: 250px; overflow-y: scroll;">
                 </li>
