@@ -23,15 +23,15 @@ using System.Web.Services;
 
 namespace JG_Prospect.Sr_App
 {
-    
+
     public partial class new_customer : System.Web.UI.Page
     {
         private static int UserId = 0;
         private static int ColorFlag = 0;
         protected void Page_Load(object sender, EventArgs e)
         {
-            
-            
+
+
             if (!IsPostBack)
             {
                 bindProducts();
@@ -199,7 +199,7 @@ namespace JG_Prospect.Sr_App
                     sc.DeliveryMethod = SmtpDeliveryMethod.Network;
                     sc.EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["enableSSL"].ToString()); // runtime encrypt the SMTP communications using SSL
                     sc.Send(m);
-                   
+
                 }
                 catch (Exception ex)
                 {
@@ -214,8 +214,14 @@ namespace JG_Prospect.Sr_App
             if (Session["CustomerId"].ToString() != null)
                 ds = new_customerBLL.Instance.GetCustomerDetails(Convert.ToInt32(Session["CustomerId"].ToString()));
 
-           
+
             return ds;
+        }
+
+        private void GetCustomerIdFromDuplicateReference(string duplicateReference)
+        {
+            string customerId = string.Empty;
+            customerId = duplicateReference;
         }
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
@@ -281,7 +287,7 @@ namespace JG_Prospect.Sr_App
             DataTable dtblePrimary = Session["dtDetails"] as DataTable;
             DataTable dtbleProduct = Session["dtPrimarySecondary"] as DataTable;
 
-          
+
             int res = new_customerBLL.Instance.AddSrCustomer(c, dtbleAddress, dtbleBillingAddress, dtblePrimary, dtbleProduct, bitYesNo);
             if (res > 0)
             {
@@ -298,7 +304,7 @@ namespace JG_Prospect.Sr_App
                     time = Convert.ToDateTime(t).TimeOfDay;
                     datetime += time;
                 }
-                string gtitle = t + " -" +  c.Addedby;
+                string gtitle = t + " -" + c.Addedby;
                 //string gcontent = "Name: " + objcust.customerNm + " , Cell Phone: " + txtcell_ph.Text + ", Alt. phone: " + txtalt_phone.Text + ", Email: " + txtEmail.Text + ",Service: " + txtService.Text + ",Status: " + newstatus;
                 string gcontent = "Name: " + c.customerNm;//TCT
                 //string gaddress = txtaddress.Text + " " + txtcity.Text + "," + txtstate.Text + " -" + txtzip.Text;
@@ -868,13 +874,13 @@ namespace JG_Prospect.Sr_App
             }
         }
 
-     
+
 
         [System.Web.Services.WebMethod]
         public static string GetCityState(string strZip)
         {
             DataSet ds = new DataSet();
-           
+
             ds = UserBLL.Instance.fetchcitystate(strZip);
             if (ds != null)
             {
@@ -1299,5 +1305,5 @@ namespace JG_Prospect.Sr_App
         // public IEnumerable<string> CalendarIds { get; set; }
     }
 
-     
+
 }

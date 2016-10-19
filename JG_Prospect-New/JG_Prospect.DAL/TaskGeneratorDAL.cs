@@ -349,6 +349,40 @@ namespace JG_Prospect.DAL
 
         }
 
+        public bool UpadateTaskNotes(ref TaskUser objTaskUser)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_UpadateTaskNotes");
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@Id", DbType.Int64, objTaskUser.Id);
+                    database.AddInParameter(command, "@Notes", DbType.String, objTaskUser.Notes);
+
+                    int result = database.ExecuteNonQuery(command);
+
+
+                    if (result > 0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+        }
+
         public bool UpdateTaskUserAcceptance(ref TaskUser objTaskUser)
         {
             try
@@ -410,6 +444,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@Attachment", DbType.String, objTaskUser.Attachment);
                     database.AddInParameter(command, "@OriginalFileName", DbType.String, objTaskUser.OriginalFileName);
                     database.AddInParameter(command, "@UserType", DbType.String, objTaskUser.UserType);
+                    database.AddInParameter(command, "@FileType", DbType.String, objTaskUser.FileType);
 
 
                     int result = database.ExecuteNonQuery(command);

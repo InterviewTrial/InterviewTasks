@@ -109,6 +109,7 @@
     <Compile Include="modal\SrSalesReport.cs" />
     <Compile Include="modal\clsSupplierCategory.cs" />
     <Compile Include="modal\Task.cs" />
+    <Compile Include="modal\TaskLogFile.cs" />
     <Compile Include="modal\TaskUser.cs" />
     <Compile Include="modal\TaskWorkSpecification.cs" />
     <Compile Include="modal\TaskWorkSpecificationVersions.cs" />

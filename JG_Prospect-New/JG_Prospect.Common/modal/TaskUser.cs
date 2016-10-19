@@ -21,5 +21,7 @@ namespace JG_Prospect.Common.modal
         public bool IsCreatorUser;
         public string UserFirstName;
         public string OriginalFileName;
+        public string FileType;
+        public DateTime AttachedFileDate;
     }
 }
