@@ -10,6 +10,7 @@ namespace JG_Prospect.Common
         public enum Key
         {
             CustomerName, CustomerId, PagedataTable, ProductType, Username, usertype, loginid, UserId, LocationPicture, JobId,PreviousPage
+                , GuIdAtLogin
         }
         public const string SortExpression = "SortExpression";
         public const string SortDirection = "SortDirection";      

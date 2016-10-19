@@ -1,6 +1,8 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Sr_App/SR_app.Master" AutoEventWireup="true" CodeBehind="InstallCreateUser2.aspx.cs" Inherits="JG_Prospect.Sr_App.WebForm2" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajaxToolkit" %>
+<%@ Register Src="~/UserControl/ucAuditTrailByUser.ascx" TagPrefix="ucAudit" TagName="UserListing" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <link href="../Styles/dd.css" rel="stylesheet" />
     <script src="../js/jquery.dd.min.js"></script>
@@ -1852,7 +1854,9 @@
                                     </td>
                                 </tr>
                             </table>
+                            <ucAudit:UserListing runat="server" ID="ucAuditTrail" />
                         </li>
+
                         <li style="width: 50%;" class="last">
                             <table border="0" cellspacing="0" cellpadding="0">
                                 <tr>

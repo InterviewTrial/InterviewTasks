@@ -115,6 +115,7 @@
     <Compile Include="modal\TaskWorkSpecificationVersions.cs" />
     <Compile Include="modal\TimeAndMaterial.cs" />
     <Compile Include="modal\user.cs" />
+    <Compile Include="modal\UserAuditTrail.cs" />
     <Compile Include="modal\Vendor.cs" />
     <Compile Include="modal\VendorCategory.cs" />
     <Compile Include="modal\VendorSubCategory.cs" />

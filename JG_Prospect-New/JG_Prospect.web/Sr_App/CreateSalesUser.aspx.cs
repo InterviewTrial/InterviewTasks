@@ -84,6 +84,7 @@ namespace JG_Prospect.Sr_App
                 if (!IsPostBack)
                 {
                     Session["ID"] = "";
+                    ucAuditTrail.UserLoginID = string.Empty;
                 }
                 touchPointlogPanel.Visible = false;
             }
@@ -356,6 +357,7 @@ namespace JG_Prospect.Sr_App
                         Session["Address"] = ds.Tables[0].Rows[0][4].ToString();
                         txtZip.Text = ds.Tables[0].Rows[0][11].ToString();
                         ViewState["zipEsrow"] = ds.Tables[0].Rows[0][11].ToString();
+                        ucAuditTrail.UserLoginID = ds.Tables[0].Rows[0][3].ToString(); //  For User Audi Trail 
                         txtCity.Text = ds.Tables[0].Rows[0][13].ToString();
                         ViewState["City"] = ds.Tables[0].Rows[0][13].ToString();
                         txtState.Text = ds.Tables[0].Rows[0][12].ToString();
@@ -395,6 +397,8 @@ namespace JG_Prospect.Sr_App
                         txtDateSourced.Text = Convert.ToString(ds.Tables[0].Rows[0]["DateSourced"]);
                         if (Convert.ToString(ds.Tables[0].Rows[0][6]) != "")
                         {
+
+                            #region - if Rows[0][6] is haveing value
                             ddlstatus.SelectedValue = ds.Tables[0].Rows[0][6].ToString();
                             Session["PreviousStatusNew"] = Convert.ToString(ds.Tables[0].Rows[0][6]);
                             if (ddlstatus.SelectedValue == "Install Prospect")
@@ -653,6 +657,7 @@ namespace JG_Prospect.Sr_App
                                 ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Fill new hire section above')", true);
                                 return;
                             }
+                            #endregion
                         }
                         Session["PreviousStatus"] = Convert.ToString(ds.Tables[0].Rows[0][6]);
                         if (ds.Tables[0].Rows[0][6].ToString() == "Active" || ds.Tables[0].Rows[0][6].ToString() == "OfferMade")
@@ -679,9 +684,11 @@ namespace JG_Prospect.Sr_App
                         {
                             ddlstatus.Enabled = false;
                         }
-                        if ((ds.Tables[0].Rows[0][6].ToString() == "Active" || ds.Tables[0].Rows[0][6].ToString() == "OfferMade") && (ds.Tables[0].Rows[0][5].ToString() == "ForeMan" || ds.Tables[0].Rows[0][5].ToString() == "Installer"))
+                        if (ds.Tables[0].Rows[0][6].ToString() == "InterviewDate" ||
+                            (ds.Tables[0].Rows[0][6].ToString() == "Active" || ds.Tables[0].Rows[0][6].ToString() == "OfferMade")
+                            && (ds.Tables[0].Rows[0][5].ToString() == "ForeMan" || ds.Tables[0].Rows[0][5].ToString() == "Installer"))
                         {
-                            pnlAll.Visible = true;
+                            showHideNewHireSection(true);
                         }
                         else
                         {
@@ -3054,6 +3061,8 @@ namespace JG_Prospect.Sr_App
                 ddlInsteviewtime.SelectedValue = "10:00 AM";
                 ddlTechTask = Utilits.FullDropDown.FillTechTaskDropDown(ddlTechTask);
 
+                showHideNewHireSection(true);
+
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "overlayInterviewDate();", true);
             }
             else if (ddlstatus.SelectedValue == "Deactive")
@@ -3714,6 +3723,19 @@ namespace JG_Prospect.Sr_App
             }
             #endregion
         }
+
+        private void showHideNewHireSection(bool ShowSection)
+        {
+            pnlAll.Visible = ShowSection;
+            pnlFngPrint.Visible = ShowSection;
+            pnlnewHire.Visible = ShowSection;
+            pnlNew2.Visible = ShowSection;
+
+            btnNewPluse.Visible = !ShowSection;
+            btnNewMinus.Visible = ShowSection;
+        }
+
+        
 
         protected void btnPluse_Click(object sender, EventArgs e)
         {
