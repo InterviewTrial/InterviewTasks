@@ -17,6 +17,7 @@ using ASPSnippets.FaceBookAPI;
 using System.Web.Script.Serialization;
 using ASPSnippets.GoogleAPI;
 using ASPSnippets.TwitterAPI;
+using JG_Prospect.Common;
 
 
 namespace JG_Prospect
@@ -121,6 +122,7 @@ namespace JG_Prospect
                             if (isvaliduser > 0)
                             {
                                 Session["loginid"] = email;
+                                Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
                                 //Session["loginpassword"] = txtpassword.Text.Trim();
                                 RememberMe();
                                 if (txtloginid.Text.Trim() == AdminId)
@@ -178,6 +180,8 @@ namespace JG_Prospect
                                 if (IsValidInstallerUser > 0)
                                 {
                                     Session["loginid"] = txtloginid.Text.Trim();
+                                    Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
+
                                     //Session["loginpassword"] = txtpassword.Text.Trim();
                                     if (txtloginid.Text.Trim() == AdminInstallerId)
                                     {
@@ -261,6 +265,7 @@ namespace JG_Prospect
                             if (isvaliduser > 0)
                             {
                                 Session["loginid"] = emailGPlus;
+                                Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
                                 //Session["loginpassword"] = txtpassword.Text.Trim();
                                 RememberMe();
                                 if (txtloginid.Text.Trim() == AdminId)
@@ -318,6 +323,8 @@ namespace JG_Prospect
                                 if (IsValidInstallerUser > 0)
                                 {
                                     Session["loginid"] = txtloginid.Text.Trim();
+                                    Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
+
                                     //Session["loginpassword"] = txtpassword.Text.Trim();
                                     if (txtloginid.Text.Trim() == AdminInstallerId)
                                     {
@@ -407,6 +414,7 @@ namespace JG_Prospect
                                 if (isvaliduser > 0)
                                 {
                                     Session["loginid"] = email;
+                                    Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
                                     //Session["loginpassword"] = txtpassword.Text.Trim();
                                     RememberMe();
                                     if (txtloginid.Text.Trim() == AdminId)
@@ -464,6 +472,8 @@ namespace JG_Prospect
                                     if (IsValidInstallerUser > 0)
                                     {
                                         Session["loginid"] = txtloginid.Text.Trim();
+                                        Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
+
                                         //Session["loginpassword"] = txtpassword.Text.Trim();
                                         if (txtloginid.Text.Trim() == AdminInstallerId)
                                         {
@@ -547,6 +557,7 @@ namespace JG_Prospect
                         #region 'Admin User'
 
                         Session["loginid"] = txtloginid.Text.Trim();
+                        Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
                         Session["loginpassword"] = txtpassword.Text.Trim();
                         RememberMe();
 
@@ -619,6 +630,7 @@ namespace JG_Prospect
                             if (IsValidInstallerUser > 0)
                             {
                                 Session["loginid"] = txtloginid.Text.Trim();
+                                Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
                                 Session["loginpassword"] = txtpassword.Text.Trim();
 
 
@@ -693,6 +705,7 @@ namespace JG_Prospect
                             else
                             {
                                 Session["loginid"] = null;
+                                Session[SessionKey.Key.GuIdAtLogin.ToString()] = null;
                                 ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Check the UserName,password or its status to login.');", true);
                             }
                         }
@@ -739,6 +752,7 @@ namespace JG_Prospect
                     else
                     {
                         Session["loginid"] = null;
+                        Session[SessionKey.Key.GuIdAtLogin.ToString()] = null;
                         ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('User Name or Password is incorrect');", true);
                     }
 

@@ -6,6 +6,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using JG_Prospect.Common;
 using AE.Net.Mail;
+using JG_Prospect.BLL;
 
 namespace JG_Prospect.Sr_App
 {
@@ -13,11 +14,11 @@ namespace JG_Prospect.Sr_App
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            ImapClient ic = new ImapClient("imap.gmail.com", "vivekinfocouture@gmail.com", "jmgroveinfo",
-                AuthMethods.Login, 993, true);
+            //ImapClient ic = new ImapClient("imap.gmail.com", "vivekinfocouture@gmail.com", "jmgroveinfo",
+            //    AuthMethods.Login, 993, true);
             // Select a mailbox. Case-insensitive
-            ic.SelectMailbox("INBOX");
-            lbl_unreadCount.Text = ic.GetMessageCount().ToString();
+            //ic.SelectMailbox("INBOX");
+            //lbl_unreadCount.Text = ic.GetMessageCount().ToString();
             if (Session["loginid"] != null)
             {
                 lbluser.Text = Session["Username"].ToString();
@@ -45,9 +46,25 @@ namespace JG_Prospect.Sr_App
 
         protected void btnlogout_Click(object sender, EventArgs e)
         {
+            UpdateAudiTrailForLogout();
             Session.Clear();
             Session["LogOut"] = 1;
-            Response.Redirect("~/login.aspx");   
+
+            Response.Redirect("~/login.aspx");
+        }
+
+        /// <summary>
+        /// User Audi Trail Entry for Logout
+        /// </summary>
+        private void UpdateAudiTrailForLogout()
+        {
+            Common.modal.UserAuditTrail objUserAudit = new Common.modal.UserAuditTrail();
+
+            objUserAudit.LogOutTime = DateTime.Now;
+            objUserAudit.LogInGuID = Session[SessionKey.Key.GuIdAtLogin.ToString()].ToString();
+            
+            UserAuditTrailBLL.Instance.UpdateUserLogOutTime(objUserAudit);
+
         }
 
         protected void lbtWeather_Click(object sender, EventArgs e)

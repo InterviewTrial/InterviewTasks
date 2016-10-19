@@ -5,6 +5,8 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using JG_Prospect.Common;
+using JG_Prospect.Common.modal;
+using JG_Prospect.BLL;
 
 namespace JG_Prospect.Sr_App
 {
@@ -13,7 +15,6 @@ namespace JG_Prospect.Sr_App
         protected void Page_Load(object sender, EventArgs e)
         {
             //Page.Form.DefaultButton = searchbutton.UniqueID;
-
             if (Session["loginid"] != null)
             {
                 if ((string)Session["usertype"] == "MM" || (string)Session["usertype"] == "SSE")
@@ -30,14 +31,18 @@ namespace JG_Prospect.Sr_App
                     ScriptEditor.Enabled = false;
                     ScriptEditor.Attributes.Add("readonly", "readonly");
                 }
+
+                //AddUpdateUserAuditTrailRecord(this.Parent.ToString(), Session["loginid"].ToString());
+                AddUpdateUserAuditTrailRecord(Request.Url.ToString(), Session["loginid"].ToString());
+                
             }
             else
-            {
+            {   
                 Response.Redirect("~/login.aspx");
+                AddUpdateUserAuditTrailRecord("Session Expired", Session["loginid"].ToString());
             }
         }
-      
-
+        
         protected void searchbutton_Click(object sender, EventArgs e)
         {            
             Response.Redirect("http://www.google.com/search");
@@ -60,5 +65,16 @@ namespace JG_Prospect.Sr_App
             }
         }
 
+        private void AddUpdateUserAuditTrailRecord(string strPageName, string UserLoginID)
+        {
+            UserAuditTrail objUserAudit = new UserAuditTrail();
+
+            objUserAudit.UserLoginID = UserLoginID;
+            objUserAudit.LogInGuID = Session[SessionKey.Key.GuIdAtLogin.ToString()].ToString();
+            objUserAudit.Description = strPageName;
+            objUserAudit.CurrentActionTime = DateTime.Now;
+
+            UserAuditTrailBLL.Instance.AddUpdateUserAuditTrailRecord(objUserAudit);
+        }
     }
 }

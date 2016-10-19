@@ -842,6 +842,7 @@
     <Content Include="UploadedFiles\7162015111634AMKoala.jpg" />
     <Content Include="UploadedFiles\7162015111655AMJellyfish.jpg" />
     <Content Include="UserControl\UCAddress.ascx" />
+    <Content Include="UserControl\ucAuditTrailByUser.ascx" />
     <Content Include="UserControl\ucStatusChangePopup.ascx" />
     <Content Include="WeatherControl.ascx" />
     <Content Include="Web.config">
@@ -1642,6 +1643,13 @@
     </Compile>
     <Compile Include="UserControl\UCAddress.ascx.designer.cs">
       <DependentUpon>UCAddress.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="UserControl\ucAuditTrailByUser.ascx.cs">
+      <DependentUpon>ucAuditTrailByUser.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UserControl\ucAuditTrailByUser.ascx.designer.cs">
+      <DependentUpon>ucAuditTrailByUser.ascx</DependentUpon>
     </Compile>
     <Compile Include="UserControl\ucStatusChangePopup.ascx.cs">
       <DependentUpon>ucStatusChangePopup.ascx</DependentUpon>
