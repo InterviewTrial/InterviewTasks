@@ -361,6 +361,7 @@ namespace JG_Prospect.DAL
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@Id", DbType.Int64, objTaskUser.Id);
                     database.AddInParameter(command, "@Notes", DbType.String, objTaskUser.Notes);
+                    
 
                     int result = database.ExecuteNonQuery(command);
 

@@ -591,6 +591,10 @@ namespace JG_Prospect.Sr_App
                 return;
 
             SaveTaskNotesNAttachments();
+
+            if (Convert.ToInt64(hdnNoteId.Value) > 0)
+                btnCancelUpdateNote.Visible = false;
+
             hdnNoteId.Value = "";
             hdnAttachments.Value = "";
             tpTaskHistory_Notes.TabIndex = 0;
