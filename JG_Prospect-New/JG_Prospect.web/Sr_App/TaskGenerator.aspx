@@ -42,12 +42,14 @@
             $('#<%=pnlpopup.ClientID %>').show();
         }
         function HidePopupLogFile() {
+            debugger;
             $('#mask').hide();
             $('#<%=pnlpopup.ClientID %>').hide();
         }
-        $(".btnClose").live('click',function () {
-            HidePopupLogFile();
-        });
+        //$(".btnClose").live('click',function () {
+        //    debugger;
+        //    HidePopupLogFile();
+        //});
     </script>
     <%--    End--%>
     <div class="right_panel">
@@ -435,7 +437,7 @@
                                                                                         <tr>
                                                                                             <td style="text-align: right">
                                                                                                 <input id="hdnNoteAttachments" runat="server" type="hidden" />
-                                                                                                <div id="divNoteDropzone" runat="server" class="dropzone work-file">
+                                                                                                <div id="divNoteDropzone" runat="server" class="dropzone work-file-Note">
                                                                                                     <div class="fallback">
                                                                                                         <input name="file" type="file" multiple />
                                                                                                         <input type="submit" value="Upload" />
@@ -447,7 +449,7 @@
                                                                                                     <tr>
 
                                                                                                         <td>
-                                                                                                            <div id="divNoteDropzonePreview" runat="server" class="dropzone-previews work-file-previews">
+                                                                                                            <div id="divNoteDropzonePreview" runat="server" class="dropzone-previews work-file-previews-note">
                                                                                                             </div>
                                                                                                         </td>
 
@@ -1157,7 +1159,7 @@
                     <td colspan="2" style="color: White; font-weight: bold; font-size: 1.2em; padding: 3px"
                         align="center">
                         <asp:Label ID="lblFileName" ForeColor="White" runat="server" />
-                        <a id="closebtn" style="color: white; float: right; text-decoration: none" class="btnClose" href="#">X</a>
+                        <a id="closebtn" style="color: white; float: right; text-decoration: none" class="btnClose" href="#" onclick="HidePopupLogFile()">X</a>
                     </td>
                 </tr>
             </table>
@@ -1343,12 +1345,14 @@
             }
         }
 
-        var objNotesDropzone,objWorkFileDropzone, objSubTaskDropzone;
+        var objNotesDropzone;
+        var objWorkFileDropzone;
+        var objSubTaskDropzone;
         //Dropzone.autoDiscover = false;
         //Dropzone.options.dropzoneForm = false;
 
         function ApplyDropZone() {
-            //debugger;
+            debugger;
             ////User's drag and drop file attachment related code
 
             //remove already attached dropzone.
@@ -1362,18 +1366,19 @@
                 objNotesDropzone = null;
             }
 
-            debugger;
-            objWorkFileDropzone = GetWorkFileDropzone("div.work-file", 'div.work-file-previews');
-            objNotesDropzone = GetNotesDropzone("div.work-file", 'div.work-file-previews');
-            //remove already attached dropzone.
             if (objSubTaskDropzone) {
                 objSubTaskDropzone.destroy();
                 objSubTaskDropzone = null;
             }
             debugger;
+            objWorkFileDropzone = GetWorkFileDropzone("div.work-file", 'div.work-file-previews');
+            //objNotesDropzone = GetNotesDropzone("div.work-file-note", 'div.work-file-previews-note');
+            //remove already attached dropzone.
+            
+           
             if($("#<%=divNoteDropzone.ClientID%>").length > 0) {
                 debugger;
-                objSubTaskDropzone = new Dropzone("#<%=divNoteDropzone.ClientID%>", {
+                objNotesDropzone = new Dropzone("#<%=divNoteDropzone.ClientID%>", {
                     maxFiles: 1,
                     url: "taskattachmentupload.aspx",
                     thumbnailWidth: 90,
@@ -1403,8 +1408,9 @@
                 });
             }
 
-
+            debugger;
             if($("#<%=divSubTaskDropzone.ClientID%>").length > 0) {
+                debugger;
                 objSubTaskDropzone = new Dropzone("#<%=divSubTaskDropzone.ClientID%>", {
                     maxFiles: 5,
                     url: "taskattachmentupload.aspx",
@@ -1419,6 +1425,7 @@
 
                         // when file is uploaded successfully store its corresponding server side file name to preview element to remove later from server.
                         this.on("success", function (file, response) {
+                            debugger;
                             var filename = response.split("^");
                             $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
 
@@ -1492,7 +1499,9 @@
                 });
             }
 
-            function GetWorkFileDropzone(strDropzoneSelector, strPreviewSelector) {
+        debugger;
+        function GetWorkFileDropzone(strDropzoneSelector, strPreviewSelector) {
+            debugger;
                 return new Dropzone(strDropzoneSelector,
                     {
                         maxFiles: 5,
@@ -1508,6 +1517,7 @@
 
                             // when file is uploaded successfully store its corresponding server side file name to preview element to remove later from server.
                             this.on("success", function (file, response) {
+                                debugger;
                                 var filename = response.split("^");
                                 $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
 

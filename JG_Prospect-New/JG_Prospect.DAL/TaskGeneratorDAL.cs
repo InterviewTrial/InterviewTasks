@@ -43,7 +43,8 @@ namespace JG_Prospect.DAL
 
                     if (!string.IsNullOrEmpty(objTask.DueDate))
                     {
-                        database.AddInParameter(command, "@DueDate", DbType.DateTime, Convert.ToDateTime(objTask.DueDate));
+                        DateTime dateDueDate = DateTime.ParseExact(objTask.DueDate, "dd/MM/yyyy", null);
+                        database.AddInParameter(command, "@DueDate", DbType.DateTime, dateDueDate);
                     }
 
                     database.AddInParameter(command, "@Hours", DbType.String, objTask.Hours);

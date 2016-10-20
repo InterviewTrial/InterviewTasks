@@ -1960,7 +1960,7 @@ namespace JG_Prospect.Sr_App
 
             taskUser.UserAcceptance = Convert.ToBoolean(userAcceptance);
 
-            if (taskUser.Id < 0)
+            if (taskUser.Id == 0)
             {
                 TaskGeneratorBLL.Instance.SaveOrDeleteTaskNotes(ref taskUser);
                 TaskUpdateId = Convert.ToInt32(taskUser.TaskUpdateId);
