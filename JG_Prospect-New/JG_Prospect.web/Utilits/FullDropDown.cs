@@ -57,4 +57,8 @@ namespace JG_Prospect.Utilits
             return ddlInsteviewtime;
         }
     }
+
+
+    enum Type { notes = 1, audio = 2, video = 3, images = 4, docu = 5, other = 6 };
+
 }

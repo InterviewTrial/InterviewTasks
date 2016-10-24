@@ -34,20 +34,67 @@
             width: 100%;
             height: 100%;
         }
+
+
+        .modal {
+            display: none;
+            position: absolute;
+            top: 0px;
+            left: 0px;
+            background-color: black;
+            z-index: 100;
+            opacity: 0.8;
+            filter: alpha(opacity=60);
+            -moz-opacity: 0.8;
+            min-height: 100%;
+        }
+
+        #divImage {
+            display: none;
+            z-index: 1000;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background-color: White;
+            height: 550px;
+            width: 600px;
+            padding: 3px;
+            border: solid 1px black;
+        }
+
+        .modalBackground {
+            background-color: Black;
+            filter: alpha(opacity=90);
+            opacity: 0.8;
+        }
+
+        .modalPopup {
+            background-color: #FFFFFF;
+            border-width: 3px;
+            border-style: solid;
+            border-color: black;
+            padding-top: 10px;
+            padding-left: 10px;
+            width: 300px;
+            height: 140px;
+        }
     </style>
 
     <script type="text/javascript" language="javascript">
         function ShowPopupLogFile() {
+            debugger;
             $('#mask').show();
             $('#<%=pnlpopup.ClientID %>').show();
         }
         function HidePopupLogFile() {
+            debugger;
             $('#mask').hide();
             $('#<%=pnlpopup.ClientID %>').hide();
         }
-        $(".btnClose").live('click',function () {
-            HidePopupLogFile();
-        });
+        //$(".btnClose").live('click',function () {
+        //    debugger;
+        //    HidePopupLogFile();
+        //});
     </script>
     <%--    End--%>
     <div class="right_panel">
@@ -186,8 +233,8 @@
                                         <asp:UpdatePanel ID="upTaskHistory" runat="server" UpdateMode="Conditional">
                                             <ContentTemplate>
                                                 <asp:TabContainer ID="tcTaskHistory" runat="server" ActiveTabIndex="0" AutoPostBack="false">
-                                                    <asp:TabPanel ID="tpTaskHistory_Notes" runat="server" TabIndex="0">
-                                                        <HeaderTemplate>Notes</HeaderTemplate>
+                                                    <asp:TabPanel ID="tpTaskHistory_All" runat="server" TabIndex="0">
+                                                        <HeaderTemplate>All</HeaderTemplate>
                                                         <ContentTemplate>
                                                             <div>
                                                                 <div class="grid">
@@ -293,7 +340,7 @@
                                                                             <asp:TemplateField ShowHeader="True" HeaderText="Status" ControlStyle-ForeColor="White" HeaderStyle-Font-Size="Small" Visible="false"
                                                                                 ItemStyle-HorizontalAlign="Left">
                                                                                 <ItemTemplate>
-                                                                                    <asp:Label ID="lableFileExtension" runat="server" Text='<%#Eval("FileType")%>'></asp:Label>
+                                                                                    <asp:Label ID="lableFileType" runat="server" Text='<%#Eval("FileType")%>'></asp:Label>
                                                                                 </ItemTemplate>
                                                                                 <ControlStyle ForeColor="Black" />
                                                                                 <ControlStyle ForeColor="Black" />
@@ -320,31 +367,166 @@
                                                             </div>
                                                         </ContentTemplate>
                                                     </asp:TabPanel>
-                                                    <asp:TabPanel ID="tpTaskHistory_FilesAndDocs" runat="server" TabIndex="0" CssClass="task-history-tab" Visible="false">
-                                                        <HeaderTemplate>Files & docs</HeaderTemplate>
+
+                                                    <asp:TabPanel ID="tpTaskHistory_Notes" runat="server" TabIndex="0">
+                                                        <HeaderTemplate>Notes</HeaderTemplate>
+
                                                         <ContentTemplate>
                                                             <div>
-                                                                <asp:UpdatePanel ID="upLogDoc" runat="server" UpdateMode="Conditional">
-                                                                    <ContentTemplate>
-                                                                        <div>
-                                                                            <asp:LinkButton OnCommand="hyperLnkLogFile_Command" CommandName="DownloadLogDocName" ID="hyperLnlDocName" runat="server" />
-                                                                        </div>
-                                                                        <div>
-                                                                            <asp:Image ID="imgDoc" Height="120px" Width="120px" runat="server" />
-                                                                            <asp:Label ID="lblMessage" ForeColor="Red" runat="server" />
-                                                                        </div>
-                                                                        <div>
-                                                                            <asp:LinkButton OnCommand="hyperLnkLogFile_Command" CommandName="DeleteLogDoc" runat="server" ID="hyperLnkDeleteLogDoc" />
-                                                                        </div>
-                                                                    </ContentTemplate>
-                                                                </asp:UpdatePanel>
+                                                                <div class="grid">
+                                                                    <asp:GridView ID="gdTaskUsersNotes" runat="server"
+                                                                        EmptyDataText="No task not history available!"
+                                                                        ShowHeaderWhenEmpty="true"
+                                                                        AutoGenerateColumns="false"
+                                                                        Width="100%"
+                                                                        HeaderStyle-BackColor="Black"
+                                                                        HeaderStyle-ForeColor="White"
+                                                                        AllowSorting="false"
+                                                                        BackColor="White"
+                                                                        PageSize="3"
+                                                                        GridLines="Horizontal"
+                                                                        OnRowDataBound="gdTaskUsersNotes_RowDataBound">
+
+                                                                        <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
+                                                                        <HeaderStyle CssClass="trHeader " />
+                                                                        <RowStyle CssClass="FirstRow" BorderStyle="Solid" />
+                                                                        <AlternatingRowStyle CssClass="AlternateRow " />
+
+                                                                        <Columns>
+                                                                            <asp:TemplateField ShowHeader="True" Visible="false" HeaderText="Note Id" ControlStyle-ForeColor="White" HeaderStyle-Font-Size="Small" HeaderStyle-Width="10%"
+                                                                                ItemStyle-HorizontalAlign="Left">
+                                                                                <ItemTemplate>
+                                                                                    <asp:Label ID="lblNoteId" runat="server" Text='<%#Eval("ID")%>'></asp:Label>
+                                                                                </ItemTemplate>
+                                                                                <ControlStyle ForeColor="Black" />
+                                                                                <ControlStyle ForeColor="Black" />
+                                                                                <HeaderStyle Font-Size="Small"></HeaderStyle>
+                                                                                <ItemStyle HorizontalAlign="Left"></ItemStyle>
+                                                                            </asp:TemplateField>
+
+                                                                            <asp:TemplateField ShowHeader="True" HeaderText="User" ControlStyle-ForeColor="White" HeaderStyle-Font-Size="Small" HeaderStyle-Width="18%"
+                                                                                ItemStyle-HorizontalAlign="Left">
+                                                                                <ItemTemplate>
+                                                                                    <asp:Label ID="lbluser" runat="server"
+                                                                                        Text='<%#String.IsNullOrEmpty(Eval("FristName").ToString())== true ? Eval("UserFirstName").ToString() : Eval("FristName").ToString() %>'>
+                                                                                    </asp:Label>
+                                                                                    <asp:HyperLink runat="server" NavigateUrl='<%# Eval("UserId", "Customer_Profile.aspx?CustomerId={0}") %>' Text='<%# Eval("UserId") %>' />
+                                                                                </ItemTemplate>
+                                                                                <ControlStyle ForeColor="Black" />
+                                                                                <ControlStyle ForeColor="Black" />
+                                                                                <HeaderStyle Font-Size="Small"></HeaderStyle>
+                                                                                <ItemStyle HorizontalAlign="Left"></ItemStyle>
+                                                                            </asp:TemplateField>
+
+                                                                            <asp:TemplateField ShowHeader="True" HeaderText="Date & Time" ControlStyle-ForeColor="White" HeaderStyle-Font-Size="Small" HeaderStyle-Width="10%"
+                                                                                ItemStyle-HorizontalAlign="Left">
+                                                                                <ItemTemplate>
+                                                                                    <asp:Label ID="lblupdateDate" runat="server" Text='<%#Eval("UpdatedOn")%>'></asp:Label>
+                                                                                </ItemTemplate>
+                                                                                <ControlStyle ForeColor="Black" />
+                                                                                <ControlStyle ForeColor="Black" />
+                                                                                <HeaderStyle Font-Size="Small"></HeaderStyle>
+                                                                                <ItemStyle HorizontalAlign="Left"></ItemStyle>
+                                                                            </asp:TemplateField>
+
+                                                                            <asp:TemplateField HeaderText="Notes" ControlStyle-ForeColor="White" HeaderStyle-Font-Size="Small"
+                                                                                ItemStyle-HorizontalAlign="Left">
+                                                                                <ItemTemplate>
+                                                                                    <div>
+                                                                                        <asp:Label ID="lblNotes" runat="server" Text='<%#Eval("Notes")%>'></asp:Label>
+                                                                                    </div>
+                                                                                </ItemTemplate>
+                                                                                <ControlStyle ForeColor="Black" />
+                                                                                <ControlStyle ForeColor="Black" />
+                                                                                <HeaderStyle Font-Size="Small"></HeaderStyle>
+                                                                                <ItemStyle HorizontalAlign="Left"></ItemStyle>
+                                                                            </asp:TemplateField>
+
+
+
+                                                                            <asp:TemplateField ShowHeader="True" ControlStyle-ForeColor="White" HeaderStyle-Font-Size="Small"
+                                                                                ItemStyle-HorizontalAlign="Left" HeaderStyle-Width="10%">
+                                                                                <ItemTemplate>
+                                                                                    <asp:LinkButton ID="btnUpdateLogNotes" runat="server" Text="Edit Note" OnClick="btnUpdateLogNotes_Click" />
+                                                                                </ItemTemplate>
+                                                                                <ControlStyle ForeColor="Black" />
+                                                                                <ControlStyle ForeColor="Black" />
+                                                                                <HeaderStyle Font-Size="Small"></HeaderStyle>
+                                                                                <ItemStyle HorizontalAlign="Left"></ItemStyle>
+                                                                            </asp:TemplateField>
+                                                                        </Columns>
+                                                                        <HeaderStyle BackColor="Black" ForeColor="White"></HeaderStyle>
+                                                                    </asp:GridView>
+                                                                </div>
                                                             </div>
                                                         </ContentTemplate>
                                                     </asp:TabPanel>
-                                                    <asp:TabPanel ID="tpTaskHistory_Images" runat="server" TabIndex="0" CssClass="task-history-tab" Visible="false">
+
+                                                    <asp:TabPanel ID="tpTaskHistory_FilesAndDocs" runat="server" TabIndex="0" CssClass="task-history-tab">
+                                                        <HeaderTemplate>Files & docs</HeaderTemplate>
+                                                        <ContentTemplate>
+                                                            <div>
+                                                                <asp:Repeater ID="reapeaterLogDoc" runat="server">
+                                                                    <ItemTemplate>
+                                                                        <div style="width: 200px; height: 200px; float: left;">
+
+
+                                                                            <div style="text-align: center;">
+                                                                                <asp:LinkButton ID="linkOriginalfileName" runat="server" Text='<%#Eval("AttachmentOriginal")%>' CommandName="viewFile" CommandArgument='<%# Eval("Attachment")%>'></asp:LinkButton>
+                                                                            </div>
+                                                                            <div style="text-align: center;">
+                                                                                <asp:Image ID="imgDoc" runat="server" ImageUrl='<%#Eval("FilePath")%>'
+                                                                                    Width="120px" Height="120px" />
+                                                                                <asp:Label ID="lblMessage" ForeColor="Red" runat="server" Visible="false" />
+                                                                            </div>
+                                                                            <div style="text-align: center;">
+                                                                                <asp:LinkButton ID="linkDownLoadFiles" runat="server" Text="Download" CommandName="DownLoadFiles" CommandArgument='<%# Eval("Attachment")%>'></asp:LinkButton>
+                                                                            </div>
+                                                                            <div style="text-align: center;">
+                                                                                <asp:Label ID="lblDate" runat="server" Text='<%#Eval("UpdatedOn")%>'></asp:Label>
+                                                                            </div>
+
+                                                                            <div style="display: none">
+                                                                                <asp:Label ID="lableFileExtension" runat="server" Text='<%#Eval("FileType")%>' Visible="false"></asp:Label>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </ItemTemplate>
+                                                                </asp:Repeater>
+                                                            </div>
+                                                        </ContentTemplate>
+                                                    </asp:TabPanel>
+                                                    <asp:TabPanel ID="tpTaskHistory_Images" runat="server" TabIndex="0" CssClass="task-history-tab">
                                                         <HeaderTemplate>Images</HeaderTemplate>
                                                         <ContentTemplate>
                                                             <div>
+                                                                <asp:Repeater ID="reapeaterLogImages" runat="server">
+                                                                    <ItemTemplate>
+                                                                        <div style="width: 200px; height: 200px; float: left;">
+
+
+                                                                            <div style="text-align: center;">
+                                                                                <asp:LinkButton ID="linkOriginalfileName" runat="server" Text='<%#Eval("AttachmentOriginal")%>' CommandName="viewFile" CommandArgument='<%# Eval("Attachment")%>'></asp:LinkButton>
+                                                                            </div>
+                                                                            <div style="text-align: center;">
+                                                                                <asp:ImageButton ID="imgImages" runat="server" ImageUrl='<%#Eval("FilePath")%>'
+                                                                                    Width="120px" Height="120px" Style="cursor: pointer" OnClientClick="return LoadDiv(this.src);" />
+                                                                                <asp:Label ID="lblMessage" ForeColor="Red" runat="server" Visible="false" />
+                                                                            </div>
+                                                                            <div style="text-align: center;">
+                                                                                <asp:LinkButton ID="linkDownLoadFiles" runat="server" Text="Download" CommandName="DownLoadFiles" CommandArgument='<%# Eval("Attachment")%>'></asp:LinkButton>
+                                                                            </div>
+                                                                            <div style="text-align: center;">
+                                                                                <asp:Label ID="lblDate" runat="server" Text='<%#Eval("UpdatedOn")%>'></asp:Label>
+                                                                            </div>
+
+                                                                            <div style="display: none">
+                                                                                <asp:Label ID="lableFileType" runat="server" Text='<%#Eval("FileType")%>' Visible="false"></asp:Label>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </ItemTemplate>
+                                                                </asp:Repeater>
                                                             </div>
                                                         </ContentTemplate>
                                                     </asp:TabPanel>
@@ -355,37 +537,90 @@
                                    
                                                         </ContentTemplate>
                                                     </asp:TabPanel>
-                                                    <asp:TabPanel ID="tpTaskHistory_Videos" runat="server" TabIndex="0" CssClass="task-history-tab" Visible="false">
+                                                    <asp:TabPanel ID="tpTaskHistory_Videos" runat="server" TabIndex="0" CssClass="task-history-tab">
                                                         <HeaderTemplate>Videos</HeaderTemplate>
                                                         <ContentTemplate>
+
+
+
+
+
                                                             <div>
-                                                                <asp:UpdatePanel ID="upLogVideo" runat="server" UpdateMode="Conditional">
-                                                                    <ContentTemplate>
-                                                                        <%--   <div>
-                                                                            <object width="600" height="400">
-                                                                                <param name="Video1" id="paramVideoFileName" runat="server">
-                                                                                <embed width="600" height="400" id="imgVideo">
-                                                                                </embed>
-                                                                            </object>
 
 
-                                                                        </div>--%>
 
-                                                                        <div>
+
+
+
+                                                                <asp:Repeater ID="reapeaterLogVideoc" runat="server" OnItemCommand="reapeaterLogImages_ItemCommand">
+                                                                    <ItemTemplate>
+                                                                        <div style="width: 200px; height: 200px; float: left;">
+                                                                            <div style="text-align: center;">
+                                                                                <asp:LinkButton runat="server" Text='<%#Eval("AttachmentOriginal")%>' ID="linkOriginalfileName" CommandName="viewFile"
+                                                                                    OnClientClick='<%# string.Format("return ViewDetails({0}, \"{1}\", \"{2}\", \"{3}\");", Eval("Id"), Eval("Attachment"), Eval("AttachmentOriginal"), Eval("FileType")) %>'
+                                                                                    CommandArgument='<%# Eval("Attachment")%>'>
+                                                                                </asp:LinkButton>
+                                                                            </div>
+                                                                            <div style="text-align: center;">
+                                                                                <asp:Image ID="imgImages" runat="server" ImageUrl='<%#Eval("FilePath")%>'
+                                                                                    Width="120px" Height="120px" />
+                                                                                <asp:Label ID="lblMessage" ForeColor="Red" runat="server" Visible="false" />
+                                                                            </div>
+                                                                            <div style="text-align: center;">
+                                                                                <asp:LinkButton ID="linkDownLoadFiles" runat="server" Text="Download" CommandName="DownLoadFiles" CommandArgument='<%# Eval("Attachment")%>'></asp:LinkButton>
+                                                                            </div>
+                                                                            <div style="text-align: center;">
+                                                                                <asp:Label ID="lblDate" runat="server" Text='<%#Eval("UpdatedOn")%>'></asp:Label>
+                                                                            </div>
+
+                                                                            <div style="display: none">
+                                                                                <asp:Label ID="lableFileType" runat="server" Text='<%#Eval("FileType")%>' Visible="false"></asp:Label>
+                                                                            </div>
                                                                         </div>
-                                                                    </ContentTemplate>
-                                                                </asp:UpdatePanel>
+                                                                    </ItemTemplate>
+                                                                </asp:Repeater>
+
                                                             </div>
                                                         </ContentTemplate>
                                                     </asp:TabPanel>
-                                                    <asp:TabPanel ID="tpTaskHistory_Audios" runat="server" TabIndex="0" CssClass="task-history-tab" Visible="false">
+                                                    <asp:TabPanel ID="tpTaskHistory_Audios" runat="server" TabIndex="0" CssClass="task-history-tab">
                                                         <HeaderTemplate>Audios</HeaderTemplate>
                                                         <ContentTemplate>
                                                             <div>
                                                                 <asp:UpdatePanel ID="upLogAudio" runat="server" UpdateMode="Conditional">
                                                                     <ContentTemplate>
                                                                         <div>
-                                                                            <asp:Image ID="imgAudio" Height="120px" Width="120px" runat="server" />
+                                                                            <asp:Repeater ID="reapeaterLogAudio" runat="server" OnItemCommand="reapeaterLogImages_ItemCommand">
+                                                                                <ItemTemplate>
+                                                                                    <div style="width: 200px; height: 200px; float: left;">
+                                                                                        <div style="text-align: center;">
+                                                                                           <%-- <asp:LinkButton ID="linkOriginalfileName" runat="server" Text='<%#Eval("AttachmentOriginal")%>' 
+                                                                                                CommandName="viewFile" CommandArgument='<%# Eval("Attachment")%>'></asp:LinkButton>--%>
+
+                                                                                            <asp:LinkButton runat="server" Text='<%#Eval("AttachmentOriginal")%>' ID="linkOriginalfileName" CommandName="viewFile"
+                                                                                                OnClientClick='<%# string.Format("return ViewDetails({0}, \"{1}\", \"{2}\", \"{3}\");", Eval("Id"), Eval("Attachment"), Eval("AttachmentOriginal"), Eval("FileType")) %>'
+                                                                                                CommandArgument='<%# Eval("Attachment")%>'>
+                                                                                            </asp:LinkButton>
+
+                                                                                        </div>
+                                                                                        <div style="text-align: center;">
+                                                                                            <asp:Image ID="imgImages" runat="server" ImageUrl='<%#Eval("FilePath")%>'
+                                                                                                Width="120px" Height="120px" />
+                                                                                            <asp:Label ID="lblMessage" ForeColor="Red" runat="server" Visible="false" />
+                                                                                        </div>
+                                                                                        <div style="text-align: center;">
+                                                                                            <asp:LinkButton ID="linkDownLoadFiles" runat="server" Text="Download" CommandName="DownLoadFiles" CommandArgument='<%# Eval("Attachment")%>'></asp:LinkButton>
+                                                                                        </div>
+                                                                                        <div style="text-align: center;">
+                                                                                            <asp:Label ID="lblDate" runat="server" Text='<%#Eval("UpdatedOn")%>'></asp:Label>
+                                                                                        </div>
+
+                                                                                        <div style="display: none">
+                                                                                            <asp:Label ID="lableFileType" runat="server" Text='<%#Eval("FileType")%>' Visible="false"></asp:Label>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </ItemTemplate>
+                                                                            </asp:Repeater>
                                                                         </div>
                                                                     </ContentTemplate>
                                                                 </asp:UpdatePanel>
@@ -435,7 +670,8 @@
                                                                                         <tr>
                                                                                             <td style="text-align: right">
                                                                                                 <input id="hdnNoteAttachments" runat="server" type="hidden" />
-                                                                                                <div id="divNoteDropzone" runat="server" class="dropzone work-file">
+                                                                                                <input id="hdnNoteFileType" runat="server" type="hidden" />
+                                                                                                <div id="divNoteDropzone" runat="server" class="dropzone work-file-Note">
                                                                                                     <div class="fallback">
                                                                                                         <input name="file" type="file" multiple />
                                                                                                         <input type="submit" value="Upload" />
@@ -447,7 +683,7 @@
                                                                                                     <tr>
 
                                                                                                         <td>
-                                                                                                            <div id="divNoteDropzonePreview" runat="server" class="dropzone-previews work-file-previews">
+                                                                                                            <div id="divNoteDropzonePreview" runat="server" class="dropzone-previews work-file-previews-note">
                                                                                                             </div>
                                                                                                         </td>
 
@@ -873,7 +1109,7 @@
                                         </asp:UpdatePanel>
                                     </div>
 
-                                    <div style="display:none">
+                                    <div style="display: none">
                                         <br />
                                         <table cellspacing="0" cellpadding="0" width="950px" border="1" style="width: 100%; border-collapse: collapse;" id="tableNote1">
 
@@ -1146,7 +1382,110 @@
     </div>
     <%--Popup ForFreez Approvel Ends--%>
 
+
+
+
     <%--Popup log file view --%>
+
+
+    <div id="divBackground" class="modal">
+    </div>
+    <div id="divImage">
+        <table style="height: 100%; width: 100%">
+            <tr>
+                <td valign="middle" align="center">
+                    <img id="imgLoader" alt="" src="../img/loader.gif" />
+                    <img id="imgFull" alt="" src="" style="display: none; height: 500px; width: 590px" />
+                </td>
+            </tr>
+            <tr>
+                <td align="center" valign="bottom">
+                    <input id="btnClose" type="button" value="close" onclick="HideDiv()" />
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <style>
+        .modalBackground {
+            background-color: Black;
+            filter: alpha(opacity=40);
+            opacity: 0.4;
+        }
+
+        .modalPopup1 {
+            background-color: #FFFFFF;
+            width: 500px;
+            border: 3px solid #0DA9D0;
+        }
+
+            .modalPopup1 .header {
+                background-color: #2FBDF1;
+                height: 30px;
+                color: White;
+                line-height: 30px;
+                text-align: center;
+                font-weight: bold;
+            }
+
+            .modalPopup1 .body {
+                min-height: 50px;
+                line-height: 30px;
+                text-align: center;
+                padding: 5px;
+            }
+
+            .modalPopup1 .footer {
+                padding: 3px;
+            }
+
+            .modalPopup1 .button {
+                height: 23px;
+                color: White;
+                line-height: 23px;
+                text-align: center;
+                font-weight: bold;
+                cursor: pointer;
+                background-color: #9F9F9F;
+                border: 1px solid #5C5C5C;
+            }
+
+            .modalPopup1 td {
+                text-align: left;
+            }
+    </style>
+    <input type="hidden" id="hiddenFilePath" runat="server" />
+    <input type="hidden" id="hiddenFileName" runat="server" />
+    <asp:LinkButton Text="" ID="lnkFake" runat="server" />
+    <asp:ModalPopupExtender ID="mpe" runat="server" PopupControlID="Panel1" TargetControlID="lnkFake"
+        CancelControlID="closebtn1" BackgroundCssClass="modalBackground">
+    </asp:ModalPopupExtender>
+
+    <asp:Panel ID="Panel1" runat="server" BackColor="White"
+        Width="40%" Style="z-index: 111; background-color: White; position: absolute; left: 35%; top: 12%; border: outset 2px gray; padding: 5px; display: none">
+        <div>
+            <table style="width: 100%; height: 100%;" cellpadding="0" cellspacing="5">
+                <tr style="background-color: gray">
+                    <td colspan="2" style="color: White; font-weight: bold; font-size: 1.2em; padding: 3px"
+                        align="center">
+                        <asp:Label ID="lblFName" ForeColor="White" runat="server" />
+                        <a id="closebtn1" style="color: white; float: right; text-decoration: none" class="btnClose" href="#">X</a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div style="padding: 5px">
+            <video id="Vedioplayer" style="display: none" height="98%" width="98%" controls>
+                <source id='mp4Source' type="video/mp4" />
+            </video>
+            <audio id="Audiolayer" style="display: none" height="98%" width="98%" controls> 
+                <source id='mp3Source' type="audio/mp3" />
+            </audio>
+        </div>
+    </asp:Panel>
+
+
+
     <div id="mask">
     </div>
     <asp:Panel ID="pnlpopup" runat="server" BackColor="White"
@@ -1157,7 +1496,7 @@
                     <td colspan="2" style="color: White; font-weight: bold; font-size: 1.2em; padding: 3px"
                         align="center">
                         <asp:Label ID="lblFileName" ForeColor="White" runat="server" />
-                        <a id="closebtn" style="color: white; float: right; text-decoration: none" class="btnClose" href="#">X</a>
+                        <a id="closebtn" style="color: white; float: right; text-decoration: none" class="btnClose" href="#" onclick="HidePopupLogFile()">X</a>
                     </td>
                 </tr>
             </table>
@@ -1166,7 +1505,7 @@
 
             <asp:Image ID="imgPreview" Height="98%" Width="98%" runat="server" Visible="false" />
 
-            <div runat="server" visible="false" height="98%" width="98%" id="divAudioVido">
+            <div runat="server" height="98%" width="98%" id="divAudioVido">
                 <video height="98%" width="98%" controls>
                     <source type="video/mp4" runat="server" id="videomp4" />
                     <source type="video/3gpp" runat="server" id="video3gpp" />
@@ -1196,6 +1535,95 @@
     <script type="text/javascript" src='../js/ice/src/plugins/IceEmdashPlugin/IceEmdashPlugin.js'></script>
     <script type="text/javascript" src='../js/ice/src/plugins/IceSmartQuotesPlugin/IceSmartQuotesPlugin.js'></script>
     <script type="text/javascript" src="../js/ice/lib/tinymce/jscripts/tiny_mce/tiny_mce.js"></script>
+
+
+    <script type="text/javascript">
+        
+
+        function ViewDetails(Id, longName, shortName,fileType) {
+            debugger;
+          
+            $("#<%=lblFName.ClientID %>").text(shortName);
+            var filePath = '../TaskAttachments/'+ longName;
+
+            var fileName = filePath;
+            var fileExtension = fileName.substring(fileName.lastIndexOf('.') + 1); 
+
+            var tv_main_channel = "";
+
+            if(fileType == 3) // Video
+            {
+                $('#Vedioplayer').show();
+                $('#Audiolayer').hide();
+                if(fileExtension == "mp4")
+                {
+                    tv_main_channel = $('#mp4Source');
+                }
+                tv_main_channel.attr('src', filePath);
+                var video_block = $('#Vedioplayer');
+                video_block.load();
+            }
+
+            if(fileType == 2) // Audio
+            {
+                $('#Vedioplayer').hide();
+                $('#Audiolayer').show();
+                if(fileExtension == "mp4")
+                {
+                    tv_main_channel = $('#mp4Source');
+                }
+                if(fileExtension == "mp3")
+                {
+                    tv_main_channel = $('#mp3Source');
+                }
+
+                tv_main_channel.attr('src', filePath);
+                var audio_block = $('#Audiolayer');
+                audio_block.load();
+            }
+        }
+        function LoadDiv(url) {
+            debugger;
+            var img = new Image();
+            var bcgDiv = document.getElementById("divBackground");
+            var imgDiv = document.getElementById("divImage");
+            var imgFull = document.getElementById("imgFull");
+            var imgLoader = document.getElementById("imgLoader");
+            imgLoader.style.display = "block";
+            img.onload = function () {
+                imgFull.src = img.src;
+                imgFull.style.display = "block";
+                imgLoader.style.display = "none";
+            };
+            img.src = url;
+            var width = document.body.clientWidth;
+            if (document.body.clientHeight > document.body.scrollHeight) {
+                bcgDiv.style.height = document.body.clientHeight + "px";
+            }
+            else {
+                bcgDiv.style.height = document.body.scrollHeight + "px";
+            }
+            imgDiv.style.left = (width - 650) / 2 + "px";
+            imgDiv.style.top = "20px";
+            bcgDiv.style.width = "100%";
+ 
+            bcgDiv.style.display = "block";
+            imgDiv.style.display = "block";
+            return false;
+        }
+        function HideDiv() {
+            var bcgDiv = document.getElementById("divBackground");
+            var imgDiv = document.getElementById("divImage");
+            var imgFull = document.getElementById("imgFull");
+            if (bcgDiv != null) {
+                bcgDiv.style.display = "none";
+                imgDiv.style.display = "none";
+                imgFull.style.display = "none";
+            }
+        }
+    </script>
+
+
     <script type="text/javascript">
         var intUserId = <%=Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]%>;
         var strUserName = '<%=Session[JG_Prospect.Common.SessionKey.Key.Username.ToString()]%>';
@@ -1343,12 +1771,14 @@
             }
         }
 
-        var objNotesDropzone,objWorkFileDropzone, objSubTaskDropzone;
+        var objNotesDropzone;
+        var objWorkFileDropzone;
+        var objSubTaskDropzone;
         //Dropzone.autoDiscover = false;
         //Dropzone.options.dropzoneForm = false;
 
         function ApplyDropZone() {
-            //debugger;
+            debugger;
             ////User's drag and drop file attachment related code
 
             //remove already attached dropzone.
@@ -1362,18 +1792,19 @@
                 objNotesDropzone = null;
             }
 
-            debugger;
-            objWorkFileDropzone = GetWorkFileDropzone("div.work-file", 'div.work-file-previews');
-            objNotesDropzone = GetNotesDropzone("div.work-file", 'div.work-file-previews');
-            //remove already attached dropzone.
             if (objSubTaskDropzone) {
                 objSubTaskDropzone.destroy();
                 objSubTaskDropzone = null;
             }
             debugger;
+            objWorkFileDropzone = GetWorkFileDropzone("div.work-file", 'div.work-file-previews');
+            //objNotesDropzone = GetNotesDropzone("div.work-file-note", 'div.work-file-previews-note');
+            //remove already attached dropzone.
+            
+           
             if($("#<%=divNoteDropzone.ClientID%>").length > 0) {
                 debugger;
-                objSubTaskDropzone = new Dropzone("#<%=divNoteDropzone.ClientID%>", {
+                objNotesDropzone = new Dropzone("#<%=divNoteDropzone.ClientID%>", {
                     maxFiles: 1,
                     url: "taskattachmentupload.aspx",
                     thumbnailWidth: 90,
@@ -1389,8 +1820,30 @@
                         this.on("success", function (file, response) {
                             debugger;
                             var filename = response.split("^");
+
+                           
+
+                            debugger;
+
                             $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
 
+                            var fileType="";
+                            if(file.type.match('audio.*'))
+                            {   
+                                fileType="audio";
+                                ($('#<%= hdnNoteFileType.ClientID %>').val(fileType));
+                            }
+
+                            if(file.type.match('video.*'))
+                            {  
+                                fileType="video";
+                                ($('#<%= hdnNoteFileType.ClientID %>').val(fileType));
+                            }
+
+
+                            
+
+                           
                             AddAttachmenttoViewState(filename[0] + '@' + file.name, '#<%= hdnNoteAttachments.ClientID %>');
 
                             $('#<%= btnUploadLogFiles.ClientID %>').click();
@@ -1403,8 +1856,9 @@
                 });
             }
 
-
+            debugger;
             if($("#<%=divSubTaskDropzone.ClientID%>").length > 0) {
+                debugger;
                 objSubTaskDropzone = new Dropzone("#<%=divSubTaskDropzone.ClientID%>", {
                     maxFiles: 5,
                     url: "taskattachmentupload.aspx",
@@ -1419,6 +1873,7 @@
 
                         // when file is uploaded successfully store its corresponding server side file name to preview element to remove later from server.
                         this.on("success", function (file, response) {
+                            debugger;
                             var filename = response.split("^");
                             $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
 
@@ -1492,7 +1947,9 @@
                 });
             }
 
+            debugger;
             function GetWorkFileDropzone(strDropzoneSelector, strPreviewSelector) {
+                debugger;
                 return new Dropzone(strDropzoneSelector,
                     {
                         maxFiles: 5,
@@ -1508,6 +1965,7 @@
 
                             // when file is uploaded successfully store its corresponding server side file name to preview element to remove later from server.
                             this.on("success", function (file, response) {
+                                debugger;
                                 var filename = response.split("^");
                                 $(file.previewTemplate).append('<span class="server_file">' + filename[0] + '</span>');
 

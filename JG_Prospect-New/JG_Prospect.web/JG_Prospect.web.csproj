@@ -387,6 +387,7 @@
     <Content Include="img\gplus.png" />
     <Content Include="img\JG-Logo-white.gif" />
     <Content Include="img\JG-Logo.gif" />
+    <Content Include="img\loader.gif" />
     <Content Include="img\LoginwithFB.jpg" />
     <Content Include="img\LogoJG_PDF.png" />
     <Content Include="img\Logo_BG.png" />
@@ -898,6 +899,7 @@
     <Content Include="Scripts\jquery-1.4.1.js" />
     <Content Include="Scripts\jquery-1.4.1.min.js" />
     <Content Include="Synapse.aspx" />
+    <Content Include="TaskAttachments\86842182-3729-47a2-a002-b9d8f6af0e79-menu2.mp4" />
     <Content Include="TaskAttachments\99ed03b0-da55-4fa9-8709-c09c0a009813-sql server connection error.png" />
     <Content Include="TaskAttachments\aa86fb5d-d33a-4e6e-b131-19fca98707df-tblTask-InstallId.sql" />
     <Content Include="TestGoogleMap.aspx" />
