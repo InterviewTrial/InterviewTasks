@@ -220,13 +220,13 @@ namespace JG_Prospect.Sr_App {
         protected global::AjaxControlToolkit.TabContainer tcTaskHistory;
         
         /// <summary>
-        /// tpTaskHistory_Notes control.
+        /// tpTaskHistory_All control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::AjaxControlToolkit.TabPanel tpTaskHistory_Notes;
+        protected global::AjaxControlToolkit.TabPanel tpTaskHistory_All;
         
         /// <summary>
         /// gdTaskUsers control.
@@ -238,6 +238,24 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.GridView gdTaskUsers;
         
         /// <summary>
+        /// tpTaskHistory_Notes control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.TabPanel tpTaskHistory_Notes;
+        
+        /// <summary>
+        /// gdTaskUsersNotes control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.GridView gdTaskUsersNotes;
+        
+        /// <summary>
         /// tpTaskHistory_FilesAndDocs control.
         /// </summary>
         /// <remarks>
@@ -247,49 +265,13 @@ namespace JG_Prospect.Sr_App {
         protected global::AjaxControlToolkit.TabPanel tpTaskHistory_FilesAndDocs;
         
         /// <summary>
-        /// upLogDoc control.
+        /// reapeaterLogDoc control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.UpdatePanel upLogDoc;
-        
-        /// <summary>
-        /// hyperLnlDocName control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton hyperLnlDocName;
-        
-        /// <summary>
-        /// imgDoc control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Image imgDoc;
-        
-        /// <summary>
-        /// lblMessage control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblMessage;
-        
-        /// <summary>
-        /// hyperLnkDeleteLogDoc control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton hyperLnkDeleteLogDoc;
+        protected global::System.Web.UI.WebControls.Repeater reapeaterLogDoc;
         
         /// <summary>
         /// tpTaskHistory_Images control.
@@ -299,6 +281,15 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::AjaxControlToolkit.TabPanel tpTaskHistory_Images;
+        
+        /// <summary>
+        /// reapeaterLogImages control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater reapeaterLogImages;
         
         /// <summary>
         /// tpTaskHistory_Links control.
@@ -319,13 +310,13 @@ namespace JG_Prospect.Sr_App {
         protected global::AjaxControlToolkit.TabPanel tpTaskHistory_Videos;
         
         /// <summary>
-        /// upLogVideo control.
+        /// reapeaterLogVideoc control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.UpdatePanel upLogVideo;
+        protected global::System.Web.UI.WebControls.Repeater reapeaterLogVideoc;
         
         /// <summary>
         /// tpTaskHistory_Audios control.
@@ -346,13 +337,13 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.UpdatePanel upLogAudio;
         
         /// <summary>
-        /// imgAudio control.
+        /// reapeaterLogAudio control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Image imgAudio;
+        protected global::System.Web.UI.WebControls.Repeater reapeaterLogAudio;
         
         /// <summary>
         /// divTableNote control.
@@ -425,6 +416,15 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlInputHidden hdnNoteAttachments;
+        
+        /// <summary>
+        /// hdnNoteFileType control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlInputHidden hdnNoteFileType;
         
         /// <summary>
         /// divNoteDropzone control.
@@ -1100,6 +1100,60 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.HiddenField HiddenField1;
+        
+        /// <summary>
+        /// hiddenFilePath control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlInputHidden hiddenFilePath;
+        
+        /// <summary>
+        /// hiddenFileName control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlInputHidden hiddenFileName;
+        
+        /// <summary>
+        /// lnkFake control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton lnkFake;
+        
+        /// <summary>
+        /// mpe control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::AjaxControlToolkit.ModalPopupExtender mpe;
+        
+        /// <summary>
+        /// Panel1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel Panel1;
+        
+        /// <summary>
+        /// lblFName control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblFName;
         
         /// <summary>
         /// pnlpopup control.
