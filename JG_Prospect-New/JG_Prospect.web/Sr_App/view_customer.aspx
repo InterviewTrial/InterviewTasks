@@ -4,7 +4,7 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
 <div class="right_panel">
-<h1><b>Customer</b></h1>
+<h1><b>ivCustomer</b></h1>
 <!-- Tabs starts -->
           <div id="tabs">
             <ul>

@@ -165,19 +165,28 @@ namespace JG_Prospect.Sr_App
                 ddlTUStatus.DataBind();
 
                 this.LastSubTaskSequence = string.Empty;
-                
+
                 // edit mode, if task id is provided in query string parameter.
                 if (!string.IsNullOrEmpty(Request.QueryString["TaskId"]))
                 {
                     controlMode.Value = "1";
                     hdnTaskId.Value = Request.QueryString["TaskId"].ToString();
                     LoadTaskData(hdnTaskId.Value);
-                    btnAddNote.Visible = true;
+                    divTableNote.Visible = true;
+                    if (Session[JG_Prospect.Common.SessionKey.Key.usertype.ToString()] == "Admin")
+                        txtDescription.Enabled = true;
+                    else
+                        txtDescription.Enabled = false;
                 }
                 else
                 {
-                    btnAddNote.Visible = false;
+                    divTableNote.Visible = false;
                     controlMode.Value = "0";
+                    txtDescription.Enabled = true;
+
+                    txtDescription.Text = " Hi Aavadesh, How are you. Thank you for accepting to this task. \n\n";
+                    txtDescription.Text = txtDescription.Text + " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -- - - - - - - - - - - - - - - - - - - - - - - - - - -\n\n";
+
                 }
             }
         }
@@ -431,6 +440,27 @@ namespace JG_Prospect.Sr_App
             }
         }
 
+
+        protected void gvNotesFiles_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                if (!string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "attachment").ToString()))
+                {
+                    string attachments = DataBinder.Eval(e.Row.DataItem, "attachment").ToString();
+                    string[] attachment = attachments.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+                    intTaskUserFilesCount = attachment.Length;
+
+                    Repeater rptAttachments = (Repeater)e.Row.FindControl("rptAttachment");
+                    rptAttachments.DataSource = attachment;
+                    rptAttachments.DataBind();
+                }
+            }
+        }
+
+       
+
         #endregion
 
         protected void lbtnAddNewSubTask_Click(object sender, EventArgs e)
@@ -537,40 +567,152 @@ namespace JG_Prospect.Sr_App
 
         protected void btnAddNote_Click(object sender, EventArgs e)
         {
-            //string notes = string.Empty;
-            //if (!string.IsNullOrEmpty(Request.QueryString["TaskId"]))
-            //{
-            //    if (Session[JG_Prospect.Common.SessionKey.Key.usertype.ToString()] == "Admin")
-            //        notes = txtNote.Text;
-            //    else
-            //        notes = txtNote1.Text;
-            //}
-            //else
-            //{
-            //    notes = Server.HtmlEncode(txtDescription.Text);
-            //}
+            string notes = string.Empty;
+            if (!string.IsNullOrEmpty(Request.QueryString["TaskId"]))
+            {
+                if (Session[JG_Prospect.Common.SessionKey.Key.usertype.ToString()] == "Admin")
+                    notes = txtNote.Text;
+                else
+                    notes = txtNote1.Text;
+            }
+            else
+            {
 
-            if (string.IsNullOrEmpty(txtDescription.Text))
+                //string description = string.Empty;
+                //if (txtDescription.Text.Contains("-"))
+                //    description = txtDescription.Text.Replace("-", "");
+                //else
+                //    description = txtDescription.Text;
+
+                notes = Server.HtmlEncode(txtDescription.Text);
+            }
+
+            if (string.IsNullOrEmpty(notes))
                 return;
 
             SaveTaskNotesNAttachments();
+
+            if (Convert.ToInt64(hdnNoteId.Value) > 0)
+                btnCancelUpdateNote.Visible = false;
+
+            hdnNoteId.Value = "";
             hdnAttachments.Value = "";
+            tpTaskHistory_Notes.TabIndex = 0;
+            btnAddNote.Text = "Save Note";
+            //tcTaskHistory
+        }
+
+        protected void btnUploadLogFiles_Click(object sender, EventArgs e)
+        {
+            
+            UploadUserAttachements(null, Convert.ToInt32(hdnTaskId.Value), hdnNoteAttachments.Value);
+            LoadTaskData(hdnTaskId.Value);
+
+            //SetLogFiles(TaskGeneratorBLL.Instance.GetTaskUserFiles(Convert.ToInt32(hdnTaskId.Value)).Tables[0]);
+           
         }
 
         protected void gdTaskUsers_RowDataBound(object sender, GridViewRowEventArgs e)
         {
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
-                if (String.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "attachments").ToString()))
+                //if (String.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "attachments").ToString()))
+                //{
+                //    LinkButton lbtnAttachment = (LinkButton)e.Row.FindControl("lbtnAttachment");
+                //    lbtnAttachment.Visible = false;
+                //}
+
+                //Label lblStatus = (Label)e.Row.FindControl("lblStatus");
+                //int TaskStatus = Convert.ToInt32(DataBinder.Eval(e.Row.DataItem, "Status"));
+                //lblStatus.Text = CommonFunction.GetTaskStatusList().FindByValue(TaskStatus.ToString()).Text;
+
+                string notes = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "Notes"));
+                string filefullName = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "Attachment"));
+                string fileExtension = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "FileType"));
+
+                Label labelNotes = (Label)e.Row.FindControl("lblNotes");
+                Image imgFile = (Image)e.Row.FindControl("imgFile");
+                LinkButton linkOriginalfileName = (LinkButton)e.Row.FindControl("linkOriginalfileName");
+                Label lableOriginalfileName = (Label)e.Row.FindControl("lableOriginalfileName");
+                LinkButton linkUpdateLogNotes = (LinkButton)e.Row.FindControl("btnUpdateLogNotes");
+                LinkButton linkDownLoadFiles = (LinkButton)e.Row.FindControl("linkDownLoadFiles");
+
+                if (!string.IsNullOrEmpty(notes))
                 {
-                    LinkButton lbtnAttachment = (LinkButton)e.Row.FindControl("lbtnAttachment");
-                    lbtnAttachment.Visible = false;
+                    labelNotes.Visible = true;
+                    imgFile.Visible = false;
+                    linkDownLoadFiles.Visible = false;
+                    linkOriginalfileName.Visible = false;
+                }
+                else
+                {
+                    labelNotes.Visible = false;
+                    imgFile.Visible = true;
+                    linkDownLoadFiles.Visible = true;
+
+
+                    if (fileExtension.ToLower().Equals(".png") || fileExtension.ToLower().Equals(".jpg") || fileExtension.ToLower().Equals(".jpeg"))
+                    {
+                        string filePath = "../TaskAttachments/" + filefullName;
+                        imgFile.ImageUrl = filePath;
+                        linkOriginalfileName.Visible = true;
+                        lableOriginalfileName.Visible = false;
+                    }
+
+                    if (fileExtension.Equals(".doc") || fileExtension.Equals(".docx")
+                    || fileExtension.Equals(".xlx") || fileExtension.Equals(".xlsx")
+                    || fileExtension.Equals(".pdf")
+                    || fileExtension.Equals(".csv") || fileExtension.Equals(".txt"))
+                    {
+                        if (fileExtension.Equals(".doc") || fileExtension.Equals(".docx"))
+                            imgFile.ImageUrl = "../img/word.jpg";
+                        else if (fileExtension.Equals(".xlx") || fileExtension.Equals(".xlsx"))
+                            imgFile.ImageUrl = "../img/xls.png";
+                        else if (fileExtension.Equals(".pdf"))
+                            imgFile.ImageUrl = "../img/pdf.jpg";
+                        else if (fileExtension.Equals(".csv"))
+                            imgFile.ImageUrl = "../img/csv.png";
+                        else
+                            imgFile.ImageUrl = "../img/file.jpg";
+                        linkOriginalfileName.Visible = false;
+                        lableOriginalfileName.Visible = true;
+                    }
+                    if (fileExtension.Equals(".mp3") || fileExtension.Equals(".mp4")
+                    || fileExtension.Equals(".wma") )
+                    {
+                        imgFile.ImageUrl = "../img/audio.png";
+                    }
+                    if (fileExtension.Equals(".mp3") || fileExtension.Equals(".mp4")
+                    || fileExtension.Equals(".mkv") || fileExtension.Equals(".3gpp")
+                     || fileExtension.Equals(".mpeg") || fileExtension.Equals(".wmv")
+                     || fileExtension.Equals(".webm"))
+                    {
+                        imgFile.ImageUrl = "../img/video.png";
+                    }
                 }
 
-                Label lblStatus = (Label)e.Row.FindControl("lblStatus");
-
-                int TaskStatus = Convert.ToInt32(DataBinder.Eval(e.Row.DataItem, "Status"));
-                lblStatus.Text = CommonFunction.GetTaskStatusList().FindByValue(TaskStatus.ToString()).Text;
+                if (Session[JG_Prospect.Common.SessionKey.Key.usertype.ToString()] == "Admin" || Session[JG_Prospect.Common.SessionKey.Key.usertype.ToString()] == "IT Lead")
+                {
+                    if (!string.IsNullOrEmpty(notes))
+                    {
+                        if (notes.Contains("Task Description :"))
+                        {
+                            linkUpdateLogNotes.Visible = false;
+                        }
+                        else
+                        {
+                            linkUpdateLogNotes.Visible = true;
+                        }
+                    }
+                    else
+                    {
+                        linkUpdateLogNotes.Visible = false;
+                    }
+                }
+                else
+                {
+                    linkUpdateLogNotes.Visible = false;
+                }
             }
         }
 
@@ -585,11 +727,231 @@ namespace JG_Prospect.Sr_App
                 }
             }
 
+            if (e.CommandName == "viewFile")
+            {
+                LinkButton btndetails = (LinkButton)e.CommandSource;
+                GridViewRow gvrow = (GridViewRow)btndetails.NamingContainer;
+                LinkButton txtAttachment = (LinkButton)gvrow.FindControl("linkOriginalfileName");
+                Label fileExtension = (Label)gvrow.FindControl("lableFileExtension");
+                if (fileExtension.Text.ToString().ToLower().Equals(".png") || fileExtension.Text.ToString().ToLower().Equals(".jpg") || fileExtension.Text.ToString().ToLower().Equals(".jpeg"))
+                {
+                    imgPreview.ImageUrl = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
+                    imgPreview.Visible = true;
+                    divAudioVido.Visible = false;
+                }
+                else
+                {
+                    imgPreview.Visible = false;
+                    divAudioVido.Visible = true;
+
+                    if (fileExtension.Text.Equals(".mkv"))
+                        videomp4.Src = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
+
+                    if (fileExtension.Text.Equals(".mp4"))
+                        videomp4.Src = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
+
+                    if (fileExtension.Text.Equals(".3gpp"))
+                        video3gpp.Src = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
+
+                    if (fileExtension.Text.Equals(".mpeg"))
+                        videompeg.Src = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
+
+                    if (fileExtension.Text.Equals(".wmv"))
+                        videowmv.Src = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
+
+                    if (fileExtension.Text.Equals(".webm"))
+                        videowebm.Src = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
+
+                    if (fileExtension.Text.Equals(".mp3"))
+                        audiomp3.Src = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
+
+                    if (fileExtension.Text.Equals(".mp4"))
+                        audiomp4.Src = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
+
+                    if (fileExtension.Text.Equals(".wma"))
+                        audiowma.Src = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
+
+                }
+                lblFileName.Text = txtAttachment.Text;
+                Popup(true);
+            }
         }
 
+        void Popup(bool isDisplay)
+        {
+            StringBuilder builder = new StringBuilder();
+            if (isDisplay)
+            {
+                builder.Append("<script language=JavaScript> ShowPopupLogFile(); </script>\n");
+                Page.ClientScript.RegisterStartupScript(this.GetType(), "ShowPopupLogFile", builder.ToString());
+            }
+            else
+            {
+                builder.Append("<script language=JavaScript> HidePopup(); </script>\n");
+                Page.ClientScript.RegisterStartupScript(this.GetType(), "HidePopupLogFile", builder.ToString());
+            }
+        }
+
+        protected void gdTaskUsers1_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                string notes = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "Notes"));
+                string filefullName = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "Attachment"));
+                string fileExtension = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "FileType"));
+
+                Label labelNotes = (Label)e.Row.FindControl("lblNotes");
+                Image imgFile = (Image)e.Row.FindControl("imgFile");
+                LinkButton linkOriginalfileName = (LinkButton)e.Row.FindControl("linkOriginalfileName");
+                Label lableOriginalfileName = (Label)e.Row.FindControl("lableOriginalfileName");
+                LinkButton linkDownLoadFiles = (LinkButton)e.Row.FindControl("linkDownLoadFiles");
+
+
+                if (!string.IsNullOrEmpty(notes))
+                {
+                    labelNotes.Visible = true;
+                    imgFile.Visible = false;
+                    linkDownLoadFiles.Visible = false;
+                    linkOriginalfileName.Visible = false;
+                }
+                else
+                {
+                    labelNotes.Visible = false;
+                    imgFile.Visible = true;
+                    linkDownLoadFiles.Visible = true;
+
+
+                    if (fileExtension.ToLower().Equals(".png") || fileExtension.ToLower().Equals(".jpg") || fileExtension.ToLower().Equals(".jpeg"))
+                    {
+                        string filePath = "../TaskAttachments/" + filefullName;
+                        imgFile.ImageUrl = filePath;
+                        linkOriginalfileName.Visible = true;
+                        lableOriginalfileName.Visible = false;
+                    }
+
+                    if (fileExtension.Equals(".doc") || fileExtension.Equals(".docx")
+                    || fileExtension.Equals(".xlx") || fileExtension.Equals(".xlsx")
+                    || fileExtension.Equals(".pdf")
+                    || fileExtension.Equals(".csv") || fileExtension.Equals(".txt"))
+                    {
+                        if (fileExtension.Equals(".doc") || fileExtension.Equals(".docx"))
+                            imgFile.ImageUrl = "../img/word.jpg";
+                        else if (fileExtension.Equals(".xlx") || fileExtension.Equals(".xlsx"))
+                            imgFile.ImageUrl = "../img/xls.png";
+                        else if (fileExtension.Equals(".pdf"))
+                            imgFile.ImageUrl = "../img/pdf.jpg";
+                        else if (fileExtension.Equals(".csv"))
+                            imgFile.ImageUrl = "../img/csv.png";
+                        else
+                            imgFile.ImageUrl = "../img/file.jpg";
+                        linkOriginalfileName.Visible = false;
+                        lableOriginalfileName.Visible = true;
+                    }
+                    if (fileExtension.Equals(".mp3") || fileExtension.Equals(".mp4")
+                    || fileExtension.Equals(".wma"))
+                    {
+                        imgFile.ImageUrl = "../img/audio.png";
+                    }
+                    if (fileExtension.Equals(".mp3") || fileExtension.Equals(".mp4")
+                    || fileExtension.Equals(".mkv") || fileExtension.Equals(".3gpp")
+                     || fileExtension.Equals(".mpeg") || fileExtension.Equals(".wmv")
+                     || fileExtension.Equals(".webm"))
+                    {
+                        imgFile.ImageUrl = "../img/video.png";
+                    }
+                }
+            }
+        }
+
+        protected void gdTaskUsers1_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            if (e.CommandName == "DownLoadFiles")
+            {
+                // Allow download only if files are attached.
+                if (!String.IsNullOrEmpty(e.CommandArgument.ToString()))
+                {
+                    DownloadUserAttachments(e.CommandArgument.ToString());
+                }
+            }
+
+            if (e.CommandName == "viewFile")
+            {
+                LinkButton btndetails = (LinkButton)e.CommandSource;
+                GridViewRow gvrow = (GridViewRow)btndetails.NamingContainer;
+                LinkButton txtAttachment = (LinkButton)gvrow.FindControl("linkOriginalfileName");
+                Label fileExtension = (Label)gvrow.FindControl("lableFileExtension");
+                if (fileExtension.Text.ToString().ToLower().Equals(".png") || fileExtension.Text.ToString().ToLower().Equals(".jpg") || fileExtension.Text.ToString().ToLower().Equals(".jpeg"))
+                {
+                    imgPreview.ImageUrl = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
+                    imgPreview.Visible = true;
+                    divAudioVido.Visible = false;
+                }
+                else
+                {
+                    imgPreview.Visible = false;
+                    divAudioVido.Visible = true;
+
+                    if (fileExtension.Text.Equals(".mkv"))
+                        videomp4.Src = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
+
+                    if (fileExtension.Text.Equals(".mp4"))
+                        videomp4.Src = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
+
+                    if (fileExtension.Text.Equals(".3gpp"))
+                        video3gpp.Src = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
+
+                    if (fileExtension.Text.Equals(".mpeg"))
+                        videompeg.Src = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
+
+                    if (fileExtension.Text.Equals(".wmv"))
+                        videowmv.Src = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
+
+                    if (fileExtension.Text.Equals(".webm"))
+                        videowebm.Src = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
+
+                    if (fileExtension.Text.Equals(".mp3"))
+                        audiomp3.Src = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
+
+                    if (fileExtension.Text.Equals(".mp4"))
+                        audiomp4.Src = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
+
+                    if (fileExtension.Text.Equals(".wma"))
+                        audiowma.Src = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
+
+                }
+                lblFileName.Text = txtAttachment.Text;
+                Popup(true);
+            }
+        }
+
+        protected void btnUpdateLogNotes_Click(object sender, EventArgs e)
+        {
+            LinkButton btnEdit = (LinkButton)sender;
+            GridViewRow Grow = (GridViewRow)btnEdit.NamingContainer;
+            Label txtNotesId = (Label)Grow.FindControl("lblNoteId");
+            Label txtNotes = (Label)Grow.FindControl("lblNotes");
+
+            if (!string.IsNullOrEmpty(txtNotes.Text))
+            {
+                txtNote.Text = txtNotes.Text;
+                hdnNoteId.Value = txtNotesId.Text;
+                btnAddNote.Text = "Update Note";
+                btnCancelUpdateNote.Visible = true;
+                upTaskHistory.Update();
+            }
+        }
+
+        protected void btnCancelUpdateNote_Click(object sender, EventArgs e)
+        {
+            txtNote.Text = "";
+            hdnNoteId.Value = "";
+            btnAddNote.Text = "Save Note";
+            btnCancelUpdateNote.Visible = false;
+            upTaskHistory.Update();
+        }
         #endregion
 
-        #region '--Work Specification - Popup--'
+            #region '--Work Specification - Popup--'
 
         protected void btnAddAttachment_ClicK(object sender, EventArgs e)
         {
@@ -1247,7 +1609,7 @@ namespace JG_Prospect.Sr_App
             Int64 ItaskId = TaskGeneratorBLL.Instance.SaveOrDeleteTask(task);    // save task master details
 
             // Save task notes and user information,
-            Int32 TaskUpdateId = SaveTaskNote(ItaskId, false, null, string.Empty, task.Description);
+            Int32 TaskUpdateId = SaveTaskNote(ItaskId, false, null, string.Empty, "Task Description -: " + task.Description);
 
             // Save task related user's attachment.
             //UploadUserAttachements(TaskUpdateId, null, string.Empty);
@@ -1349,6 +1711,20 @@ namespace JG_Prospect.Sr_App
             gvSubTasks.DataSource = dtSubtasks;
             gvSubTasks.DataBind();
             upSubTasks.Update();
+        }
+
+        private void SetLogFiles(List<TaskLogFile> lstSubtasks)
+        {
+            DataTable dtLogFiles = new DataTable();
+
+            dtLogFiles.Columns.Add("taskId");
+            dtLogFiles.Columns.Add("attachment");
+            dtLogFiles.Columns.Add("notesId");
+
+            foreach (TaskLogFile objSubTask in lstSubtasks)
+            {
+                dtLogFiles.Rows.Add(objSubTask.TaskId, objSubTask.NotesId, objSubTask.Attachment);
+            }
         }
 
         private void SaveTaskDesignations()
@@ -1475,7 +1851,10 @@ namespace JG_Prospect.Sr_App
                 txtNote.Text = string.Empty;
                 txtNote1.Text = string.Empty;
 
-                txtDescription.Text = string.Empty;
+                txtDescription.Text = " Hi Aavadesh, How are you. Thank you for accepting to this task. \n\n";
+                txtDescription.Text = txtDescription.Text + " - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -- - - - - - - - - - - - - - - - - - - - - - - - - - -\n\n";
+
+                //txtDescription.Text = string.Empty;
                 //clearAllFormData();
 
                 // Refresh task list on top header.
@@ -1494,7 +1873,7 @@ namespace JG_Prospect.Sr_App
         }
 
         private void UploadUserAttachements(int? taskUpdateId, long? TaskId, string attachments)
-        {
+         {
             //User has attached file than save it to database.
             if (!String.IsNullOrEmpty(attachments))
             {
@@ -1510,12 +1889,12 @@ namespace JG_Prospect.Sr_App
                     files = hdnAttachments.Value.Split(new char[] { '^' }, StringSplitOptions.RemoveEmptyEntries);
                 }
 
-
                 foreach (String attachment in files)
                 {
                     String[] attachements = attachment.Split('@');
-
+                    string fileExtension = Path.GetExtension(attachment);
                     taskUserFiles.Attachment = attachements[0];
+                    taskUserFiles.FileType = fileExtension;
                     taskUserFiles.OriginalFileName = attachements[1];
                     taskUserFiles.Mode = 0; // insert data.
                     taskUserFiles.TaskId = TaskId ?? Convert.ToInt64(hdnTaskId.Value);
@@ -1550,17 +1929,18 @@ namespace JG_Prospect.Sr_App
                 taskUser.UserFirstName = UserName;
             }
 
-
+            if (!string.IsNullOrEmpty(hdnNoteId.Value))
+                taskUser.Id = Convert.ToInt64(hdnNoteId.Value);
+            else
+                taskUser.Id = 0;
 
             if (string.IsNullOrEmpty(taskDescription))
             {
                 //taskUser.UserType = userType.Text;
-                //if (Session[JG_Prospect.Common.SessionKey.Key.usertype.ToString()] == "Admin")
-                //    taskUser.Notes = txtNote.Text;
-                //else
-                //    taskUser.Notes = txtNote1.Text;
-                taskUser.Notes = txtDescription.Text;
-
+                if (Session[JG_Prospect.Common.SessionKey.Key.usertype.ToString()] == "Admin")
+                    taskUser.Notes = txtNote.Text;
+                else
+                    taskUser.Notes = txtNote1.Text;
             }
             else
                 taskUser.Notes = taskDescription;
@@ -1584,9 +1964,17 @@ namespace JG_Prospect.Sr_App
 
             taskUser.UserAcceptance = Convert.ToBoolean(userAcceptance);
 
-            TaskGeneratorBLL.Instance.SaveOrDeleteTaskNotes(ref taskUser);
+            if (taskUser.Id == 0)
+            {
+                TaskGeneratorBLL.Instance.SaveOrDeleteTaskNotes(ref taskUser);
+                TaskUpdateId = Convert.ToInt32(taskUser.TaskUpdateId);
+            }
+            else
+            {
+                TaskGeneratorBLL.Instance.UpadateTaskNotes(ref taskUser);
+            }
 
-            TaskUpdateId = Convert.ToInt32(taskUser.TaskUpdateId);
+
 
             //for (int i = 0; i < gdTaskUsers.Rows.Count; i++)
             //{
@@ -1682,8 +2070,8 @@ namespace JG_Prospect.Sr_App
             SetTaskAssignedUsers(dtTaskAssignedUserDetails);
             SetTaskUserNNotesDetails(dtTaskNotesDetails);
             SetSubTaskDetails(dtSubTaskDetails);
+            //SetLogFiles(dsTaskDetails.Tables[5]);
             FillrptWorkFiles(dsTaskDetails.Tables[5]);
-
             SetTaskPopupTitle(TaskId, dtTaskMasterDetails);
         }
 
@@ -1697,6 +2085,7 @@ namespace JG_Prospect.Sr_App
             rptWorkFiles.DataBind();
         }
 
+        
         private void SetSubTaskSectionView(bool blnView)
         {
             trSubTaskList.Visible = blnView;
@@ -1786,6 +2175,11 @@ namespace JG_Prospect.Sr_App
 
         private void SetTaskUserNNotesDetails(DataTable dtTaskUserDetails)
         {
+            for (int i = 0; i < dtTaskUserDetails.Rows.Count; i++)
+            {
+                dtTaskUserDetails.Rows[i]["Notes"] = dtTaskUserDetails.Rows[i]["Notes"].ToString().Replace("-", "");
+            }
+
             gdTaskUsers.DataSource = dtTaskUserDetails;
             gdTaskUsers.DataBind();
 
@@ -1811,6 +2205,77 @@ namespace JG_Prospect.Sr_App
                 this.LastSubTaskSequence = String.Empty;
             }
         }
+
+
+        private void SetLogFiles(DataTable dtLogFileDetails)
+        {
+            for (int i = 0; i < dtLogFileDetails.Rows.Count; i++)
+            {
+                string[] files = dtLogFileDetails.Rows[i]["attachment"].ToString().Split(new char[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
+                string onlyFileName = files[0];
+
+                string fileExtension = Path.GetExtension(Server.MapPath("~/TaskAttachments/" + onlyFileName));
+                string filePath = "../TaskAttachments/" + onlyFileName;
+
+               
+
+                if (fileExtension.Equals(".png") || fileExtension.Equals(".jpg") || fileExtension.Equals(".jpeg"))
+                {
+                    //imgImage.ImageUrl = filePath;
+                    //hyperLnkImageName.Text = files[1];
+                    //hyperLnkImageName.CommandArgument = dtLogFileDetails.Rows[i]["attachment"].ToString();
+                    //hyperLnkDeleteLogImage.CommandArgument = dtLogFileDetails.Rows[i]["attachment"].ToString();
+                    //imgImage.Visible = true;
+                    //lblImage.Visible = false;
+                    //lblMessage.Text = "";
+                    //upLogImg.Update();
+                }
+                else
+                {
+                    //imgImage.Visible = false;
+                    //lblImage.Visible = true;
+                    //lblMessage.Text = "No Image added yet.";
+                }
+                if (fileExtension.Equals(".doc") || fileExtension.Equals(".docx")
+                    || fileExtension.Equals(".xlx") || fileExtension.Equals(".xlsx")
+                    || fileExtension.Equals(".pdf")
+                    || fileExtension.Equals(".csv") || fileExtension.Equals(".txt"))
+                {
+                    if (fileExtension.Equals(".doc") || fileExtension.Equals(".docx"))
+                        imgDoc.ImageUrl = "../img/word.jpg";
+                    else if (fileExtension.Equals(".xlx") || fileExtension.Equals(".xlsx"))
+                        imgDoc.ImageUrl = "../img/xls.png";
+                    else if (fileExtension.Equals(".pdf"))
+                        imgDoc.ImageUrl = "../img/pdf.jpg";
+                    else if (fileExtension.Equals(".csv"))
+                        imgDoc.ImageUrl = "../img/csv.png";
+                    else
+                        imgDoc.ImageUrl = "../img/file.jpg" + onlyFileName;
+
+                    hyperLnlDocName.CommandArgument = dtLogFileDetails.Rows[i]["attachment"].ToString();
+                    hyperLnkDeleteLogDoc.CommandArgument = dtLogFileDetails.Rows[i]["attachment"].ToString();
+                    hyperLnlDocName.Text = files[1];
+
+                    imgDoc.Visible = true;
+                    lblMessage.Visible = false;
+                    lblMessage.Text = "";
+                    upLogDoc.Update();
+                }
+                else
+                {
+                    imgDoc.Visible = false;
+                    lblMessage.Visible = true;
+                    lblMessage.Text = "No document added yet.";
+                }
+                if (fileExtension.Equals(".mkv") || fileExtension.Equals(".flv") || fileExtension.Equals(".wmv") || fileExtension.Equals(".mp4") || fileExtension.Equals(".3gp"))
+                {
+                   
+                   // logVideo.Attributes.Add("src", filePath);
+                   // logVideo.Attributes.Add("value", filePath);
+                }
+            }
+        }
+
 
         private void SetMasterTaskDetails(DataTable dtTaskMasterDetails)
         {
@@ -1921,6 +2386,19 @@ namespace JG_Prospect.Sr_App
             Response.Flush();
             Response.End();
         }
+        public string RemoveUploadedattachment(string serverfilename)
+        {
+            var originalDirectory = new DirectoryInfo(HttpContext.Current.Server.MapPath("~/TaskAttachments"));
+
+            string pathString = System.IO.Path.Combine(originalDirectory.ToString(), serverfilename);
+
+            bool isExists = System.IO.File.Exists(pathString);
+
+            if (isExists)
+                File.Delete(pathString);
+
+            return serverfilename;
+        }
 
         private void SetTaskView()
         {
@@ -1975,6 +2453,32 @@ namespace JG_Prospect.Sr_App
         }
 
 
+
         #endregion
+
+        protected void imgBtnLogFiles_Click(object sender, ImageClickEventArgs e)
+        {
+            tdLogFiles.Visible = true;
+        }
+
+        protected void hyperLnkLogFile_Command(object sender, CommandEventArgs e)
+        {
+            if (e.CommandName == "DownloadLogDocName")
+            {
+                string[] files = e.CommandArgument.ToString().Split(new char[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
+                DownloadUserAttachment(files[0].Trim(), files[1].Trim());
+            }
+            else if (e.CommandName == "DownloadLogImage")
+            {
+                string[] files = e.CommandArgument.ToString().Split(new char[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
+
+                DownloadUserAttachment(files[0].Trim(), files[1].Trim());
+            }
+            else if (e.CommandName == "DeleteLogDoc")
+            {
+                string[] files = e.CommandArgument.ToString().Split(new char[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
+                RemoveUploadedattachment(files[0].Trim());
+            }
+        }
     }
 }
