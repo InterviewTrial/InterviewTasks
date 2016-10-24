@@ -85,6 +85,30 @@ namespace JG_Prospect.DAL
             }
         }
 
+        public DataSet GetUpdateUserAuditsTrailLstByLoginID(string userLoginID)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DataSet returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("SP_GetUpdateUserAuditTrailDataByUserID");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@UserLoginID", DbType.String, userLoginID);
+
+                    returndata = database.ExecuteDataSet(command);
+
+                    return returndata;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+
         public void UpdateUserLogOutTime(UserAuditTrail objUserAudit)
         {
             try

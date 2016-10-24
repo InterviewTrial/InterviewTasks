@@ -797,14 +797,14 @@ namespace JG_Prospect
                 if (BulkProspectUploader.HasFile)
                 {
                     string ext = Path.GetExtension(BulkProspectUploader.FileName);
-                    if (ext == ".xls" || ext == ".xlsx")
+                    if (ext == ".xls" || ext == ".xlsx" || ext == ".csv")
                     {
                         string FileName = Path.GetFileName(BulkProspectUploader.PostedFile.FileName);
                         string Extension = Path.GetExtension(BulkProspectUploader.PostedFile.FileName);
                         string FolderPath = ConfigurationManager.AppSettings["FolderPath"];
                         string FilePath = Server.MapPath(FolderPath + FileName);
                         BulkProspectUploader.SaveAs(FilePath);
-                        Import_To_Grid(FilePath, Extension);
+                        Import_To_Grid(FilePath, Extension, FileName);
                         binddata();
                     }
                     else
@@ -874,20 +874,40 @@ namespace JG_Prospect
 
         protected void btnYesEdit_Click(object sender, EventArgs e)
         {
-            DataTable dt = (DataTable)Session["DuplicateUsers"];
-            XmlDocument xmlDoc = new XmlDocument();
-            CreateDuplicateUserObjectXml(dt, out xmlDoc);
-
-            bool result = InstallUserBLL.Instance.BulkUpdateIntsallUser(xmlDoc.OuterXml);
-
-            if (result)
+            if (Session["DuplicateUsers"] != null)
             {
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Data updated successfully!');ClosePopupUploadBulk();", true);
+                DataTable dt = (DataTable)Session["DuplicateUsers"];
+
+                XmlDocument xmlDoc = new XmlDocument();
+                CreateDuplicateUserObjectXml(dt, out xmlDoc);
+
+                bool result = InstallUserBLL.Instance.BulkUpdateIntsallUser(xmlDoc.InnerXml, Session["loginid"].ToString());
+
+                UcStatusPopUp.ucPopUpMsg = "Data updated successfully.";
+                UcStatusPopUp.ucPopUpHeader = "";
+                UcStatusPopUp.changeText();
+
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "showStatusChangePopUp()", true);
+
             }
             else
             {
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('There is some error.');", true);
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Session expired , Please try again.');", true);
             }
+            
+            
+
+
+            
+
+            //if (result)
+            //{
+            //    ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Data updated successfully!');ClosePopupUploadBulk();", true);
+            //}
+            //else
+            //{
+            //    ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('There is some error.');", true);
+            //}
         }
 
         protected void btnNoEdit_Click(object sender, EventArgs e)
@@ -1194,10 +1214,8 @@ namespace JG_Prospect
             return SalesId;
         }
 
-        private void Import_To_Grid(string FilePath, string Extension)
-        {
-
-            
+        private void Import_To_Grid(string FilePath, string Extension ,string FileName)
+        {   
             string conStr = "";
             switch (Extension)
             {
@@ -1206,11 +1224,18 @@ namespace JG_Prospect
                     //conStr = ConfigurationManager.ConnectionStrings["Excel03ConString"]
                     //         .ConnectionString;
                     break;
+
                 case ".xlsx": //Excel 07
                     conStr = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + FilePath + ";Extended Properties=Excel 12.0;";
                     //conStr = @"Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + FilePath + ";Extended Properties='Excel 8.0;HDR=Yes;IMEX=1'";
                     //conStr = ConfigurationManager.ConnectionStrings["Excel07ConString"]
                     //          .ConnectionString;
+                    break;
+
+                case ".csv":
+                    FilePath = FilePath.Substring(0, FilePath.LastIndexOf(FileName)); // Removing file name. 
+                    conStr = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source="+ FilePath + ";Extended Properties=\"Text;HDR=Yes;FORMAT=Delimited\"";
+
                     break;
             }
             conStr = String.Format(conStr, FilePath);
@@ -1242,12 +1267,53 @@ namespace JG_Prospect
             if (xmlDoc.OuterXml != "")
                 ds = InstallUserBLL.Instance.BulkIntsallUser(xmlDoc.InnerXml);
 
+            pnlAddNewUser.Visible = false;
+            pnlDuplicate.Visible = false;
+
             if (ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0) //true.. ds returns duplicate users
             {
-                Session["DuplicateUsers"] = ds.Tables[0];
 
-                listDuplicateUsers.DataSource = ds.Tables[0];
-                listDuplicateUsers.DataBind();
+                int RowCount = (from DataRow ReturnDr in ds.Tables[0].Rows
+                                      where (string)ReturnDr["ActionTaken"] != "I"
+                                      select (string)ReturnDr["Email"]).Count();
+
+                if (RowCount > 0) // if found any row not Inserted than
+                {
+                    DataTable DuplicateRecords = (from DataRow ReturnDr in ds.Tables[0].Rows
+                                           where (string)ReturnDr["ActionTaken"] != "I"
+                                           select ReturnDr).CopyToDataTable();
+
+                    Session["DuplicateUsers"] = DuplicateRecords;
+
+                    listDuplicateUsers.DataSource = DuplicateRecords;
+                    listDuplicateUsers.DataBind();
+
+                    lblDuplicateCount.Text = "<h1>Duplicate Records : (" + RowCount.ToString() + ")</h1>";
+
+                    pnlDuplicate.Visible = true;
+                }
+
+                RowCount = (from DataRow ReturnDr in ds.Tables[0].Rows
+                            where (string)ReturnDr["ActionTaken"] == "I"
+                            select (string)ReturnDr["Email"]).Count();
+
+                if (RowCount > 0) // if row Inserted / Added
+                {
+                    DataTable InsertedRecords = (from DataRow ReturnDr in ds.Tables[0].Rows
+                                           where (string)ReturnDr["ActionTaken"] == "I"
+                                           select ReturnDr).CopyToDataTable();
+
+                    lstNewUserAdd.DataSource = InsertedRecords;
+                    lstNewUserAdd.DataBind();
+
+                    lblNewRecordAddedCount.Text = "<h1> New Record Added : (" + RowCount.ToString() + ")</h1>";
+
+                    pnlAddNewUser.Visible = true;
+                    //Session["DuplicateUsers"] = ds.Tables[0];
+
+                    //listDuplicateUsers.DataSource = ds.Tables[0];
+                    //listDuplicateUsers.DataBind();
+                }
 
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "overlay", "OverlayPopupUploadBulk();", true);
             }
@@ -1285,27 +1351,24 @@ namespace JG_Prospect
 
                     #region BindUserObject
 
-                    objuser.Email = dtExcel.Rows[i][5].ToString().Trim();
+                    objuser.Email = dtExcel.Rows[i]["Email1"].ToString().Trim();
 
                     if (objuser.Email == "")
                         break;
+                    objuser.Email2 = dtExcel.Rows[i]["Email2"].ToString().Trim();
 
-                    objuser.firstname = dtExcel.Rows[i][0].ToString().Trim();  //changes by Ratnakar
-                    objuser.lastname = dtExcel.Rows[i][1].ToString().Trim();
-                    objuser.CompanyName = dtExcel.Rows[i][2].ToString().Trim();
-                    objuser.status = "Applicant";
-                    objuser.DateSourced = DateTime.Now.ToString();
-                    objuser.phone = dtExcel.Rows[i][3].ToString().Trim();
-                    objuser.Phone2 = dtExcel.Rows[i][4].ToString().Trim();
+                    objuser.firstname = dtExcel.Rows[i]["FirstName"].ToString().Trim();  //changes by Ratnakar
+                    objuser.lastname = dtExcel.Rows[i]["LastName"].ToString().Trim();
+                    objuser.CompanyName = dtExcel.Rows[i]["CompanyName"].ToString().Trim();
+                    objuser.status = dtExcel.Rows[i]["status"].ToString().Trim();
+                    objuser.phone = dtExcel.Rows[i]["PhoneNo1"].ToString().Trim();
+                    objuser.Phone2 = dtExcel.Rows[i]["PhoneNo2"].ToString().Trim();
                     objuser.SourceUser = Convert.ToString(Session["userid"]);
                     objuser.Source = Convert.ToString(Session["Username"]);
-
-                    objuser.Email = dtExcel.Rows[i][5].ToString().Trim();
-                    objuser.Email2 = dtExcel.Rows[i][7].ToString().Trim();
-                    objuser.DateSourced = dtExcel.Rows[i][7].ToString().Trim();
-                    objuser.Notes = dtExcel.Rows[i][9].ToString().Trim();
-                    objuser.Designation = dtExcel.Rows[i][9].ToString().Trim();
-                    objuser.status = dtExcel.Rows[i][10].ToString().Trim();
+                    objuser.DateSourced = dtExcel.Rows[i]["DateSource"].ToString().Trim();
+                    objuser.Notes = dtExcel.Rows[i]["Notes"].ToString().Trim();
+                    objuser.Designation = dtExcel.Rows[i]["Designition"].ToString().Trim();
+                    //objuser.status = dtExcel.Rows[i][10].ToString().Trim();
 
                     //objuser.Designation = dtExcel.Rows[i][1].ToString().Trim();
                     //objuser.status = "Applicant";
@@ -1461,22 +1524,23 @@ namespace JG_Prospect
 
                     #region BindUserObject
 
-                    helper = dt.Rows[i]["Id"].ToString().Trim();
-                    objuser.Id = helper == "" ? 0 : Convert.ToInt32(helper);
+                    //helper = dt.Rows[i]["Id"].ToString().Trim();
+                    //objuser.Id = helper == "" ? 0 : Convert.ToInt32(helper);
 
                     objuser.Email = dt.Rows[i]["Email"].ToString().Trim();
+                    objuser.Email2 = dt.Rows[i]["Email2"].ToString().Trim();
                     objuser.Designation = dt.Rows[i]["Designation"].ToString().Trim();
-                    objuser.status = "Applicant";
-                    objuser.DateSourced = DateTime.Now.ToString();
+                    objuser.status = dt.Rows[i]["status"].ToString().Trim();
+                    objuser.DateSourced = dt.Rows[i]["DateSourced"].ToString().Trim();
                     objuser.firstname = dt.Rows[i]["firstname"].ToString().Trim();
                     objuser.lastname = dt.Rows[i]["lastname"].ToString().Trim();
                     objuser.SourceUser = Convert.ToString(Session["userid"]);
                     objuser.Source = Convert.ToString(Session["Username"]);
 
                     objuser.phone = dt.Rows[i]["phone"].ToString().Trim();
-                    objuser.phonetype = dt.Rows[i]["phonetype"].ToString().Trim();
+                    //objuser.phonetype = dt.Rows[i]["phonetype"].ToString().Trim();
                     objuser.Phone2 = dt.Rows[i]["Phone2"].ToString().Trim();
-                    objuser.Phone2Type = dt.Rows[i]["Phone2Type"].ToString().Trim();
+                    //objuser.Phone2Type = dt.Rows[i]["Phone2Type"].ToString().Trim();
 
                     objuser.CompanyName = dt.Rows[i]["CompanyName"].ToString().Trim();
 
@@ -1486,54 +1550,54 @@ namespace JG_Prospect
                     helper = dt.Rows[i]["SecondoryTradeId"].ToString().Trim();
                     objuser.SecondoryTradeId = helper == "" ? 0 : Convert.ToInt32(helper);
 
-                    objuser.address = dt.Rows[i]["address"].ToString().Trim();
-                    objuser.zip = dt.Rows[i]["zip"].ToString().Trim();
-                    objuser.state = dt.Rows[i]["state"].ToString().Trim();
-                    objuser.city = dt.Rows[i]["city"].ToString().Trim();
-                    objuser.SuiteAptRoom = dt.Rows[i]["SuiteAptRoom"].ToString().Trim();
+                    //objuser.address = dt.Rows[i]["address"].ToString().Trim();
+                    //objuser.zip = dt.Rows[i]["zip"].ToString().Trim();
+                    //objuser.state = dt.Rows[i]["state"].ToString().Trim();
+                    //objuser.city = dt.Rows[i]["city"].ToString().Trim();
+                    //objuser.SuiteAptRoom = dt.Rows[i]["SuiteAptRoom"].ToString().Trim();
 
-                    objuser.Address2 = dt.Rows[i]["Address2"].ToString().Trim();
-                    objuser.Zip2 = dt.Rows[i]["Zip2"].ToString().Trim();
-                    objuser.State2 = dt.Rows[i]["State2"].ToString().Trim();
-                    objuser.City2 = dt.Rows[i]["City2"].ToString().Trim();
-                    objuser.SuiteAptRoom2 = dt.Rows[i]["SuiteAptRoom2"].ToString().Trim();
+                    //objuser.Address2 = dt.Rows[i]["Address2"].ToString().Trim();
+                    //objuser.Zip2 = dt.Rows[i]["Zip2"].ToString().Trim();
+                    //objuser.State2 = dt.Rows[i]["State2"].ToString().Trim();
+                    //objuser.City2 = dt.Rows[i]["City2"].ToString().Trim();
+                    //objuser.SuiteAptRoom2 = dt.Rows[i]["SuiteAptRoom2"].ToString().Trim();
 
-                    helper = dt.Rows[i]["CurrentEmployement"].ToString().Trim().ToLower();
+                    //helper = dt.Rows[i]["CurrentEmployement"].ToString().Trim().ToLower();
 
-                    if (helper == "yes" || helper == "true")
-                        objuser.CurrentEmployement = true;
-                    else if (helper == "no" || helper == "false")
-                        objuser.CurrentEmployement = false;
+                    //if (helper == "yes" || helper == "true")
+                    //    objuser.CurrentEmployement = true;
+                    //else if (helper == "no" || helper == "false")
+                    //    objuser.CurrentEmployement = false;
 
-                    objuser.LeavingReason = dt.Rows[i]["LeavingReason"].ToString().Trim();
+                    //objuser.LeavingReason = dt.Rows[i]["LeavingReason"].ToString().Trim();
 
-                    helper = dt.Rows[i]["PrevApply"].ToString().Trim().ToLower();
+                    //helper = dt.Rows[i]["PrevApply"].ToString().Trim().ToLower();
 
-                    if (helper == "yes" || helper == "true")
-                        objuser.PrevApply = true;
-                    else if (helper == "no" || helper == "false")
-                        objuser.PrevApply = false;
+                    //if (helper == "yes" || helper == "true")
+                    //    objuser.PrevApply = true;
+                    //else if (helper == "no" || helper == "false")
+                    //    objuser.PrevApply = false;
 
-                    helper = dt.Rows[i]["FullTimePosition"].ToString().Trim();
-                    objuser.FullTimePosition = helper == "" ? 0 : Convert.ToInt32(helper);
-                    objuser.SalesExperience = dt.Rows[i]["SalesExperience"].ToString().Trim();
+                    //helper = dt.Rows[i]["FullTimePosition"].ToString().Trim();
+                    //objuser.FullTimePosition = helper == "" ? 0 : Convert.ToInt32(helper);
+                    //objuser.SalesExperience = dt.Rows[i]["SalesExperience"].ToString().Trim();
 
-                    helper = dt.Rows[i]["FELONY"].ToString().Trim().ToLower();
+                    //helper = dt.Rows[i]["FELONY"].ToString().Trim().ToLower();
 
-                    if (helper == "yes" || helper == "true")
-                        objuser.FELONY = true;
-                    else if (helper == "no" || helper == "false")
-                        objuser.FELONY = false;
+                    //if (helper == "yes" || helper == "true")
+                    //    objuser.FELONY = true;
+                    //else if (helper == "no" || helper == "false")
+                    //    objuser.FELONY = false;
 
-                    helper = dt.Rows[i]["DrugTest"].ToString().Trim().ToLower();
+                    //helper = dt.Rows[i]["DrugTest"].ToString().Trim().ToLower();
 
-                    if (helper == "yes" || helper == "true")
-                        objuser.DrugTest = true;
-                    else if (helper == "no" || helper == "false")
-                        objuser.DrugTest = false;
+                    //if (helper == "yes" || helper == "true")
+                    //    objuser.DrugTest = true;
+                    //else if (helper == "no" || helper == "false")
+                    //    objuser.DrugTest = false;
 
-                    objuser.SalaryReq = dt.Rows[i]["SalaryReq"].ToString().Trim();
-                    objuser.Avialability = dt.Rows[i]["Avialability"].ToString().Trim();
+                    //objuser.SalaryReq = dt.Rows[i]["SalaryReq"].ToString().Trim();
+                    //objuser.Avialability = dt.Rows[i]["Avialability"].ToString().Trim();
 
                     #endregion
 
