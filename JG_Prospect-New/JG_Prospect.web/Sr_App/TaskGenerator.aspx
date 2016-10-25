@@ -273,10 +273,11 @@
                                                                             <asp:TemplateField ShowHeader="True" HeaderText="User" ControlStyle-ForeColor="White" HeaderStyle-Font-Size="Small" HeaderStyle-Width="18%"
                                                                                 ItemStyle-HorizontalAlign="Left">
                                                                                 <ItemTemplate>
-                                                                                    <asp:Label ID="lbluser" runat="server"
+                                                                                   <%-- <asp:Label ID="lbluser" runat="server"
                                                                                         Text='<%#String.IsNullOrEmpty(Eval("FristName").ToString())== true ? Eval("UserFirstName").ToString() : Eval("FristName").ToString() %>'>
-                                                                                    </asp:Label>
-                                                                                    <asp:HyperLink runat="server" NavigateUrl='<%# Eval("UserId", "Customer_Profile.aspx?CustomerId={0}") %>' Text='<%# Eval("UserId") %>' />
+                                                                                    </asp:Label>--%>
+                                                                                    <asp:HyperLink runat="server" NavigateUrl='<%# Eval("UserId", "CreateSalesUser.aspx?id={0}") %>' 
+                                                                                        Text='<%# string.Concat(String.IsNullOrEmpty(Eval("FristName").ToString())== true ? Eval("UserFirstName").ToString() : Eval("FristName").ToString() , " -", Eval("UserId")) %>' />
                                                                                 </ItemTemplate>
                                                                                 <ControlStyle ForeColor="Black" />
                                                                                 <ControlStyle ForeColor="Black" />
@@ -405,7 +406,7 @@
                                                                             </asp:TemplateField>
 
                                                                             <asp:TemplateField ShowHeader="True" HeaderText="User" ControlStyle-ForeColor="White" HeaderStyle-Font-Size="Small" HeaderStyle-Width="18%"
-                                                                                ItemStyle-HorizontalAlign="Left">
+                                                                                ItemStyle-HorizontalAlign="Left" Visible="false">
                                                                                 <ItemTemplate>
                                                                                     <asp:Label ID="lbluser" runat="server"
                                                                                         Text='<%#String.IsNullOrEmpty(Eval("FristName").ToString())== true ? Eval("UserFirstName").ToString() : Eval("FristName").ToString() %>'>
@@ -660,17 +661,18 @@
                                                                 <td style="width: 50%">
                                                                     <table style="width: 100%">
                                                                         <tr>
-                                                                            <td style="width: 50%">
-                                                                                <asp:ImageButton ImageUrl="~/img/paperclip.png" Height="30px" Width="30px" runat="server" ID="imgBtnLogFiles" OnClick="imgBtnLogFiles_Click" />
+                                                                            <td style="width: 10%">
+                                                                                <asp:ImageButton ImageUrl="~/img/paperclip.png" Height="30px" Width="30px" runat="server" ID="imgBtnLogFiles" OnClientClick="papterclipClick(); return false"/>
                                                                             </td>
 
-                                                                            <td style="width: 50%">
-                                                                                <div id="tdLogFiles" runat="server" visible="false">
+                                                                            <td style="width: 50%; display:none;" id="tduploadcontrol">
+                                                                                <div runat="server">
                                                                                     <table style="width: 100%">
                                                                                         <tr>
                                                                                             <td style="text-align: right">
                                                                                                 <input id="hdnNoteAttachments" runat="server" type="hidden" />
-                                                                                                <div id="divNoteDropzone" runat="server" class="dropzone work-file">
+                                                                                                <input id="hdnNoteFileType" runat="server" type="hidden" />
+                                                                                                <div id="divNoteDropzone" runat="server" class="dropzone work-file-Note">
                                                                                                     <div class="fallback">
                                                                                                         <input name="file" type="file" multiple />
                                                                                                         <input type="submit" value="Upload" />
@@ -1538,6 +1540,12 @@
 
     <script type="text/javascript">
         
+        function papterclipClick()
+        {
+            $('#tduploadcontrol').show();
+        }
+
+
 
         function ViewDetails(Id, longName, shortName,fileType) {
             debugger;
@@ -1946,7 +1954,9 @@
                 });
             }
 
+            debugger;
             function GetWorkFileDropzone(strDropzoneSelector, strPreviewSelector) {
+                debugger;
                 return new Dropzone(strDropzoneSelector,
                     {
                         maxFiles: 5,
