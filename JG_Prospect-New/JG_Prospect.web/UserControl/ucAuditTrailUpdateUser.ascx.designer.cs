@@ -10,33 +10,33 @@
 namespace JG_Prospect.UserControl {
     
     
-    public partial class ucStatusChangePopup {
+    public partial class ucAuditTrailUpdateUser {
         
         /// <summary>
-        /// pnlStatucsChangePopup control.
+        /// pnlAuditUserData control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlStatucsChangePopup;
+        protected global::System.Web.UI.WebControls.Panel pnlAuditUserData;
         
         /// <summary>
-        /// lblHeader control.
+        /// grdAuditUserListing control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblHeader;
+        protected global::System.Web.UI.WebControls.GridView grdAuditUserListing;
         
         /// <summary>
-        /// lblMsg control.
+        /// lvAuditUserData control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblMsg;
+        protected global::System.Web.UI.WebControls.ListView lvAuditUserData;
     }
 }

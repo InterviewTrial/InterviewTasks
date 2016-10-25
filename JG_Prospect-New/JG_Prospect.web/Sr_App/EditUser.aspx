@@ -35,12 +35,23 @@
             left: 20%;
             width: 60%;
             min-height: 10%;
-            padding: 16px;
+            padding: 0 16px 16px 16px ;
             border: 10px solid #000000;
             background-color: white;
             z-index: 1002;
             overflow: auto;
         }
+
+        .close {
+              position: absolute;
+              top: 35px;
+              right: 30px;
+              transition: all 200ms;
+              font-size: 30px;
+              font-weight: bold;
+              text-decoration: none;
+              color: #333;
+            }
     </style>
     <script type="text/javascript">
         function ConfirmDelete() {
@@ -94,9 +105,16 @@
         function OverlayPopupUploadBulk() {
             document.getElementById('lightUploadBulk').style.display = 'block';
             document.getElementById('fadeUploadBulk').style.display = 'block';
+            $("html, body").animate({ scrollTop: 0 }, "slow");
         }
 
-        var validFilesTypes = ["xls", "xlsx"];
+        function CloseAddUserPopUp()
+        {
+            document.getElementById('lightUploadBulk').style.display = 'none';
+            document.getElementById('fadeUploadBulk').style.display = 'none';
+        }
+
+        var validFilesTypes = ["xls", "xlsx" ,"csv"];
         function ValidateFile() {
             var file = document.getElementById("<%=BulkProspectUploader.ClientID%>");
             var label = document.getElementById("<%=Label1.ClientID%>");
@@ -110,7 +128,7 @@
                 }
             }
             if (!isValidFile) {
-                alert('Select file of type xls or xlsx');
+                alert('Select file of type csv ,xls or xlsx ');
                 //label.style.color = "red";
                 //label.innerHTML = "Invalid File. Please upload a File with" +
 
@@ -833,46 +851,84 @@
     </div>
 
     <asp:Panel ID="pnlUploadBulk" runat="server">
-        <div id="lightUploadBulk" class="white_content">
-            <div style="padding: 20px; margin: auto;">
-                Email or Phone number of following users already exists, do you want to update the existing record?
-            </div>
-            <div style="padding: 20px; margin: auto;">
-                <style>
-                    .uploadBulkTab {
-                        background-color: #dadada;
-                    }
+        <style>
+                            .uploadBulkTab {
+                                background-color: #dadada;
+                            }
 
-                        .uploadBulkTab td {
-                            padding: 7px 5px;
-                        }
-                </style>
-                <table width="60%" class="uploadBulkTab" cellpadding="0">
+                                .uploadBulkTab td {
+                                    padding: 7px 5px;
+                                }
+                        </style>
+        <div id="lightUploadBulk" class="white_content" style="text-align:center">
+            <a class="close" href="#" onclick="CloseAddUserPopUp()">&times;</a>
+
+            <asp:Panel ID="pnlDuplicate" runat="server">
+                    <asp:Label ID="lblDuplicateCount" runat="server"></asp:Label> 
+                
+                    <div style="padding: 20px; margin: auto;">
+                        <center>
+                            <table width="60%" class="uploadBulkTab" cellpadding="0">
+                            <tr style="background-color: #A33E3F; color: white; font-weight: bold; text-align: center; width: 100%;">
+                                <td><span>Full Name</span></td>
+                                <td><span>Email</span></td>
+                                <td><span>Phone</span></td>
+                                <td><span>status</span></td>
+                            </tr>
+                            <asp:ListView ID="listDuplicateUsers" runat="server">
+                                <ItemTemplate>
+                                    <tr>
+                                        <td><span><%#Eval("FirstName")%>&nbsp;<%#Eval("LastName")%></span></td>
+                                        <td><span><%#Eval("Email")%></span></td>
+                                        <td><span><%#Eval("phone")%></span></td>
+                                        <td><span><%#Eval("status")%></span></td>
+                                    </tr>
+                                </ItemTemplate>
+                            </asp:ListView>
+                        </table>
+                        </center>
+                    </div>
+                    <div style="padding: 20px; margin: auto;">
+                        Email or Phone number of above users already exists, do you want to update the existing record?
+                    </div>
+                    <div style="padding: 10px; margin: auto;">
+                        <asp:Button ID="btnYesEdit" runat="server" BackColor="#bb0000" ForeColor="White" Height="32px"
+                            Style="height: 26px; font-weight: 700; line-height: 1em;" Text="Yes" Width="100px"
+                            ValidationGroup="IndiCred" TabIndex="119" OnClick="btnYesEdit_Click" />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <asp:Button ID="btnNoEdit" runat="server" BackColor="#bb0000" ForeColor="White" Height="32px"
+                        Style="height: 26px; font-weight: 700; line-height: 1em;" Text="No" Width="100px"
+                        ValidationGroup="IndiCred" TabIndex="119" OnClick="btnNoEdit_Click" />
+                    </div>
+
+                <hr />
+                <br />
+            </asp:Panel>
+
+            <asp:Panel ID="pnlAddNewUser" runat="server">
+                <asp:Label ID="lblNewRecordAddedCount" runat="server"></asp:Label>
+                <center>
+                <table width="60%" class="uploadBulkTab" cellpadding="0" style="margin-top:20px;">
                     <tr style="background-color: #A33E3F; color: white; font-weight: bold; text-align: center; width: 100%;">
-                        <td><span>FirstName LastName</span></td>
+                        <td><span>Full Name</span></td>
                         <td><span>Email</span></td>
                         <td><span>Phone</span></td>
+                        <td><span>status</span></td>
                     </tr>
-                    <asp:ListView ID="listDuplicateUsers" runat="server">
+                    <asp:ListView ID="lstNewUserAdd" runat="server">
                         <ItemTemplate>
                             <tr>
                                 <td><span><%#Eval("FirstName")%>&nbsp;<%#Eval("LastName")%></span></td>
                                 <td><span><%#Eval("Email")%></span></td>
                                 <td><span><%#Eval("phone")%></span></td>
+                                <td><span><%#Eval("status")%></span></td>
                             </tr>
                         </ItemTemplate>
                     </asp:ListView>
                 </table>
-            </div>
-             <div style="padding: 10px; margin: auto;">
-                <asp:Button ID="btnYesEdit" runat="server" BackColor="#bb0000" ForeColor="White" Height="32px"
-                    Style="height: 26px; font-weight: 700; line-height: 1em;" Text="Yes" Width="100px"
-                    ValidationGroup="IndiCred" TabIndex="119" OnClick="btnYesEdit_Click" />
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <asp:Button ID="btnNoEdit" runat="server" BackColor="#bb0000" ForeColor="White" Height="32px"
-                Style="height: 26px; font-weight: 700; line-height: 1em;" Text="No" Width="100px"
-                ValidationGroup="IndiCred" TabIndex="119" OnClick="btnNoEdit_Click" />
-            </div>
+                </center>
+            </asp:Panel>
+
         </div>
     </asp:Panel>
     <div id="fadeUploadBulk" class="black_overlay">

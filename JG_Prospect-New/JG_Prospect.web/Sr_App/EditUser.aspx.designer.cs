@@ -868,6 +868,24 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.Panel pnlUploadBulk;
         
         /// <summary>
+        /// pnlDuplicate control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlDuplicate;
+        
+        /// <summary>
+        /// lblDuplicateCount control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblDuplicateCount;
+        
+        /// <summary>
         /// listDuplicateUsers control.
         /// </summary>
         /// <remarks>
@@ -893,5 +911,32 @@ namespace JG_Prospect {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnNoEdit;
+        
+        /// <summary>
+        /// pnlAddNewUser control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlAddNewUser;
+        
+        /// <summary>
+        /// lblNewRecordAddedCount control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblNewRecordAddedCount;
+        
+        /// <summary>
+        /// lstNewUserAdd control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ListView lstNewUserAdd;
     }
 }
