@@ -670,8 +670,7 @@
                                                                                         <tr>
                                                                                             <td style="text-align: right">
                                                                                                 <input id="hdnNoteAttachments" runat="server" type="hidden" />
-                                                                                                <input id="hdnNoteFileType" runat="server" type="hidden" />
-                                                                                                <div id="divNoteDropzone" runat="server" class="dropzone work-file-Note">
+                                                                                                <div id="divNoteDropzone" runat="server" class="dropzone work-file">
                                                                                                     <div class="fallback">
                                                                                                         <input name="file" type="file" multiple />
                                                                                                         <input type="submit" value="Upload" />
@@ -1947,9 +1946,7 @@
                 });
             }
 
-            debugger;
             function GetWorkFileDropzone(strDropzoneSelector, strPreviewSelector) {
-                debugger;
                 return new Dropzone(strDropzoneSelector,
                     {
                         maxFiles: 5,
