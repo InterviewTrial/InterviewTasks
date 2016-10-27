@@ -463,7 +463,7 @@ namespace JG_Prospect
                 binddata();
 
                 if ((ddl.SelectedValue == "Active") || (ddl.SelectedValue == "Deactive"))
-                    ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "showStatusChangePopUp()", true);
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "showStatusChangePopUp();", true);
                 return;
             }
 
@@ -801,11 +801,34 @@ namespace JG_Prospect
                     {
                         string FileName = Path.GetFileName(BulkProspectUploader.PostedFile.FileName);
                         string Extension = Path.GetExtension(BulkProspectUploader.PostedFile.FileName);
-                        string FolderPath = ConfigurationManager.AppSettings["FolderPath"];
-                        string FilePath = Server.MapPath(FolderPath + FileName);
-                        BulkProspectUploader.SaveAs(FilePath);
-                        Import_To_Grid(FilePath, Extension, FileName);
-                        binddata();
+                        
+                        //string FolderPath = ConfigurationManager.AppSettings["FolderPath"];
+                        //string FilePath = Server.MapPath(FolderPath + FileName);
+
+                        string GenFolderPath = DateTime.Now.Month.ToString() + DateTime.Now.Day.ToString() + DateTime.Now.Second.ToString(); 
+
+                        string directoryPath = Server.MapPath("/UploadedExcel/" + GenFolderPath+"/");
+                        if (!Directory.Exists(directoryPath))
+                        {
+                            Directory.CreateDirectory(directoryPath);
+                        }
+                        directoryPath = directoryPath + FileName;
+
+                        BulkProspectUploader.SaveAs(directoryPath);
+
+                        DataTable dtExcel = FillValueFromFiles(directoryPath, Extension, FileName);
+
+                        if (validateUploadedData(dtExcel) == false)
+                        {
+                            UcStatusPopUp.changeText();
+                            ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "showStatusChangePopUp();", true);                          
+                            return;
+                        }
+                        else
+                        {
+                            Import_To_Grid(dtExcel);
+                            binddata();
+                        }   
                     }
                     else
                     {
@@ -887,7 +910,7 @@ namespace JG_Prospect
                 UcStatusPopUp.ucPopUpHeader = "";
                 UcStatusPopUp.changeText();
 
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "showStatusChangePopUp()", true);
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "showStatusChangePopUp();", true);
 
             }
             else
@@ -1214,8 +1237,87 @@ namespace JG_Prospect
             return SalesId;
         }
 
-        private void Import_To_Grid(string FilePath, string Extension ,string FileName)
-        {   
+        private void Import_To_Grid(DataTable dtExcel)
+        {    
+                XmlDocument xmlDoc = new XmlDocument();
+                CreateUserObjectXml(dtExcel, out xmlDoc);
+    
+                DataSet ds = new DataSet();
+
+                if (xmlDoc.OuterXml != "")
+                    ds = InstallUserBLL.Instance.BulkIntsallUser(xmlDoc.InnerXml);
+
+                pnlAddNewUser.Visible = false;
+                pnlDuplicate.Visible = false;
+
+                #region '-- Process Excel data --'
+                if (ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0) //true.. ds returns duplicate users
+                {
+
+                    int RowCount = (from DataRow ReturnDr in ds.Tables[0].Rows
+                                    where (string)ReturnDr["ActionTaken"] != "I"
+                                    select (string)ReturnDr["Email"]).Count();
+
+                    if (RowCount > 0) // if found any row not Inserted than
+                    {
+                        DataTable DuplicateRecords = (from DataRow ReturnDr in ds.Tables[0].Rows
+                                                      where (string)ReturnDr["ActionTaken"] != "I"
+                                                      select ReturnDr).CopyToDataTable();
+
+                        Session["DuplicateUsers"] = DuplicateRecords;
+
+                        listDuplicateUsers.DataSource = DuplicateRecords;
+                        listDuplicateUsers.DataBind();
+
+                        lblDuplicateCount.Text = "<h1>Duplicate Records : (" + RowCount.ToString() + ")</h1>";
+
+                        pnlDuplicate.Visible = true;
+                    }
+
+                    RowCount = (from DataRow ReturnDr in ds.Tables[0].Rows
+                                where (string)ReturnDr["ActionTaken"] == "I"
+                                select (string)ReturnDr["Email"]).Count();
+
+                    if (RowCount > 0) // if row Inserted / Added
+                    {
+                        DataTable InsertedRecords = (from DataRow ReturnDr in ds.Tables[0].Rows
+                                                     where (string)ReturnDr["ActionTaken"] == "I"
+                                                     select ReturnDr).CopyToDataTable();
+
+                        lstNewUserAdd.DataSource = InsertedRecords;
+                        lstNewUserAdd.DataBind();
+
+                        lblNewRecordAddedCount.Text = "<h1> New Record Added : (" + RowCount.ToString() + ")</h1>";
+
+                        pnlAddNewUser.Visible = true;
+                        //Session["DuplicateUsers"] = ds.Tables[0];
+
+                        //listDuplicateUsers.DataSource = ds.Tables[0];
+                        //listDuplicateUsers.DataBind();
+                    }
+
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "overlay", "OverlayPopupUploadBulk();", true);
+                }
+                else
+                {
+                    //ScriptManager.RegisterStartupScript(this, this.GetType(), "overlay", "alert('All records has been added successfully!');window.location ='EditUser.aspx';", true);
+                    UcStatusPopUp.ucPopUpMsg = "Kindly validate uploaded Data / File.";
+                    UcStatusPopUp.changeText();
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "showStatusChangePopUp();", true);
+                }
+                #endregion
+            
+        }
+
+        /// <summary>
+        /// Fill Data from file , return DataTable
+        /// </summary>
+        /// <param name="FilePath"></param>
+        /// <param name="Extension"></param>
+        /// <param name="FileName"></param>
+        /// <returns></returns>
+        private DataTable FillValueFromFiles(string FilePath, string Extension, string FileName)
+        {
             string conStr = "";
             switch (Extension)
             {
@@ -1234,7 +1336,7 @@ namespace JG_Prospect
 
                 case ".csv":
                     FilePath = FilePath.Substring(0, FilePath.LastIndexOf(FileName)); // Removing file name. 
-                    conStr = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source="+ FilePath + ";Extended Properties=\"Text;HDR=Yes;FORMAT=Delimited\"";
+                    conStr = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" + FilePath + ";Extended Properties=\"Text;HDR=Yes;FORMAT=Delimited\"";
 
                     break;
             }
@@ -1257,72 +1359,51 @@ namespace JG_Prospect
             cmdExcel.CommandText = "SELECT * From [" + SheetName + "]";
             oda.SelectCommand = cmdExcel;
             oda.Fill(dtExcel);
-
-            XmlDocument xmlDoc = new XmlDocument();
-            CreateUserObjectXml(dtExcel, out xmlDoc);
-
             connExcel.Close();
-            DataSet ds = new DataSet();
 
-            if (xmlDoc.OuterXml != "")
-                ds = InstallUserBLL.Instance.BulkIntsallUser(xmlDoc.InnerXml);
-
-            pnlAddNewUser.Visible = false;
-            pnlDuplicate.Visible = false;
-
-            if (ds.Tables[0] != null && ds.Tables[0].Rows.Count > 0) //true.. ds returns duplicate users
-            {
-
-                int RowCount = (from DataRow ReturnDr in ds.Tables[0].Rows
-                                      where (string)ReturnDr["ActionTaken"] != "I"
-                                      select (string)ReturnDr["Email"]).Count();
-
-                if (RowCount > 0) // if found any row not Inserted than
-                {
-                    DataTable DuplicateRecords = (from DataRow ReturnDr in ds.Tables[0].Rows
-                                           where (string)ReturnDr["ActionTaken"] != "I"
-                                           select ReturnDr).CopyToDataTable();
-
-                    Session["DuplicateUsers"] = DuplicateRecords;
-
-                    listDuplicateUsers.DataSource = DuplicateRecords;
-                    listDuplicateUsers.DataBind();
-
-                    lblDuplicateCount.Text = "<h1>Duplicate Records : (" + RowCount.ToString() + ")</h1>";
-
-                    pnlDuplicate.Visible = true;
-                }
-
-                RowCount = (from DataRow ReturnDr in ds.Tables[0].Rows
-                            where (string)ReturnDr["ActionTaken"] == "I"
-                            select (string)ReturnDr["Email"]).Count();
-
-                if (RowCount > 0) // if row Inserted / Added
-                {
-                    DataTable InsertedRecords = (from DataRow ReturnDr in ds.Tables[0].Rows
-                                           where (string)ReturnDr["ActionTaken"] == "I"
-                                           select ReturnDr).CopyToDataTable();
-
-                    lstNewUserAdd.DataSource = InsertedRecords;
-                    lstNewUserAdd.DataBind();
-
-                    lblNewRecordAddedCount.Text = "<h1> New Record Added : (" + RowCount.ToString() + ")</h1>";
-
-                    pnlAddNewUser.Visible = true;
-                    //Session["DuplicateUsers"] = ds.Tables[0];
-
-                    //listDuplicateUsers.DataSource = ds.Tables[0];
-                    //listDuplicateUsers.DataBind();
-                }
-
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "overlay", "OverlayPopupUploadBulk();", true);
-            }
-            else
-            {
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "overlay", "alert('All records has been added successfully!');window.location ='EditUser.aspx';", true);
-            }
+            return dtExcel;
         }
 
+        private bool validateUploadedData(DataTable dtExcel)
+        {
+            if (dtExcel == null)
+            {
+                
+                UcStatusPopUp.ucPopUpHeader = "";
+                UcStatusPopUp.ucPopUpMsg = "Kindly validate uploaded Data / File.";
+                UcStatusPopUp.changeText();
+                return false;
+            }
+            if (dtExcel.Columns.Contains("Email1") == false
+                || dtExcel.Columns.Contains("PhoneNo1") == false
+                || dtExcel.Columns.Contains("status") == false
+                || dtExcel.Columns.Contains("FirstName") == false
+                || dtExcel.Columns.Contains("LastName") == false
+                || dtExcel.Columns.Contains("CompanyName") == false
+                || dtExcel.Columns.Contains("PhoneNo2") == false
+                || dtExcel.Columns.Contains("Email1") == false
+                || dtExcel.Columns.Contains("Email2") == false
+                || dtExcel.Columns.Contains("DateSource") == false
+                || dtExcel.Columns.Contains("Notes") == false
+                || dtExcel.Columns.Contains("Designition") == false)
+            {
+                
+                UcStatusPopUp.ucPopUpHeader = "";
+                UcStatusPopUp.ucPopUpMsg = "Kindly validate uploaded Files / columns. </br> Please refer Sample file";
+                UcStatusPopUp.changeText();
+                return false;
+            }
+
+            if (dtExcel.Rows.Count <= 0)
+            {
+                UcStatusPopUp.ucPopUpHeader = "";
+                UcStatusPopUp.ucPopUpMsg = "No data found to uploade , Kindly check the uploaded file";
+                UcStatusPopUp.changeText();
+            }
+
+            return true;
+        }
+        
         public void CreateUserObjectXml(DataTable dtExcel, out XmlDocument xmlDoc)
         {
             List<user1> list = new List<user1>();

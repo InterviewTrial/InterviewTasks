@@ -36,7 +36,7 @@ namespace JG_Prospect.UserControl
 
         public void changeText()
         {
-            if (ucPopUpHeader.Trim() == string.Empty)
+            if (ucPopUpHeader == null || ucPopUpHeader == string.Empty)
             {
                 lblHeader.Text = "<h1>Information</h1>";
             }

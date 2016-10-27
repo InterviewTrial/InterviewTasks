@@ -7,7 +7,7 @@
     }
      
     function showStatusChangePopUp() {
-
+        
         document.getElementById('StatucsChangePopup').style.display = 'block';
         document.getElementById('interviewDatefade').style.display = 'block';        
         $("html, body").animate({ scrollTop: 0 }, "slow");
