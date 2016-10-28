@@ -46,8 +46,7 @@ namespace JG_Prospect.Sr_App
                 rsAppointments.AllowInsert = false;
                 rsAppointments.AllowEdit = false;
                 rsAppointments.AllowDelete = false;
-
-
+                
                 // BindGoogleMap();
                 if (Session["usertype"] != null)
                 {
@@ -66,6 +65,24 @@ namespace JG_Prospect.Sr_App
                 }
                 Session["AppType"] = "SrApp";
                 LoadCalendar();
+
+                // Check is User Comming Up from Loign page.
+                //if (Request.QueryString["lastpage"] != null)
+                //{
+                //    string strQueryStringValue = Request.QueryString["lastpage"].ToString();
+
+                //    if (strQueryStringValue == "login")
+                //    {
+                //        if (Session["DesigNew"] != null)
+                //            if (Session["DesigNew"].ToString() == "Admin"
+                //                || Session["DesigNew"].ToString() == "Office Manager"
+                //                || Session["DesigNew"].ToString() == "Recruiter")
+                //            {
+                //                ucStaffAlertPopUp.BindControl();
+                //                ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "showStaffLoginPopUp()", true);
+                //            }
+                //    }
+                //}
             }
 
         }

@@ -567,12 +567,14 @@ namespace JG_Prospect
                         {
                             Session["AdminUserId"] = AdminId;
                             Session["usertype"] = "Admin";
-                            strRedirectUrl = "~/Sr_App/home.aspx";
+                           // strRedirectUrl = "~/Sr_App/home.aspx";
+                            strRedirectUrl = "~/Sr_App/GoogleCalendarView.aspx?lastpage=login";
                         }
                         else if (isvaliduser == 1)
                         {
                             Session["usertype"] = "Admin";
-                            strRedirectUrl = "~/Sr_App/home.aspx";
+                           // strRedirectUrl = "~/Sr_App/home.aspx";
+                            strRedirectUrl = "~/Sr_App/GoogleCalendarView.aspx?lastpage=login";
                         }
                         else if (isvaliduser == 2)
                         {
@@ -656,7 +658,15 @@ namespace JG_Prospect
                                     }
                                     else if (Convert.ToString(Session["DesigNew"]) == "Sr. Sales" || Convert.ToString(Session["DesigNew"]) == "Admin" || Convert.ToString(Session["DesigNew"]) == "Office Manager" || Convert.ToString(Session["DesigNew"]) == "Recruiter" || Convert.ToString(Session["DesigNew"]) == "Sales Manager" || Convert.ToString(Session["DesigNew"]).Contains("IT"))
                                     {
-                                        strRedirectUrl = "~/Sr_App/home.aspx";
+                                        if(Convert.ToString(Session["DesigNew"]) == "Admin" || Convert.ToString(Session["DesigNew"]) == "Recruiter" || Convert.ToString(Session["DesigNew"]) == "Office Manager")
+                                        {
+                                            strRedirectUrl = "~/Sr_App/GoogleCalendarView.aspx?lastpage=login";
+                                        }
+                                        else
+                                        {
+                                             strRedirectUrl = "~/Sr_App/home.aspx";
+                                        }
+                                        
                                     }
                                     else if (Convert.ToString(Session["DesigNew"]).StartsWith("Installer"))
                                     {
