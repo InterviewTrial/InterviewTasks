@@ -43,7 +43,8 @@ namespace JG_Prospect.DAL
 
                     if (!string.IsNullOrEmpty(objTask.DueDate))
                     {
-                        database.AddInParameter(command, "@DueDate", DbType.DateTime, Convert.ToDateTime(objTask.DueDate));
+                        DateTime dateDueDate = DateTime.ParseExact(objTask.DueDate, "dd/MM/yyyy", null);
+                        database.AddInParameter(command, "@DueDate", DbType.DateTime, dateDueDate);
                     }
 
                     database.AddInParameter(command, "@Hours", DbType.String, objTask.Hours);
@@ -360,6 +361,7 @@ namespace JG_Prospect.DAL
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@Id", DbType.Int64, objTaskUser.Id);
                     database.AddInParameter(command, "@Notes", DbType.String, objTaskUser.Notes);
+                    
 
                     int result = database.ExecuteNonQuery(command);
 

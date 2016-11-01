@@ -850,15 +850,14 @@
                 <ul>
                     <li style="width: 100%;">
                         <div class="tblPrimaryContact" style="margin-top: 10px; width: 100%">
-                            <div style="width: 40%; float: left;">
+                            <div style="width: 38%; float: left;">
                                 <table>
-
                                     <tr>
                                         <td>
                                             <input type="checkbox" id="chkContactType1" name="chkContactType1" />
                                         </td>
                                         <td>
-                                            <select id="selContactType1" clientidmode="Static" runat="server" tabindex="4" name="selContactType1" class="drop_down">
+                                            <select id="selContactType1" clientidmode="Static" runat="server" tabindex="4" name="selContactType1" class="drop_down" style="margin-top:15px; width:30px">
                                                 <option value="0">Select</option>
                                                 <option value="DM">DM</option>
                                                 <option value="Spouse">Spouse</option>
@@ -881,7 +880,7 @@
                                     </tr>
                                 </table>
                             </div>
-                            <div style="width: 40%; float: left;">
+                            <div style="width: 35%; float: left;">
                                 <table>
                                     <tr>
                                         <td class="paddingtd"></td>
@@ -892,7 +891,7 @@
                                             <label class="clsFullWidth">Phone Type</label>
                                         </td>
                                         <td>
-                                            <select id="selPhoneType1" class="clsFullWidth" clientidmode="Static" data-type="1" runat="server" tabindex="4" name="selPhoneType1">
+                                            <select style="margin-top:15px; width:30px" id="selPhoneType1" class="clsFullWidth" clientidmode="Static" data-type="1" runat="server" tabindex="4" name="selPhoneType1">
                                                 <option value="0">Select</option>
                                                 <option value="CellPhone">Cell Phone #</option>
                                                 <option value="HousePhone">House Phone #</option>
@@ -904,12 +903,12 @@
                                     <tr>
                                         <td class="paddingtd">
                                             <input type="button" id="Button4" runat="server" value="Add" data-type="1" class="clsFullWidth cls_btn_plus" tabindex="31"
-                                                onclick="Phone(this)" />
+                                                />
                                         </td>
                                     </tr>
                                 </table>
                             </div>
-                            <div style="width: 20%; float: left;">
+                            <div style="width: 27%; float: left;">
                                 <table>
                                     <tr>
                                         <td class="paddingtd"></td>
@@ -930,7 +929,7 @@
 
                     <li style="width: 100%;">
                         <div class="tblPrimaryContact" style="margin-top: 10px; width: 100%">
-                            <div style="width: 40%; float: left;">
+                            <div style="width: 38%; float: left;">
                                 <table>
                                     <tr>
                                         <td>
@@ -961,7 +960,7 @@
                                     </tr>
                                 </table>
                             </div>
-                            <div style="width: 40%; float: left;">
+                            <div style="width: 38%; float: left;">
                                 <table>
                                     <tr>
                                         <td class="paddingtd"></td>
@@ -989,7 +988,7 @@
                                     </tr>
                                 </table>
                             </div>
-                            <div style="width: 20%; float: left;">
+                            <div style="width: 34%; float: left;">
                                 <table>
                                     <tr>
                                         <td class="paddingtd"></td>

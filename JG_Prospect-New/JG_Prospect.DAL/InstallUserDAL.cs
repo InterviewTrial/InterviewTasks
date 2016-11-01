@@ -29,7 +29,7 @@ namespace JG_Prospect.DAL
 
         #region userlogin
 
-        public bool BulkUpdateIntsallUser(string xmlDoc)
+        public bool BulkUpdateIntsallUser(string xmlDoc, string UpdatedBy)
         {
             DataSet dsTemp = new DataSet();
 
@@ -39,6 +39,7 @@ namespace JG_Prospect.DAL
                 {
                     DbCommand command = database.GetStoredProcCommand("UDP_BulkUpdateInstallUser");
                     database.AddInParameter(command, "@XMLDOC2", DbType.Xml, xmlDoc);
+                    database.AddInParameter(command, "@UpdatedBy", DbType.String, UpdatedBy);                    
                     database.AddOutParameter(command, "@result", DbType.Int32, 1);
                     database.ExecuteScalar(command);
                     int res = Convert.ToInt32(database.GetParameterValue(command, "@result"));

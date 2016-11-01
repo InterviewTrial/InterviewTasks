@@ -7,7 +7,7 @@
     }
      
     function showStatusChangePopUp() {
-
+        
         document.getElementById('StatucsChangePopup').style.display = 'block';
         document.getElementById('interviewDatefade').style.display = 'block';        
         $("html, body").animate({ scrollTop: 0 }, "slow");
@@ -30,15 +30,12 @@
 
 
 <asp:Panel ID="pnlStatucsChangePopup" runat="server">    
-    <div id="StatucsChangePopup" class="white_content" style="height: auto;">
+    <div id="StatucsChangePopup" class="white_content" style=" text-align:center; height: auto; background: #efeeee url(../img/form-bg.png) repeat-x top; min-height: 150px;">
         <a class="close" href="#" onclick="CloseStatusChangePopUp()">&times;</a>
+            <asp:Label ID="lblHeader" runat="server"></asp:Label>
+            <asp:Label ID="lblMsg" runat="server"></asp:Label>
         
-        <h3>Status Changed</h3>
-
-        <h2 style="margin-top:25px">
-            <i>Soon we are coming up with more functionality...!
-            </i>
-        </h2>
+        
 
     </div>
 </asp:Panel>
