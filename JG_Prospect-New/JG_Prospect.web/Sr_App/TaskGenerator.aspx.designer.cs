@@ -1309,13 +1309,13 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.Image imgPreview;
         
         /// <summary>
-        /// divAudioVido control.
+        /// divVideo control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divAudioVido;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divVideo;
         
         /// <summary>
         /// videomp4 control.
@@ -1361,6 +1361,15 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlSource videowebm;
+        
+        /// <summary>
+        /// divAudio control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divAudio;
         
         /// <summary>
         /// audiomp3 control.

@@ -986,7 +986,7 @@
                                             <ContentTemplate>
                                                 <asp:TabContainer ID="tcTaskHistoryUser" runat="server" ActiveTabIndex="0" AutoPostBack="false">
                                                     <asp:TabPanel ID="tpTaskHistoryUser_Notes" runat="server" TabIndex="0">
-                                                        <HeaderTemplate>Notes</HeaderTemplate>
+                                                        <HeaderTemplate>All</HeaderTemplate>
                                                         <ContentTemplate>
                                                             <div class="grid">
                                                                 <asp:UpdatePanel ID="upTaskUsers1" runat="server" UpdateMode="Conditional">
@@ -1013,7 +1013,7 @@
                                                                             <RowStyle CssClass="FirstRow" BorderStyle="Solid" />
                                                                             <AlternatingRowStyle CssClass="AlternateRow " />
 
-                                                                           <Columns>
+                                                                            <Columns>
                                                                                 <asp:TemplateField ShowHeader="True" Visible="false" HeaderText="Note Id" ControlStyle-ForeColor="White" HeaderStyle-Font-Size="Small" HeaderStyle-Width="10%"
                                                                                     ItemStyle-HorizontalAlign="Left">
                                                                                     <ItemTemplate>
@@ -1186,28 +1186,28 @@
                                                                                         <asp:Label ID="lblNotes" runat="server" Text='<%#Eval("Notes")%>'></asp:Label>
                                                                                     </div>
                                                                                 </ItemTemplate>
-                                                                                 <EditItemTemplate>
-                                                                                        <asp:TextBox ID="txtNotes" runat="server" TextMode="MultiLine" Width="90%" CssClass="textbox" Text='<%#Eval("Notes") %>'></asp:TextBox>
-                                                                                    </EditItemTemplate>
+                                                                                <EditItemTemplate>
+                                                                                    <asp:TextBox ID="txtNotes" runat="server" TextMode="MultiLine" Width="90%" CssClass="textbox" Text='<%#Eval("Notes") %>'></asp:TextBox>
+                                                                                </EditItemTemplate>
                                                                                 <ControlStyle ForeColor="Black" />
                                                                                 <ControlStyle ForeColor="Black" />
                                                                                 <HeaderStyle Font-Size="Small"></HeaderStyle>
                                                                                 <ItemStyle HorizontalAlign="Left"></ItemStyle>
                                                                             </asp:TemplateField>
 
-                                                                             <asp:TemplateField>
-                                                                                    <EditItemTemplate>
-                                                                                        <asp:Button ID="ButtonUpdate" runat="server" CommandName="Update" Text="Update" />
-                                                                                        <asp:Button ID="ButtonCancel" runat="server" CommandName="Cancel" Text="Cancel" />
-                                                                                    </EditItemTemplate>
-                                                                                    <ItemTemplate>
-                                                                                        <asp:Button ID="ButtonEdit" runat="server" CommandName="Edit" Text="Edit" />
-                                                                                    </ItemTemplate>
-                                                                                    <ControlStyle ForeColor="Black" />
-                                                                                    <ControlStyle ForeColor="Black" />
-                                                                                    <HeaderStyle Font-Size="Small"></HeaderStyle>
-                                                                                    <ItemStyle HorizontalAlign="Left"></ItemStyle>
-                                                                                </asp:TemplateField>
+                                                                            <asp:TemplateField>
+                                                                                <EditItemTemplate>
+                                                                                    <asp:Button ID="ButtonUpdate" runat="server" CommandName="Update" Text="Update" />
+                                                                                    <asp:Button ID="ButtonCancel" runat="server" CommandName="Cancel" Text="Cancel" />
+                                                                                </EditItemTemplate>
+                                                                                <ItemTemplate>
+                                                                                    <asp:Button ID="ButtonEdit" runat="server" CommandName="Edit" Text="Edit" />
+                                                                                </ItemTemplate>
+                                                                                <ControlStyle ForeColor="Black" />
+                                                                                <ControlStyle ForeColor="Black" />
+                                                                                <HeaderStyle Font-Size="Small"></HeaderStyle>
+                                                                                <ItemStyle HorizontalAlign="Left"></ItemStyle>
+                                                                            </asp:TemplateField>
                                                                         </Columns>
                                                                         <HeaderStyle BackColor="Black" ForeColor="White"></HeaderStyle>
                                                                     </asp:GridView>
@@ -1805,17 +1805,22 @@
 
             <asp:Image ID="imgPreview" Height="98%" Width="98%" runat="server" Visible="false" />
 
-            <div runat="server" height="98%" width="98%" id="divAudioVido">
-                <video height="98%" width="98%" controls>
+            <div runat="server" height="98%" width="98%" id="divVideo">
+                <video height="98%" width="98%" id="tagVideo" controls>
                     <source type="video/mp4" runat="server" id="videomp4" />
                     <source type="video/3gpp" runat="server" id="video3gpp" />
                     <source type="video/mpeg" runat="server" id="videompeg" />
                     <source type="video/x-ms-wmv" runat="server" id="videowmv" />
                     <source type="video/webm" runat="server" id="videowebm" />
-                    <source type="audio/mp3" runat="server" id="audiomp3" />
+                </video>
+            </div>
+
+            <div runat="server" height="98%" width="98%" id="divAudio">
+                <audio height="98%" width="98%" controls>
+                    <source type="audio/mp3" runat="server" id="audiomp3"/>
                     <source type="audio/mp4" runat="server" id="audiomp4" />
                     <source type="audio/x-ms-wma" runat="server" id="audiowma" />
-                </video>
+                </audio>
             </div>
         </div>
     </asp:Panel>

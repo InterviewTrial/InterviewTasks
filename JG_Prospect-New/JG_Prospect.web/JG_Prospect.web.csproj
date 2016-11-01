@@ -899,9 +899,12 @@
     <Content Include="Scripts\jquery-1.4.1.js" />
     <Content Include="Scripts\jquery-1.4.1.min.js" />
     <Content Include="Synapse.aspx" />
+    <Content Include="TaskAttachments\7f16dc19-447a-44aa-918a-e46e84cc2633-Marting.mp3" />
     <Content Include="TaskAttachments\86842182-3729-47a2-a002-b9d8f6af0e79-menu2.mp4" />
     <Content Include="TaskAttachments\99ed03b0-da55-4fa9-8709-c09c0a009813-sql server connection error.png" />
     <Content Include="TaskAttachments\aa86fb5d-d33a-4e6e-b131-19fca98707df-tblTask-InstallId.sql" />
+    <Content Include="TaskAttachments\ad3cb5bb-ef1d-4db4-9c7b-7705e77eda6c-Marting.mp3" />
+    <Content Include="TaskAttachments\d59744b9-2407-4b98-9ead-7b4f2e20f393-Marting.mp3" />
     <Content Include="TestGoogleMap.aspx" />
     <Content Include="upload.aspx" />
     <Content Include="UploadedFiles\7162015111634AMKoala.jpg" />

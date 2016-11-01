@@ -770,19 +770,22 @@ namespace JG_Prospect.Sr_App
 
                 imgPreview.ImageUrl = "";
                 imgPreview.Visible = false;
-                divAudioVido.Visible = false;
+                divAudio.Visible = false;
+                divVideo.Visible = false;
 
                 if (Convert.ToString((int)Utilits.Type.images) == FileType.Text)
                 {
                     imgPreview.ImageUrl = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
                     imgPreview.Visible = true;
-                    divAudioVido.Visible = false;
+                    divAudio.Visible = false;
+                    divVideo.Visible = false;
                 }
 
                 if (Convert.ToString((int)Utilits.Type.audio) == FileType.Text)
                 {
                     imgPreview.Visible = false;
-                    divAudioVido.Visible = true;
+                    divAudio.Visible = true;
+                    divVideo.Visible = false;
 
                     if (fileExtension.ToLower().Equals(".mp3"))
                         audiomp3.Src = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
@@ -796,7 +799,8 @@ namespace JG_Prospect.Sr_App
                 if (Convert.ToString((int)Utilits.Type.video) == FileType.Text)
                 {
                     imgPreview.Visible = false;
-                    divAudioVido.Visible = true;
+                    divAudio.Visible = false;
+                    divVideo.Visible = true;
 
 
                     if (fileExtension.ToLower().Equals(".mkv"))
@@ -1069,17 +1073,21 @@ namespace JG_Prospect.Sr_App
 
                 imgPreview.ImageUrl = "";
                 imgPreview.Visible = false;
-                divAudioVido.Visible = false;
+                divVideo.Visible = false;
+                divAudio.Visible = false;
 
                 if (Convert.ToString((int)Utilits.Type.images) == FileType.Text)
                 {
                     imgPreview.ImageUrl = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
                     imgPreview.Visible = true;
-                    divAudioVido.Visible = false;
+                    divVideo.Visible = false;
+                    divAudio.Visible = false;
                 }
 
                 if (Convert.ToString((int)Utilits.Type.audio) == FileType.Text)
                 {
+                    divVideo.Visible = false;
+                    divAudio.Visible = true;
 
                     if (fileExtension.ToLower().Equals(".mp3"))
                         audiomp3.Src = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
@@ -1093,8 +1101,8 @@ namespace JG_Prospect.Sr_App
                 if (Convert.ToString((int)Utilits.Type.video) == FileType.Text)
                 {
                     imgPreview.Visible = false;
-                    divAudioVido.Visible = true;
-
+                    divVideo.Visible = true;
+                    divAudio.Visible = false;
 
                     if (fileExtension.ToLower().Equals(".mkv"))
                         videomp4.Src = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
