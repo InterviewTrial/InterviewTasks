@@ -987,6 +987,99 @@ namespace JG_Prospect.DAL
         }
 
         /// <summary>
+        /// Will fetch task lists based on various filter parameters provided.
+        /// </summary>
+        /// <param name="UserID"></param>
+        /// <param name="Title"></param>
+        /// <param name="Designation"></param>
+        /// <param name="Status"></param>
+        /// <param name="CreatedOn"></param>
+        /// <param name="Start"></param>
+        /// <param name="PageLimit"></param>
+        /// <returns></returns>
+        public DataSet GetTasksList(List<int> UserIDs, string Title, string Designation, Int16? Status, DateTime? CreatedFrom, DateTime? CreatedTo, string Statuses, string Designations, bool isAdmin, int Start, int PageLimit)
+        {
+            returndata = new DataSet();
+
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("RT_SearchTasks");
+
+                    if (!String.IsNullOrEmpty(Designations))
+                    {
+                        database.AddInParameter(command, "@Designations", DbType.String, Designation);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@Designations", DbType.String, DBNull.Value);
+                    }
+
+                    if (UserIDs.Count > 0)
+                    {
+                        database.AddInParameter(command, "@UserIDs", DbType.String, String.Join(",", UserIDs));
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@UserIDs", DbType.String, DBNull.Value);
+                    }
+
+                    if (Status.HasValue)
+                    {
+                        database.AddInParameter(command, "@Status", DbType.Int16, Status.Value);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@Status", DbType.Int16, DBNull.Value);
+                    }
+
+                    if (CreatedFrom.HasValue)
+                    {
+                        database.AddInParameter(command, "@CreatedFrom", DbType.DateTime, CreatedFrom.Value);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@CreatedFrom", DbType.DateTime, DBNull.Value);
+                    }
+
+                    if (CreatedTo.HasValue)
+                    {
+                        database.AddInParameter(command, "@CreatedTo", DbType.DateTime, CreatedTo.Value);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@CreatedTo", DbType.DateTime, DBNull.Value);
+                    }
+
+                    if (!String.IsNullOrEmpty(Title))
+                    {
+                        database.AddInParameter(command, "@SearchTerm", DbType.String, Title);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@SearchTerm", DbType.String, DBNull.Value);
+                    }
+
+                    database.AddInParameter(command, "@PageIndex", DbType.Int32, Start);
+                    database.AddInParameter(command, "@PageSize", DbType.Int32, PageLimit);
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+                    return returndata;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                throw ex;
+                //LogManager.Instance.WriteToFlatFile(ex);
+            }
+            return returndata;
+        }
+
+
+        /// <summary>
         /// Get all Users and their designtions in system for whom tasks are available in system.
         /// <returns></returns>
         public DataSet GetAllUsersNDesignationsForFilter()

@@ -794,10 +794,12 @@ namespace JG_Prospect.Sr_App.Controls
                 ddlTaskStatus.DataBind();
                 ddlTaskStatus.Items.Insert(0, new ListItem("--All--", "0"));
 
+                ddlUsers.Items.Clear();
                 ddlUsers.DataSource = dtUsers;
                 ddlUsers.DataTextField = "FirstName";
                 ddlUsers.DataValueField = "Id";
                 ddlUsers.DataBind();
+                
 
                 //ddlDesignation.DataSource = dtDesignations;
                 //ddlDesignation.DataTextField = "Designation";
@@ -816,7 +818,7 @@ namespace JG_Prospect.Sr_App.Controls
         private void SearchTasks(int? RecordstoPull)
         {
 
-            int? UserID = null;
+            List<int> UserIDs = new List<int>();
             string Title = String.Empty, Designation = String.Empty, Designations = String.Empty, Statuses = String.Empty;
             Int16? Status = null;
             DateTime? CreatedFrom = null, CreatedTo = null;
@@ -830,9 +832,9 @@ namespace JG_Prospect.Sr_App.Controls
                 PageLimit = Convert.ToInt32(RecordstoPull);
             }
 
-            PrepareSearchFilters(ref UserID, ref Title, ref Designation, ref Status, ref CreatedFrom, ref CreatedTo, ref Statuses, ref Designations);
+            PrepareSearchFilters(ref UserIDs, ref Title, ref Designation, ref Status, ref CreatedFrom, ref CreatedTo, ref Statuses, ref Designations);
 
-            DataSet dsFilters = TaskGeneratorBLL.Instance.GetTasksList(UserID, Title, Designation, Status, CreatedFrom, CreatedTo, Statuses, Designations, this.IsAdminMode, Start, PageLimit);
+            DataSet dsFilters = TaskGeneratorBLL.Instance.GetTasksList(UserIDs, Title, Designation, Status, CreatedFrom, CreatedTo, Statuses, Designations, this.IsAdminMode, Start, PageLimit);
 
             if (dsFilters != null && dsFilters.Tables.Count > 0)
             {
@@ -995,7 +997,7 @@ namespace JG_Prospect.Sr_App.Controls
             HighlightInterviewUsers(dsUsers.Tables[0], ddcbAssigned, null);
         }
 
-        private void HighlightInterviewUsers(DataTable dtUsers, DropDownCheckBoxes ddlUsers, DropDownList ddlFilterUsers)
+        private void HighlightInterviewUsers(DataTable dtUsers, DropDownCheckBoxes ddlUsers, DropDownCheckBoxes ddlFilterUsers)
         {
             if (dtUsers.Rows.Count > 0)
             {
@@ -1075,14 +1077,30 @@ namespace JG_Prospect.Sr_App.Controls
         /// <param name="Designation"></param>
         /// <param name="Status"></param>
         /// <param name="CreatedOn"></param>
-        private void PrepareSearchFilters(ref int? UserID, ref string Title, ref string Designation, ref short? Status, ref DateTime? CreatedFrom, ref DateTime? CreatedTo, ref string Statuses, ref string Designations)
+        private void PrepareSearchFilters(ref List<int> UserIDs, ref string Title, ref string Designation, ref short? Status, ref DateTime? CreatedFrom, ref DateTime? CreatedTo, ref string Statuses, ref string Designations)
         {
 
             if (this.IsAdminMode)
             {
                 if (ddlUsers.SelectedIndex > 0)
                 {
-                    UserID = Convert.ToInt32(ddlUsers.SelectedItem.Value);
+                    //UserIDs = Convert.ToInt32(ddlUsers.SelectedItem.Value);
+                    foreach (ListItem item in ddlUsers.Items)
+                    {
+                        if (item.Selected)
+                        {
+                            ddcbAssigned.Texts.SelectBoxCaption = item.Text;
+                            break;
+                        }
+                    }
+
+                    foreach (ListItem item in ddlUsers.Items)
+                    {
+                        if (item.Selected)
+                        {
+                            UserIDs.Add(Convert.ToInt32(item.Value));
+                        }
+                    }
                 }
 
                 if (ddlDesignation.SelectedIndex > 0)
@@ -1103,7 +1121,7 @@ namespace JG_Prospect.Sr_App.Controls
             }
             else
             {
-                UserID = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                UserIDs.Add(Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]));
 
                 Designation =
                 Designations = GetUserDepartmentAllDesignations(Session["DesigNew"].ToString());
