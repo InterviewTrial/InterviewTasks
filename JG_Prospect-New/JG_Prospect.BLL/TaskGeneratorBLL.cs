@@ -145,11 +145,6 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.GetTasksList(UserID, Title, Designation, Status, CreatedFrom, CreatedTo, Statuses , Designations,isAdmin,Start, PageLimit);
         }
 
-        public DataSet GetTasksList(List<int> UserIDs, string Title, string Designation, Int16? Status, DateTime? CreatedFrom, DateTime? CreatedTo, string Statuses, string Designations, bool isAdmin, int Start, int PageLimit)
-        {
-            return TaskGeneratorDAL.Instance.GetTasksList(UserIDs, Title, Designation, Status, CreatedFrom, CreatedTo, Statuses, Designations, isAdmin, Start, PageLimit);
-        }
-
         public DataSet GetAllUsersNDesignationsForFilter()
         {
             return TaskGeneratorDAL.Instance.GetAllUsersNDesignationsForFilter();

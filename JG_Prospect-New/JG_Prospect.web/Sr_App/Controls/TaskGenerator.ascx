@@ -155,11 +155,9 @@
                             </Items>
                         </asp:DropDownList></td>
                     <td id="tdUsers" runat="server">
-                        <asp:DropDownCheckBoxes ID="ddlUsers" runat="server" UseSelectAllNode="false"
-                                    AutoPostBack="true" OnSelectedIndexChanged="ddlUsers_SelectedIndexChanged">
-                                    <Style SelectBoxWidth="195" DropDownBoxBoxWidth="120" DropDownBoxBoxHeight="80"/>
-                                    <Texts SelectBoxCaption="--All--" />
-                        </asp:DropDownCheckBoxes></td>
+
+                        <asp:DropDownList ID="ddlUsers" Width="100" AutoPostBack="true" runat="server" OnSelectedIndexChanged="ddlUsers_SelectedIndexChanged">
+                        </asp:DropDownList></td>
                     <td>
 
                         <asp:DropDownList ID="ddlTaskStatus" Width="100" runat="server" AutoPostBack="True" OnSelectedIndexChanged="ddlTaskStatus_SelectedIndexChanged">
