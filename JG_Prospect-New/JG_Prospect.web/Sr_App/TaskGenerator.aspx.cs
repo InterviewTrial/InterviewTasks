@@ -202,8 +202,8 @@ namespace JG_Prospect.Sr_App
                     controlMode.Value = "0";
                     txtDescription.Enabled = true;
 
-                    txtDescription.Text = " Hi Aavadesh, How are you. Thank you for accepting to this task. \n\n";
-                    txtDescription.Text = txtDescription.Text + "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -- - - - - - - - - - - - - - - - - - - \n\n";
+                    txtDescription.Text = " Hi " + Session[JG_Prospect.Common.SessionKey.Key.Username.ToString()] + ", How are you. Thank you for accepting to this task. \n\n";
+                    txtDescription.Text = txtDescription.Text + "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n\n";
 
                     divAddNoteOrImage.Visible = false;
                     divAddNoteOrImage1.Visible = false;
@@ -2288,8 +2288,8 @@ namespace JG_Prospect.Sr_App
                 txtNote.Text = string.Empty;
                 txtNote1.Text = string.Empty;
 
-                txtDescription.Text = " Hi Aavadesh, How are you. Thank you for accepting to this task. \n\n";
-                txtDescription.Text = txtDescription.Text + "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -- - - - - - - - - - - - - - - - - - - \n\n";
+                txtDescription.Text = " Hi " + Session[JG_Prospect.Common.SessionKey.Key.Username.ToString()] + ", How are you. Thank you for accepting to this task. \n\n";
+                txtDescription.Text = txtDescription.Text + "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n\n";
 
                 //txtDescription.Text = string.Empty;
                 //clearAllFormData();
