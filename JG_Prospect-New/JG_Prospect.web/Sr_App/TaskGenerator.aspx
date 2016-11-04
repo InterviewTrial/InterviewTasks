@@ -268,7 +268,8 @@
                                                                             <RowStyle CssClass="FirstRow" BorderStyle="Solid" />
                                                                             <AlternatingRowStyle CssClass="AlternateRow " />
                                                                             <Columns>
-                                                                                <asp:TemplateField ShowHeader="True" Visible="false" HeaderText="Note Id" ControlStyle-ForeColor="White" HeaderStyle-Font-Size="Small" HeaderStyle-Width="10%"
+                                                                                <asp:TemplateField ShowHeader="True" Visible="false" HeaderText="Note Id" ControlStyle-ForeColor="White" 
+                                                                                    HeaderStyle-Font-Size="Small" HeaderStyle-Width="10%"
                                                                                     ItemStyle-HorizontalAlign="Left">
                                                                                     <ItemTemplate>
                                                                                         <asp:Label ID="lblNoteId" runat="server" Text='<%#Eval("ID")%>'></asp:Label>
@@ -278,7 +279,8 @@
                                                                                     <HeaderStyle Font-Size="Small"></HeaderStyle>
                                                                                     <ItemStyle HorizontalAlign="Left"></ItemStyle>
                                                                                 </asp:TemplateField>
-                                                                                <asp:TemplateField ShowHeader="True" HeaderText="User" ControlStyle-ForeColor="White" HeaderStyle-Font-Size="Small" HeaderStyle-Width="18%"
+                                                                                <asp:TemplateField ShowHeader="True" HeaderText="User" ControlStyle-ForeColor="White" 
+                                                                                    HeaderStyle-Font-Size="Small" HeaderStyle-Width="20%"
                                                                                     ItemStyle-HorizontalAlign="Left">
                                                                                     <ItemTemplate>
                                                                                         <asp:HyperLink runat="server" NavigateUrl='<%# Eval("UserId", "CreateSalesUser.aspx?id={0}") %>'
@@ -289,8 +291,9 @@
                                                                                     <HeaderStyle Font-Size="Small"></HeaderStyle>
                                                                                     <ItemStyle HorizontalAlign="Left"></ItemStyle>
                                                                                 </asp:TemplateField>
-                                                                                <asp:TemplateField ShowHeader="True" HeaderText="Date & Time" ControlStyle-ForeColor="White" HeaderStyle-Font-Size="Small" HeaderStyle-Width="10%"
-                                                                                    ItemStyle-HorizontalAlign="Left">
+                                                                                <asp:TemplateField ShowHeader="True" HeaderText="Date & Time" ControlStyle-ForeColor="White" 
+                                                                                    HeaderStyle-Font-Size="Small" HeaderStyle-Width="10%"
+                                                                                    ItemStyle-HorizontalAlign="Left" >
                                                                                     <ItemTemplate>
                                                                                         <asp:Label ID="lblupdateDate" runat="server" Text='<%#Eval("UpdatedOn")%>'></asp:Label>
                                                                                     </ItemTemplate>
@@ -300,7 +303,7 @@
                                                                                     <ItemStyle HorizontalAlign="Left"></ItemStyle>
                                                                                 </asp:TemplateField>
                                                                                 <asp:TemplateField HeaderText="Notes" ControlStyle-ForeColor="White" HeaderStyle-Font-Size="Small"
-                                                                                    ItemStyle-HorizontalAlign="Left">
+                                                                                    ItemStyle-HorizontalAlign="Left" HeaderStyle-Width="50%">
                                                                                     <ItemTemplate>
                                                                                         <div>
                                                                                             <asp:Label ID="lblNotes" runat="server" Text='<%#Eval("Notes")%>'></asp:Label>
@@ -335,7 +338,8 @@
                                                                             <ItemStyle HorizontalAlign="Left"></ItemStyle>
                                                                         </asp:TemplateField>--%>
 
-                                                                                <asp:TemplateField ShowHeader="True" HeaderText="Status" ControlStyle-ForeColor="White" HeaderStyle-Font-Size="Small" Visible="false"
+                                                                                <asp:TemplateField ShowHeader="True" HeaderText="Status" 
+                                                                                    ControlStyle-ForeColor="White" HeaderStyle-Font-Size="Small" Visible="false"
                                                                                     ItemStyle-HorizontalAlign="Left">
                                                                                     <ItemTemplate>
                                                                                         <asp:Label ID="lblStatus" runat="server"></asp:Label>
@@ -346,7 +350,8 @@
                                                                                     <ItemStyle HorizontalAlign="Left"></ItemStyle>
                                                                                 </asp:TemplateField>
 
-                                                                                <asp:TemplateField ShowHeader="True" HeaderText="Status" ControlStyle-ForeColor="White" HeaderStyle-Font-Size="Small" Visible="false"
+                                                                                <asp:TemplateField ShowHeader="True" HeaderText="Status" 
+                                                                                    ControlStyle-ForeColor="White" HeaderStyle-Font-Size="Small" Visible="false"
                                                                                     ItemStyle-HorizontalAlign="Left">
                                                                                     <ItemTemplate>
                                                                                         <asp:Label ID="lableFileType" runat="server" Text='<%#Eval("FileType")%>'></asp:Label>
@@ -357,7 +362,7 @@
                                                                                     <ItemStyle HorizontalAlign="Left"></ItemStyle>
                                                                                 </asp:TemplateField>
 
-                                                                                <asp:TemplateField>
+                                                                                <asp:TemplateField HeaderStyle-Width="10%">
                                                                                     <EditItemTemplate>
                                                                                         <asp:Button ID="ButtonUpdate" runat="server" CommandName="Update" Text="Update" />
                                                                                         <asp:Button ID="ButtonCancel" runat="server" CommandName="Cancel" Text="Cancel" />
@@ -409,7 +414,8 @@
                                                                         <AlternatingRowStyle CssClass="AlternateRow " />
 
                                                                         <Columns>
-                                                                            <asp:TemplateField ShowHeader="True" Visible="false" HeaderText="Note Id" ControlStyle-ForeColor="White" HeaderStyle-Font-Size="Small" HeaderStyle-Width="10%"
+                                                                            <asp:TemplateField ShowHeader="True" Visible="false" HeaderText="Note Id" ControlStyle-ForeColor="White" 
+                                                                                HeaderStyle-Font-Size="Small" HeaderStyle-Width="10%"
                                                                                 ItemStyle-HorizontalAlign="Left">
                                                                                 <ItemTemplate>
                                                                                     <asp:Label ID="lblNoteId" runat="server" Text='<%#Eval("ID")%>'></asp:Label>
@@ -420,7 +426,8 @@
                                                                                 <ItemStyle HorizontalAlign="Left"></ItemStyle>
                                                                             </asp:TemplateField>
 
-                                                                            <asp:TemplateField ShowHeader="True" HeaderText="User" ControlStyle-ForeColor="White" HeaderStyle-Font-Size="Small" HeaderStyle-Width="18%"
+                                                                            <asp:TemplateField ShowHeader="True" HeaderText="User" ControlStyle-ForeColor="White" 
+                                                                                HeaderStyle-Font-Size="Small" HeaderStyle-Width="20%"
                                                                                 ItemStyle-HorizontalAlign="Left">
                                                                                 <ItemTemplate>
                                                                                     <asp:HyperLink runat="server" NavigateUrl='<%# Eval("UserId", "CreateSalesUser.aspx?id={0}") %>'
@@ -432,7 +439,8 @@
                                                                                 <ItemStyle HorizontalAlign="Left"></ItemStyle>
                                                                             </asp:TemplateField>
 
-                                                                            <asp:TemplateField ShowHeader="True" HeaderText="Date & Time" ControlStyle-ForeColor="White" HeaderStyle-Font-Size="Small" HeaderStyle-Width="10%"
+                                                                            <asp:TemplateField ShowHeader="True" HeaderText="Date & Time" ControlStyle-ForeColor="White" 
+                                                                                HeaderStyle-Font-Size="Small" HeaderStyle-Width="10%"
                                                                                 ItemStyle-HorizontalAlign="Left">
                                                                                 <ItemTemplate>
                                                                                     <asp:Label ID="lblupdateDate" runat="server" Text='<%#Eval("UpdatedOn")%>'></asp:Label>
@@ -443,7 +451,7 @@
                                                                                 <ItemStyle HorizontalAlign="Left"></ItemStyle>
                                                                             </asp:TemplateField>
 
-                                                                            <asp:TemplateField HeaderText="Employee Name" HeaderStyle-Width="10%">
+                                                                            <asp:TemplateField HeaderText="Employee Name" HeaderStyle-Width="50%">
                                                                                 <ItemTemplate>
                                                                                     <asp:Label ID="lblNotes" runat="server" Text='<%#Eval("Notes") %>'></asp:Label>
                                                                                 </ItemTemplate>
@@ -456,7 +464,7 @@
                                                                                 <ItemStyle HorizontalAlign="Left"></ItemStyle>
                                                                             </asp:TemplateField>
 
-                                                                            <asp:TemplateField>
+                                                                            <asp:TemplateField HeaderStyle-Width="10%">
                                                                                 <EditItemTemplate>
                                                                                     <asp:Button ID="ButtonUpdate" runat="server" CommandName="Update" Text="Update" />
                                                                                     <asp:Button ID="ButtonCancel" runat="server" CommandName="Cancel" Text="Cancel" />
@@ -668,12 +676,12 @@
                                                         </div>
                                                     </div>
 
-                                                    <div>
+                                                    <div id="divAddNoteOrImage" runat="server">
                                                         <table style="width: 100%">
                                                             <tr>
                                                                 <td style="width: 50%">
                                                                     <div class="btn_sec" style="text-align: right;">
-                                                                        <asp:Button ID="btnAddNote" runat="server" Text="Save Note" CssClass="ui-button" OnClick="btnAddNote_Click" ValidationGroup="Submit" />
+                                                                        <asp:Button ID="btnAddNote" runat="server" Text="Save" CssClass="ui-button" OnClick="btnAddNote_Click" ValidationGroup="Submit" />
                                                                         <%--   <asp:Button ID="btnCancelUpdateNote" runat="server" Text="Cancel Update" CssClass="ui-button" OnClick="btnCancelUpdateNote_Click" ValidationGroup="Submit" Visible="false" />--%>
                                                                     </div>
                                                                 </td>
@@ -1014,7 +1022,8 @@
                                                                             <AlternatingRowStyle CssClass="AlternateRow " />
 
                                                                             <Columns>
-                                                                                <asp:TemplateField ShowHeader="True" Visible="false" HeaderText="Note Id" ControlStyle-ForeColor="White" HeaderStyle-Font-Size="Small" HeaderStyle-Width="10%"
+                                                                                <asp:TemplateField ShowHeader="True" Visible="false" HeaderText="Note Id" 
+                                                                                    ControlStyle-ForeColor="White" HeaderStyle-Font-Size="Small" HeaderStyle-Width="10%"
                                                                                     ItemStyle-HorizontalAlign="Left">
                                                                                     <ItemTemplate>
                                                                                         <asp:Label ID="lblNoteId" runat="server" Text='<%#Eval("ID")%>'></asp:Label>
@@ -1024,7 +1033,8 @@
                                                                                     <HeaderStyle Font-Size="Small"></HeaderStyle>
                                                                                     <ItemStyle HorizontalAlign="Left"></ItemStyle>
                                                                                 </asp:TemplateField>
-                                                                                <asp:TemplateField ShowHeader="True" HeaderText="User" ControlStyle-ForeColor="White" HeaderStyle-Font-Size="Small" HeaderStyle-Width="18%"
+                                                                                <asp:TemplateField ShowHeader="True" HeaderText="User" ControlStyle-ForeColor="White" 
+                                                                                    HeaderStyle-Font-Size="Small" HeaderStyle-Width="20%"
                                                                                     ItemStyle-HorizontalAlign="Left">
                                                                                     <ItemTemplate>
                                                                                         <asp:HyperLink runat="server" NavigateUrl='<%# Eval("UserId", "CreateSalesUser.aspx?id={0}") %>'
@@ -1046,7 +1056,7 @@
                                                                                     <ItemStyle HorizontalAlign="Left"></ItemStyle>
                                                                                 </asp:TemplateField>
                                                                                 <asp:TemplateField HeaderText="Notes" ControlStyle-ForeColor="White" HeaderStyle-Font-Size="Small"
-                                                                                    ItemStyle-HorizontalAlign="Left">
+                                                                                    ItemStyle-HorizontalAlign="Left" HeaderStyle-Width="50%">
                                                                                     <ItemTemplate>
                                                                                         <div>
                                                                                             <asp:Label ID="lblNotes" runat="server" Text='<%#Eval("Notes")%>'></asp:Label>
@@ -1093,7 +1103,7 @@
                                                                                     <ItemStyle HorizontalAlign="Left"></ItemStyle>
                                                                                 </asp:TemplateField>
 
-                                                                                <asp:TemplateField>
+                                                                                <asp:TemplateField HeaderStyle-Width="10%">
                                                                                     <EditItemTemplate>
                                                                                         <asp:Button ID="ButtonUpdate" runat="server" CommandName="Update" Text="Update" />
                                                                                         <asp:Button ID="ButtonCancel" runat="server" CommandName="Cancel" Text="Cancel" />
@@ -1145,7 +1155,8 @@
                                                                         <AlternatingRowStyle CssClass="AlternateRow " />
 
                                                                         <Columns>
-                                                                            <asp:TemplateField ShowHeader="True" Visible="false" HeaderText="Note Id" ControlStyle-ForeColor="White" HeaderStyle-Font-Size="Small" HeaderStyle-Width="10%"
+                                                                            <asp:TemplateField ShowHeader="True" Visible="false" HeaderText="Note Id" ControlStyle-ForeColor="White" 
+                                                                                HeaderStyle-Font-Size="Small" HeaderStyle-Width="10%"
                                                                                 ItemStyle-HorizontalAlign="Left">
                                                                                 <ItemTemplate>
                                                                                     <asp:Label ID="lblNoteId" runat="server" Text='<%#Eval("ID")%>'></asp:Label>
@@ -1156,7 +1167,8 @@
                                                                                 <ItemStyle HorizontalAlign="Left"></ItemStyle>
                                                                             </asp:TemplateField>
 
-                                                                            <asp:TemplateField ShowHeader="True" HeaderText="User" ControlStyle-ForeColor="White" HeaderStyle-Font-Size="Small" HeaderStyle-Width="18%"
+                                                                            <asp:TemplateField ShowHeader="True" HeaderText="User" ControlStyle-ForeColor="White" 
+                                                                                HeaderStyle-Font-Size="Small" HeaderStyle-Width="20%"
                                                                                 ItemStyle-HorizontalAlign="Left">
                                                                                 <ItemTemplate>
                                                                                     <asp:HyperLink runat="server" NavigateUrl='<%# Eval("UserId", "CreateSalesUser.aspx?id={0}") %>'
@@ -1168,7 +1180,8 @@
                                                                                 <ItemStyle HorizontalAlign="Left"></ItemStyle>
                                                                             </asp:TemplateField>
 
-                                                                            <asp:TemplateField ShowHeader="True" HeaderText="Date & Time" ControlStyle-ForeColor="White" HeaderStyle-Font-Size="Small" HeaderStyle-Width="10%"
+                                                                            <asp:TemplateField ShowHeader="True" HeaderText="Date & Time" ControlStyle-ForeColor="White" 
+                                                                                HeaderStyle-Font-Size="Small" HeaderStyle-Width="10%"
                                                                                 ItemStyle-HorizontalAlign="Left">
                                                                                 <ItemTemplate>
                                                                                     <asp:Label ID="lblupdateDate" runat="server" Text='<%#Eval("UpdatedOn")%>'></asp:Label>
@@ -1180,7 +1193,7 @@
                                                                             </asp:TemplateField>
 
                                                                             <asp:TemplateField HeaderText="Notes" ControlStyle-ForeColor="White" HeaderStyle-Font-Size="Small"
-                                                                                ItemStyle-HorizontalAlign="Left" HeaderStyle-Width="60%">
+                                                                                ItemStyle-HorizontalAlign="Left" HeaderStyle-Width="50%">
                                                                                 <ItemTemplate>
                                                                                     <div>
                                                                                         <asp:Label ID="lblNotes" runat="server" Text='<%#Eval("Notes")%>'></asp:Label>
@@ -1195,7 +1208,8 @@
                                                                                 <ItemStyle HorizontalAlign="Left"></ItemStyle>
                                                                             </asp:TemplateField>
 
-                                                                            <asp:TemplateField>
+                                                                            <asp:TemplateField ControlStyle-ForeColor="White" HeaderStyle-Font-Size="Small"
+                                                                                ItemStyle-HorizontalAlign="Left" HeaderStyle-Width="10%">
                                                                                 <EditItemTemplate>
                                                                                     <asp:Button ID="ButtonUpdate" runat="server" CommandName="Update" Text="Update" />
                                                                                     <asp:Button ID="ButtonCancel" runat="server" CommandName="Cancel" Text="Cancel" />
@@ -1376,12 +1390,12 @@
                                                         </div>
                                                     </div>
 
-                                                    <div>
+                                                    <div id="divAddNoteOrImage1" runat="server">
                                                         <table style="width: 100%">
                                                             <tr>
                                                                 <td style="width: 50%">
                                                                     <div class="btn_sec" style="text-align: right;">
-                                                                        <asp:Button ID="btnAddNote1" runat="server" Text="Save Note" CssClass="ui-button" OnClick="btnAddNote_Click" ValidationGroup="Submit" />
+                                                                        <asp:Button ID="btnAddNote1" runat="server" Text="Save" CssClass="ui-button" OnClick="btnAddNote_Click" ValidationGroup="Submit" />
                                                                         <%--  <asp:Button ID="btnCancelUpdateNote1" runat="server" Text="Cancel Update" CssClass="ui-button" OnClick="btnCancelUpdateNote_Click" ValidationGroup="Submit" Visible="false" />--%>
                                                                     </div>
                                                                 </td>
