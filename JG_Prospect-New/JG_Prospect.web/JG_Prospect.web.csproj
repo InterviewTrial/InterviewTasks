@@ -342,6 +342,7 @@
     <Content Include="datetime\js\jquery.timepicker.min.js" />
     <Content Include="Employment_Redirect.aspx" />
     <Content Include="External Dependencies\Ajaxified.dll" />
+    <Content Include="External Dependencies\EPPlus.dll" />
     <Content Include="External Dependencies\Microsoft.Practices.EnterpriseLibrary.Caching.Database.dll" />
     <Content Include="External Dependencies\Microsoft.Practices.EnterpriseLibrary.Caching.dll" />
     <Content Include="External Dependencies\Microsoft.Practices.EnterpriseLibrary.Common.dll" />
