@@ -668,7 +668,9 @@
                                                                             <asp:Label runat="server"> Notes:</asp:Label>
                                                                         </td>
                                                                         <td style="width: 95%">
-                                                                            <asp:TextBox ID="txtNote" runat="server" TextMode="MultiLine" Width="90%" CssClass="textbox"></asp:TextBox>
+                                                                            <asp:TextBox ID="txtNote" runat="server" TextMode="MultiLine" Width="90%" CssClass="textbox" ValidationGroup="Validation"></asp:TextBox>
+                                                                            <asp:RequiredFieldValidator ID="RequiredFieldValidatorName" runat="server" ControlToValidate="txtNote"
+                                                                            Display="None" ErrorMessage="Please Enter Note" ValidationGroup="Validation"></asp:RequiredFieldValidator>
                                                                         </td>
                                                                     </tr>
                                                                 </table>
@@ -681,8 +683,9 @@
                                                             <tr>
                                                                 <td style="width: 50%">
                                                                     <div class="btn_sec" style="text-align: right;">
-                                                                        <asp:Button ID="btnAddNote" runat="server" Text="Save" CssClass="ui-button" OnClick="btnAddNote_Click" ValidationGroup="Submit" />
-                                                                        <%--   <asp:Button ID="btnCancelUpdateNote" runat="server" Text="Cancel Update" CssClass="ui-button" OnClick="btnCancelUpdateNote_Click" ValidationGroup="Submit" Visible="false" />--%>
+                                                                        <asp:Button ID="btnAddNote" runat="server" Text="Save" CssClass="ui-button" OnClick="btnAddNote_Click" ValidationGroup="Validation" />
+                                                                        <asp:ValidationSummary ID="ValidationSummary2" runat="server" ShowMessageBox="True"
+                                                                        ShowSummary="False" ValidationGroup="Validation" />
                                                                     </div>
                                                                 </td>
                                                                 <td style="width: 50%">
@@ -1382,7 +1385,9 @@
                                                                             <asp:Label runat="server"> Notes:</asp:Label>
                                                                         </td>
                                                                         <td style="width: 95%">
-                                                                            <asp:TextBox ID="txtNote1" runat="server" TextMode="MultiLine" Width="90%" CssClass="textbox"></asp:TextBox>
+                                                                            <asp:TextBox ID="txtNote1" runat="server" TextMode="MultiLine" Width="90%" CssClass="textbox" ValidationGroup="vgNote1"></asp:TextBox>
+                                                                             <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="txtNote1"
+                                                                            Display="None" ErrorMessage="Please Enter Note" ValidationGroup="vgNote1"></asp:RequiredFieldValidator>
                                                                         </td>
                                                                     </tr>
                                                                 </table>
@@ -1395,8 +1400,9 @@
                                                             <tr>
                                                                 <td style="width: 50%">
                                                                     <div class="btn_sec" style="text-align: right;">
-                                                                        <asp:Button ID="btnAddNote1" runat="server" Text="Save" CssClass="ui-button" OnClick="btnAddNote_Click" ValidationGroup="Submit" />
-                                                                        <%--  <asp:Button ID="btnCancelUpdateNote1" runat="server" Text="Cancel Update" CssClass="ui-button" OnClick="btnCancelUpdateNote_Click" ValidationGroup="Submit" Visible="false" />--%>
+                                                                        <asp:Button ID="btnAddNote1" runat="server" Text="Save" CssClass="ui-button" OnClick="btnAddNote_Click" ValidationGroup="vgNote1" />
+                                                                          <asp:ValidationSummary ID="ValidationSummary3" runat="server" ShowMessageBox="True"
+                                                                        ShowSummary="False" ValidationGroup="vgNote1" />
                                                                     </div>
                                                                 </td>
                                                                 <td style="width: 50%">
