@@ -88,6 +88,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>External Dependencies\DropDownCheckBoxes.dll</HintPath>
     </Reference>
+    <Reference Include="EPPlus, Version=4.1.0.0, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>External Dependencies\EPPlus.dll</HintPath>
+    </Reference>
     <Reference Include="Google.GData.AccessControl, Version=1.8.0.0, Culture=neutral, PublicKeyToken=b4b8eb9a7afc8328, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\Google.GData.AccessControl.dll</HintPath>
@@ -118,9 +122,6 @@
       <HintPath>External Dependencies\itextsharp.xmlworker.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.Office.Interop.Excel, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
     <Reference Include="Microsoft.Practices.EnterpriseLibrary.Caching, Version=5.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>\\ANWAR-PC\Users\Public\screen\Microsoft.Practices.EnterpriseLibrary.Caching.dll</HintPath>
@@ -1764,6 +1765,7 @@
     <Folder Include="InvoicePdf\" />
     <Folder Include="Resources\" />
     <Folder Include="Sr_App\MailDocument\MailAttachments\" />
+    <Folder Include="UploadedExcel\" />
     <Folder Include="UserImages\" />
   </ItemGroup>
   <ItemGroup>
@@ -1847,15 +1849,6 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <COMReference Include="Microsoft.Office.Core">
-      <Guid>{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}</Guid>
-      <VersionMajor>2</VersionMajor>
-      <VersionMinor>4</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
     <COMReference Include="Microsoft.Office.Interop.Word">
       <Guid>{00020905-0000-0000-C000-000000000046}</Guid>
       <VersionMajor>8</VersionMajor>
