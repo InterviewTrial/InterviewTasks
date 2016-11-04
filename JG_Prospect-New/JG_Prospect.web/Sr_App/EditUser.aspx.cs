@@ -20,6 +20,7 @@ using System.Web.UI.DataVisualization.Charting;
 using System.Xml.Serialization;
 using System.Xml;
 using JG_Prospect.App_Code;
+using OfficeOpenXml;
 
 namespace JG_Prospect
 {
@@ -389,7 +390,7 @@ namespace JG_Prospect
             }
             else if (ddl.SelectedValue == "InterviewDate")
             {
-                LoadUsersByRecruiterDesgination();
+                ddlUsers = LoadUsersByRecruiterDesgination(ddlUsers);
                 FillTechTaskDropDown();
                 ddlInsteviewtime.DataSource = GetTimeIntervals();
                 ddlInsteviewtime.DataBind();
@@ -446,6 +447,16 @@ namespace JG_Prospect
                 */
             }
 
+            if (ddl.SelectedValue == "Install Prospect")
+            {
+                if (lblStatus.Value != "")
+                {
+                    ddl.SelectedValue = lblStatus.Value;
+                }
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Status cannot be changed to Install Prospect')", true);
+                return;
+            }
+
             if (lblStatus.Value == "Active" && (!(Convert.ToString(Session["usertype"]).Contains("Admin"))))
             {
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Status cannot be changed to any other status other than Deactive once user is Active')", true);
@@ -464,16 +475,6 @@ namespace JG_Prospect
 
                 if ((ddl.SelectedValue == "Active") || (ddl.SelectedValue == "Deactive"))
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "showStatusChangePopUp();", true);
-                return;
-            }
-
-            if (ddl.SelectedValue == "Install Prospect")
-            {
-                if (lblStatus.Value != "")
-                {
-                    ddl.SelectedValue = lblStatus.Value;
-                }
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Status cannot be changed to Install Prospect')", true);
                 return;
             }
 
@@ -797,7 +798,7 @@ namespace JG_Prospect
                 if (BulkProspectUploader.HasFile)
                 {
                     string ext = Path.GetExtension(BulkProspectUploader.FileName);
-                    if (ext == ".xls" || ext == ".xlsx" || ext == ".csv")
+                    if (ext == ".xlsx" || ext ==".csv")
                     {
                         string FileName = Path.GetFileName(BulkProspectUploader.PostedFile.FileName);
                         string Extension = Path.GetExtension(BulkProspectUploader.PostedFile.FileName);
@@ -816,7 +817,7 @@ namespace JG_Prospect
 
                         BulkProspectUploader.SaveAs(directoryPath);
 
-                        DataTable dtExcel = FillValueFromFiles(directoryPath, Extension, FileName);
+                        DataTable dtExcel = FillValueFromFiles(directoryPath, Extension);
 
                         if (validateUploadedData(dtExcel) == false)
                         {
@@ -832,14 +833,15 @@ namespace JG_Prospect
                     }
                     else
                     {
-                        ScriptManager.RegisterStartupScript(this, GetType(), "alert", "alert('Select xls or xlsx file')", true);
+                        UcStatusPopUp.ucPopUpHeader = "";
+                        UcStatusPopUp.ucPopUpMsg = "Please Select xlsx or csv file.";
+                        UcStatusPopUp.changeText();                        
                     }
                 }
             }
             catch (Exception ex)
             {
                 UtilityBAL.AddException("EditUser-btnUpload_Click", Session["loginid"] == null ? "" : Session["loginid"].ToString(), ex.Message, ex.StackTrace);
-
             }
         }
 
@@ -935,6 +937,7 @@ namespace JG_Prospect
 
         protected void btnNoEdit_Click(object sender, EventArgs e)
         {
+            Session["DuplicateUsers"] = null;
             ScriptManager.RegisterStartupScript(this, this.GetType(), "overlay", "ClosePopupUploadBulk();", true);
             return;
         }
@@ -1291,7 +1294,6 @@ namespace JG_Prospect
 
                         pnlAddNewUser.Visible = true;
                         //Session["DuplicateUsers"] = ds.Tables[0];
-
                         //listDuplicateUsers.DataSource = ds.Tables[0];
                         //listDuplicateUsers.DataBind();
                     }
@@ -1306,7 +1308,111 @@ namespace JG_Prospect
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "showStatusChangePopUp();", true);
                 }
                 #endregion
-            
+        }
+
+        public DataTable ToDataTable(ExcelPackage package)
+        {
+            ExcelWorksheet workSheet = package.Workbook.Worksheets.First();
+            DataTable table = new DataTable();
+            foreach (var firstRowCell in workSheet.Cells[1, 1, 1, workSheet.Dimension.End.Column])
+            {
+                table.Columns.Add(firstRowCell.Text);
+            }
+
+            for (var rowNumber = 2; rowNumber <= workSheet.Dimension.End.Row; rowNumber++)
+            {
+                var row = workSheet.Cells[rowNumber, 1, rowNumber, workSheet.Dimension.End.Column];
+                var newRow = table.NewRow();
+                foreach (var cell in row)
+                {
+                    newRow[cell.Start.Column - 1] = cell.Text;
+                }
+                table.Rows.Add(newRow);
+            }
+            return table;
+        }
+
+        private DataTable FillValueFromFiles(string FilePath, string Extension)
+        {
+            DataTable dtExcel = new DataTable();
+            ExcelPackage package = new ExcelPackage();
+
+            switch (Extension)
+            {
+                case ".xls":
+                case ".xlsx":
+
+                    package = new ExcelPackage(BulkProspectUploader.FileContent);
+                    dtExcel = ToDataTable(package);
+                    
+                    break;
+                    
+                case ".csv":
+                    dtExcel = ReadCsvFile(FilePath);
+                    break;
+            }
+
+            return dtExcel;
+        }
+
+        /// <summary>
+        /// Read CSV File and return Data Table.
+        /// </summary>
+        /// <returns></returns>
+        public DataTable ReadCsvFile(string FileSaveWithPath)
+        {
+            /// Ref Site :http://www.c-sharpcorner.com/blogs/read-csv-file-into-data-table1
+
+            DataTable dtCsv = new DataTable();
+            string Fulltext;
+             
+                //string FileSaveWithPath = Server.MapPath("\\Files\\Import" + System.DateTime.Now.ToString("ddMMyyyy_hhmmss") + ".csv");
+                //FileUpload1.SaveAs(FileSaveWithPath);
+                using (StreamReader sr = new StreamReader(FileSaveWithPath))
+                {
+                    while (!sr.EndOfStream)
+                    {
+                        Fulltext = sr.ReadToEnd().ToString(); //read full file text  
+                        string[] rows = Fulltext.Split('\n'); //split full file text into rows  
+                        for (int i = 0; i < rows.Count() - 1; i++)
+                        {
+                            string[] rowValues = rows[i].Split(','); //split each row with comma to get individual values  
+                            {
+                            if (i == 0)
+                            {
+                                for (int j = 0; j < rowValues.Count(); j++)
+                                {
+                                    if ((j == rowValues.Count()-1) && (rowValues[j].IndexOf("\r")>0)) //CSV last col value many have "/r"
+                                    {
+                                        // Remove /r from value 
+                                        dtCsv.Columns.Add(rowValues[j].Replace("\r","")); 
+                                    }
+                                    else
+                                    {
+                                        dtCsv.Columns.Add(rowValues[j]); //add headers - 
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                DataRow dr = dtCsv.NewRow();
+                                for (int k = 0; k < rowValues.Count(); k++)
+                                {
+                                    if ((k == rowValues.Count() - 1) && (rowValues[k].IndexOf("\r") > 0)) //CSV last col value many have "/r"
+                                        // Remove /r from value                                         
+                                        dr[k] = rowValues[k].ToString().Replace("\r", "");
+                                    else
+                                        dr[k] = rowValues[k].ToString();
+                                    
+                                }
+                                dtCsv.Rows.Add(dr); //add other rows  
+                            }
+                            }
+                        }
+                    }
+                }
+             
+            return dtCsv;
         }
 
         /// <summary>
@@ -1316,7 +1422,7 @@ namespace JG_Prospect
         /// <param name="Extension"></param>
         /// <param name="FileName"></param>
         /// <returns></returns>
-        private DataTable FillValueFromFiles(string FilePath, string Extension, string FileName)
+        private DataTable FillValueFromFiles_old(string FilePath, string Extension, string FileName)
         {
             string conStr = "";
             switch (Extension)
@@ -1376,7 +1482,7 @@ namespace JG_Prospect
             }
             if (dtExcel.Columns.Contains("Email1") == false
                 || dtExcel.Columns.Contains("PhoneNo1") == false
-                || dtExcel.Columns.Contains("status") == false
+                || dtExcel.Columns.Contains("status") == false  // as CSV has status\r
                 || dtExcel.Columns.Contains("FirstName") == false
                 || dtExcel.Columns.Contains("LastName") == false
                 || dtExcel.Columns.Contains("CompanyName") == false
@@ -1399,6 +1505,56 @@ namespace JG_Prospect
                 UcStatusPopUp.ucPopUpHeader = "";
                 UcStatusPopUp.ucPopUpMsg = "No data found to uploade , Kindly check the uploaded file";
                 UcStatusPopUp.changeText();
+            }
+
+            //Validate data -- Mobile no , email is entered or so...
+            for (int i = 0; i < dtExcel.Rows.Count; i++)
+            {
+                if (dtExcel.Rows[i]["Email1"] != null)
+                    if (dtExcel.Rows[i]["Email1"].ToString().Trim() == "")
+                    {
+                        UcStatusPopUp.ucPopUpHeader = "";
+                        UcStatusPopUp.ucPopUpMsg = "Kindly enter Email1 value for all the records";
+                        UcStatusPopUp.changeText();
+                        return false;
+                    }
+
+                if (dtExcel.Rows[i]["PhoneNo1"] != null)
+                    if (dtExcel.Rows[i]["PhoneNo1"].ToString().Trim() == "")
+                    {
+                        UcStatusPopUp.ucPopUpHeader = "";
+                        UcStatusPopUp.ucPopUpMsg = "Kindly enter PhoneNo1 value for all the records";
+                        UcStatusPopUp.changeText();
+                        return false;
+                    }
+
+                if (dtExcel.Rows[i]["FirstName"] != null)
+                    if (dtExcel.Rows[i]["FirstName"].ToString().Trim() == "")
+                    {
+                        UcStatusPopUp.ucPopUpHeader = "";
+                        UcStatusPopUp.ucPopUpMsg = "Kindly enter FirstName value for all the records";
+                        UcStatusPopUp.changeText();
+                        return false;
+                    }
+
+                if (dtExcel.Rows[i]["LastName"] != null)
+                    if (dtExcel.Rows[i]["LastName"].ToString().Trim() == "")
+                    {
+                        UcStatusPopUp.ucPopUpHeader = "";
+                        UcStatusPopUp.ucPopUpMsg = "Kindly enter LastName value for all the records";
+                        UcStatusPopUp.changeText();
+                        return false;
+                    }
+
+                if (dtExcel.Rows[i]["Designition"] != null)
+                    if (dtExcel.Rows[i]["Designition"].ToString().Trim() == "")
+                    {
+                        UcStatusPopUp.ucPopUpHeader = "";
+                        UcStatusPopUp.ucPopUpMsg = "Kindly enter Designition value for all the records";
+                        UcStatusPopUp.changeText();
+                        return false;
+                    }
+
             }
 
             return true;
@@ -1720,7 +1876,14 @@ namespace JG_Prospect
             }
         }
 
-        private bool CheckRequiredFields(string SelectedStatus, int Id)
+        /// <summary>
+        /// Public method Get value on the bease of Selected status and ID
+        /// uses in ucStaffLoginAlert , EditUsers
+        /// </summary>
+        /// <param name="SelectedStatus"></param>
+        /// <param name="Id"></param>
+        /// <returns></returns>
+        public bool CheckRequiredFields(string SelectedStatus, int Id)
         {
             DataSet dsNew = new DataSet();
             dsNew = InstallUserBLL.Instance.getuserdetails(Id);
@@ -2028,7 +2191,11 @@ namespace JG_Prospect
             }
             return timeIntervals;
         }
-        private void LoadUsersByRecruiterDesgination()
+        /// <summary>
+        /// Fill ddl for User Recruter 
+        /// Also call from ucStaffLogin , EditUser
+        /// </summary>
+        private DropDownList LoadUsersByRecruiterDesgination(DropDownList ddlUsers)
         {
             DataSet dsUsers;
 
@@ -2038,8 +2205,9 @@ namespace JG_Prospect
             ddlUsers.DataTextField = "FristName";
             ddlUsers.DataValueField = "Id";
             ddlUsers.DataBind();
-
             ddlUsers.Items.Insert(0, new ListItem("--All--", "0"));
+
+            return ddlUsers;
         }
 
         private void FillTechTaskDropDown()

@@ -746,7 +746,7 @@ form.inline {
         margin: 0 0 50px 0;
         padding: 0;
         list-style-type: none;
-        /*overflow: auto;*/
+        overflow: auto;
     }
 
         .form_panel_custom ul li {
@@ -755,8 +755,6 @@ form.inline {
             width: 37%;
             float: left;
             border-right: #fff 1px solid;
-             height: 80px;
-
         }
 
             .form_panel_custom ul li.last {

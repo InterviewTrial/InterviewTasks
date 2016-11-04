@@ -5,7 +5,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using JG_Prospect.Common;
-using AE.Net.Mail;
+//using AE.Net.Mail;
 using JG_Prospect.BLL;
 
 namespace JG_Prospect.Sr_App
