@@ -68,7 +68,6 @@
         }
 
         function overlay() {
-            alert('2');
             document.getElementById('light').style.display = 'block';
             document.getElementById('fade').style.display = 'block';
         }
@@ -114,7 +113,8 @@
             document.getElementById('fadeUploadBulk').style.display = 'none';
         }
 
-        var validFilesTypes = ["xls", "xlsx", "csv"];
+        //var validFilesTypes = ["xls", "xlsx", "csv"];
+        var validFilesTypes = ["xlsx", "csv"];
         function ValidateFile() {
             var file = document.getElementById("<%=BulkProspectUploader.ClientID%>");
             var label = document.getElementById("<%=Label1.ClientID%>");
@@ -128,7 +128,7 @@
                 }
             }
             if (!isValidFile) {
-                alert('Select file of type csv ,xls or xlsx ');
+                alert('Select file of type csv or xlsx ');
                 //label.style.color = "red";
                 //label.innerHTML = "Invalid File. Please upload a File with" +
 
@@ -630,7 +630,12 @@
             <table style="width: 100%">
                 <tr style="width: 100%">
                     <td>
-                        <asp:LinkButton ID="lnkDownload" Text="Download Sample Format For Bulk Upload" CommandArgument='../UserFile/SalesSample.xlsx' runat="server" OnClick="DownloadFile"></asp:LinkButton></td>
+                        <asp:LinkButton ID="lnkDownload" Text="Download Sample Excel Format For Bulk Upload" CommandArgument='../UserFile/SalesSample.xlsx' runat="server" OnClick="DownloadFile"></asp:LinkButton>
+                        <Br />
+                        <Br />
+                        <asp:LinkButton ID="LinkButton1" Text="Download Sample CSV Format For Bulk Upload" CommandArgument='../UserFile/SalesSample.csv' runat="server" OnClick="DownloadFile"></asp:LinkButton>
+                    </td>
+                        
                     <td>
                         <label>Upload Prospects using xlsx file:<asp:FileUpload ID="BulkProspectUploader" runat="server" /></label>
                         <asp:RequiredFieldValidator ID="RequiredFieldValidator3" ControlToValidate="BulkProspectUploader" runat="server" ErrorMessage="Select file to import data." ValidationGroup="BulkImport"></asp:RequiredFieldValidator>
@@ -739,7 +744,7 @@
             </asp:UpdatePanel>
         </div>
     </asp:Panel>
-    
+
     <asp:Panel ID="panel3" runat="server">
         <div id="litePassword" class="white_content">
             <h3>Password

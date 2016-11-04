@@ -184,9 +184,17 @@ namespace JG_Prospect.Sr_App
                     LoadTaskData(hdnTaskId.Value);
                     //divTableNote.Visible = true;
                     if (Session[JG_Prospect.Common.SessionKey.Key.usertype.ToString()] == "Admin")
+                    {
                         txtDescription.Enabled = true;
+                        divAddNoteOrImage.Visible = true;
+                        divAddNoteOrImage1.Visible = false;
+                    }
                     else
+                    {
                         txtDescription.Enabled = false;
+                        divAddNoteOrImage.Visible = false;
+                        divAddNoteOrImage1.Visible = true;
+                    }
                 }
                 else
                 {
@@ -195,8 +203,10 @@ namespace JG_Prospect.Sr_App
                     txtDescription.Enabled = true;
 
                     txtDescription.Text = " Hi Aavadesh, How are you. Thank you for accepting to this task. \n\n";
-                    txtDescription.Text = txtDescription.Text + "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -- - - - - - - - - - - - - - - - - - - \n\n";
+                    txtDescription.Text = txtDescription.Text + "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -- - - - - - - - - - - - - - - - - - - \n\n";
 
+                    divAddNoteOrImage.Visible = false;
+                    divAddNoteOrImage1.Visible = false;
                 }
             }
             txtNote.Focus();
@@ -2279,7 +2289,7 @@ namespace JG_Prospect.Sr_App
                 txtNote1.Text = string.Empty;
 
                 txtDescription.Text = " Hi Aavadesh, How are you. Thank you for accepting to this task. \n\n";
-                txtDescription.Text = txtDescription.Text + "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -- - - - - - - - - - - - - - - - - - -  \n\n";
+                txtDescription.Text = txtDescription.Text + "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -- - - - - - - - - - - - - - - - - - - \n\n";
 
                 //txtDescription.Text = string.Empty;
                 //clearAllFormData();
