@@ -106,12 +106,13 @@
     </script>
     <script type="text/javascript">
         function ValidateCheckBox() {
-            if (document.getElementById("<%=chkboxcondition.ClientID %>").checked == true) {
+            return true;
+            <%--if (document.getElementById("<%=chkboxcondition.ClientID %>").checked == true) {
                 return true
             } else {
                 alert("Please Accept Term and Conditions")
                 return false;
-            }
+            }--%>
         }
 
         var validFilesTypes = ["doc", "docs", "pdf", "docx"];
@@ -1622,9 +1623,6 @@
                                     </table>
                                 </asp:Panel>
                             </li>
-                            <li>
-                                ****
-                            </li>
                         </ul>
                         
                     </asp:Panel>
@@ -1809,21 +1807,27 @@
                                     Designation</asp:Label><span>*</span></label>
                                         <asp:DropDownList ID="ddldesignation" runat="server" Width="249px" ClientIDMode="Static" AutoPostBack="True" OnSelectedIndexChanged="ddldesignation_SelectedIndexChanged1">
                                             <%--TabIndex="501"--%>
-                                            <asp:ListItem Text="Admin" Value="Admin"></asp:ListItem>
+                                                                                        <asp:ListItem Text="Admin" Value="Admin"></asp:ListItem>
                                             <asp:ListItem Text="Jr. Sales" Value="Jr. Sales" Selected="True"></asp:ListItem>
                                             <asp:ListItem Text="Jr Project Manager" Value="Jr Project Manager"></asp:ListItem>
                                             <asp:ListItem Text="Office Manager" Value="Office Manager"></asp:ListItem>
                                             <asp:ListItem Text="Recruiter" Value="Recruiter"></asp:ListItem>
                                             <asp:ListItem Text="Sales Manager" Value="Sales Manager"></asp:ListItem>
-                                            <asp:ListItem Text="Sr. Sales" Value="Sr. Sales"></asp:ListItem>
-                                            <%--<asp:ListItem Text="IT Developer" Value="ITDeveloper"></asp:ListItem>--%>
+                                            <asp:ListItem Text="Sr. Sales" Value="Sr. Sales"></asp:ListItem> 
                                             <asp:ListItem Text="IT - Network Admin" Value="ITNetworkAdmin"></asp:ListItem>
                                             <asp:ListItem Text="IT - Jr .Net Developer" Value="ITJr.NetDeveloper"></asp:ListItem>
                                             <asp:ListItem Text="IT - Sr .Net Developer" Value="ITSr.NetDeveloper"></asp:ListItem>
                                             <asp:ListItem Text="IT - Android Developer" Value="ITAndroidDeveloper"></asp:ListItem>
                                             <asp:ListItem Text="IT - PHP Developer" Value="ITPHPDeveloper"></asp:ListItem>
                                             <asp:ListItem Text="IT - SEO / BackLinking" Value="ITSEOBackLinking"></asp:ListItem>
-                                            <asp:ListItem Text="IT - Lead" Value="ITLead"></asp:ListItem>
+                                            <%--<asp:ListItem Text="IT - Lead" Value="ITLead"></asp:ListItem>--%>
+					                        <asp:ListItem Text="Installer - Helper" Value="InstallerHelper"></asp:ListItem>
+                                            <asp:ListItem Text="Installer - Journeyman" Value="InstallerJourneyman"></asp:ListItem>
+                                            <asp:ListItem Text="Installer - Mechanic" Value="InstallerMechanic"></asp:ListItem>
+                                            <asp:ListItem Text="Installer - Lead mechanic" Value="InstallerLeadMechanic"></asp:ListItem>
+                                            <asp:ListItem Text="Installer - Foreman" Value="InstallerForeman"></asp:ListItem>
+                                            <asp:ListItem Text="Commercial Only" Value="CommercialOnly"></asp:ListItem>
+                                            <asp:ListItem Text="SubContractor" Value="SubContractor"></asp:ListItem>
                                         </asp:DropDownList>
                                         <%--</ContentTemplate>
                                 </asp:UpdatePanel>--%>
@@ -2143,7 +2147,7 @@
                                 
                             </table>
                             <ucAudit:UserListing runat="server"  ID="ucAuditTrail" />
-                        </li>
+                        </li>                        
                         <li style="width: 49%;" class="last">
                             <table border="0" cellspacing="0" cellpadding="0">
                                 <tr>

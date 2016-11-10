@@ -821,6 +821,7 @@ namespace JG_Prospect
 
                         if (validateUploadedData(dtExcel) == false)
                         {
+                            binddata();
                             UcStatusPopUp.changeText();
                             ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "showStatusChangePopUp();", true);                          
                             return;
@@ -1148,28 +1149,22 @@ namespace JG_Prospect
             //grdUsers.DataSource = DS.Tables[0];
             //grdUsers.DataBind();
 
-            ddlDesignation.DataSource = (from ptrade in DS.Tables[0].AsEnumerable()
-                                         where !string.IsNullOrEmpty(ptrade.Field<string>("Designation"))
-                                         select Convert.ToString(ptrade["Designation"])).Distinct().ToList();
+            List<string> lstDesignation= (from ptrade in DS.Tables[0].AsEnumerable()
+             where !string.IsNullOrEmpty(ptrade.Field<string>("Designation"))
+             select Convert.ToString(ptrade["Designation"])).Distinct().ToList();
+
+            lstDesignation.Sort((x, y) => string.Compare(x, y));
+            ddlDesignation.DataSource = lstDesignation;
+
             ddlDesignation.DataBind();
             ddlDesignation.Items.Insert(0, "--All--");
         }
 
         private void FillCustomer()
         {
-            DataSet dds = new DataSet();
-            dds = new_customerBLL.Instance.GeUsersForDropDown();
-            DataRow dr = dds.Tables[0].NewRow();
-            dr["Id"] = "0";
-            dr["Username"] = "--All--";
-            dds.Tables[0].Rows.InsertAt(dr, 0);
-            if (dds.Tables[0].Rows.Count > 0)
-            {
-                drpUser.DataSource = dds.Tables[0];
-                drpUser.DataValueField = "Id";
-                drpUser.DataTextField = "Username";
-                drpUser.DataBind();
-            }
+
+            fillFilterUserDDL();
+             
             DataSet dsSource = new DataSet();
             dsSource = InstallUserBLL.Instance.GetSource();
             DataRow drSource = dsSource.Tables[0].NewRow();
@@ -1182,6 +1177,24 @@ namespace JG_Prospect
                 ddlSource.DataValueField = "Id";
                 ddlSource.DataTextField = "Source";
                 ddlSource.DataBind();
+            }
+        }
+
+        private void fillFilterUserDDL()
+        {
+            DataSet dds = new DataSet();
+            dds = new_customerBLL.Instance.GeUsersForDropDown();
+            DataRow dr = dds.Tables[0].NewRow();
+
+            dr["Id"] = "0";
+            dr["Username"] = "--All--";
+            dds.Tables[0].Rows.InsertAt(dr, 0);
+            if (dds.Tables[0].Rows.Count > 0)
+            {
+                drpUser.DataSource = dds.Tables[0];
+                drpUser.DataValueField = "Id";
+                drpUser.DataTextField = "Username";
+                drpUser.DataBind();
             }
         }
 
@@ -1312,23 +1325,34 @@ namespace JG_Prospect
 
         public DataTable ToDataTable(ExcelPackage package)
         {
-            ExcelWorksheet workSheet = package.Workbook.Worksheets.First();
             DataTable table = new DataTable();
-            foreach (var firstRowCell in workSheet.Cells[1, 1, 1, workSheet.Dimension.End.Column])
+            try
             {
-                table.Columns.Add(firstRowCell.Text);
+                ExcelWorksheet workSheet = package.Workbook.Worksheets.First();                
+                foreach (var firstRowCell in workSheet.Cells[1, 1, 1, workSheet.Dimension.End.Column])
+                {
+                    table.Columns.Add(firstRowCell.Text);
+                }
+
+                for (var rowNumber = 2; rowNumber <= workSheet.Dimension.End.Row; rowNumber++)
+                {
+                    var row = workSheet.Cells[rowNumber, 1, rowNumber, workSheet.Dimension.End.Column];
+                    var newRow = table.NewRow();
+                    foreach (var cell in row)
+                    {
+                        newRow[cell.Start.Column - 1] = cell.Text;
+                    }
+                    table.Rows.Add(newRow);
+                }
+                
+            }
+            catch (Exception ex)
+            {
+                UtilityBAL.AddException("EditUser-ToDataTable", Session["loginid"] == null ? "" : Session["loginid"].ToString(), ex.Message, ex.StackTrace);
+                return null;
+                
             }
 
-            for (var rowNumber = 2; rowNumber <= workSheet.Dimension.End.Row; rowNumber++)
-            {
-                var row = workSheet.Cells[rowNumber, 1, rowNumber, workSheet.Dimension.End.Column];
-                var newRow = table.NewRow();
-                foreach (var cell in row)
-                {
-                    newRow[cell.Start.Column - 1] = cell.Text;
-                }
-                table.Rows.Add(newRow);
-            }
             return table;
         }
 
