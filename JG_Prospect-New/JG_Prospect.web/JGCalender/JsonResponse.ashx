@@ -17,7 +17,6 @@ namespace JG_Prospect.JGCalender
             context.Response.ContentType = "text/plain";
             DateTime start = Convert.ToDateTime(context.Request.QueryString["start"]);
             DateTime end = Convert.ToDateTime(context.Request.QueryString["end"]);
-
             string userIds = context.Request.QueryString["eIds"];
             var iSerializer = new System.Web.Script.Serialization.JavaScriptSerializer();
             var s = iSerializer.Deserialize<List<int>>(userIds);

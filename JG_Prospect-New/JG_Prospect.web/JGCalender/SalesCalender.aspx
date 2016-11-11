@@ -112,7 +112,7 @@
         <asp:ScriptManager ID="ScriptManager1" runat="server" EnablePageMethods="true">
         </asp:ScriptManager>
         <asp:HiddenField ID="hdnCustomerIds" runat="server" />
-        <div id="calendar" style="height: 100%; overflow: visible">
+        <div id="calendar"  style="height: 100%; overflow: visible">
         </div>
         <!--changing the positions and formatting google maps and datepicker-->
         <div class="col-sm-12">
@@ -263,7 +263,7 @@
             new google.maps.places.SearchBox(document.getElementById('txtToLocation'));
             directionsDisplay = new google.maps.DirectionsRenderer({ 'draggable': true });
         });
-        function GetRoute() {
+        function GetRoute(address,zip) {
             var philadelphia = new google.maps.LatLng(39.9526, -75.1652);
             var mapOptions = {
                 zoom: 7,
@@ -276,9 +276,17 @@
             //directionsDisplay.setPanel(document.getElementById('dvPanel'));
 
             //*********DIRECTIONS AND ROUTE**********************//
-            source = document.getElementById("txtFromLocation").value;
-            destination = document.getElementById("txtToLocation").value;
-
+            if (address != undefined) {
+                source = address + "," + zip;
+                destination = address + "," + zip;
+                document.getElementById("txtFromLocation").value = source;
+                
+            }
+            else
+            {
+                source = document.getElementById("txtFromLocation").value;
+                destination = document.getElementById("txtToLocation").value;
+            }
             var request = {
                 origin: source,
                 destination: destination,

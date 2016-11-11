@@ -157,7 +157,7 @@
                 });
 
 
-                $("#ul-customer").append(items.join(""));
+                //$("#ul-customer").append(items.join(""));
 
                 $('.customer-check-box').on('click', function () {
 
