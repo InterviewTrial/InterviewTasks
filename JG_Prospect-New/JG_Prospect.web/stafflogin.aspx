@@ -1,4 +1,5 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="login.aspx.cs" Inherits="JG_Prospect.login" %>
+﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="stafflogin.aspx.cs" Inherits="JG_Prospect.stafflogin" %>
+
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <%--<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajaxToolkit" %>--%>
 <%--<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>--%>
@@ -105,7 +106,8 @@
         <img src="img/logo.png" alt="logo" width="88" height="89" class="logo" />
 </head>
 <body>
-    <form id="form1" runat="server" defaultbutton="btnsubmit">
+   
+     <form id="form1" runat="server" defaultbutton="btnsubmit">
         <asp:ScriptManager ID="scriptmanager1" runat="server"></asp:ScriptManager>
         <div class="container">
             <!--header section-->
@@ -347,7 +349,6 @@
                 <li><a href="#">Privacy Policy</a></li>
             </ul>
         </div>
-        
 
     </form>
     

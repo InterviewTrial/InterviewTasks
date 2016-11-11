@@ -10,7 +10,7 @@
 namespace JG_Prospect {
     
     
-    public partial class login {
+    public partial class stafflogin {
         
         /// <summary>
         /// Head1 control.

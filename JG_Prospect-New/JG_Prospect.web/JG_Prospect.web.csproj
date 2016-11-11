@@ -700,6 +700,7 @@
     <Content Include="Sr_App\TrainingTools.aspx" />
     <Content Include="Sr_App\Vendors.aspx" />
     <Content Include="Sr_App\video.aspx" />
+    <Content Include="stafflogin.aspx" />
     <Content Include="StaticReport.aspx" />
     <Content Include="Styles\Site.css" />
     <Content Include="Global.asax" />
@@ -1465,6 +1466,13 @@
     </Compile>
     <Compile Include="Sr_App\video.aspx.designer.cs">
       <DependentUpon>video.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="stafflogin.aspx.cs">
+      <DependentUpon>stafflogin.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="stafflogin.aspx.designer.cs">
+      <DependentUpon>stafflogin.aspx</DependentUpon>
     </Compile>
     <Compile Include="StaticReport.aspx.cs">
       <DependentUpon>StaticReport.aspx</DependentUpon>
