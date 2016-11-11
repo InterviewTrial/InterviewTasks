@@ -17,12 +17,12 @@ using ASPSnippets.FaceBookAPI;
 using System.Web.Script.Serialization;
 using ASPSnippets.GoogleAPI;
 using ASPSnippets.TwitterAPI;
-using JG_Prospect.Common;
 
+using JG_Prospect.Common;
 
 namespace JG_Prospect
 {
-    public partial class login : System.Web.UI.Page
+    public partial class stafflogin : System.Web.UI.Page
     {
         #region '--Members--'
 
@@ -65,7 +65,7 @@ namespace JG_Prospect
             //txtDateOfBith.Attributes.Add("readonly", "readonly");
             if (!IsPostBack)
             {
-                rdCustomer.Checked = true;
+                rdSalesIns.Checked = true;
                 Session["DesigNew"] = "";
                 pnlSignup.Visible = true;
                 btnSignUp.Visible = true;
@@ -510,17 +510,10 @@ namespace JG_Prospect
                             ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Please enter a valid Loginid and password!');", true);
                             //  Response.Redirect("ErrorPage.aspx");
                         }
+
+                        #endregion
                     }
                 }
-                #endregion
-
-                #region Yahoo login
-                if (Session["yahoo"] != null && Convert.ToBoolean(Session["yahoo"]) == true)
-                {
-
-                }
-                #endregion
-
             }
         }
 
@@ -566,13 +559,13 @@ namespace JG_Prospect
                         {
                             Session["AdminUserId"] = AdminId;
                             Session["usertype"] = "Admin";
-                           // strRedirectUrl = "~/Sr_App/home.aspx";
+                            // strRedirectUrl = "~/Sr_App/home.aspx";
                             strRedirectUrl = "~/Sr_App/GoogleCalendarView.aspx?lastpage=login";
                         }
                         else if (isvaliduser == 1)
                         {
                             Session["usertype"] = "Admin";
-                           // strRedirectUrl = "~/Sr_App/home.aspx";
+                            // strRedirectUrl = "~/Sr_App/home.aspx";
                             strRedirectUrl = "~/Sr_App/GoogleCalendarView.aspx?lastpage=login";
                         }
                         else if (isvaliduser == 2)
@@ -657,15 +650,15 @@ namespace JG_Prospect
                                     }
                                     else if (Convert.ToString(Session["DesigNew"]) == "Sr. Sales" || Convert.ToString(Session["DesigNew"]) == "Admin" || Convert.ToString(Session["DesigNew"]) == "Office Manager" || Convert.ToString(Session["DesigNew"]) == "Recruiter" || Convert.ToString(Session["DesigNew"]) == "Sales Manager" || Convert.ToString(Session["DesigNew"]).Contains("IT"))
                                     {
-                                        if(Convert.ToString(Session["DesigNew"]) == "Admin" || Convert.ToString(Session["DesigNew"]) == "Recruiter" || Convert.ToString(Session["DesigNew"]) == "Office Manager")
+                                        if (Convert.ToString(Session["DesigNew"]) == "Admin" || Convert.ToString(Session["DesigNew"]) == "Recruiter" || Convert.ToString(Session["DesigNew"]) == "Office Manager")
                                         {
                                             strRedirectUrl = "~/Sr_App/GoogleCalendarView.aspx?lastpage=login";
                                         }
                                         else
                                         {
-                                             strRedirectUrl = "~/Sr_App/home.aspx";
+                                            strRedirectUrl = "~/Sr_App/home.aspx";
                                         }
-                                        
+
                                     }
                                     else if (Convert.ToString(Session["DesigNew"]).StartsWith("Installer"))
                                     {
@@ -893,6 +886,7 @@ namespace JG_Prospect
         {
             Session["facebook"] = true;
             FaceBookConnect.Authorize("user_photos,email", Request.Url.AbsoluteUri.Split('?')[0]);
+
         }
 
         protected void ImageButton2_Click(object sender, ImageClickEventArgs e)
@@ -1045,15 +1039,3 @@ namespace JG_Prospect
         #endregion
     }
 }
-
-public class FaceBookUser
-{
-    public string Id { get; set; }
-    public string Name { get; set; }
-    public string UserName { get; set; }
-    public string PictureUrl { get; set; }
-    public string Email { get; set; }
-}
-
-
-
