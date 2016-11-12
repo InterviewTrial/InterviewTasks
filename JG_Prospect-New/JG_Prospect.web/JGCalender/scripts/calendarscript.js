@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿var currentUpdateEvent;
 var addStartDate;
 var addEndDate;
@@ -257,6 +258,7 @@ $(document).ready(function () {
             defaultDate: dateDefault,
             eventDrop: eventDropped,
             eventResize: eventResized,
+            eventMouseover: function (event) { GetRoute(event.address,(event.zipcode)) },
             eventRender: function (event, element, view) {
                 // to bind link inside event
                 $(element).find('.fc-title').prepend('<a href="javascript:void(0);" class="event-link" style="color:#fff;text-decoration: none;border-bottom: 1px solid #fff;">' + event.customerid + ',</a>');
@@ -410,3 +412,6 @@ $(document).ready(function () {
 });
 
 
+=======
+﻿
+>>>>>>> origin/jaylem-interviewtask

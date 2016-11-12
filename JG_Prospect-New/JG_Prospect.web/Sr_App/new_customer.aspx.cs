@@ -9,7 +9,6 @@ using System.Text;
 using System.IO;
 using System.Net;
 using System.Web.UI;
-using System.Data;
 using System.Data.SqlClient;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls.WebParts;
@@ -51,6 +50,24 @@ namespace JG_Prospect.Sr_App
                     }
                     hideTouchPointLogDetails();
                 }
+            }
+            else
+            {
+              
+                Customer objCustomer = new Customer();
+               // Here objCustomer has to be intialized, using submitted form data it has to be initialzed 
+                new_customerBLL objBLL = new_customerBLL.Instance;
+                objCustomer.Addedby = Session["loginid"].ToString();
+                objCustomer.AddressType = "";
+                objCustomer.Email = txtEMail1.Value;
+                objCustomer.Email2 = txtEMail2.Value;
+                objCustomer.firstName = txtFName1.Value;
+                objCustomer.lastName = txtLName1.Value;
+                objCustomer.customerNm = txtPhone1.Value;
+               //------- like this all the fields have to be added
+
+                objBLL.AddCustomer(objCustomer);
+                
             }
             ChangeColours();
         }
@@ -880,7 +897,11 @@ namespace JG_Prospect.Sr_App
         public static string GetCityState(string strZip)
         {
             DataSet ds = new DataSet();
+<<<<<<< HEAD
 
+=======
+           
+>>>>>>> origin/jaylem-interviewtask
             ds = UserBLL.Instance.fetchcitystate(strZip);
             if (ds != null)
             {

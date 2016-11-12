@@ -67,7 +67,7 @@ namespace JG_Prospect.JGCalender
             return customers;
         }
 
-
+        //Made By Joel
         //this method retrieves all events within range start-end
         public static List<CalendarEvent> getEvents(DateTime start, DateTime end, string userIds, string searchFilter)
         {
@@ -78,6 +78,7 @@ namespace JG_Prospect.JGCalender
 
 
             sb.Append("  SELECT f.Id as event_id,   ");
+            sb.Append("  ISNULL(c.State,'') + ', ' + ISNULL(c.City,'') + ', ' + ISNULL(c.ZipCode,'') as CommonAddress, ");
             sb.Append("  isnull((Cast( c.id as varchar(10)) +' ## Last Name: '+ c.LastName+' ## First Name: '+ c.CustomerName+'  ## Contact: '+ ISNULL(c.PrimaryContact,'')+' ## Address: '   ");
             sb.Append("  + c.CustomerAddress+' ## Zip: '+ c.ZipCode+' ## Status: '+ f.MeetingStatus+ ' ## Product ' +cast( isnull(p.ProductName,'')  as varchar(10))),'') as  description,  ");
             sb.Append("  isnull(( c.LastName+'  ## '+ISNULL(c.cellPh,'')+' ##  '   ");
@@ -114,6 +115,7 @@ namespace JG_Prospect.JGCalender
           
              * 
               if (userIds != "")
+<<<<<<< HEAD
                  sb.Append(" and u.Id  in (" + userIds + ")");*/
 
 
@@ -251,4 +253,143 @@ namespace JG_Prospect.JGCalender
     }
 
 
+=======
+                 sb.Append(" and u.Id  in (" + userIds + ")");*/
+
+
+
+            SqlCommand cmd = new SqlCommand(sb.ToString(), con);
+
+            cmd.Parameters.Add("@start", SqlDbType.DateTime).Value = start;
+            cmd.Parameters.Add("@end", SqlDbType.DateTime).Value = end;
+            DataTable dt = new DataTable();
+            using (con)
+            {
+                con.Open();
+                SqlDataAdapter adp = new SqlDataAdapter(cmd);
+                adp.Fill(dt);
+            }
+            foreach (DataRow reader in dt.Rows)
+            {
+
+                CalendarEvent cevent = new CalendarEvent();
+                if (reader["status"].ToString() == "est<$1000" || reader["status"].ToString() == "est>$1000")
+                {
+                    cevent.backgroundColor = "black";
+                }
+                else if (reader["status"].ToString() == "sold>$1000" || reader["status"].ToString() == "sold<$1000" || reader["status"].ToString() == "Closed (sold)")
+                {
+                    cevent.backgroundColor = "red";
+                }
+                else
+                {
+                    cevent.backgroundColor = "gray";
+                }
+                cevent.id = (int)reader["event_id"];
+                cevent.title = ((string)reader["title"]).Replace("##", ", ");
+                cevent.description = ((string)reader["description"]).Replace("##", "<br>");
+                cevent.start = (DateTime)reader["event_start"];
+                cevent.end = (DateTime)reader["event_end"];
+                cevent.CommonAddress = reader["CommonAddress"].ToString();
+                cevent.allDay = Convert.ToBoolean(reader["all_day"]);
+                cevent.status = reader["status"].ToString();
+                cevent.customerid = Convert.ToInt32(reader["id"]);
+                cevent.lastname = reader["lastname"].ToString();
+                cevent.primarycontact = reader["PrimaryContact"].ToString();
+                cevent.address = reader["customeraddress"].ToString();
+                cevent.zipcode = reader["zipcode"].ToString();
+                cevent.productline = reader["productname"].ToString();
+                cevent.firstname = reader["firstname"].ToString();
+
+                if (string.IsNullOrEmpty(searchFilter) || searchFilter.Trim().Length == 0 || cevent.description.ToLower().Contains(searchFilter.ToLower().Trim()))
+                {
+                    events.Add(cevent);
+                }
+            }
+            return events;
+        }
+
+        //this method updates the event title and description
+        public static void updateEvent(int id, String title, String description, String status)
+        {
+            SqlConnection con = new SqlConnection(connectionString);
+            SqlCommand cmd = new SqlCommand("UPDATE tblcustomer_followup SET MeetingStatus=@status WHERE Id=@event_id", con);
+            cmd.Parameters.Add("@status", SqlDbType.VarChar).Value = status;
+            cmd.Parameters.Add("@event_id", SqlDbType.Int).Value = id;
+
+            using (con)
+            {
+                con.Open();
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        //this method updates the event start and end time ... allDay parameter added for FullCalendar 2.x
+        public static void updateEventTime(int id, DateTime start, DateTime end, bool allDay)
+        {
+            SqlConnection con = new SqlConnection(connectionString);
+            SqlCommand cmd = new SqlCommand("UPDATE tblcustomer_followup SET MeetingDate=@event_start WHERE Id=@event_id", con);
+            cmd.Parameters.Add("@event_start", SqlDbType.DateTime).Value = start;
+            cmd.Parameters.Add("@event_end", SqlDbType.DateTime).Value = end;
+            cmd.Parameters.Add("@event_id", SqlDbType.Int).Value = id;
+            cmd.Parameters.Add("@all_day", SqlDbType.Bit).Value = allDay ? 1 : 0;
+
+            using (con)
+            {
+                con.Open();
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        //this mehtod deletes event with the id passed in.
+        public static void deleteEvent(int id)
+        {
+            SqlConnection con = new SqlConnection(connectionString);
+            SqlCommand cmd = new SqlCommand("DELETE FROM ECICalendarEvent_Test WHERE (event_id = @event_id)", con);
+            cmd.Parameters.Add("@event_id", SqlDbType.Int).Value = id;
+
+            using (con)
+            {
+                con.Open();
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        //this method adds events to the database
+        public static int addEvent(CalendarEvent cevent)
+        {
+            //add event to the database and return the primary key of the added event row
+
+            //insert
+            SqlConnection con = new SqlConnection(connectionString);
+            SqlCommand cmd = new SqlCommand("INSERT INTO ECICalendarEvent_Test(title, description, event_start, event_end, all_day) VALUES(@title, @description, @event_start, @event_end, @all_day)", con);
+            cmd.Parameters.Add("@title", SqlDbType.VarChar).Value = cevent.title;
+            cmd.Parameters.Add("@description", SqlDbType.VarChar).Value = cevent.description;
+            cmd.Parameters.Add("@event_start", SqlDbType.DateTime).Value = cevent.start;
+            cmd.Parameters.Add("@event_end", SqlDbType.DateTime).Value = cevent.end;
+            cmd.Parameters.Add("@all_day", SqlDbType.Bit).Value = cevent.allDay;
+
+            int key = 0;
+            using (con)
+            {
+                con.Open();
+                cmd.ExecuteNonQuery();
+
+                //get primary key of inserted row
+                cmd = new SqlCommand("SELECT max(event_id) FROM ECICalendarEvent_Test where title=@title AND description=@description AND event_start=@event_start AND event_end=@event_end AND all_day=@all_day", con);
+                cmd.Parameters.Add("@title", SqlDbType.VarChar).Value = cevent.title;
+                cmd.Parameters.Add("@description", SqlDbType.VarChar).Value = cevent.description;
+                cmd.Parameters.Add("@event_start", SqlDbType.DateTime).Value = cevent.start;
+                cmd.Parameters.Add("@event_end", SqlDbType.DateTime).Value = cevent.end;
+                cmd.Parameters.Add("@all_day", SqlDbType.Bit).Value = cevent.allDay;
+
+                key = (int)cmd.ExecuteScalar();
+            }
+
+            return key;
+        }
+    }
+
+
+>>>>>>> origin/jaylem-interviewtask
 }
