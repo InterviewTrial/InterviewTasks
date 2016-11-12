@@ -897,11 +897,7 @@ namespace JG_Prospect.Sr_App
         public static string GetCityState(string strZip)
         {
             DataSet ds = new DataSet();
-<<<<<<< HEAD
 
-=======
-           
->>>>>>> origin/jaylem-interviewtask
             ds = UserBLL.Instance.fetchcitystate(strZip);
             if (ds != null)
             {
