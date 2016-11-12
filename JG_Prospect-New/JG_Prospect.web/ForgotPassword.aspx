@@ -51,12 +51,12 @@
                                         </tr>
                                         <tr>
                                             <td>
-                                                <label>Login Id<span>*</span></label>
+                                                <label>Login Id Or Phone number<span>*</span></label>
                                                 <asp:TextBox ID="txtloginid" runat="server" TabIndex="1" Width="312px"></asp:TextBox>
                                                 <br />
                                                 <label></label>
                                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ValidationGroup="Login"
-                                                    ControlToValidate="txtloginid" Display="Dynamic" ForeColor="Red">Please Enter UserName</asp:RequiredFieldValidator>
+                                                    ControlToValidate="txtloginid" Display="Dynamic" ForeColor="Red">Please Enter UserName Or Phone number.</asp:RequiredFieldValidator>
                                             </td>
                                         </tr>
                                     </table>

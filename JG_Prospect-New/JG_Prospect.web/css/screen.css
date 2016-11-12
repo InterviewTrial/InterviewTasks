@@ -891,6 +891,12 @@ form.inline {
     width: 550px;
 }
 
+.login_header {
+    height: 20px;
+    color: #fff;
+    background-color: #AA4143;
+}
+
 .login_form_panel {
     background: #efeeee url(../img/form-bg.png) repeat-x top;
     min-height: 200px;

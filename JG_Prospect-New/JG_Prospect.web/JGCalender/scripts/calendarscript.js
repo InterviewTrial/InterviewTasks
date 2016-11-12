@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿var currentUpdateEvent;
 var addStartDate;
 var addEndDate;
@@ -411,3 +412,6 @@ $(document).ready(function () {
 });
 
 
+=======
+﻿
+>>>>>>> origin/jaylem-interviewtask
