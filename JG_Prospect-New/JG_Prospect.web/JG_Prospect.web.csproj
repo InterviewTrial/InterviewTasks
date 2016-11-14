@@ -393,6 +393,7 @@
     <Content Include="img\LoginwithFB.jpg" />
     <Content Include="img\LogoJG_PDF.png" />
     <Content Include="img\Logo_BG.png" />
+    <Content Include="img\microsoftlogin.png" />
     <Content Include="img\paperclip.png" />
     <Content Include="img\pdf.jpg" />
     <Content Include="img\PlusMinus.png" />
@@ -403,6 +404,7 @@
     <Content Include="img\video.png" />
     <Content Include="img\word.jpg" />
     <Content Include="img\xls.png" />
+    <Content Include="img\yahoologin.png" />
     <Content Include="Installer\ChangePassword.aspx" />
     <Content Include="Installer\InstallerHeader.ascx" />
     <Content Include="Installer\InstallerHome.aspx" />
