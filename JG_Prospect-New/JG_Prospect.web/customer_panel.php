@@ -3,9 +3,9 @@ ob_start();
 session_start();
 error_reporting(E_ALL & ~E_NOTICE);
 //start of code to insert in sql server
- $serverName = "localhost\sql2008r2"; //serverName\instanceName
+$serverName = "jgdbserver001.cdgdaha6zllk.us-west-2.rds.amazonaws.com"; //serverName\instanceName
 
-    $connectionInfo = array( "Database"=>"jgrove_JGP", "UID"=>"sa", "PWD"=>"sa@12345");
+    $connectionInfo = array( "Database"=>"JGBS_Interview", "UID"=>"interviewuser", "PWD"=>"JGInt@021*");
     $conn = sqlsrv_connect( $serverName, $connectionInfo);
     if( $conn === false ) {
          die( print_r( sqlsrv_errors(), true));
