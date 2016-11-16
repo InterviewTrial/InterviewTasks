@@ -475,9 +475,10 @@
                                         <asp:TextBox ID="txtid" runat="server" MaxLength="30" Text='<%#Eval("Id")%>'></asp:TextBox>
                                     </EditItemTemplate>
                                     <ItemTemplate>
-                                        <asp:Label ID="lblid" Visible="false" runat="server" Text='<%#Eval("Id")%>'></asp:Label>
-                                        <asp:LinkButton ID="lnkID" Text='<%#Eval("Id")%>' CommandName="Edit" runat="server"
+                                        <asp:Label ID="lblid" Visible="false" runat="server" Text='<%#Eval("Id")%>'></asp:Label>                                        
+                                        <asp:LinkButton ID="lnkID" Text='<%#Eval("UserInstallId")%>' CommandName="Edit" runat="server"
                                             CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
+
                                         <br />
                                         <asp:Label ID="lblDesignation" runat="server" Text='<%#Eval("Designation")%>'></asp:Label>
                                     </ItemTemplate>

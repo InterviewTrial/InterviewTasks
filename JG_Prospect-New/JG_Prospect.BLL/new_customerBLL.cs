@@ -393,6 +393,10 @@ namespace JG_Prospect.BLL
         {
             return new_customerDAL.Instance.GetJobTeamMembers(intCustomerId, strJobId);
         }
-      
+
+        public string CheckDuplicateSalesUser(string ValueForValidation, int ValidationType, int UserId)
+        {
+            return new_customerDAL.Instance.CheckDuplicateSalesUser(ValueForValidation, ValidationType, UserId);
+        }
     }
 }

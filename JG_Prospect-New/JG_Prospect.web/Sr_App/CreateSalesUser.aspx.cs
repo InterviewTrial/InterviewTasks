@@ -21,11 +21,13 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using Word = Microsoft.Office.Interop.Word;
+using System.Web.Services;
 
 namespace JG_Prospect.Sr_App
 {
     public partial class CreateSalesUser : System.Web.UI.Page
     {
+        
         #region '--Members--'
 
         string fn;
@@ -52,6 +54,7 @@ namespace JG_Prospect.Sr_App
 
         protected void Page_Load(object sender, EventArgs e)
         {
+
             if (Session["Username"] != null)
             {
                 // txtSource.Text = Session["Username"].ToString();
@@ -76,8 +79,10 @@ namespace JG_Prospect.Sr_App
                 }
                 
                 Session["ID"] = Convert.ToInt32(Request.QueryString["ID"]);
+                hidID.Value = Request.QueryString["ID"].ToString();
 
                 bindGrid();
+               // hlnkUserID.Text = GetInstallIdFromDesignation(ddldesignation.SelectedItem.Text) + "-A" + Session["ID"].ToString();
             }
             else
             {
@@ -85,11 +90,14 @@ namespace JG_Prospect.Sr_App
                 {
                     Session["ID"] = "";
                     SetUserControlValue(string.Empty);
+                    hlnkUserID.Text = GetInstallIdFromDesignation(ddldesignation.SelectedItem.Text) + "-AXXXX";
                 }
                 touchPointlogPanel.Visible = false;
             }
+
             if (!IsPostBack)
             {
+                FillPhoneTypeDropDown();
                 BindProducts1();
                 BindProducts2();
                 BindProducts3();
@@ -340,6 +348,17 @@ namespace JG_Prospect.Sr_App
                     ds = InstallUserBLL.Instance.getuserdetails(id);
                     if (ds.Tables[0].Rows.Count != 0)
                     {
+                        if (ds.Tables[0].Rows[0]["UserInstallId"].ToString() == "" )
+                        {
+                            hlnkUserID.Text = GetInstallIdFromDesignation(ds.Tables[0].Rows[0]["Designation"].ToString()) + "-AXXXX"; ;                            
+                        }
+                        else
+                        {
+                            hlnkUserID.Text = ds.Tables[0].Rows[0]["UserInstallId"].ToString();
+                            //If Designation is change at edit mode can track it out.
+                            hidDesignationBeforeChange.Value = ds.Tables[0].Rows[0]["Designation"].ToString();
+                        }
+                        
                         lblICardName.Text = ds.Tables[0].Rows[0][1].ToString() + " " + ds.Tables[0].Rows[0][2].ToString();
                         lblICardPosition.Text = ds.Tables[0].Rows[0][5].ToString();
                         lblICardIDNo.Text = ds.Tables[0].Rows[0][62].ToString();
@@ -1142,7 +1161,7 @@ namespace JG_Prospect.Sr_App
                 rqAccountType.Enabled = false;
             }
 
-        }
+        } 
 
         private void SetUserControlValue(string LoginID)
         {   
@@ -1621,7 +1640,7 @@ namespace JG_Prospect.Sr_App
             //    return;
             //}
             btn_UploadFiles_Click(sender, e);
-            if (chkboxcondition.Checked == true)
+            //if (chkboxcondition.Checked == true)
             {
                 InstallId = Convert.ToString(Session["IdGenerated"]);
                 objuser.SourceUser = Convert.ToString(Session["userid"]);
@@ -1997,6 +2016,7 @@ namespace JG_Prospect.Sr_App
                     {
                         var result = InstallUserBLL.Instance.AddUser(objuser);
                         Session["ID"] = result.Item2;
+                        UpdateUserInstallID(result.Item2);
 
                         //GoogleCalendarEvent.CreateCalendar(txtemail.Text, txtaddress.Text);
                         //lblmsg.Visible = true;
@@ -2040,13 +2060,13 @@ namespace JG_Prospect.Sr_App
                     }
                 }
             }
-            else
-            {
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Please Accept Term and Conditions');", true);
-            }
+            //else
+            //{
+            //    ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Please Accept Term and Conditions');", true);
+            //}
 
         }
-
+        
         protected void lnkFacePage_Click(object sender, EventArgs e)
         {
             var pdfPath = Path.Combine(Server.MapPath("~/PDFTemplates/face page.pdf"));
@@ -2587,6 +2607,13 @@ namespace JG_Prospect.Sr_App
                     objuser.SourceUser = Convert.ToString(Session["userid"]);
 
                     bool result = InstallUserBLL.Instance.UpdateInstallUser(objuser, id);
+
+                    #region Set / Update User Install ID
+
+                    UpdateUserInstallID(id, hidDesignationBeforeChange.Value);
+
+                    #endregion
+
                     if (ddlstatus.SelectedValue == "InterviewDate" || ddlstatus.SelectedValue == "OfferMade" || ddlstatus.SelectedValue == "Deactive")
                     {
                         SendEmail(txtemail.Text, txtfirstname.Text, txtlastname.Text, ddlstatus.SelectedValue, str_Reason);
@@ -4288,6 +4315,15 @@ namespace JG_Prospect.Sr_App
                 //lblSignature.Visible = true;
                 //txtSignature.Visible = true;
             }
+
+            if (Session["ID"] != null && Session["ID"].ToString() != "")
+            {
+                hlnkUserID.Text = GetInstallIdFromDesignation(ddldesignation.SelectedItem.Text) + "-A" + Session["ID"].ToString();
+            }
+            else
+            {
+                hlnkUserID.Text = GetInstallIdFromDesignation(ddldesignation.SelectedItem.Text) + "-AXXXX";
+            }
         }
 
         protected void ddlPrimaryTrade_SelectedIndexChanged(object sender, EventArgs e)
@@ -4891,6 +4927,51 @@ namespace JG_Prospect.Sr_App
             }
         }
 
+        protected void ddlPhontType_PreRender(object sender, EventArgs e)
+        {
+            string imageURL = "";
+            
+            for (int i = 0; i < ddlPhontType.Items.Count; i++)
+            {
+                switch (ddlPhontType.Items[i].Value.Trim())
+                {
+                    case "skype":
+                        imageURL = "../Sr_App/img/skype.png";
+                        ddlPhontType.Items[i].Attributes["data-image"] = imageURL;
+                        break;
+                    case "whatsapp":
+                        imageURL = "../Sr_App/img/WhatsApp.png";
+                        ddlPhontType.Items[i].Attributes["data-image"] = imageURL;
+                        break;
+
+                    case "HousePhone":
+                        imageURL = "../Sr_App/img/Phone_home.png";
+                        ddlPhontType.Items[i].Attributes["data-image"] = imageURL;
+                        break;
+
+                    case "CellPhone":
+                        imageURL = "../Sr_App/img/Cell_Phone.png";
+                        ddlPhontType.Items[i].Attributes["data-image"] = imageURL;
+                        break;
+
+                    case "WorkPhone":
+                        imageURL = "../Sr_App/img/WorkPhone.png";
+                        ddlPhontType.Items[i].Attributes["data-image"] = imageURL;
+                        break;
+
+                    case "AltPhone":
+                        imageURL = "../Sr_App/img/AltPhone.png";
+                        ddlPhontType.Items[i].Attributes["data-image"] = imageURL;
+                        break; 
+
+                    default:
+                        ddlPhontType.Items[i].Attributes["data-image"] = "../Sr_App/img/WorkPhone.png";
+                        break;
+                }
+                
+            }
+        } 
+
         protected void ddlstatus_PreRender(object sender, EventArgs e)
         {
             string imageURL = "";
@@ -4898,7 +4979,8 @@ namespace JG_Prospect.Sr_App
             {
                 switch (ddlstatus.Items[i].Value)
                 {
-                    case "Applicant": imageURL = "../Sr_App/img/red-astrek.png";
+                    case "Applicant":
+                        imageURL = "../Sr_App/img/red-astrek.png";
                         ddlstatus.Items[i].Attributes["data-image"] = imageURL;
                         break;
                     case "OfferMade": imageURL = "../Sr_App/img/dark-blue-astrek.png";
@@ -6409,6 +6491,125 @@ namespace JG_Prospect.Sr_App
             {
                 UtilityBAL.AddException("CreateSalesUser-SendEmail", Session["loginid"] == null ? "" : Session["loginid"].ToString(), ex.Message, ex.StackTrace);
             }
+        }
+
+        [WebMethod]
+        public static string CheckDuplicateCustomerCredentials(String pValueForValidation, String strCurrentID,Int32 pValidationType )
+        {
+            int intID = 0;
+            Int32.TryParse(strCurrentID, out intID);
+            return new_customerBLL.Instance.CheckDuplicateSalesUser(pValueForValidation, pValidationType, intID);
+        }
+
+        [WebMethod]
+        public static string AddNewPhoneTypeToDB(String strNewPhoneType)
+        {
+            InstallUserBLL.Instance.AddNewPhoneType(strNewPhoneType , 1);
+            return "Phone Type '" + strNewPhoneType + "' added successfully ";
+        }
+
+        private string GetInstallIdFromDesignation(string designame)
+        {
+            string prefix = "";
+            switch (designame)
+            {
+                case "Admin":
+                    prefix = "ADM";
+                    break;
+                case "Jr. Sales":
+                    prefix = "JSL";
+                    break;
+                case "Jr Project Manager":
+                    prefix = "JPM";
+                    break;
+                case "Office Manager":
+                    prefix = "OFM";
+                    break;
+                case "Recruiter":
+                    prefix = "REC";
+                    break;
+                case "Sales Manager":
+                    prefix = "SLM";
+                    break;
+                case "Sr. Sales":
+                    prefix = "SSL";
+                    break;
+                case "IT - Network Admin":
+                    prefix = "ITNA";
+                    break;
+                case "IT - Jr .Net Developer":
+                    prefix = "ITJN";
+                    break;
+                case "IT - Sr .Net Developer":
+                    prefix = "ITSN";
+                    break;
+                case "IT - Android Developer":
+                    prefix = "ITAD";
+                    break;
+                case "IT - PHP Developer":
+                    prefix = "ITPH";
+                    break;
+                case "IT - SEO / BackLinking":
+                    prefix = "ITSB";
+                    break;
+                case "Installer - Helper":
+                    prefix = "INH";
+                    break;
+                case "Installer – Journeyman":
+                    prefix = "INJ";
+                    break;
+                case "Installer – Mechanic":
+                    prefix = "INM";
+                    break;
+                case "Installer - Lead mechanic":
+                    prefix = "INLM";
+                    break;
+                case "Installer – Foreman":
+                    prefix = "INF";
+                    break;
+                case "Commercial Only":
+                    prefix = "COM";
+                    break;
+                case "SubContractor":
+                    prefix = "SBC";
+                    break;
+                default:
+                    prefix = "OUID";
+                    break;
+            }
+            return prefix;
+        }
+
+        private void FillPhoneTypeDropDown()
+        {
+
+            DataSet dsPhoneType;
+            
+            dsPhoneType = InstallUserBLL.Instance.GetAllUserPhoneType();
+
+            if (dsPhoneType.Tables[0].Rows.Count > 0)
+            {
+                ddlPhontType.DataSource = dsPhoneType.Tables[0];
+                ddlPhontType.DataTextField = "ContactName";
+                ddlPhontType.DataValueField = "ContactValue";
+                ddlPhontType.DataBind();
+                //ddlSource.Items.Insert(0, "Select Source");
+                //ddlSource.SelectedIndex = 0;
+            }
+        }
+
+        //Update InstallID for respective user..
+        private void UpdateUserInstallID(int UserID ,string OldDesignation = "")
+        {
+            string strDesignationsCode = GetInstallIdFromDesignation(ddldesignation.SelectedItem.Text);
+            string OldDesignationCode = GetInstallIdFromDesignation(OldDesignation);
+
+            if (OldDesignationCode != OldDesignationCode)
+            {
+                //Set tblInstallUsers > UserInstallId to null.
+            }
+
+            InstallUserBLL.Instance.SetUserDisplayID(UserID, strDesignationsCode);
         }
 
         #endregion

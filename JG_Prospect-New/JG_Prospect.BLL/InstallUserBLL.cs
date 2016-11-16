@@ -443,6 +443,11 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.ChangeSatatus(Status, StatusId, RejectionDate, RejectionTime, RejectedUserId, IsInstallUser, StatusReason, UserIds);
         }
 
+        public DataSet GetAllInterivewUserByPastDate()
+        {
+            return InstallUserDAL.Instance.GetAllInterivewUserByPastDate();
+        }
+
         public DataSet ReSchedule_Interivew(int ApplicantId, string ReSheduleDate , string ReSheduleTime, int ReSheduleByUserId)
         {
 
@@ -487,6 +492,21 @@ namespace JG_Prospect.BLL
         public DataSet GetTechTaskByUser(int UserId)
         {
             return InstallUserDAL.Instance.GetTechTaskByUser(UserId);
+        }
+
+        public string AddNewPhoneType(string NewPhoneType, int AddedByID)
+        {
+            return InstallUserDAL.Instance.AddNewPhoneType(NewPhoneType, AddedByID);
+        }
+
+        public DataSet GetAllUserPhoneType()
+        {
+            return InstallUserDAL.Instance.GetAllUserPhoneType();
+        }
+
+        public DataSet SetUserDisplayID(int UserId, string strDesignationsCode)
+        {
+            return InstallUserDAL.Instance.SetUserDisplayID(UserId, strDesignationsCode);
         }
     }
 }

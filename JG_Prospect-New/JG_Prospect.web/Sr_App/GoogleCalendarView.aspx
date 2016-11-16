@@ -1,11 +1,13 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="GoogleCalendarView.aspx.cs" MasterPageFile="~/Sr_App/SR_app.Master" Inherits="JG_Prospect.Sr_App.GoogleCalendarView" %>
+﻿
+
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="GoogleCalendarView.aspx.cs" MasterPageFile="~/Sr_App/SR_app.Master" Inherits="JG_Prospect.Sr_App.GoogleCalendarView" %>
 
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 
 <%@ Register Src="~/UserControl/ucStatusChangePopup.ascx" TagPrefix="ucStatusChange" TagName="PoPup" %>
-
+<%--<%@ Register Src="~/UserControl/PopUp/ucStaffLoginAlert.ascx" TagPrefix="ucStaffAlert" TagName="PoPup" %>--%>
 
 <%--<%@ Register Src="~/Controls/left.ascx" TagName="leftmenu" TagPrefix="uc1" %>--%>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
@@ -271,7 +273,7 @@
 
                                 <asp:LinkButton ID="lbtnReSchedule" runat="server" OnCommand="lbtnReSchedule_Click" Text='Re-Schedule' CommandArgument='<%#Eval("ApplicantId") +","+ Eval("Designation")%> ' ></asp:LinkButton>
                                 /&nbsp;
-                                <a href="/Sr_App/TaskGenerator.aspx?TaskId=<%#Eval("TaskId")%>"><%#Eval("InstallId")%></a>                                
+                                <a target="_blank" href="/Sr_App/TaskGenerator.aspx?TaskId=<%#Eval("TaskId")%>"><%#Eval("InstallId")%></a>                                
                                 
                             </AppointmentTemplate>
                         </telerik:RadScheduler>
