@@ -2269,11 +2269,7 @@
                         <li style="width: 49%;">
                             <table border="0" cellspacing="0" cellpadding="0">
                                 <tr>
-                                    <td>
-                                       
-                                        DDDDDDDD
-                                        <br />
-                                         
+                                    <td> 
                                         <label>
                                             <asp:Label ID="lblInstallerType" ForeColor="Black" runat="server" Text="Installer Type"></asp:Label></label>
                                         <asp:DropDownList ID="ddlInstallerType" runat="server" Width="252px">
