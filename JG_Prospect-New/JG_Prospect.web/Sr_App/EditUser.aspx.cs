@@ -112,6 +112,7 @@ namespace JG_Prospect
                 Session["FirstNameNewSC"] = "";
                 Session["LastNameNewSC"] = "";
                 Session["DesignitionSC"] = "";
+                Session["HighlightUsersForTypes"] = null;
                 binddata();
                 DataSet dsCurrentPeriod = UserBLL.Instance.Getcurrentperioddates();
                 //bindPayPeriod(dsCurrentPeriod);
@@ -119,6 +120,13 @@ namespace JG_Prospect
                 txtfrmdate.Text = DateTime.Now.AddDays(-14).ToString("MM/dd/yyyy");
                 txtTodate.Text = DateTime.Now.ToString("MM/dd/yyyy");
                 ShowHRData();
+            }
+            else
+            {
+                if (Session["HighlightUsersForTypes"] != null)
+                {
+                    HighlightUsersForTypes((DataTable)Session["HighlightUsersForTypes"], drpUser);
+                }
             }
         }
 
@@ -1096,7 +1104,7 @@ namespace JG_Prospect
             {
                 string usertype = Session["usertype"].ToString().ToLower();
 
-                if (dt.Columns["OrderStatus"] == null)
+                if (dt != null && dt.Columns["OrderStatus"] == null)
                 {
                     dt.Columns.Add("OrderStatus");
                     int st = 0;
@@ -1119,11 +1127,23 @@ namespace JG_Prospect
                     }
                 }
 
-                DataView dv = dt.DefaultView;
-                dv.Sort = "OrderStatus asc";
+                if (dt != null)
+                {
+                    DataView dv = dt.DefaultView;
+                    dv.Sort = "OrderStatus asc";
+                    grdUsers.DataSource = dv;
+                    grdUsers.DataBind();
+                }
+                else
+                {
+                    grdUsers.DataSource = null;
+                    grdUsers.DataBind();
+                }
 
-                grdUsers.DataSource = dv;
-                grdUsers.DataBind();
+                //DataView dv = dt.DefaultView;
+                //dv.Sort = "OrderStatus asc";
+                //grdUsers.DataSource = dv;
+                //grdUsers.DataBind();
             }
             catch (Exception ex)
             {
@@ -1136,8 +1156,10 @@ namespace JG_Prospect
             DataSet DS = new DataSet();
             //DS = UserBLL.Instance.getallusers(usertype);
             DataSet ds = new DataSet();
+            DataSet dsDesignation = new DataSet();
             ds = InstallUserBLL.Instance.GetAllSalesUserToExport();
             DS = InstallUserBLL.Instance.GetAllEditSalesUser();
+            dsDesignation = DesignationBLL.Instance.GetAllDesignationsForHumanResource();
 
             BindPieChart(DS.Tables[0]);
 
@@ -1149,14 +1171,22 @@ namespace JG_Prospect
             //grdUsers.DataSource = DS.Tables[0];
             //grdUsers.DataBind();
 
-            List<string> lstDesignation= (from ptrade in DS.Tables[0].AsEnumerable()
-             where !string.IsNullOrEmpty(ptrade.Field<string>("Designation"))
-             select Convert.ToString(ptrade["Designation"])).Distinct().ToList();
+            //List<string> lstDesignation= (from ptrade in DS.Tables[0].AsEnumerable()
+            // where !string.IsNullOrEmpty(ptrade.Field<string>("Designation"))
+            // select Convert.ToString(ptrade["Designation"])).Distinct().ToList();
 
-            lstDesignation.Sort((x, y) => string.Compare(x, y));
-            ddlDesignation.DataSource = lstDesignation;
+            //lstDesignation.Sort((x, y) => string.Compare(x, y));
+            //ddlDesignation.DataSource = lstDesignation;
 
-            ddlDesignation.DataBind();
+            //ddlDesignation.DataBind();            
+
+            if (dsDesignation.Tables.Count > 0)
+            {
+                ddlDesignation.DataSource = dsDesignation.Tables[0];
+                ddlDesignation.DataTextField = "DesignationName";
+                ddlDesignation.DataValueField = "ID";
+                ddlDesignation.DataBind();
+            }
             ddlDesignation.Items.Insert(0, "--All--");
         }
 
@@ -1182,19 +1212,86 @@ namespace JG_Prospect
 
         private void fillFilterUserDDL()
         {
-            DataSet dds = new DataSet();
-            dds = new_customerBLL.Instance.GeUsersForDropDown();
-            DataRow dr = dds.Tables[0].NewRow();
+            //DataSet dds = new DataSet();
+            //dds = new_customerBLL.Instance.GeUsersForDropDown();
+            //DataRow dr = dds.Tables[0].NewRow();
 
-            dr["Id"] = "0";
-            dr["Username"] = "--All--";
-            dds.Tables[0].Rows.InsertAt(dr, 0);
-            if (dds.Tables[0].Rows.Count > 0)
+            //dr["Id"] = "0";
+            //dr["Username"] = "--All--";
+            //dds.Tables[0].Rows.InsertAt(dr, 0);
+            //if (dds.Tables[0].Rows.Count > 0)
+            //{
+            //    drpUser.DataSource = dds.Tables[0];
+            //    drpUser.DataValueField = "Id";
+            //    drpUser.DataTextField = "Username";
+            //    drpUser.DataBind();
+            //}
+
+            DataSet dsInstalledUser = InstallUserBLL.Instance.GetUsersNDesignationForSalesFilter();
+            drpUser.DataSource = dsInstalledUser.Tables[0];
+            drpUser.DataValueField = "Id";
+            drpUser.DataTextField = "FirstName";
+            drpUser.DataBind();
+            drpUser.Items.Insert(0, new ListItem("--All--", "0"));
+            DataTable dtInstalledUsers = dsInstalledUser.Tables[0];
+            Session["HighlightUsersForTypes"] = dtInstalledUsers;
+            HighlightUsersForTypes(dtInstalledUsers, drpUser);
+        }
+
+        private void HighlightUsersForTypes(DataTable dtUsers, DropDownList ddlUsers)
+        {
+            if (dtUsers.Rows.Count > 0)
             {
-                drpUser.DataSource = dds.Tables[0];
-                drpUser.DataValueField = "Id";
-                drpUser.DataTextField = "Username";
-                drpUser.DataBind();
+                var rows = dtUsers.AsEnumerable();
+
+                //get all users comma seperated ids with interviewdate status
+                String DeactivatedUsers = String.Join(",", (from r in rows where (r.Field<string>("Status") == "Deactive") select r.Field<Int32>("Id").ToString()));
+
+                // for each userid find it into user dropdown list and apply red color to it.
+                foreach (String user in DeactivatedUsers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    ListItem item;
+
+                    if (ddlUsers != null)
+                    {
+                        item = ddlUsers.Items.FindByValue(user);
+                        item.Attributes.Add("style", "color:grey;");
+                    }
+
+                }
+
+                //get all users comma seperated ids with interviewdate status
+                String OfferMadeUsers = String.Join(",", (from r in rows where (r.Field<string>("Status") == "OfferMade" || r.Field<string>("Status") == "Offer Made") select r.Field<Int32>("Id").ToString()));
+
+                // for each userid find it into user dropdown list and apply red color to it.
+                foreach (String user in OfferMadeUsers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    ListItem item;
+
+                    if (ddlUsers != null)
+                    {
+                        item = ddlUsers.Items.FindByValue(user);
+                        item.Attributes.Add("style", "color:red;");
+                    }
+
+                }
+
+                //get all users comma seperated ids with interviewdate status
+                String InterviewDateUsers = String.Join(",", (from r in rows where (r.Field<string>("Status") == "InterviewDate" || r.Field<string>("Status") == "Interview Date") select r.Field<Int32>("Id").ToString()));
+
+                // for each userid find it into user dropdown list and apply red color to it.
+                foreach (String user in InterviewDateUsers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    ListItem item;
+
+                    if (ddlUsers != null)
+                    {
+                        item = ddlUsers.Items.FindByValue(user);
+                        item.Attributes.Add("style", "color:red;");
+                    }
+
+                }
+
             }
         }
 

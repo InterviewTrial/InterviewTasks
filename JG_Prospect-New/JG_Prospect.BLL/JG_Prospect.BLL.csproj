@@ -86,6 +86,7 @@
     <Compile Include="CalendarEvent.cs" />
     <Compile Include="clsProcurementData.cs" />
     <Compile Include="CustomBLL.cs" />
+    <Compile Include="DesignationBLL.cs" />
     <Compile Include="EventDAO.cs" />
     <Compile Include="existing_customerBLL.cs" />
     <Compile Include="GoogleCalendarBLL.cs" />

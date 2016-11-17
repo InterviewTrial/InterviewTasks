@@ -1983,5 +1983,30 @@ namespace JG_Prospect.DAL
             }
             return dsTemp;
         }
+
+        /// <summary>
+        /// Get all Users and their designtions in system 
+        /// <returns></returns>
+        public DataSet GetUsersNDesignationForSalesFilter()
+        {
+            returndata = new DataSet();
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_GetUsersNDesignationForSalesFilter");
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+                    return returndata;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                //LogManager.Instance.WriteToFlatFile(ex);
+            }
+            return returndata;
+        }
     }
 }

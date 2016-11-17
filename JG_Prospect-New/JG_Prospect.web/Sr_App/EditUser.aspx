@@ -571,22 +571,18 @@
                                     </ItemTemplate>
                                     <ItemStyle HorizontalAlign="Center"></ItemStyle>
                                 </asp:TemplateField>
-                                <asp:TemplateField HeaderText="Added By<br/>Added On" SortExpression="AddedBy" ControlStyle-Width="135px" ItemStyle-HorizontalAlign="Center">
+                                <asp:TemplateField HeaderText="Added By<br/>Added On" SortExpression="Source" ControlStyle-Width="135px" ItemStyle-HorizontalAlign="Center">
                                     <ItemTemplate>
+                                        <asp:Label ID="lblSource" runat="server" Text='<%#Eval("Source")%>'></asp:Label>
+                                        <br />
                                         <asp:Label ID="lblAddedBy" runat="server" Text='<%#Eval("AddedBy")%>'></asp:Label>
                                         <br />
-                                        <asp:Label ID="lblHireDate" runat="server" Text='<%#Eval("CreatedDateTime")%>'></asp:Label>
+                                        <span><%#String.Format("{0:d/M/yyyy}", Eval("CreatedDateTime"))%></span>&nbsp<span style="color:red"><%#String.Format("{0:hh:mm:ss tt}", Eval("CreatedDateTime"))%></span>&nbsp<span>EST</span>
                                     </ItemTemplate>
-                                    <ItemStyle HorizontalAlign="Center"></ItemStyle>
+                                    <ItemStyle HorizontalAlign="Center" Width="200px"></ItemStyle>
                                 </asp:TemplateField>
                                 <asp:TemplateField HeaderText="Added On" Visible="false" SortExpression="CreatedDateTime" ItemStyle-HorizontalAlign="Center">
                                     <ItemTemplate>
-                                    </ItemTemplate>
-                                    <ItemStyle HorizontalAlign="Center"></ItemStyle>
-                                </asp:TemplateField>
-                                <asp:TemplateField HeaderText="Source" SortExpression="Source" ItemStyle-HorizontalAlign="Center" ControlStyle-Width="80px" ControlStyle-CssClass="wordBreak">
-                                    <ItemTemplate>
-                                        <asp:Label ID="lblSource" runat="server" Text='<%#Eval("Source")%>'></asp:Label>
                                     </ItemTemplate>
                                     <ItemStyle HorizontalAlign="Center"></ItemStyle>
                                 </asp:TemplateField>
