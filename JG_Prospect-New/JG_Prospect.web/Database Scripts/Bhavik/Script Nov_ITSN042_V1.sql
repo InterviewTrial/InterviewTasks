@@ -389,3 +389,63 @@ BEGIN
  
 END
 
+
+
+
+GO
+
+/****** Object:  StoredProcedure [dbo].[USP_CheckDuplicateSalesUser]    Script Date: 11/17/2016 12:18:35 AM ******/
+SET ANSI_NULLS ON
+GO
+
+SET QUOTED_IDENTIFIER ON
+GO
+
+-- =============================================
+-- Author:		Bhavik
+-- Create date: 12-11-2016
+-- Description:	Return ID if respective duplicate value is found
+-- =============================================
+CREATE PROCEDURE [dbo].[USP_CheckDuplicateSalesUser] 
+	-- Add the parameters for the stored procedure here
+    @CurrentID INT,
+	@DataForValidation NVARCHAR(100),
+	@DataType INT
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+	SET NOCOUNT ON;
+
+	DECLARE @Message NVARCHAR(1000)='';
+	DECLARE @USERID INT;
+
+	IF(@DataType = 1 ) --#Check Phone Number
+	BEGIN 
+		IF EXISTS (SELECT Id FROM tblInstallUsers WHERE Phone = @DataForValidation AND ID <> @CurrentID) --#This will work for Edit page also
+		BEGIN
+		 
+		 SELECT @USERID = Id FROM tblInstallUsers WHERE Phone = @DataForValidation AND ID <> @CurrentID
+			SET @Message = CONVERT(VARCHAR(20), @USERID)+'# Contact number already exists'
+		END
+		
+	END
+	ELSE IF(@DataType = 2) --#Check Email ID
+	BEGIN 
+		IF EXISTS (SELECT Id FROM tblInstallUsers WHERE Email = @DataForValidation AND ID <> @CurrentID) --#This will work for Edit page also
+		BEGIN
+			SELECT @USERID = Id FROM tblInstallUsers WHERE Email = @DataForValidation AND ID <> @CurrentID
+			   SET @Message = CONVERT(VARCHAR(20), @USERID) +  '#Email ID already exists'
+		END
+		--ELSE IF EXISTS(SELECT 1 FROM tblCustomersPrimaryContact WHERE strEMail = @DataForValidation AND intCustomerId <> @CurrentID)
+		--BEGIN
+		--	SET @Message = '990#Email ID already exists'
+		--END
+	END
+		
+	SELECT @Message
+END
+
+GO
+
+
