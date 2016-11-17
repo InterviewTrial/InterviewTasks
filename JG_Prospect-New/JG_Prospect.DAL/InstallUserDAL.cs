@@ -513,6 +513,36 @@ namespace JG_Prospect.DAL
             }
         }
 
+        public string GetCustomerPassword(string UserName)
+        {
+            string password = "";
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("USP_GetCustomerPassword");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@Login_Id", DbType.String, UserName);
+                    returndata = database.ExecuteDataSet(command);
+                    if (returndata.Tables[0].Rows.Count > 0)
+                    {
+                        password = Convert.ToString(returndata.Tables[0].Rows[0][0]);
+                    }
+                    else
+                    {
+                        password = "";
+                    }
+                    return password;
+                }
+            }
+            catch (Exception ex)
+            {
+                return password;
+            }
+        }
+
         public string GetUserName(string PhoneNumber)
         {
             string LoginName = "";
@@ -523,6 +553,36 @@ namespace JG_Prospect.DAL
 
                     returndata = new DataSet();
                     DbCommand command = database.GetStoredProcCommand("USP_GetUserNameByPhoneNumber");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@Phone", DbType.String, PhoneNumber);
+                    returndata = database.ExecuteDataSet(command);
+                    if (returndata.Tables[0].Rows.Count > 0)
+                    {
+                        LoginName = Convert.ToString(returndata.Tables[0].Rows[0][0]);
+                    }
+                    else
+                    {
+                        LoginName = "";
+                    }
+                    return LoginName;
+                }
+            }
+            catch (Exception ex)
+            {
+                return LoginName;
+            }
+        }
+
+        public string GetCustomerName(string PhoneNumber)
+        {
+            string LoginName = "";
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("USP_GetCustomerNameByPhoneNumber");
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@Phone", DbType.String, PhoneNumber);
                     returndata = database.ExecuteDataSet(command);

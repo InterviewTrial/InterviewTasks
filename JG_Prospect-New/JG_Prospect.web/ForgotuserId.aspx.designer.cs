@@ -40,6 +40,24 @@ namespace JG_Prospect {
         protected global::System.Web.UI.ScriptManager scriptmanager1;
         
         /// <summary>
+        /// rdCustomer control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButton rdCustomer;
+        
+        /// <summary>
+        /// rdSalesIns control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButton rdSalesIns;
+        
+        /// <summary>
         /// txtPhoneNumber control.
         /// </summary>
         /// <remarks>

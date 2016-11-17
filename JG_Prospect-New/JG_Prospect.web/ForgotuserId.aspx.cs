@@ -15,6 +15,7 @@ namespace JG_Prospect
             if (!IsPostBack)
             {
                 txtPhoneNumber.Text = "";
+                rdCustomer.Checked = true;
             }
         }
 
@@ -26,9 +27,16 @@ namespace JG_Prospect
             SMS.MashapeKey = "<ROidyx1DfKmshTYCQxYLMVQHRpE7p1Dnjv0jsnQFzX3jMaj4X1>";
             SMS.Username = "7040519640";
             SMS.Password = "1688439";
-           // SMS.Username = "qat2015team@gmail.com";
-          //  SMS.Password = "q$7@wt%j*65ba#3M@9P6";
-            Name = InstallUserBLL.Instance.GetUserName(txtPhoneNumber.Text);
+            // SMS.Username = "qat2015team@gmail.com";
+            //  SMS.Password = "q$7@wt%j*65ba#3M@9P6";
+            if (rdSalesIns.Checked)
+            {
+                Name = InstallUserBLL.Instance.GetUserName(txtPhoneNumber.Text);
+            }else
+            {
+                Name = InstallUserBLL.Instance.GetCustomerName(txtPhoneNumber.Text);
+            }
+
             string message = "Your username is " + Name;
             if (Name != "")
             {
@@ -43,9 +51,6 @@ namespace JG_Prospect
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Phone number does not exists.')", true);
                 return;
             }
-
-
-
 
             //string Name = "";
             //SMS.APIType = SMSGateway.Site2SMS;

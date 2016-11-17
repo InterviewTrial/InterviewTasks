@@ -53,8 +53,15 @@
                             <ul>
                                 <li class="last">
                                     <table border="0" cellspacing="0" cellpadding="0">
+                                         <tr>
+                                            <td></td>
+                                        </tr>
                                         <tr>
-                                            <td>&nbsp;</td>
+                                            <td>
+                                                <label>User Type.<span>*</span></label>
+                                                <asp:RadioButton ID="rdCustomer" runat="server" Style="width: 10% !important;" Text="Customer" GroupName="Login" />
+                                                <asp:RadioButton ID="rdSalesIns" runat="server" Style="width: 10% !important;" Text="Staff" GroupName="Login"  />
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td>

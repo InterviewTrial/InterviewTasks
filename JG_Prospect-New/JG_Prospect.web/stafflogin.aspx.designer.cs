@@ -103,6 +103,15 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.CheckBox chkRememberMe;
         
         /// <summary>
+        /// btnsubmit control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnsubmit;
+        
+        /// <summary>
         /// lnkForgotUsername control.
         /// </summary>
         /// <remarks>
@@ -119,15 +128,6 @@ namespace JG_Prospect {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.LinkButton lnkForgotPassword;
-        
-        /// <summary>
-        /// btnsubmit control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnsubmit;
         
         /// <summary>
         /// ImageButton1 control.
