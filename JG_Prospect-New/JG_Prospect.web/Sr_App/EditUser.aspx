@@ -478,7 +478,6 @@
                                         <asp:Label ID="lblid" Visible="false" runat="server" Text='<%#Eval("Id")%>'></asp:Label>                                        
                                         <asp:LinkButton ID="lnkID" Text='<%#Eval("UserInstallId")%>' CommandName="Edit" runat="server"
                                             CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
-
                                         <br />
                                         <asp:Label ID="lblDesignation" runat="server" Text='<%#Eval("Designation")%>'></asp:Label>
                                     </ItemTemplate>
@@ -567,17 +566,19 @@
                                             <asp:ListItem Text="Install Prospect" Value="Install Prospect"></asp:ListItem>
                                         </asp:DropDownList><br />
                                         <asp:Label ID="lblRejectDetail" runat="server" Text='<%#Eval("RejectDetail") %>'></asp:Label>
-                                        <asp:Label ID="lblInterviewDetail" runat="server" Text='<%#Eval("InterviewDetail") %>'></asp:Label>
+                                        <br />   
+                                        <span><%#string.IsNullOrEmpty(Eval("InterviewDetail").ToString())?"":Eval("InterviewDetail").ToString().Split(' ')[0]%></span>&nbsp<span style="color:red"><%#string.IsNullOrEmpty(Eval("InterviewDetail").ToString())?"":Eval("InterviewDetail").ToString().Remove(0, Eval("InterviewDetail").ToString().IndexOf(' ') + 1)%></span>&nbsp<span><%#string.IsNullOrEmpty(Eval("InterviewDetail").ToString())?"":"(EST)"%></span>
+                                        <asp:Label ID="lblInterviewDetail" runat="server" Visible="false" Text='<%#Eval("InterviewDetail") %>'></asp:Label>
                                     </ItemTemplate>
                                     <ItemStyle HorizontalAlign="Center"></ItemStyle>
                                 </asp:TemplateField>
-                                <asp:TemplateField HeaderText="Added By<br/>Added On" SortExpression="Source" ControlStyle-Width="135px" ItemStyle-HorizontalAlign="Center">
+                                <asp:TemplateField HeaderText="Source<br/>Added By<br/>Added On" SortExpression="Source" ControlStyle-Width="135px" ItemStyle-HorizontalAlign="Center">
                                     <ItemTemplate>
                                         <asp:Label ID="lblSource" runat="server" Text='<%#Eval("Source")%>'></asp:Label>
                                         <br />
                                         <asp:Label ID="lblAddedBy" runat="server" Text='<%#Eval("AddedBy")%>'></asp:Label>
                                         <br />
-                                        <span><%#String.Format("{0:d/M/yyyy}", Eval("CreatedDateTime"))%></span>&nbsp<span style="color:red"><%#String.Format("{0:hh:mm:ss tt}", Eval("CreatedDateTime"))%></span>&nbsp<span>EST</span>
+                                        <span><%#String.Format("{0:d/M/yyyy}", Eval("CreatedDateTime"))%></span>&nbsp<span style="color:red"><%#String.Format("{0:hh:mm:ss tt}", Eval("CreatedDateTime"))%></span>&nbsp<span>(EST)</span>
                                     </ItemTemplate>
                                     <ItemStyle HorizontalAlign="Center" Width="200px"></ItemStyle>
                                 </asp:TemplateField>
