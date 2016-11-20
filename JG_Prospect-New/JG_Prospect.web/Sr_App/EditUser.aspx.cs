@@ -308,40 +308,6 @@ namespace JG_Prospect
                 string Status = ddlStatus.SelectedValue;
                 bool result = InstallUserBLL.Instance.UpdateInstallUserStatus(Status, StatusId);
             }
-            else if (e.CommandName == "EditAddedByUserInstall")
-            {
-                GridViewRow row = (GridViewRow)((Control)e.CommandSource).NamingContainer;
-                int index = row.RowIndex;
-                //Label desig = (Label)(grdUsers.Rows[index].Cells[4].FindControl("lblDesignation"));
-                //string designation = desig.Text;
-                string ID1 = e.CommandArgument.ToString();
-                con.Open();
-                SqlCommand cmd = new SqlCommand("select Usertype from tblInstallUsers where Id='" + ID1 + "' ", con);
-                SqlDataReader rdr = cmd.ExecuteReader();
-                string type = "";
-                while (rdr.Read())
-                {
-                    type = rdr[0].ToString();
-
-                }
-                con.Close();
-                //if (designation != "SubContractor" && type != "Sales")
-                //{
-                //    string ID = e.CommandArgument.ToString();
-                //    Response.Redirect("InstallCreateUser.aspx?id=" + ID);
-                //}
-                //else if (designation == "SubContractor" && type != "Sales")
-                //{
-                //    string ID = e.CommandArgument.ToString();
-                //    Response.Redirect("InstallCreateUser2.aspx?id=" + ID);
-                //}
-                //else if (type == "Sales")
-                //{
-                string ID = e.CommandArgument.ToString();
-                Response.Redirect("CreateSalesUser.aspx?id=" + ID);
-                //}
-
-            }
 
         }
 

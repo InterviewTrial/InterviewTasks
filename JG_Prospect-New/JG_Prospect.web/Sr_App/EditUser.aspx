@@ -576,8 +576,7 @@
                                     <ItemTemplate>
                                         <asp:Label ID="lblSource" runat="server" Text='<%#Eval("Source")%>'></asp:Label>
                                         <br />
-                                        <asp:Label ID="lblAddedBy" runat="server" Text='<%#Eval("AddedBy")%>'></asp:Label>-<asp:LinkButton ID="lnkAddedByUserInstallId" Text='<%#(string.IsNullOrEmpty(Eval("AddedByUserInstallId").ToString()))?"Not Available":Eval("AddedByUserInstallId")%>' CommandName="EditAddedByUserInstall" runat="server"
-                                            CommandArgument='<%#(string.IsNullOrEmpty(Eval("AddedByUserInstallId").ToString()))?"Not Available":Eval("AddedByUserInstallId")%>' Enabled='<%#(string.IsNullOrEmpty(Eval("AddedByUserInstallId").ToString()))?false:true%>'></asp:LinkButton>
+                                        <asp:Label ID="lblAddedBy" runat="server" Text='<%#Eval("AddedBy")%>'></asp:Label>
                                         <br />
                                         <span><%#String.Format("{0:d/M/yyyy}", Eval("CreatedDateTime"))%></span>&nbsp<span style="color:red"><%#String.Format("{0:hh:mm:ss tt}", Eval("CreatedDateTime"))%></span>&nbsp<span>(EST)</span>
                                     </ItemTemplate>

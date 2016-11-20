@@ -287,8 +287,6 @@
     <Content Include="css\jquery.multiselect.css" />
     <Content Include="css\pgwslideshow.min.css" />
     <Content Include="Database Scripts\ShekharP\DB_Table_SP_Creation_With_Data_Nov_2016_ITSN0145_v1.0.sql" />
-    <Content Include="Database Scripts\ShekharP\StoredProc_GetAllEditSalesUser_Nov_2016_ITSN0145_v1.0.sql" />
-    <Content Include="Database Scripts\ShekharP\StoredProc_sp_GetHrData_Nov_2016_ITSN0145_v1.0.sql" />
     <Content Include="datetime\css\jquery-ui-timepicker-addon.css" />
     <Content Include="datetime\css\jquery.timepicker.css" />
     <Content Include="datetime\css\timeStyle.css" />
