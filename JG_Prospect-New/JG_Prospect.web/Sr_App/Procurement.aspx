@@ -1432,7 +1432,7 @@
                                                                 <span>* </span>Vendor Name:
                                                             </label>
                                                             <br />
-                                                            <asp:TextBox ID="txtVendorNm" runat="server" MaxLength="30" TabIndex="1" AutoComplete="off" onkeypress="return isAlphaKey(event);"></asp:TextBox>
+                                                            <asp:TextBox ID="txtVendorNm" runat="server" MaxLength="30" TabIndex="1" AutoComplete="off" ></asp:TextBox>
 
                                                             <asp:RequiredFieldValidator ID="Requiredvendorname" runat="server" ControlToValidate="txtVendorNm" Display="Dynamic"
                                                                 ValidationGroup="addvendor" ErrorMessage="Please Enter Vendor Name." ForeColor="Red"></asp:RequiredFieldValidator>

@@ -115,7 +115,7 @@
                                 <label>
                                    <span>*</span> Vendor Name:
                                 </label>
-                                <asp:TextBox ID="txtVendorNm" runat="server" MaxLength="30" AutoComplete="off" onkeypress="return isAlphaKey(event);" TabIndex="1"></asp:TextBox>
+                                <asp:TextBox ID="txtVendorNm" runat="server" MaxLength="30" AutoComplete="off" TabIndex="1"></asp:TextBox>
                                 <label>
                                 </label>
                                 <asp:RequiredFieldValidator ID="Requiredvendorname" runat="server" ControlToValidate="txtVendorNm"
