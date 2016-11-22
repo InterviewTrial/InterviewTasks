@@ -519,7 +519,7 @@ form.inline {
         }
 
 .right_panel {
-    overflow: scroll;
+   /* overflow: scroll;*/
     margin: 0 0 0 220px;
     min-height: 200px;
     padding: 0 0 26px 0;

@@ -116,7 +116,7 @@
         </div>
         <!--changing the positions and formatting google maps and datepicker-->
         <div class="col-sm-12">
-            <div class="divmap" id="dvMap" style="width: 50%; height: 300px; margin-top: 20px; margin-left: 20px; margin-bottom: 20px; float: left">
+            <div class="divmap" id="dvMap" style="width: 50%; height: 300px; margin-top: 20px; margin-bottom: 20px; float: left">
             </div>
             <div style="float: right; height: 300px; margin-top: 20px;">
                 <div class="date dateCalender" id="datepicker"></div>
