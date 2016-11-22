@@ -188,12 +188,12 @@ namespace JG_Prospect.Sr_App
                     //7-april-2016
                     UserType = Session[JG_Prospect.Common.SessionKey.Key.usertype.ToString()].ToString();
                     DataSet dsCurrentPeriod = UserBLL.Instance.Getcurrentperioddates();
-                    DateTime fromDate = Convert.ToDateTime(dsCurrentPeriod.Tables[0].Rows[0]["FromDate"].ToString());
-                    DateTime toDate = Convert.ToDateTime(dsCurrentPeriod.Tables[0].Rows[0]["ToDate"].ToString());
-
+                    if(dsCurrentPeriod.Tables.Count>0 && dsCurrentPeriod.Tables[0].Rows.Count > 0)
+                    { 
+                        DateTime fromDate = Convert.ToDateTime(dsCurrentPeriod.Tables[0].Rows[0]["FromDate"].ToString());
+                        DateTime toDate = Convert.ToDateTime(dsCurrentPeriod.Tables[0].Rows[0]["ToDate"].ToString());
+                    }
                     bindPayPeriod(dsCurrentPeriod);
-
-
                     grdprimaryvendor.DataSource = new List<JG_Prospect.BLL.clsProcurementDataAll>();
                     grdprimaryvendor.DataBind();
                 }
@@ -399,9 +399,12 @@ namespace JG_Prospect.Sr_App
                     DataRow dr = ds.Tables[0].Rows[i];
                     drpPayPeriod.Items.Add(new System.Web.UI.WebControls.ListItem(dr["Periodname"].ToString(), dr["Id"].ToString()));
                 }
-                drpPayPeriod.SelectedValue = dsCurrentPeriod.Tables[0].Rows[0]["Id"].ToString();
-                txtfrmdate.Text = Convert.ToDateTime(dsCurrentPeriod.Tables[0].Rows[0]["FromDate"].ToString()).ToString("MM/dd/yyyy");
-                txtTodate.Text = Convert.ToDateTime(dsCurrentPeriod.Tables[0].Rows[0]["ToDate"].ToString()).ToString("MM/dd/yyyy");
+                if(dsCurrentPeriod.Tables.Count>0 && dsCurrentPeriod.Tables[0].Rows.Count > 0)
+                { 
+                    drpPayPeriod.SelectedValue = dsCurrentPeriod.Tables[0].Rows[0]["Id"].ToString();
+                    txtfrmdate.Text = Convert.ToDateTime(dsCurrentPeriod.Tables[0].Rows[0]["FromDate"].ToString()).ToString("MM/dd/yyyy");
+                    txtTodate.Text = Convert.ToDateTime(dsCurrentPeriod.Tables[0].Rows[0]["ToDate"].ToString()).ToString("MM/dd/yyyy");
+                }
             }
             else
             {

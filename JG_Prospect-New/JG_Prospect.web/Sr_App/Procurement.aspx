@@ -1432,7 +1432,7 @@
                                                                 <span>* </span>Vendor Name:
                                                             </label>
                                                             <br />
-                                                            <asp:TextBox ID="txtVendorNm" runat="server" MaxLength="30" TabIndex="1" AutoComplete="off" onkeypress="return isAlphaKey(event);"></asp:TextBox>
+                                                            <asp:TextBox ID="txtVendorNm" runat="server" MaxLength="30" TabIndex="1" AutoComplete="off" ></asp:TextBox>
 
                                                             <asp:RequiredFieldValidator ID="Requiredvendorname" runat="server" ControlToValidate="txtVendorNm" Display="Dynamic"
                                                                 ValidationGroup="addvendor" ErrorMessage="Please Enter Vendor Name." ForeColor="Red"></asp:RequiredFieldValidator>
@@ -1897,10 +1897,16 @@
                                                                         <label>Title</label><br />
                                                                         <select id="ddlPrimaryTitle0" name="nameddlPrimaryTitle0" cliendidmode="static" tabindex="1">
                                                                             <option value="">Select</option>
-                                                                            <option value="DM">DM</option>
+                                                                            <option value="Secretary">Secretary</option>
+                                                                            <option value="FloorSalesman">Floor salesman</option>
+                                                                            <option value="SalesAcctExecutive">Sales/acct. executive</option>
+                                                                            <option value="Manager">Manager</option>
+                                                                            <option value="Owner">Owner</option>
+                                                                            <option value="Others">Others</option>
+                                                                            <%--<option value="DM">DM</option>
                                                                             <option value="Spouse">Spouse</option>
                                                                             <option value="Partner">Partner</option>
-                                                                            <option value="Others">Others</option>
+                                                                            <option value="Others">Others</option>--%>
                                                                         </select>
                                                                     </td>
                                                                     <td>
@@ -1968,10 +1974,16 @@
                                                                         <label>Title</label><br />
                                                                         <select id="ddlSecTitle0" name="nameddlSecTitle0" cliendidmode="static" tabindex="1">
                                                                             <option value="">Select</option>
-                                                                            <option value="DM">DM</option>
+                                                                            <option value="Secretary">Secretary</option>
+                                                                            <option value="FloorSalesman">Floor salesman</option>
+                                                                            <option value="SalesAcctExecutive">Sales/acct. executive</option>
+                                                                            <option value="Manager">Manager</option>
+                                                                            <option value="Owner">Owner</option>
+                                                                            <option value="Others">Others</option>
+                                                                            <%--<option value="DM">DM</option>
                                                                             <option value="Spouse">Spouse</option>
                                                                             <option value="Partner">Partner</option>
-                                                                            <option value="Others">Others</option>
+                                                                            <option value="Others">Others</option>--%>
                                                                         </select>
                                                                     </td>
                                                                     <td>
@@ -2041,10 +2053,16 @@
                                                                         <label>Title</label><br />
                                                                         <select id="ddlAltTitle0" name="nameddlAltTitle0" cliendidmode="static" tabindex="1">
                                                                             <option value="">Select</option>
-                                                                            <option value="DM">DM</option>
+                                                                            <option value="Secretary">Secretary</option>
+                                                                            <option value="FloorSalesman">Floor salesman</option>
+                                                                            <option value="SalesAcctExecutive">Sales/acct. executive</option>
+                                                                            <option value="Manager">Manager</option>
+                                                                            <option value="Owner">Owner</option>
+                                                                            <option value="Others">Others</option>
+                                                                            <%--<option value="DM">DM</option>
                                                                             <option value="Spouse">Spouse</option>
                                                                             <option value="Partner">Partner</option>
-                                                                            <option value="Others">Others</option>
+                                                                            <option value="Others">Others</option>--%>
                                                                         </select>
                                                                     </td>
                                                                     <td>
