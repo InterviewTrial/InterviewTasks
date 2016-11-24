@@ -38,7 +38,7 @@
             <li id="li_AnnualCalender" visible="false" runat="server"><a href="#" runat="server">Annual Event Calendar</a> </li>
         </ul>
         <!-- appointment tabs section end -->
-<<<<<<< HEAD
+
         <h1><b>Dashboard</b></h1>
          <%--Removed Test Email-->
         <%--<asp:Panel ID="pnlTestEmail" Visible="false" GroupingText="Test E-Mail" runat="server" CssClass="clsTestMail">
