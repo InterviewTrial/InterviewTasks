@@ -568,6 +568,98 @@ namespace JG_Prospect.DAL
             }
         }
 
+        public DataSet GetVendorList(string strVendorStatus, bool IsRetailWholesale, string iProductCategoryID, string iVendorCategoryID, string iVendorSubCategoryID)
+        {
+            try
+            {
+                {
+                    SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                    DS = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("UDP_GetVendors");
+                    command.CommandType = CommandType.StoredProcedure;
+                    
+                    if (!string.IsNullOrEmpty(strVendorStatus))
+                    {
+                        database.AddInParameter(command, "@VendorStatus", DbType.String, strVendorStatus);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@VendorStatus", DbType.String, DBNull.Value);
+                    }
+                    database.AddInParameter(command, "@IsRetailWholesale", DbType.Boolean, IsRetailWholesale);
+                    
+                    if (!string.IsNullOrEmpty(iProductCategoryID))
+                    { 
+                        database.AddInParameter(command, "@ProductCategoryID", DbType.String, iProductCategoryID);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@ProductCategoryID", DbType.String, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(iVendorCategoryID))
+                    {
+                        database.AddInParameter(command, "@VendorCategoryID", DbType.String, iVendorCategoryID);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@VendorCategoryID", DbType.String, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(iVendorSubCategoryID))
+                    {
+                        database.AddInParameter(command, "@VendorSubCategoryID", DbType.String, iVendorSubCategoryID);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@VendorSubCategoryID", DbType.String, DBNull.Value);
+                    }
+                    DS = database.ExecuteDataSet(command);
+                    return DS;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public DataSet GetSearchedVendorByAutoSuggestion(string strCategorySelected, string strCategorySearchValue)
+        {
+            try
+            {
+                {
+                    SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                    DS = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("USP_SelectSearchedVendorByAutoSuggestion");
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    if (!string.IsNullOrEmpty(strCategorySelected))
+                    {
+                        database.AddInParameter(command, "@SearchCategory", DbType.String, strCategorySelected);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@SearchCategory", DbType.String, DBNull.Value);
+                    }
+
+                    if (!string.IsNullOrEmpty(strCategorySearchValue))
+                    {
+                        database.AddInParameter(command, "@SearchValue", DbType.String, strCategorySearchValue);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@SearchValue", DbType.String, DBNull.Value);
+                    }
+                    
+                    DS = database.ExecuteDataSet(command);
+                    return DS;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public string SaveNewVendorCategory(NewVendorCategory objNewVendorCat)
         {
             try
@@ -933,31 +1025,58 @@ namespace JG_Prospect.DAL
         }
 
 
-        public DataTable SearchVendor(string searchString, string tableName)
+        //public DataTable SearchVendor(string searchString, string tableName)
+        //{
+        //    //List<string> searchResult = new List<string>();
+        //    DataTable dt = new DataTable();
+        //    try
+        //    {
+        //        string consString = ConfigurationManager.ConnectionStrings[DBConstants.CONFIG_CONNECTION_STRING_KEY].ConnectionString;
+        //        using (SqlConnection con = new SqlConnection(consString))
+        //        {
+        //            using (SqlCommand cmd = new SqlCommand("sp_FindStringInTable"))
+        //            {
+        //                cmd.CommandType = CommandType.StoredProcedure;
+        //                cmd.Connection = con;
+        //                cmd.Parameters.AddWithValue("@stringToFind", "%" + searchString + "%");
+        //                cmd.Parameters.AddWithValue("@table", "tblVendors");
+        //                cmd.Parameters.AddWithValue("@stringToFind", searchString);
+        //                SqlDataAdapter da = new SqlDataAdapter(cmd);
+        //                da.Fill(dt);
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+
+        //    }
+        //    return dt;
+        //}
+
+
+        /// <summary>
+        /// Load auto search suggestion as user types in search box for vendor
+        /// </summary>
+        /// <param name="strSearchString">string to search</param>
+        /// <returns> Categorized search into fields like VendorId, VendorName, VendorCategoryId, ContactPerson, ContactNumber, Fax, Email, Address and BillingAddress </returns>
+        public DataSet GetVendorSearchAutoSuggestion(string strSearchString)
         {
-            //List<string> searchResult = new List<string>();
-            DataTable dt = new DataTable();
+            DataSet result = new DataSet();
             try
             {
-                string consString = ConfigurationManager.ConnectionStrings[DBConstants.CONFIG_CONNECTION_STRING_KEY].ConnectionString;
-                using (SqlConnection con = new SqlConnection(consString))
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
-                    using (SqlCommand cmd = new SqlCommand("sp_FindStringInTable"))
-                    {
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        cmd.Connection = con;
-                        cmd.Parameters.AddWithValue("@stringToFind", "%" + searchString + "%");
-                        cmd.Parameters.AddWithValue("@table", "tblVendors");
-                        SqlDataAdapter da = new SqlDataAdapter(cmd);
-                        da.Fill(dt);
-                    }
+                    DbCommand command = database.GetStoredProcCommand("USP_LoadSearchVendorAutoSuggestion");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@stringToFind", DbType.String, strSearchString);
+                    result = database.ExecuteDataSet(command);
                 }
+                return result;
             }
             catch (Exception ex)
             {
-
+                return null;
             }
-            return dt;
         }
 
 
