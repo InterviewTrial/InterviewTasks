@@ -59,10 +59,12 @@ namespace JG_Prospect.Sr_App
                     DataRow dr = ds.Tables[0].Rows[i];
                     drpPayPeriod.Items.Add(new ListItem(dr["Periodname"].ToString(), dr["Id"].ToString()));
                 }
-                drpPayPeriod.SelectedValue = dsCurrentPeriod.Tables[0].Rows[0]["Id"].ToString();
-                txtDtFrom.Text = Convert.ToDateTime(dsCurrentPeriod.Tables[0].Rows[0]["FromDate"].ToString()).ToString("MM/dd/yyyy");
-                txtDtTo.Text = Convert.ToDateTime(dsCurrentPeriod.Tables[0].Rows[0]["ToDate"].ToString()).ToString("MM/dd/yyyy");
-
+                if (dsCurrentPeriod.Tables[0].Rows.Count > 0)
+                { 
+                    drpPayPeriod.SelectedValue = dsCurrentPeriod.Tables[0].Rows[0]["Id"].ToString();
+                    txtDtFrom.Text = Convert.ToDateTime(dsCurrentPeriod.Tables[0].Rows[0]["FromDate"].ToString()).ToString("MM/dd/yyyy");
+                    txtDtTo.Text = Convert.ToDateTime(dsCurrentPeriod.Tables[0].Rows[0]["ToDate"].ToString()).ToString("MM/dd/yyyy");
+                }
                 // Filter Drop down for Pay Period
 
                 ddlPayPeriodFilter.Items.Insert(0, new ListItem("Select", "0"));
@@ -71,9 +73,12 @@ namespace JG_Prospect.Sr_App
                     DataRow dr = ds.Tables[0].Rows[i];
                     ddlPayPeriodFilter.Items.Add(new ListItem(dr["Periodname"].ToString(), dr["Id"].ToString()));
                 }
-                ddlPayPeriodFilter.SelectedValue = dsCurrentPeriod.Tables[0].Rows[0]["Id"].ToString();
-                txtDtFromfilter.Text = Convert.ToDateTime(dsCurrentPeriod.Tables[0].Rows[0]["FromDate"].ToString()).ToString("MM/dd/yyyy");
-                txtDtToFilter.Text = Convert.ToDateTime(dsCurrentPeriod.Tables[0].Rows[0]["ToDate"].ToString()).ToString("MM/dd/yyyy");
+                if (dsCurrentPeriod.Tables[0].Rows.Count > 0)
+                {
+                    ddlPayPeriodFilter.SelectedValue = dsCurrentPeriod.Tables[0].Rows[0]["Id"].ToString();
+                    txtDtFromfilter.Text = Convert.ToDateTime(dsCurrentPeriod.Tables[0].Rows[0]["FromDate"].ToString()).ToString("MM/dd/yyyy");
+                    txtDtToFilter.Text = Convert.ToDateTime(dsCurrentPeriod.Tables[0].Rows[0]["ToDate"].ToString()).ToString("MM/dd/yyyy");
+                }
             }
             else
             {
@@ -307,29 +312,32 @@ namespace JG_Prospect.Sr_App
 
         public void filterHrData()
         {
-            DateTime fromDate = Convert.ToDateTime(txtDtFromfilter.Text, JG_Prospect.Common.JGConstant.CULTURE);
-            DateTime toDate = Convert.ToDateTime(txtDtToFilter.Text, JG_Prospect.Common.JGConstant.CULTURE);
-            if (fromDate < toDate)
+            if(!string.IsNullOrEmpty(txtDtFromfilter.Text) && !string.IsNullOrEmpty(txtDtToFilter.Text))
             {
-                DataSet ds = InstallUserBLL.Instance.FilteHrData(fromDate, toDate, ddldesignation.SelectedValue, ddlStatus.SelectedValue);
-                if (ds.Tables.Count > 0)
+                DateTime fromDate = Convert.ToDateTime(txtDtFromfilter.Text, JG_Prospect.Common.JGConstant.CULTURE);
+                DateTime toDate = Convert.ToDateTime(txtDtToFilter.Text, JG_Prospect.Common.JGConstant.CULTURE);
+                if (fromDate < toDate)
                 {
-                    DataTable dtHrFilterData = ds.Tables[0];
-                    if (dtHrFilterData.Rows.Count > 0)
+                    DataSet ds = InstallUserBLL.Instance.FilteHrData(fromDate, toDate, ddldesignation.SelectedValue, ddlStatus.SelectedValue);
+                    if (ds.Tables.Count > 0)
                     {
-                        grdFilterHrData.DataSource = dtHrFilterData;
-                        grdFilterHrData.DataBind();
-                    }
-                    else
-                    {
-                        grdFilterHrData.DataSource = new List<string>();
-                        grdFilterHrData.DataBind();
+                        DataTable dtHrFilterData = ds.Tables[0];
+                        if (dtHrFilterData.Rows.Count > 0)
+                        {
+                            grdFilterHrData.DataSource = dtHrFilterData;
+                            grdFilterHrData.DataBind();
+                        }
+                        else
+                        {
+                            grdFilterHrData.DataSource = new List<string>();
+                            grdFilterHrData.DataBind();
+                        }
                     }
                 }
-            }
-            else
-            {
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('To date should be Greater than from Date');", true);
+                else
+                {
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('To date should be Greater than from Date');", true);
+                }
             }
         }
 
