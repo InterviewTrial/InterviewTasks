@@ -1,18 +1,19 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="login.aspx.cs" Inherits="JG_Prospect.login" %>
+
 <%@ Register Assembly="Telerik.Web.UI" Namespace="Telerik.Web.UI" TagPrefix="telerik" %>
 <%--<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajaxToolkit" %>--%>
 <%--<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>--%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 <html xmlns="http://www.w3.org/1999/xhtml">
-    
+
 <head id="Head1" runat="server">
-   <%-- <script type="text/javascript" src="../js/jquery-latest.js"></script>--%>
-  <%--  <script type="text/javascript" src="../js/jquery.printElement.min.js"></script>--%>
+    <%-- <script type="text/javascript" src="../js/jquery-latest.js"></script>--%>
+    <%--  <script type="text/javascript" src="../js/jquery.printElement.min.js"></script>--%>
     <link href="../datetime/css/jquery-ui-1.7.1.custom.css" rel="stylesheet" type="text/css" />
     <link href="../datetime/css/stylesheet.css" rel="stylesheet" type="text/css" />
 
-     <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />
     <script src="https://code.jquery.com/jquery-1.9.1.js"></script>
     <script src="https://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
     <link rel="stylesheet" href="/resources/demos/style.css" />
@@ -20,23 +21,23 @@
     <title>JG Prospect</title>
     <link href="css/screen.css" rel="stylesheet" media="screen" type="text/css" />
     <link href="css/jquery.ui.theme.css" rel="stylesheet" media="screen" type="text/css" />
-   
-<%--    <script type="text/javascript"  src="http://code.jquery.com/jquery-latest.js"></script>
+
+    <%--    <script type="text/javascript"  src="http://code.jquery.com/jquery-latest.js"></script>
     <script type="text/javascript" src="/js/jquery-latest.js"></script>--%>
     <!--accordion jquery-->
     <script type="text/javascript" src="/js/ddaccordion.js"></script>
-   
+
     <script type="text/javascript">
-      $(function () {
-          $("#txtDateOfBith").datepicker({
+        $(function () {
+            $("#txtDateOfBith").datepicker({
                 changeMonth: true,
                 changeYear: true,
                 yearRange: '1950:2050',
                 maxDate: 'today'
             });
         });
-          </script>
-   <%-- <script type="text/javascript">
+    </script>
+    <%-- <script type="text/javascript">
         $(function () {
             // Tabs
             $('#tabs').tabs();
@@ -53,38 +54,42 @@
         .auto-style1 {
             width: 100%;
         }
+
         input[type="radio"] {
             line-height: 20px !important;
-            height:20px;
-            float:left;
-            margin:0 5px 0 0 !important;
+            height: 20px;
+            float: left;
+            margin: 0 5px 0 0 !important;
         }
+
         input[type="checkbox"] {
             line-height: 20px !important;
-            height:20px;
-            float:left;
-            margin:0 5px 0 0 !important;
+            height: 20px;
+            float: left;
+            margin: 0 5px 0 0 !important;
         }
+
         label {
             float: left;
         }
-        .fg-urs  {
-    float: left;
-    margin: 0 0 0 11em;
-}
-          .fg-prs  {
-    float: left;
-    margin: 0 0 0 -1.4em;
-}
+
+        .fg-urs {
+            float: left;
+            margin: 0 0 0 11em;
+        }
+
+        .fg-prs {
+            float: left;
+            margin: 0 0 0 -1.4em;
+        }
     </style>
     <script type="text/javascript">
 
-        function SessionExpire()
-        {
+        function SessionExpire() {
             alert('Your session has expired,login to continue');
         }
-        
-        
+
+
     </script>
 
 </head>
@@ -97,13 +102,13 @@
                 <img src="img/logo.png" alt="logo" width="88" height="89" class="logo" />
             </div>
             <div class="content_panel">
-                <table width="100%">
+                <table width="100%" cellpadding="1px" cellspacing="1px">
                     <tr>
                         <td width="50%">
-                            <div class="login_right_panel" style="min-height:440px !important;float:right;margin: 0 0 0 0 !important;">
-                                <h1><b>Login</b></h1>
-                                <div class="login_header" style="margin: 0 0 0 0 !important;">
-                                    <table cellpadding="0" cellspacing="0" style="float:right;">
+                            <div class="login_right_panel" style="min-height: 407px !important; float: right; margin: 0 0 0 0 !important;">
+                                <h1><b>Customer Login</b></h1>
+                                <div class="login_header" style="margin: -20px 0 0 0 !important;">
+                                    <table cellpadding="0" cellspacing="0" style="float: right;">
                                         <tr>
                                             <td style="padding-right: 0px; width: 300px;"></td>
                                             <td style="padding-right: 0px; width: 150px;">
@@ -141,7 +146,7 @@
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td style="padding-bottom:2px !important;background:none !important;">
+                                                        <td style="padding-bottom: 2px !important; background: none !important;">
                                                             <asp:CheckBox ID="chkRememberMe" Style="width: 4% !important; margin-left: -1px !important;" Text="  Remember Me" runat="server" />
                                                             <div class="btn_sec" style="width: 44% !important; float: left !important; margin-top: -2% !important; margin-left: -6% !important; height: 60px !important;">
                                                                 <asp:Button ID="btnsubmit" runat="server" Text="Login" OnClick="btnsubmit_Click" Style="width: 98% !important; height: 67% !important;" ValidationGroup="Login" TabIndex="3" />
@@ -149,10 +154,10 @@
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td style="padding-top:0px !important;">
+                                                        <td style="padding-top: 0px !important;">
                                                             <label></label>
-                                                              <asp:LinkButton ID="lnkForgotUsername"  runat="server" OnClick="lblForgotUserId_Click" >Forgot Username</asp:LinkButton>
-                                                            &nbsp;<asp:LinkButton ID="lnkForgotPassword" runat="server" OnClick="lnkForgotPassword_Click" >Forgot Password</asp:LinkButton>
+                                                            <asp:LinkButton ID="lnkForgotUsername" runat="server" OnClick="lblForgotUserId_Click">Forgot Username</asp:LinkButton>
+                                                            &nbsp;<asp:LinkButton ID="lnkForgotPassword" runat="server" OnClick="lnkForgotPassword_Click">Forgot Password</asp:LinkButton>
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -174,14 +179,14 @@
                                 </div>
                             </div>
                         </td>
-                        <td>
-                            <div class="login_right_panel" style="min-height:440px !important;float:left;margin: 0 0 0 0 !important;">
-                                <h1><b>Sign Up</b></h1>
-                                 <div class="login_header" style="margin: 0 0 0 0 !important;">
+                        <td style="border: 0px solid #808080; background-color: #000000;"></td>
+                        <td width="50%">
+                            <div class="login_right_panel" style="min-height: 407px !important; float: left; margin: 0 0 0 0 !important; background-color: #EFEEEE">
+                                <h1><b>Customer Sign Up</b></h1>
+                                <div class="login_header" style="margin: -20px 0 0 0 !important;">
                                     <table cellpadding="0" cellspacing="0">
                                         <tr>
-                                            <td style="padding-right: 0px; width: 300px;">
-                                            </td>
+                                            <td style="padding-right: 0px; width: 300px;"></td>
                                         </tr>
                                     </table>
                                 </div>
@@ -189,10 +194,9 @@
                                     <div class="login_form_panel" style="margin: 0 0 0 0 !important;">
                                         <ul>
                                             <li>
-                                                <table border="black">
-                                                    <tr>
-                                                        <td style="padding-right: 0px; width: 30px;">
-                                                        </td>
+                                                <table border="0" cellspacing="0" cellpadding="0">
+                                                    <tr style="display: none !important">
+                                                        <td style="padding-right: 0px; width: 30px;"></td>
                                                         <td style="padding-right: 0px;">
                                                             <label style="width: 42% !important;">Customer Sign Up &nbsp;&nbsp;&nbsp;   User Type<span>*</span></label>
                                                             <asp:RadioButton ID="rdoCustomer" GroupName="Signup" runat="server" Style="width: 10% !important;" Checked="true" />
@@ -203,56 +207,38 @@
                                                         </td>
                                                     </tr>
                                                     <tr>
-                                                        <td colspan="2">
-                                                            <asp:Panel ID="pnlSignup" runat="server">
-                                                                <table class="auto-style1">
-                                                                    <tr>
-                                                                        <td>Email<span style="color: red">*</span></td>
-                                                                        <td>
-                                                                            <asp:TextBox ID="txtSignupEmail" MaxLength="100" runat="server" Width="258px" placeholder="Username"></asp:TextBox>
-                                                                            <br />
-                                                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator3" Display="Dynamic" runat="server" ControlToValidate="txtSignupEmail" ValidationGroup="SignUp" ErrorMessage="Enter email id." ForeColor="Red"></asp:RequiredFieldValidator>
-                                                                            <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" ControlToValidate="txtSignupEmail" Display="Dynamic" ErrorMessage="Enter valid email id." ForeColor="Red" ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*" ValidationGroup="SignUp"></asp:RegularExpressionValidator>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td>Phone No.</td>
-                                                                        <td>
-                                                                            <asp:TextBox ID="txtPhoneNumber" runat="server" Width="258px" MaxLength="15" placeholder="Phone number"></asp:TextBox>
-                                                                            <br />
-                                                                            <%--<asp:RequiredFieldValidator ID="RequiredFieldValidator6" Display="Dynamic" runat="server" ControlToValidate="txtPhoneNumber" ValidationGroup="SignUp" ErrorMessage="Enter phone number." ForeColor="Red"></asp:RequiredFieldValidator>--%>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td>Password<span style="color: red">*</span></td>
-                                                                        <td>
-                                                                            <asp:TextBox ID="txtSignupPassword" runat="server" Width="258px" MaxLength="20" TextMode="Password" placeholder="Enter password"></asp:TextBox>
-                                                                            <br />
-                                                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator4" ForeColor="Red" runat="server" ControlToValidate="txtSignupPassword" ErrorMessage="Enter password." ValidationGroup="SignUp" Display="Dynamic"></asp:RequiredFieldValidator>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <tr>
-                                                                        <td>Confirm Password<span style="color: red">*</span></td>
-                                                                        <td>
-                                                                            <asp:TextBox ID="txtSignupCPassword" runat="server" TextMode="Password" Width="258px" placeholder="Confirm password"></asp:TextBox>
-                                                                            <br />
-                                                                            <asp:CompareValidator ID="CompareValidator1" runat="server" ControlToCompare="txtSignupPassword" ControlToValidate="txtSignupCPassword" Display="Dynamic" ErrorMessage="Password &amp; confirm password should be same." ForeColor="Red" ValidationGroup="SignUp"></asp:CompareValidator>
-                                                                            <br />
-                                                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator5" runat="server" ControlToValidate="txtSignupCPassword" Display="Dynamic" ErrorMessage="Enter confirm password" ForeColor="Red" ValidationGroup="SignUp"></asp:RequiredFieldValidator>
-                                                                        </td>
-                                                                    </tr>
-                                                                    <%-- <tr>
-                                                            <td>
-                                                                Date of Birth<span style="color:red">*</span></td>
-                                                            <td>
-                                                                <asp:TextBox ID="txtDateOfBith" runat="server" Width="256px" placeholder="Select date of birth"></asp:TextBox>--%><%--CssClass="date"--%>
-                                                                    <%-- <ajaxToolkit:CalendarExtender ID="CalendarExtender2" TargetControlID="txtDateOfBith" runat="server"></ajaxToolkit:CalendarExtender>--%>
-                                                                    <%--<br />
-                                                                <asp:RequiredFieldValidator ID="RequiredFieldValidator7" runat="server" ControlToValidate="txtDateOfBith" Display="Dynamic" ErrorMessage="Select Date of Birth" ForeColor="Red" ValidationGroup="SignUp"></asp:RequiredFieldValidator>
-                                                            </td>
-                                                        </tr>--%>
-                                                                </table>
-                                                            </asp:Panel>
+                                                        <td>Email<span style="color: red">*</span></td>
+                                                        <td>
+                                                            <asp:TextBox ID="txtSignupEmail" MaxLength="100" runat="server" Width="258px" placeholder="Username"></asp:TextBox>
+                                                            <br />
+                                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator3" Display="Dynamic" runat="server" ControlToValidate="txtSignupEmail" ValidationGroup="SignUp" ErrorMessage="Enter email id." ForeColor="Red"></asp:RequiredFieldValidator>
+                                                            <asp:RegularExpressionValidator ID="RegularExpressionValidator1" runat="server" ControlToValidate="txtSignupEmail" Display="Dynamic" ErrorMessage="Enter valid email id." ForeColor="Red" ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*" ValidationGroup="SignUp"></asp:RegularExpressionValidator>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Phone No.</td>
+                                                        <td>
+                                                            <asp:TextBox ID="txtPhoneNumber" runat="server" Width="258px" MaxLength="15" placeholder="Phone number"></asp:TextBox>
+                                                            <br />
+                                                            <%--<asp:RequiredFieldValidator ID="RequiredFieldValidator6" Display="Dynamic" runat="server" ControlToValidate="txtPhoneNumber" ValidationGroup="SignUp" ErrorMessage="Enter phone number." ForeColor="Red"></asp:RequiredFieldValidator>--%>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Password<span style="color: red">*</span></td>
+                                                        <td>
+                                                            <asp:TextBox ID="txtSignupPassword" runat="server" Width="258px" MaxLength="20" TextMode="Password" placeholder="Enter password"></asp:TextBox>
+                                                            <br />
+                                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator4" ForeColor="Red" runat="server" ControlToValidate="txtSignupPassword" ErrorMessage="Enter password." ValidationGroup="SignUp" Display="Dynamic"></asp:RequiredFieldValidator>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Confirm Password<span style="color: red">*</span></td>
+                                                        <td>
+                                                            <asp:TextBox ID="txtSignupCPassword" runat="server" TextMode="Password" Width="258px" placeholder="Confirm password"></asp:TextBox>
+                                                            <br />
+                                                            <asp:CompareValidator ID="CompareValidator1" runat="server" ControlToCompare="txtSignupPassword" ControlToValidate="txtSignupCPassword" Display="Dynamic" ErrorMessage="Password &amp; confirm password should be same." ForeColor="Red" ValidationGroup="SignUp"></asp:CompareValidator>
+                                                            <br />
+                                                            <asp:RequiredFieldValidator ID="RequiredFieldValidator5" runat="server" ControlToValidate="txtSignupCPassword" Display="Dynamic" ErrorMessage="Enter confirm password" ForeColor="Red" ValidationGroup="SignUp"></asp:RequiredFieldValidator>
                                                         </td>
                                                     </tr>
                                                 </table>
@@ -327,7 +313,6 @@
         </div>
     </form>
 </body>
-    
+
 </html>
 
- 

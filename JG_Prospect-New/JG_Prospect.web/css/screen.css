@@ -894,7 +894,7 @@ form.inline {
 .login_header {
     height: 20px;
     color: #fff;
-    background-color: #AA4143;
+    /*background-color: #AA4143;*/
 }
 
 .login_form_panel {
@@ -905,7 +905,7 @@ form.inline {
 }
 
     .login_form_panel ul {
-        margin: 0 0 10px 0;
+        margin: 0 0 0 0;
         padding: 0;
         list-style-type: none;
         overflow: auto;
@@ -916,7 +916,7 @@ form.inline {
             padding: 0;
             width: 99%;
             float: left;
-            border-right: #fff 1px solid;
+            border-right: #fff 0px solid;
         }
 
             .login_form_panel ul li.last {
