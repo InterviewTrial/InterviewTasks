@@ -5,6 +5,7 @@
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit.HTMLEditor" TagPrefix="cc1" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <link rel="stylesheet" href="../css/jquery-ui.css" />
     <script src="../js/jquery.MultiFile.js" type="text/javascript"></script>
     <style>
         #googleMap > div {
@@ -117,7 +118,100 @@
                 background: #ddd;
                 color: #000;
             }
+
     </style>
+    <style>
+    table tr th {
+        border: 1px solid;
+        padding: 0px;
+    }
+
+    table.table tr.trHeader {
+        background: #000000;
+        color: #ffffff;
+    }
+
+    .FirstRow {
+        background: #f57575;
+        padding: 2px;
+    }
+
+    .AlternateRow {
+        background: #f6f1f3;
+        padding: 2px;
+    }
+
+    .dark-gray-background {
+        background-color: darkgray;
+        background-image: none;
+    }
+
+    .AlternateRow a, .FirstRow a {
+        color: #111;
+    }
+
+    .textbox {
+        padding: 5px;
+        border-radius: 5px;
+        border: #b5b4b4 1px solid;
+        margin-left: 0;
+        margin-right: 0;
+        margin-bottom: 5px;
+    }
+
+    .tablealign {
+        margin-top: 5px;
+    }
+
+    div.dd_chk_select {
+        height: 30px;
+    }
+
+        div.dd_chk_select div#caption {
+            top: 7px;
+            margin-left: 10px;
+        }
+
+    div.dd_chk_drop {
+        top: 30px;
+    }
+
+    .ui-autocomplete {
+        max-height: 250px;
+        overflow-y: auto;
+        /* prevent horizontal scrollbar */
+        overflow-x: hidden;
+    }
+
+    .ui-autocomplete-category {
+        font-weight: bold;
+        padding: .2em .4em;
+        margin: .8em 0 .2em;
+        line-height: 1.5;
+        text-align: center;
+    }
+
+    .ui-autocomplete-loading {
+        background: white url("../img/ui-anim_basic_16x16.png") right center no-repeat;
+    }
+
+    .task-history-tab {
+        min-height: 200px;
+        max-height: 400px;
+        overflow: auto;
+        overflow-x: hidden;
+    }
+
+    /*.dropzone{
+        min-height:120px;
+        min-width:430px;
+    }
+    .dropzone .dz-default.dz-message {
+        height: 120px;
+        width: 430px;
+    }*/
+</style>
+
     <script type="text/javascript">
 
         function ClosePopup() {
@@ -1134,7 +1228,7 @@
                                 </div>
                             </ProgressTemplate>
                         </asp:UpdateProgress>
-                        <asp:UpdatePanel ID="updtpnlfilter" runat="server">
+                        <asp:UpdatePanel ID="updtpnlfilter" runat="server"  UpdateMode="Always">
                             <ContentTemplate>
                                 <table>
                                     <tr>
@@ -1156,10 +1250,11 @@
                                         </td>
 
                                         <td colspan="2">
-                                            <div class="ui-widget">
-                                                <asp:TextBox ID="txtVendorSearchBox" CssClass="VendorSearchBox" runat="server" placeholder="Search" Width="90%"></asp:TextBox>
-                                            </div>
+                                            <%--<div class="ui-widget">--%>
+                                                <asp:TextBox ID="txtVendorSearchBox" runat="server" placeholder="Search" Width="90%"></asp:TextBox>
+                                            <%--</div>--%>
                                         </td>
+                                        <td><asp:ImageButton ID="btnSearchProcVendor" runat="server" ImageUrl="~/img/search_btn.png" CssClass="searchbtn" Style="display: none;" OnClick="btnSearch_Click" /></td>
                                         <input type="hidden" id="hdnvendorId" name="vendorId" />
                                         <input type="hidden" id="hdnVendorAddId" name="hdnVendorAddId" />
                                         <asp:Button ID="btnEditVendor" runat="server" Text="EditVendor" CssClass="clsbtnEditVendor" OnClick="btneditVendor_Click" />
@@ -2489,7 +2584,7 @@
                         </td>
                     </tr>
                 </table>
-
+                <asp:HiddenField ID="hidCategoryVendorSearchText" runat="server" />
             </div>
         </asp:Panel>
         <div id="fade" class="black_overlay">
@@ -2503,7 +2598,20 @@
 
 
     <script type="text/javascript">
-        SearchText();
+        $(function () {
+            //functions for auto search suggestions.
+            CreateProcCategorisedAutoSearch();
+            SearchProcText();
+        });
+
+        var prmProcTaskGenerator = Sys.WebForms.PageRequestManager.getInstance();
+
+        prmProcTaskGenerator.add_endRequest(function () {
+            //functions for auto search suggestions.
+            CreateProcCategorisedAutoSearch();
+            SearchProcText();
+        });
+        
         SearchZipCode();
 
         $('.clsmaskphone').mask("(999) 999-9999");
@@ -2528,6 +2636,32 @@
             getAllAddressOnMap();
         }
         */
+        function CreateProcCategorisedAutoSearch() {
+            $.widget("custom.proccomplete", $.ui.autocomplete, {
+                _create: function () {
+                    this._super();
+                    this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
+                },
+                _renderMenu: function (ul, items) {
+                    var that = this,
+                    currentCategory = "";
+                    $.each(items, function (index, item) {
+                        var li;
+                        if (item.Category != currentCategory) {
+                            ul.append("<li class='ui-autocomplete-category'> Search " + item.Category + "</li>");
+                            currentCategory = item.Category;
+                        }
+                        li = that._renderItemData(ul, item);
+                        if (item.Category) {
+                            li.attr("aria-label", item.Category + " : " + item.label);
+                        }
+                    });
+
+                }
+            });
+        }
+
+
         function getAllAddressOnMap() {
             var manufacturer = "Manufacturer";
             if ($("#<%=rdoRetailWholesale.ClientID%>").attr("checked") == "checked") {
@@ -2551,6 +2685,35 @@
                     if (data.d != "") {
                         initializeMapIcon(JSON.parse(data.d));
                     }
+                }
+            });
+        }
+
+        function SearchProcText() {
+            $("#<%=txtVendorSearchBox.ClientID%>").proccomplete({
+                delay: 500,
+                source: function (request, response) {
+                    $.ajax({
+                        type: "POST",
+                        url: "Procurement.aspx/SearchVendor",
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify({ searchstring: request.term }),
+                        success: function (data) {
+                            // Handle 'no match' indicated by [ "" ] response
+                            if (data.d) {
+                                response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
+                            }
+                            // remove loading spinner image.                                
+                            $("#<%=txtVendorSearchBox.ClientID%>").removeClass("ui-autocomplete-loading");
+                        }
+                    });
+                },
+                minLength: 2,
+                select: function (event, ui) {
+                    $("#<%=txtVendorSearchBox.ClientID%>").val(ui.item.label);
+                    $("#<%=hidCategoryVendorSearchText.ClientID%>").val(ui.item.Category);
+                    TriggerProcVendorSearch();
                 }
             });
         }
@@ -2632,35 +2795,7 @@
                     })(marker, i));
                 }
             }*/
-        }
-
-        function SearchText() {
-            $(".VendorSearchBox").autocomplete({
-                minLength: 0,
-                source: function (request, response) {
-                    $.ajax({
-                        type: "POST",
-                        contentType: "application/json; charset=utf-8",
-                        url: "Procurement.aspx/SearchVendor",
-                        data: "{'searchstring':'" + $(".VendorSearchBox").val() + "'}",
-                        dataType: "json",
-                        success: function (data) {
-                            response($.parseJSON(data.d));
-                        },
-                        error: function (result) {
-                            console.log("No Match");
-                        }
-                    });
-                },
-                select: function (event, ui) {
-                    $(".VendorSearchBox").val(ui.item.value);
-                    $("#hdnvendorId").val(ui.item.id);
-                    $("#hdnVendorAddId").val(ui.item.addressId);
-                    $(".clsbtnEditVendor").trigger("click");
-                    return false;
-                }
-            });
-        }
+        }       
 
         function GetCityStateOnBlur(e) {
             //debugger;
@@ -2835,6 +2970,9 @@
                 IsExists(pagePath, dataString, textboxid, errorlableid);
                 return true;
             }
+  }
+  function TriggerProcVendorSearch() {
+    $('#<%=btnSearchProcVendor.ClientID %>').click();
     }
     </script>
     <div id="mask">

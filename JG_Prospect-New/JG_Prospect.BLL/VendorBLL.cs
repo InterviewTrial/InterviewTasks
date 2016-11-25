@@ -129,6 +129,16 @@ namespace JG_Prospect.BLL
             return VendorDAL.Instance.GetVendorList(FilterParams, FilterBy, ManufacturerType, VendorCategoryId, VendorStatus);
         }
 
+        public DataSet GetVendorList(string strVendorStatus, bool IsRetailWholesale, string iProductCategoryID, string iVendorCategoryID, string iVendorSubCategoryID)
+        {
+            return VendorDAL.Instance.GetVendorList(strVendorStatus, IsRetailWholesale, iProductCategoryID, iVendorCategoryID, iVendorSubCategoryID);
+        }
+
+        public DataSet GetSearchedVendorByAutoSuggestion(string strCategorySelected, string strCategorySearchValue)
+        {
+            return VendorDAL.Instance.GetSearchedVendorByAutoSuggestion(strCategorySelected, strCategorySearchValue);
+        }
+
         public string SaveNewVendorCategory(NewVendorCategory objNewVendorCat)
         {
             return VendorDAL.Instance.SaveNewVendorCategory(objNewVendorCat);
@@ -194,22 +204,28 @@ namespace JG_Prospect.BLL
             return VendorDAL.Instance.GetVendorAddress(VendorId, TempID);
         }
 
-        public List<AutoCompleteVendor> SearchVendor(string searchString, string tableName)
+        //public List<AutoCompleteVendor> SearchVendor(string searchString, string tableName)
+        //{
+        //    DataTable dt = VendorDAL.Instance.SearchVendor(searchString, tableName);
+        //    List<AutoCompleteVendor> lstResult = new List<AutoCompleteVendor>();
+        //    foreach (DataRow item in dt.Rows)
+        //    {
+        //        lstResult.Add(new AutoCompleteVendor
+        //        {
+        //            id = Convert.ToInt32(item["VendorId"].ToString()),
+        //            label = Convert.ToString(item["VendorName"]),
+        //            value = Convert.ToString(item["VendorName"]),
+        //            addressId = Convert.ToString(item["addressId"])
+        //        });
+        //    }
+        //    return lstResult;
+        //}
+
+        public DataSet GetVendorSearchAutoSuggestion(string strSearchString)
         {
-            DataTable dt = VendorDAL.Instance.SearchVendor(searchString, tableName);
-            List<AutoCompleteVendor> lstResult = new List<AutoCompleteVendor>();
-            foreach (DataRow item in dt.Rows)
-            {
-                lstResult.Add(new AutoCompleteVendor
-                {
-                    id = Convert.ToInt32(item["VendorId"].ToString()),
-                    label = Convert.ToString(item["VendorName"]),
-                    value = Convert.ToString(item["VendorName"]),
-                    addressId = Convert.ToString(item["addressId"])
-                });
-            }
-            return lstResult;
+            return VendorDAL.Instance.GetVendorSearchAutoSuggestion(strSearchString);
         }
+
         public DataSet fetchvendorcategory(bool Isretail_Wholesale, bool IsManufacturer)
         {
             return VendorDAL.Instance.fetchvendorcategory(Isretail_Wholesale, IsManufacturer);

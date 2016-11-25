@@ -1129,6 +1129,15 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.TextBox txtVendorSearchBox;
         
         /// <summary>
+        /// btnSearchProcVendor control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ImageButton btnSearchProcVendor;
+        
+        /// <summary>
         /// btnEditVendor control.
         /// </summary>
         /// <remarks>
@@ -2342,6 +2351,15 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button btnSaveDisable;
+        
+        /// <summary>
+        /// hidCategoryVendorSearchText control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField hidCategoryVendorSearchText;
         
         /// <summary>
         /// hdnAmount control.
