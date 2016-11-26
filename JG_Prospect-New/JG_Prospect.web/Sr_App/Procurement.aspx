@@ -303,8 +303,20 @@
 
         }
 
-
         function GetVendorDetails(e) {
+            $('#<%=LblSave.ClientID%>').text("");
+            if ($('#<%=txtVendorNm.ClientID%>').val() == '' ) {
+                $('#<%=LblSave.ClientID%>').text("Please enter Vendor name!");
+                return false;
+            }
+            if ($('#<%=ddlSource.ClientID%>').val() == 'Select Source') {
+                $('#<%=LblSave.ClientID%>').text("Please select source!");
+                return false;
+            }
+            if ($('#<%=txtPrimaryAddress.ClientID%>').val() == '' ) {
+                $('#<%=LblSave.ClientID%>').text("Please enter address!");
+                return false;
+            }
             var selectedChkProductCategoryListValues = "";
             $("[id*=chkVendorCategoryList] input:checked").each(function () {
                 //alert($(this).val());
@@ -315,7 +327,7 @@
                 return false;
             }--%>
             if (selectedChkProductCategoryListValues == '' && $('#<%=hidIsEditVendor.ClientID%>').val() == 'false') {
-                $('#<%=LblSave.ClientID%>').text("Please select Vendor Category!")
+                $('#<%=LblSave.ClientID%>').text("Please select Vendor Category!");
                 return false;
             }
             $("#divModalPopup").show();

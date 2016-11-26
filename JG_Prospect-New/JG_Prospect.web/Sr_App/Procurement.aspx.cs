@@ -1153,16 +1153,23 @@ namespace JG_Prospect.Sr_App
             {
                 objvendor.VendorStatus = "Prospect";
             }
-            objvendor.Website = txtWebsite.Text;
-            objvendor.Vendrosource = ddlSource.SelectedValue;
+            objvendor.Website = txtWebsite.Text;            
+            if (!ddlSource.SelectedValue.Equals("Select Source"))
+            {
+                objvendor.Vendrosource = ddlSource.SelectedValue;
+            }
             if (DrpVendorAddress.Items.Count > 0)
             {
                 objvendor.AddressID = Convert.ToInt32((DrpVendorAddress.SelectedValue == "Select") ? "0" : DrpVendorAddress.SelectedValue);
             }
-
-            objvendor.PaymentTerms = DrpPaymentTerms.SelectedValue;
-            objvendor.PaymentMethod = DrpPaymentMode.SelectedValue;
-
+            if (!DrpPaymentTerms.SelectedValue.Equals("Select"))
+            { 
+                objvendor.PaymentTerms = DrpPaymentTerms.SelectedValue;
+            }
+            if (!DrpPaymentMode.SelectedValue.Equals("Select"))
+            {
+                objvendor.PaymentMethod = DrpPaymentMode.SelectedValue;
+            }
             string NewTempID = "";
             string NotesTempID = "";
             if (string.IsNullOrEmpty(objvendor.vendor_id.ToString()) || objvendor.vendor_id == 0 || btnSave.Text == "Save")

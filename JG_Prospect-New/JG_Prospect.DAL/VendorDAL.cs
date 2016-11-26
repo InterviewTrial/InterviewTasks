@@ -442,31 +442,198 @@ namespace JG_Prospect.DAL
 
                     DbCommand command = database.GetStoredProcCommand("UDP_SaveVendor");//UPP_savevendor");
                     command.CommandType = CommandType.StoredProcedure;
-                    database.AddInParameter(command, "@vendor_id", DbType.Int32, objvendor.vendor_id);
-                    database.AddInParameter(command, "@vendor_name", DbType.String, objvendor.vendor_name);
-                    database.AddInParameter(command, "@vendor_category", DbType.Int32, objvendor.vendor_category_id);
-                    database.AddInParameter(command, "@contact_person", DbType.String, objvendor.contract_person);
-                    database.AddInParameter(command, "@contact_number", DbType.String, objvendor.contract_number);
-                    database.AddInParameter(command, "@fax", DbType.String, objvendor.fax);
-                    database.AddInParameter(command, "@email", DbType.String, objvendor.mail);
-                    database.AddInParameter(command, "@address", DbType.String, objvendor.address);
-                    database.AddInParameter(command, "@notes", DbType.String, objvendor.notes);
-                    database.AddInParameter(command, "@ManufacturerType", DbType.String, objvendor.ManufacturerType);
-                    database.AddInParameter(command, "@BillingAddress", DbType.String, objvendor.BillingAddress);
-                    database.AddInParameter(command, "@TaxId", DbType.String, objvendor.TaxId);
-                    database.AddInParameter(command, "@ExpenseCategory", DbType.String, objvendor.ExpenseCategory);
-                    database.AddInParameter(command, "@AutoTruckInsurance", DbType.String, objvendor.AutoTruckInsurance);
-                    database.AddInParameter(command, "@VendorSubCategoryId", DbType.Int16, objvendor.vendor_subcategory_id);
-                    database.AddInParameter(command, "@VendorStatus", DbType.String, objvendor.VendorStatus);
-                    database.AddInParameter(command, "@Website", DbType.String, objvendor.Website);
-                    database.AddInParameter(command, "@ContactExten", DbType.String, objvendor.ContactExten);
-
-                    database.AddInParameter(command, "@Vendrosource", DbType.String, objvendor.Vendrosource);
-                    database.AddInParameter(command, "@AddressID", DbType.Int32, objvendor.AddressID);
-                    database.AddInParameter(command, "@PaymentTerms", DbType.String, objvendor.PaymentTerms);
-                    database.AddInParameter(command, "@PaymentMethod", DbType.String, objvendor.PaymentMethod);
-                    database.AddInParameter(command, "@TempID", DbType.String, objvendor.TempID);
-                    database.AddInParameter(command, "@NotesTempID", DbType.String, objvendor.NotesTempID);
+                    if (objvendor.vendor_id>0)
+                    {
+                        database.AddInParameter(command, "@vendor_id", DbType.Int32, objvendor.vendor_id);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@vendor_id", DbType.Int32, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(objvendor.vendor_name))
+                    {
+                        database.AddInParameter(command, "@vendor_name", DbType.String, objvendor.vendor_name);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@vendor_name", DbType.String, DBNull.Value);
+                    }
+                    if (objvendor.vendor_category_id > 0)
+                    {
+                        database.AddInParameter(command, "@vendor_category", DbType.Int32, objvendor.vendor_category_id);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@vendor_category", DbType.Int32, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(objvendor.contract_person))
+                    {
+                        database.AddInParameter(command, "@contact_person", DbType.String, objvendor.contract_person);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@contact_person", DbType.String, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(objvendor.contract_number))
+                    {
+                        database.AddInParameter(command, "@contact_number", DbType.String, objvendor.contract_number);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@contact_number", DbType.String, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(objvendor.fax))
+                    {
+                        database.AddInParameter(command, "@fax", DbType.String, objvendor.fax);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@fax", DbType.String, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(objvendor.mail))
+                    {
+                        database.AddInParameter(command, "@email", DbType.String, objvendor.mail);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@email", DbType.String, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(objvendor.address))
+                    {
+                        database.AddInParameter(command, "@address", DbType.String, objvendor.address);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@address", DbType.String, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(objvendor.notes))
+                    {
+                        database.AddInParameter(command, "@notes", DbType.String, objvendor.notes);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@notes", DbType.String, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(objvendor.notes))
+                    {
+                        database.AddInParameter(command, "@ManufacturerType", DbType.String, objvendor.notes);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@ManufacturerType", DbType.String, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(objvendor.BillingAddress))
+                    {
+                        database.AddInParameter(command, "@BillingAddress", DbType.String, objvendor.BillingAddress);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@BillingAddress", DbType.String, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(objvendor.TaxId))
+                    {
+                        database.AddInParameter(command, "@TaxId", DbType.String, objvendor.TaxId);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@TaxId", DbType.String, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(objvendor.ExpenseCategory))
+                    {
+                        database.AddInParameter(command, "@ExpenseCategory", DbType.String, objvendor.ExpenseCategory);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@ExpenseCategory", DbType.String, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(objvendor.AutoTruckInsurance))
+                    {
+                        database.AddInParameter(command, "@AutoTruckInsurance", DbType.String, objvendor.AutoTruckInsurance);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@AutoTruckInsurance", DbType.String, DBNull.Value);
+                    }
+                    if (objvendor.vendor_subcategory_id>0)
+                    {
+                        database.AddInParameter(command, "@VendorSubCategoryId", DbType.Int16, objvendor.vendor_subcategory_id);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@VendorSubCategoryId", DbType.Int16, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(objvendor.VendorStatus))
+                    {
+                        database.AddInParameter(command, "@VendorStatus", DbType.String, objvendor.VendorStatus);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@VendorStatus", DbType.String, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(objvendor.Website))
+                    {
+                        database.AddInParameter(command, "@Website", DbType.String, objvendor.Website);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@Website", DbType.String, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(objvendor.ContactExten))
+                    {
+                        database.AddInParameter(command, "@ContactExten", DbType.String, objvendor.ContactExten);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@ContactExten", DbType.String, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(objvendor.Vendrosource))
+                    {
+                        database.AddInParameter(command, "@Vendrosource", DbType.String, objvendor.Vendrosource);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@Vendrosource", DbType.String, DBNull.Value);
+                    }
+                    if (objvendor.AddressID>0)
+                    {
+                        database.AddInParameter(command, "@AddressID", DbType.Int32, objvendor.AddressID);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@AddressID", DbType.Int32, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(objvendor.PaymentTerms))
+                    {
+                        database.AddInParameter(command, "@PaymentTerms", DbType.String, objvendor.PaymentTerms);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@PaymentTerms", DbType.String, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(objvendor.PaymentMethod))
+                    {
+                        database.AddInParameter(command, "@PaymentMethod", DbType.String, objvendor.PaymentMethod);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@PaymentMethod", DbType.String, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(objvendor.TempID))
+                    {
+                        database.AddInParameter(command, "@TempID", DbType.String, objvendor.TempID);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@TempID", DbType.String, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(objvendor.NotesTempID))
+                    {
+                        database.AddInParameter(command, "@NotesTempID", DbType.String, objvendor.NotesTempID);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@NotesTempID", DbType.String, DBNull.Value);
+                    }
                     if (!string.IsNullOrEmpty(objvendor.VendorCategories))
                     { 
                         database.AddInParameter(command, "@VendorCategories", DbType.String, objvendor.VendorCategories);
