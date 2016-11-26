@@ -29,5 +29,26 @@ namespace JG_Prospect.BLL
         {
             return DesignationDAL.Instance.GetAllDesignationsForHumanResource();
         }
+
+
+        public DataSet GetAllDesignation()
+        {
+            return DesignationDAL.Instance.GetDesignationByFilter(0, 0);
+        }
+
+        public DataSet GetAllDesignationByDepartmentID(int? DepartmentID)
+        {
+            return DesignationDAL.Instance.GetDesignationByFilter(0, DepartmentID);
+        }
+
+        public DataSet GetDesignationByID(int? DesignationID, int? DepartmentID)
+        {
+            return DesignationDAL.Instance.GetDesignationByFilter(DesignationID, DepartmentID);
+        }
+
+        public int DesignationInsertUpdate(Designation objDep)
+        {
+            return DesignationDAL.Instance.DesignationInsertUpdate(objDep);
+        }
     }
 }
