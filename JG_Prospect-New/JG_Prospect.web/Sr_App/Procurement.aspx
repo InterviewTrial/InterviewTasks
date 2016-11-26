@@ -5,7 +5,6 @@
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit.HTMLEditor" TagPrefix="cc1" %>
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="asp" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-    <link rel="stylesheet" href="../css/jquery-ui.css" />
     <script src="../js/jquery.MultiFile.js" type="text/javascript"></script>
     <style>
         #googleMap > div {
@@ -118,91 +117,90 @@
                 background: #ddd;
                 color: #000;
             }
-
     </style>
     <style>
-    table tr th {
-        border: 1px solid;
-        padding: 0px;
-    }
-
-    table.table tr.trHeader {
-        background: #000000;
-        color: #ffffff;
-    }
-
-    .FirstRow {
-        background: #f57575;
-        padding: 2px;
-    }
-
-    .AlternateRow {
-        background: #f6f1f3;
-        padding: 2px;
-    }
-
-    .dark-gray-background {
-        background-color: darkgray;
-        background-image: none;
-    }
-
-    .AlternateRow a, .FirstRow a {
-        color: #111;
-    }
-
-    .textbox {
-        padding: 5px;
-        border-radius: 5px;
-        border: #b5b4b4 1px solid;
-        margin-left: 0;
-        margin-right: 0;
-        margin-bottom: 5px;
-    }
-
-    .tablealign {
-        margin-top: 5px;
-    }
-
-    div.dd_chk_select {
-        height: 30px;
-    }
-
-        div.dd_chk_select div#caption {
-            top: 7px;
-            margin-left: 10px;
+        table tr th {
+            border: 1px solid;
+            padding: 0px;
         }
 
-    div.dd_chk_drop {
-        top: 30px;
-    }
+        table.table tr.trHeader {
+            background: #000000;
+            color: #ffffff;
+        }
 
-    .ui-autocomplete {
-        max-height: 250px;
-        overflow-y: auto;
-        /* prevent horizontal scrollbar */
-        overflow-x: hidden;
-    }
+        .FirstRow {
+            background: #f57575;
+            padding: 2px;
+        }
 
-    .ui-autocomplete-category {
-        font-weight: bold;
-        padding: .2em .4em;
-        margin: .8em 0 .2em;
-        line-height: 1.5;
-        text-align: center;
-    }
+        .AlternateRow {
+            background: #f6f1f3;
+            padding: 2px;
+        }
 
-    .ui-autocomplete-loading {
-        background: white url("../img/ui-anim_basic_16x16.png") right center no-repeat;
-    }
+        .dark-gray-background {
+            background-color: darkgray;
+            background-image: none;
+        }
 
-    .task-history-tab {
-        min-height: 200px;
-        max-height: 400px;
-        overflow: auto;
-        overflow-x: hidden;
-    }
+        .AlternateRow a, .FirstRow a {
+            color: #111;
+        }
 
-    /*.dropzone{
+        .textbox {
+            padding: 5px;
+            border-radius: 5px;
+            border: #b5b4b4 1px solid;
+            margin-left: 0;
+            margin-right: 0;
+            margin-bottom: 5px;
+        }
+
+        .tablealign {
+            margin-top: 5px;
+        }
+
+        div.dd_chk_select {
+            height: 30px;
+        }
+
+            div.dd_chk_select div#caption {
+                top: 7px;
+                margin-left: 10px;
+            }
+
+        div.dd_chk_drop {
+            top: 30px;
+        }
+
+        .ui-autocomplete {
+            max-height: 250px;
+            overflow-y: auto;
+            /* prevent horizontal scrollbar */
+            overflow-x: hidden;
+        }
+
+        .ui-autocomplete-category {
+            font-weight: bold;
+            padding: .2em .4em;
+            margin: .8em 0 .2em;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        .ui-autocomplete-loading {
+            background: white url("../img/ui-anim_basic_16x16.png") right center no-repeat;
+        }
+
+        .task-history-tab {
+            min-height: 200px;
+            max-height: 400px;
+            overflow: auto;
+            overflow-x: hidden;
+        }
+
+        /*.dropzone{
         min-height:120px;
         min-width:430px;
     }
@@ -210,7 +208,7 @@
         height: 120px;
         width: 430px;
     }*/
-</style>
+    </style>
 
     <script type="text/javascript">
 
@@ -307,6 +305,19 @@
 
 
         function GetVendorDetails(e) {
+            var selectedChkProductCategoryListValues = "";
+            $("[id*=chkVendorCategoryList] input:checked").each(function () {
+                //alert($(this).val());
+                selectedChkProductCategoryListValues += $(this).val();
+            });
+            <%--if ($('#<%=ddlVndrCategory.ClientID%>').val() == 'Select' && $('#<%=hidIsEditVendor.ClientID%>').val() == 'false') {
+                $('#<%=LblSave.ClientID%>').text("Please select Vendor Category!")
+                return false;
+            }--%>
+            if (selectedChkProductCategoryListValues == '' && $('#<%=hidIsEditVendor.ClientID%>').val() == 'false') {
+                $('#<%=LblSave.ClientID%>').text("Please select Vendor Category!")
+                return false;
+            }
             $("#divModalPopup").show();
             var AddressData = [];
             var VendorEmailData = [];
@@ -444,7 +455,7 @@
             var SID = -1;
             var AID = -1;
             try {
-                if (data.length <= 0) { return;}
+                if (data.length <= 0) { return; }
             }
             catch (e2) {
                 return;
@@ -488,8 +499,8 @@
 
                 GenereateHTML(data[i], ID, NewRow);
             }
-           // $('.clsmaskphone').mask("(999) 999-9999");
-          //  $('.clsmaskphoneexten').mask("999999");
+            // $('.clsmaskphone').mask("(999) 999-9999");
+            //  $('.clsmaskphoneexten').mask("999999");
         }
 
         function GenereateHTML(data, ID, NewRow) {
@@ -854,7 +865,7 @@
                                             <td>
                                                 <asp:TextBox ID="txtAmount" runat="server" EnableViewState="true" onkeypress="return isNumericKey(event);"
                                                     MaxLength="20" ReadOnly="true"></asp:TextBox>
-                                                <asp:CheckBox ID="chkedit" runat="server" Text="Edit" onclick="if(this.checked) {ShowPopup();}"/>
+                                                <asp:CheckBox ID="chkedit" runat="server" Text="Edit" onclick="if(this.checked) {ShowPopup();}" />
                                                 <label>
                                                     <asp:Label ID="lblAmount" runat="server" Text="Please Enter Amount" ForeColor="Red" CssClass="hide"></asp:Label>
                                                 </label>
@@ -896,7 +907,7 @@
                                             <td id="amountvalue" visible="false" runat="server">
                                                 <asp:TextBox ID="txtccamount" runat="server" EnableViewState="true" onkeypress="return isNumericKey(event);"
                                                     MaxLength="20" ReadOnly="true"></asp:TextBox>
-                                                <asp:CheckBox ID="CheckBox1" runat="server" Text="Edit" onclick="if(this.checked) {ShowPopup();}"/>
+                                                <asp:CheckBox ID="CheckBox1" runat="server" Text="Edit" onclick="if(this.checked) {ShowPopup();}" />
                                                 <label>
                                                     <asp:Label ID="Label14" runat="server" Text="Please Enter Amount" ForeColor="Red" CssClass="hide"></asp:Label>
                                                 </label>
@@ -1044,7 +1055,7 @@
                                                     <asp:RequiredFieldValidator ID="RequiredFieldValidator12" runat="server" ControlToValidate="ddlperbus" ErrorMessage="Select Account Type" ForeColor="Red" InitialValue="0" Display="Dynamic" ValidationGroup="sold"></asp:RequiredFieldValidator>
                                                 </td>
                                             </tr>
-                                            
+
 
                                         </asp:Panel>
                                         <tr>
@@ -1228,7 +1239,7 @@
                                 </div>
                             </ProgressTemplate>
                         </asp:UpdateProgress>
-                        <asp:UpdatePanel ID="updtpnlfilter" runat="server"  UpdateMode="Always">
+                        <asp:UpdatePanel ID="updtpnlfilter" runat="server" UpdateMode="Always">
                             <ContentTemplate>
                                 <table>
                                     <tr>
@@ -1251,10 +1262,11 @@
 
                                         <td colspan="2">
                                             <%--<div class="ui-widget">--%>
-                                                <asp:TextBox ID="txtVendorSearchBox" runat="server" placeholder="Search" Width="90%"></asp:TextBox>
+                                            <asp:TextBox ID="txtVendorSearchBox" runat="server" placeholder="Search" Width="90%"></asp:TextBox>
                                             <%--</div>--%>
                                         </td>
-                                        <td><asp:ImageButton ID="btnSearchProcVendor" runat="server" ImageUrl="~/img/search_btn.png" CssClass="searchbtn" Style="display: none;" OnClick="btnSearch_Click" /></td>
+                                        <td>
+                                            <asp:ImageButton ID="btnSearchProcVendor" runat="server" ImageUrl="~/img/search_btn.png" CssClass="searchbtn" Style="display: none;" OnClick="btnSearch_Click" /></td>
                                         <input type="hidden" id="hdnvendorId" name="vendorId" />
                                         <input type="hidden" id="hdnVendorAddId" name="hdnVendorAddId" />
                                         <asp:Button ID="btnEditVendor" runat="server" Text="EditVendor" CssClass="clsbtnEditVendor" OnClick="btneditVendor_Click" />
@@ -1481,22 +1493,18 @@
                                                      </EmptyDataTemplate>
                                                  </asp:GridView>
                                              </div>
-
                                                 </div>
                                                 <div style="width: 50%; float: left; margin-left: 3%; margin-top: 20px; box-sizing: border-box;">
                                                     <div id="googleMap" style="width: 100%; height: 254px;"></div>
                                                 </div>
-
                                             </div>
                                         </td>
                                     </tr>
                                 </table>
                             </ContentTemplate>
                         </asp:UpdatePanel>
-
-
+                        <asp:HiddenField ID="hidIsEditVendor" runat="server" Value="false" />
                     </div>
-
                     <div id="tabs">
                         <ul>
                             <li><a href="#tabs-1">Add/Edit Vendor</a></li>
@@ -1527,7 +1535,7 @@
                                                                 <span>* </span>Vendor Name:
                                                             </label>
                                                             <br />
-                                                            <asp:TextBox ID="txtVendorNm" runat="server" MaxLength="30" TabIndex="1" AutoComplete="off" ></asp:TextBox>
+                                                            <asp:TextBox ID="txtVendorNm" runat="server" MaxLength="30" TabIndex="2" AutoComplete="off"></asp:TextBox>
 
                                                             <asp:RequiredFieldValidator ID="Requiredvendorname" runat="server" ControlToValidate="txtVendorNm" Display="Dynamic"
                                                                 ValidationGroup="addvendor" ErrorMessage="Please Enter Vendor Name." ForeColor="Red"></asp:RequiredFieldValidator>
@@ -1535,12 +1543,12 @@
                                                         <td class="style1">
                                                             <label>
                                                                 Vendor Source<asp:Label ID="lblSourceReq" runat="server" Text="*" ForeColor="Green"></asp:Label></label>
-                                                            <asp:DropDownList ID="ddlSource" runat="server" TabIndex="1" Width="250px">
+                                                            <asp:DropDownList ID="ddlSource" runat="server" TabIndex="3" Width="250px">
                                                             </asp:DropDownList>
-                                                            <asp:TextBox ID="txtSource" runat="server" TabIndex="1" Width="125px"></asp:TextBox>
-                                                            <asp:Button runat="server" ID="btnAddSource" TabIndex="1" Text="Add" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff; cursor: pointer;" OnClick="btnAddSource_Click" Height="30px" />&nbsp;
+                                                            <asp:TextBox ID="txtSource" runat="server" TabIndex="4" Width="125px"></asp:TextBox>
+                                                            <asp:Button runat="server" ID="btnAddSource" TabIndex="5" Text="Add" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff; cursor: pointer;" OnClick="btnAddSource_Click" Height="30px" />&nbsp;
                                
-                                                            <asp:Button runat="server" ID="btnDeleteSource" TabIndex="1" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff; cursor: pointer;" Text="Delete" OnClick="btnDeleteSource_Click" Height="30px" />
+                                                            <asp:Button runat="server" ID="btnDeleteSource" TabIndex="6" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff; cursor: pointer;" Text="Delete" OnClick="btnDeleteSource_Click" Height="30px" />
                                                             <%--<br />
                                                             &nbsp;&nbsp;&nbsp;&nbsp;<asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="ddlSource"
                                                                 ForeColor="Green" Display="Dynamic" ValidationGroup="submit" ErrorMessage="Please select the source." InitialValue="Select Source"></asp:RequiredFieldValidator>--%>
@@ -2210,9 +2218,7 @@
                                         <asp:ModalPopupExtender ID="ModalPopupExtender1" runat="server" TargetControlID="btnOpenCategoryPopup"
                                             PopupControlID="pnlcategorypopup" CancelControlID="btnCancelCategory" BackgroundCssClass="uiblack">
                                         </asp:ModalPopupExtender>
-
                                         <asp:Panel ID="pnlcategorypopup" runat="server" Style="display: none; background: white; border: 5px solid rgb(179, 71, 74)">
-
                                             <div class="popup_heading">
                                                 <h1>Select Category</h1>
                                             </div>
@@ -2222,25 +2228,22 @@
                                                     <asp:CheckBoxList ID="chkProductCategoryList" runat="server" AutoPostBack="true" OnSelectedIndexChanged="chkProductCategoryList_SelectedIndexChanged">
                                                     </asp:CheckBoxList>
                                                 </div>
-                                                <div id="vendorcategory" class="categorylist_Heading"  style="width: 250px; float: left">
+                                                <div id="vendorcategory" class="categorylist_Heading" style="width: 250px; float: left">
                                                     <h4>Vendor Category</h4>
                                                     <asp:CheckBoxList ID="chkVendorCategoryList" runat="server" AutoPostBack="true" OnSelectedIndexChanged="chkVendorCategoryList_SelectedIndexChanged">
                                                     </asp:CheckBoxList>
                                                 </div>
-                                                <div id="vendorsubcategory" class="categorylist_Heading"  style="width: 250px; float: left">
+                                                <div id="vendorsubcategory" class="categorylist_Heading" style="width: 250px; float: left">
                                                     <h4>Vendor Sub Category</h4>
                                                     <asp:CheckBoxList ID="chkVendorSubcategoryList" runat="server" OnSelectedIndexChanged="chkVendorSubcategoryList_SelectedIndexChanged">
                                                     </asp:CheckBoxList>
                                                 </div>
                                             </div>
-
                                             <div class="btn_sec">
                                                 <asp:Button ID="btnSave" runat="server" TabIndex="1" Text="Save" CssClass="cssbtnSave" OnClientClick="return GetVendorDetails(this);" OnClick="btnSave_Click" /><%--OnClick="btnSave_Click" ValidationGroup="addvendor"--%>
-
                                                 <asp:Button ID="btnCancelCategory" runat="server" TabIndex="1" CssClass="cssbtnCancelCategory" Text="Cancel" />
                                             </div>
                                         </asp:Panel>
-
                                         <div class="btn_sec">
                                             <%--<asp:Button ID="btnSave" runat="server" TabIndex="1" Text="Save" OnClientClick="return GetVendorDetails(this);" OnClick="btnSave_Click" />--%><%--OnClick="btnSave_Click" ValidationGroup="addvendor"--%>
                                             <asp:Button ID="btnupdateVendor" runat="server" Text="Update" Visible="false" OnClick="btnupdateVendor_Click1" />
@@ -2249,10 +2252,8 @@
                                             <asp:Label ID="LblSave" runat="server" ForeColor="Red"></asp:Label>
                                         </div>
                                     </div>
-
                                 </ContentTemplate>
-                            </asp:UpdatePanel>
-
+                            </asp:UpdatePanel><asp:HiddenField ID="hidIsModalPopupExtender1ShowNeeded" runat="server" Value="true" />
                         </div>
                         <div id="tabs-2">
                             <p>&nbsp</p>
@@ -2611,7 +2612,7 @@
             CreateProcCategorisedAutoSearch();
             SearchProcText();
         });
-        
+
         SearchZipCode();
 
         $('.clsmaskphone').mask("(999) 999-9999");
@@ -2619,23 +2620,23 @@
 
         $(".cssbtnPageLoad").click();
         setTimeout(function () {
-           // initialize();
+            // initialize();
         }, 500);
 
-      /*  var mapProp;
-        var map;
-        function initialize() {
-            SearchText();
-            SearchZipCode();
-            mapProp = {
-                center: new google.maps.LatLng(40.042838, -75.528559),
-                zoom: 9,
-                mapTypeId: google.maps.MapTypeId.ROADMAP
-            };
-            map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
-            getAllAddressOnMap();
-        }
-        */
+        /*  var mapProp;
+          var map;
+          function initialize() {
+              SearchText();
+              SearchZipCode();
+              mapProp = {
+                  center: new google.maps.LatLng(40.042838, -75.528559),
+                  zoom: 9,
+                  mapTypeId: google.maps.MapTypeId.ROADMAP
+              };
+              map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
+              getAllAddressOnMap();
+          }
+          */
         function CreateProcCategorisedAutoSearch() {
             $.widget("custom.proccomplete", $.ui.autocomplete, {
                 _create: function () {
@@ -2720,82 +2721,82 @@
 
         function initializeMapIcon(MapJSON) {
             // Setup the different icons and shadows
-        /*    var iconURLPrefix = 'http://maps.google.com/mapfiles/ms/icons/';
-
-            var icons = [
-            iconURLPrefix + 'red-dot.png',
-            iconURLPrefix + 'green-dot.png',
-            iconURLPrefix + 'blue-dot.png',
-            iconURLPrefix + 'orange-dot.png',
-            iconURLPrefix + 'purple-dot.png',
-            iconURLPrefix + 'pink-dot.png',
-            iconURLPrefix + 'yellow-dot.png'];
-
-            var icons_length = icons.length;
-
-            for (var i = 0; i < MapJSON.length; i++) {
-                var address = MapJSON[i];
-                var VendorName = address["VendorName"];
-                var Latitude = address["Latitude"];
-                var Longitude = address["Longitude"];
-                var AddressType = address["AddressType"];
-                var VendorStatus = address["VendorStatus"]
-                if (Latitude != null && Latitude != "" && Longitude != null && Longitude != "") {
-                    var iconCounter = 0;
-                    //if (AddressType == "Primary") {
-                    //    iconCounter = 0;
-                    //}
-                    //if (AddressType == "Secondary") {
-                    //    iconCounter = 2;
-                    //}
-                    //if (AddressType == "Billing") {
-                    //    iconCounter = 3;
-                    //}
-                    if (VendorStatus == "Prospect") {
-                        iconCounter = 0;
-                    }
-                    if (VendorStatus == "Active-Past") {
-                        iconCounter = 2;
-                    }
-                    if (VendorStatus == "Deactivate") {
-                        iconCounter = 3;
-                    }
-                    var infowindow = new google.maps.InfoWindow({
-                        maxWidth: 160
-                    });
-
-                    var marker = new google.maps.Marker({
-                        position: new google.maps.LatLng(Latitude, Longitude),
-                        map: map,
-                        icon: icons[iconCounter],
-                        title: VendorName
-                    });
-
-                    google.maps.event.addListener(marker, 'click', (function (marker, i) {
-                        return function () {
-                            var FullAddress = "";
-                            if (MapJSON[i]['VendorName'] != null)
-                                FullAddress += "<b>" + MapJSON[i]['VendorName'] + "</b>";
-                            FullAddress += "<p>";
-                            if (MapJSON[i]['Address'] != null)
-                                FullAddress += MapJSON[i]['Address'];
-                            if (MapJSON[i]['City'] != null)
-                                FullAddress += ", " + MapJSON[i]['City'];
-                            if (MapJSON[i]['State'] != null)
-                                FullAddress += ", " + MapJSON[i]['State'];
-                            if (MapJSON[i]['Country'] != null)
-                                FullAddress += ", " + MapJSON[i]['Country'];
-                            if (MapJSON[i]['Zip'] != null)
-                                FullAddress += ", " + MapJSON[i]['Zip'];
-                            FullAddress += "</p>";
-
-                            infowindow.setContent(FullAddress);
-                            infowindow.open(map, marker);
+            /*    var iconURLPrefix = 'http://maps.google.com/mapfiles/ms/icons/';
+    
+                var icons = [
+                iconURLPrefix + 'red-dot.png',
+                iconURLPrefix + 'green-dot.png',
+                iconURLPrefix + 'blue-dot.png',
+                iconURLPrefix + 'orange-dot.png',
+                iconURLPrefix + 'purple-dot.png',
+                iconURLPrefix + 'pink-dot.png',
+                iconURLPrefix + 'yellow-dot.png'];
+    
+                var icons_length = icons.length;
+    
+                for (var i = 0; i < MapJSON.length; i++) {
+                    var address = MapJSON[i];
+                    var VendorName = address["VendorName"];
+                    var Latitude = address["Latitude"];
+                    var Longitude = address["Longitude"];
+                    var AddressType = address["AddressType"];
+                    var VendorStatus = address["VendorStatus"]
+                    if (Latitude != null && Latitude != "" && Longitude != null && Longitude != "") {
+                        var iconCounter = 0;
+                        //if (AddressType == "Primary") {
+                        //    iconCounter = 0;
+                        //}
+                        //if (AddressType == "Secondary") {
+                        //    iconCounter = 2;
+                        //}
+                        //if (AddressType == "Billing") {
+                        //    iconCounter = 3;
+                        //}
+                        if (VendorStatus == "Prospect") {
+                            iconCounter = 0;
                         }
-                    })(marker, i));
-                }
-            }*/
-        }       
+                        if (VendorStatus == "Active-Past") {
+                            iconCounter = 2;
+                        }
+                        if (VendorStatus == "Deactivate") {
+                            iconCounter = 3;
+                        }
+                        var infowindow = new google.maps.InfoWindow({
+                            maxWidth: 160
+                        });
+    
+                        var marker = new google.maps.Marker({
+                            position: new google.maps.LatLng(Latitude, Longitude),
+                            map: map,
+                            icon: icons[iconCounter],
+                            title: VendorName
+                        });
+    
+                        google.maps.event.addListener(marker, 'click', (function (marker, i) {
+                            return function () {
+                                var FullAddress = "";
+                                if (MapJSON[i]['VendorName'] != null)
+                                    FullAddress += "<b>" + MapJSON[i]['VendorName'] + "</b>";
+                                FullAddress += "<p>";
+                                if (MapJSON[i]['Address'] != null)
+                                    FullAddress += MapJSON[i]['Address'];
+                                if (MapJSON[i]['City'] != null)
+                                    FullAddress += ", " + MapJSON[i]['City'];
+                                if (MapJSON[i]['State'] != null)
+                                    FullAddress += ", " + MapJSON[i]['State'];
+                                if (MapJSON[i]['Country'] != null)
+                                    FullAddress += ", " + MapJSON[i]['Country'];
+                                if (MapJSON[i]['Zip'] != null)
+                                    FullAddress += ", " + MapJSON[i]['Zip'];
+                                FullAddress += "</p>";
+    
+                                infowindow.setContent(FullAddress);
+                                infowindow.open(map, marker);
+                            }
+                        })(marker, i));
+                    }
+                }*/
+        }
 
         function GetCityStateOnBlur(e) {
             //debugger;
@@ -2865,13 +2866,12 @@
 
     </script>
     <input type="hidden" id="hdnAmount" runat="server" />
-        <style type="text/css">
-        .style2
-        {
+    <style type="text/css">
+        .style2 {
             width: 100%;
         }
-        #mask
-        {
+
+        #mask {
             position: fixed;
             left: 0px;
             top: 0px;
@@ -2964,27 +2964,25 @@
       else {
           var pagePath = "Custom.aspx/Exists";
           var dataString = "{ 'value':'" + document.getElementById('<%= txtadminCode.ClientID%>').value + "' }";
-                var textboxid = "#<%= txtadminCode.ClientID%>";
-                var errorlableid = "#<%= lblError.ClientID%>";
+          var textboxid = "#<%= txtadminCode.ClientID%>";
+          var errorlableid = "#<%= lblError.ClientID%>";
 
-                IsExists(pagePath, dataString, textboxid, errorlableid);
-                return true;
-            }
-  }
-  function TriggerProcVendorSearch() {
+          IsExists(pagePath, dataString, textboxid, errorlableid);
+          return true;
+      }
+}
+function TriggerProcVendorSearch() {
     $('#<%=btnSearchProcVendor.ClientID %>').click();
-    }
+}
     </script>
     <div id="mask">
     </div>
     <asp:Panel ID="pnlPopupChangeAmt" runat="server" BackColor="White" Height="175px" Width="300px"
-        Style="z-index: 999999; background-color: White; position: fixed; left: 35%;
-        top: 6%; border: outset 2px gray; padding: 5px; display: none">
+        Style="z-index: 999999; background-color: White; position: fixed; left: 35%; top: 6%; border: outset 2px gray; padding: 5px; display: none">
         <table width="100%" style="width: 100%; height: 100%;" cellpadding="0" cellspacing="5">
             <tr style="background-color: #b5494c">
                 <td colspan="2" style="color: White; font-weight: bold; font-size: 1.2em; padding: 3px"
-                    align="center">
-                    Admin Verification <a id="closebtn" style="color: white; float: right; text-decoration: none"
+                    align="center">Admin Verification <a id="closebtn" style="color: white; float: right; text-decoration: none"
                         class="btnClose" href="#">X</a>
                 </td>
             </tr>
@@ -2994,8 +2992,7 @@
                 </td>
             </tr>
             <tr>
-                <td align="right" style="width: 45%">
-                    Amount:
+                <td align="right" style="width: 45%">Amount:
                 </td>
                 <td>
                     <asp:TextBox ID="txtChangeAmount" runat="server" onkeypress="return isNumericKey(event);"
@@ -3003,8 +3000,7 @@
                 </td>
             </tr>
             <tr>
-                <td align="right">
-                    Admin Password:
+                <td align="right">Admin Password:
                 </td>
                 <td>
                     <asp:TextBox ID="txtadminCode" runat="server" TextMode="Password" Text=""></asp:TextBox>
@@ -3012,8 +3008,7 @@
                 </td>
             </tr>
             <tr>
-                <td>
-                </td>
+                <td></td>
                 <td>
                     <input type="button" class="btnVerify" value="Verify" onclick="javascript: return focuslost();" />
                     &nbsp;&nbsp;

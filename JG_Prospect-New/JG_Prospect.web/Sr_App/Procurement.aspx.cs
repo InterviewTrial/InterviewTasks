@@ -234,6 +234,13 @@ namespace JG_Prospect.Sr_App
             chkProductCategoryList.DataValueField = "ProductId";
             chkProductCategoryList.DataBind();
 
+            //System.Web.UI.WebControls.ListItem currentListItem = chkProductCategoryList.Items.FindByValue("3");//19");
+            //if (currentListItem != null)
+            //{
+            //    currentListItem.Selected = true;
+            //}
+            
+
             //chkVendorCategoryList.DataSource = lstVendorCat;
             //chkVendorCategoryList.DataTextField = "ProductName";
             //chkVendorCategoryList.DataValueField = "ProductId";
@@ -541,10 +548,37 @@ namespace JG_Prospect.Sr_App
             ddlVndrCategory.SelectedIndex = -1;
             ddlVendorSubCategory.SelectedIndex = -1;
             BindVendorByProdCat(ddlprdtCategory.SelectedValue.ToString());
+            ViewState["CheckedPc"] = null;
+            if (!ddlprdtCategory.SelectedValue.Equals("Select"))
+            {
+                ViewState["CheckedPc"] = ddlprdtCategory.SelectedValue;
+                hidIsModalPopupExtender1ShowNeeded.Value = "false";
+            }
             BindVendorCatPopup();
             if (ddlprdtCategory.SelectedValue.ToString() != "Select")
             {
+                //GetCategoryList();
                 ddlProductCatgoryPopup.SelectedValue = ddlprdtCategory.SelectedValue;
+                System.Web.UI.WebControls.ListItem currentListItem = chkProductCategoryList.Items.FindByValue("3");//19");
+                if (currentListItem != null)
+                {
+                    currentListItem.Selected = true;
+                }
+                //foreach (System.Web.UI.WebControls.ListItem li in chkProductCategoryList.Items)
+                //{
+                //    //if (li.Value.Equals(ddlprdtCategory.SelectedValue.Trim()))
+                //    //{
+                //    //    li.Selected = true;
+                //    //}
+                //    if (li.Value.Equals(ddlprdtCategory.SelectedValue.Trim()))
+                //    { 
+                //        System.Web.UI.WebControls.ListItem currentListItem = chkProductCategoryList.Items.FindByValue(li.Value);//19");
+                //        if (currentListItem != null)
+                //        {
+                //            currentListItem.Selected = true;
+                //        }
+                //    }
+                //}
             }
             else
             {
@@ -613,7 +647,14 @@ namespace JG_Prospect.Sr_App
 
             DataSet ds = new DataSet();
             ds = VendorBLL.Instance.GetVendorList(strVendorStatus, IsRetailWholesale,  iProductCategoryID, iVendorCategoryID, iVendorSubCategoryID);
-            grdVendorList.DataSource = ds.Tables[0];
+            if(ds!=null && ds.Tables.Count > 0)
+            { 
+                grdVendorList.DataSource = ds.Tables[0];
+            }
+            else
+            {
+                grdVendorList.DataSource = null;
+            }
             grdVendorList.DataBind();
         }
 
@@ -666,12 +707,22 @@ namespace JG_Prospect.Sr_App
             ddlVendorSubCategory.SelectedIndex = -1;
             BindVendorSubCatByVendorCat(ddlVndrCategory.SelectedValue.ToString());
             //string ManufacturerType = GetManufacturerType();
-
+            ViewState["CheckedVc"] = null;
             if (ddlVndrCategory.SelectedValue.ToString() != "Select")
             {
                 ddlVendorCatPopup.SelectedValue = ddlVndrCategory.SelectedValue;
                 ddlvendercategoryname.SelectedValue = ddlVndrCategory.SelectedValue;
                 //FilterVendors(ddlVndrCategory.SelectedValue.ToString(), "VendorCategory", ManufacturerType, "", GetVendorStatus());
+                ViewState["CheckedVc"] = ddlVndrCategory.SelectedValue;
+                hidIsModalPopupExtender1ShowNeeded.Value = "false";
+
+                foreach (System.Web.UI.WebControls.ListItem li in chkVendorCategoryList.Items)
+                {
+                    if (li.Value.Equals(ddlVndrCategory.SelectedValue.Trim()))
+                    {
+                        li.Selected = true;
+                    }
+                }
             }
             else if(ddlVendorStatusfltr.SelectedValue.ToString() != "All")
             {
@@ -734,14 +785,27 @@ namespace JG_Prospect.Sr_App
 
         protected void ddlVendorSubCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string ManufacturerType = GetManufacturerType();
-            if (ddlVendorSubCategory.SelectedValue.ToString() != "Select")
-                FilterVendors(ddlVendorSubCategory.SelectedValue.ToString(), "VendorSubCategory", ManufacturerType, ddlVndrCategory.SelectedValue.ToString(), GetVendorStatus());
-            else if (ddlVndrCategory.SelectedValue.ToString() != "Select")
-                FilterVendors(ddlVndrCategory.SelectedValue.ToString(), "VendorCategory", ManufacturerType, "", GetVendorStatus());
-            else
-                FilterVendorByProductCategory();
-
+            BindFilteredVendorList();
+            ViewState["CheckedVsc"] = null;
+            if (!ddlVendorSubCategory.SelectedValue.Equals("Select"))
+            {
+                ViewState["CheckedVsc"] = ddlVendorSubCategory.SelectedValue;
+                hidIsModalPopupExtender1ShowNeeded.Value = "false";
+                foreach (System.Web.UI.WebControls.ListItem li in chkVendorSubcategoryList.Items)
+                {
+                    if (li.Value.Equals(ddlVendorSubCategory.SelectedValue.Trim()))
+                    {
+                        li.Selected = true;
+                    }
+                }
+            }
+            //string ManufacturerType = GetManufacturerType();
+            //if (ddlVendorSubCategory.SelectedValue.ToString() != "Select")
+            //    FilterVendors(ddlVendorSubCategory.SelectedValue.ToString(), "VendorSubCategory", ManufacturerType, ddlVndrCategory.SelectedValue.ToString(), GetVendorStatus());
+            //else if (ddlVndrCategory.SelectedValue.ToString() != "Select")
+            //    FilterVendors(ddlVndrCategory.SelectedValue.ToString(), "VendorCategory", ManufacturerType, "", GetVendorStatus());
+            //else
+            //    FilterVendorByProductCategory();
         }
 
         public string GetVendorStatus()
@@ -1011,7 +1075,7 @@ namespace JG_Prospect.Sr_App
         protected void SaveAllData()
         {
             Vendor objvendor = new Vendor();
-            if (ddlVndrCategory.SelectedValue == "Select")
+            if (ddlVndrCategory.SelectedValue == "Select" && hidIsEditVendor.Value.Equals("true"))
             {
 
                 int VendorID = Convert.ToInt32(string.IsNullOrEmpty(txtVendorId.Text) ? "0" : txtVendorId.Text);
@@ -1076,7 +1140,7 @@ namespace JG_Prospect.Sr_App
             objvendor.contract_number = contactNo;
             objvendor.ContactExten = contactExten;
             objvendor.address = txtPrimaryAddress.Text;
-            objvendor.notes = "";
+            objvendor.notes = txtAddNotes.Text;
             objvendor.ManufacturerType = GetManufacturerType();
             objvendor.BillingAddress = BillingAddress;
             objvendor.TaxId = txtTaxId.Text;
@@ -1160,7 +1224,7 @@ namespace JG_Prospect.Sr_App
             }
             string trimmedVendorSubcategory = strVendorSubCategory.TrimEnd(',');
             objvendor.VendorSubCategories = trimmedVendorSubcategory;
-
+            objvendor.UserID = JGSession.Username;
             bool res = VendorBLL.Instance.savevendor(objvendor);
             HttpContext.Current.Session["TempID"] = null;
             lbladdress.Text = "";
@@ -1174,6 +1238,7 @@ namespace JG_Prospect.Sr_App
                     //bool addressres = VendorBLL.Instance.InsertVendorAddress(objvendor);
                     //ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Vendor Saved/Updated Successfully');", true);
                     LblSave.Text = "Vendor Saved/Updated Successfully";
+                    hidIsEditVendor.Value = "false";
                     clear();
                     string ManufacturerType = GetManufacturerType();
                     if (ddlVendorSubCategory.SelectedValue == "Select")
@@ -1214,6 +1279,7 @@ namespace JG_Prospect.Sr_App
             txtPrimaryContactExten0.Text = txtPrimaryContact0.Text = txtSecContactExten0.Text = txtSecContact0.Text = txtAltContactExten0.Text = txtAltContact0.Text = null;
             btnSave.Text = "Save";
             ModalPopupExtender1.Hide();
+            ViewState["CheckedPc"] = null;
             ViewState["CheckedVc"] = null;
             ViewState["CheckedVsc"] = null;
             chkProductCategoryList.Items.Clear();
@@ -3566,7 +3632,7 @@ namespace JG_Prospect.Sr_App
 
         public void EditVendor(int VendorIdToEdit, string hdnVendorAddressId)
         {
-
+            hidIsEditVendor.Value = "true";
             DataSet ds = new DataSet();
             ds = VendorBLL.Instance.FetchvendorDetails(VendorIdToEdit);
 
@@ -3744,7 +3810,12 @@ namespace JG_Prospect.Sr_App
                     {
                         if (li.Value == dtPrdctcategories.Rows[i]["ProductCategoryId"].ToString().Trim())
                         {
-                            li.Selected = true;
+                            //li.Selected = true;
+                            System.Web.UI.WebControls.ListItem currentListItem = chkProductCategoryList.Items.FindByValue(li.Value);
+                            if (currentListItem != null)
+                            {
+                                currentListItem.Selected = true;
+                            }
                         }
                     }
                 }
@@ -4084,7 +4155,7 @@ namespace JG_Prospect.Sr_App
                 }
                 HttpContext.Current.Session["NotesTempID"] = TempId;
             }
-            DataSet ds = VendorBLL.Instance.GetVendorNotes(VendorID, TempId);
+            DataSet ds = VendorBLL.Instance.GetVendorNotes(VendorID);//VendorBLL.Instance.GetVendorNotes(VendorID, TempId);
             grdTouchPointLog.DataSource = ds;
             grdTouchPointLog.DataBind();
             txtAddNotes.Text = string.Empty;
@@ -4128,7 +4199,11 @@ namespace JG_Prospect.Sr_App
 
         protected void chkProductCategoryList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ModalPopupExtender1.Show();
+            if (hidIsModalPopupExtender1ShowNeeded.Value.Equals("true"))
+            { 
+                ModalPopupExtender1.Show();
+            }
+            hidIsModalPopupExtender1ShowNeeded.Value = "true";
             string strPrdtCategory = "";// = new StringBuilder();
             foreach (System.Web.UI.WebControls.ListItem li in chkProductCategoryList.Items)
             {
@@ -4138,7 +4213,6 @@ namespace JG_Prospect.Sr_App
                 }
             }
             string trimmedPrdtcategory = strPrdtCategory.TrimEnd(',');
-
             DataSet ds = VendorBLL.Instance.GetCategoryList(trimmedPrdtcategory, "", "2");
             if (ds.Tables[0].Rows.Count > 0)
             {
@@ -4170,7 +4244,6 @@ namespace JG_Prospect.Sr_App
                         {
                             li.Selected = true;
                         }
-
                     }
                 }
             }
@@ -4178,7 +4251,11 @@ namespace JG_Prospect.Sr_App
 
         protected void chkVendorCategoryList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ModalPopupExtender1.Show();
+            if (hidIsModalPopupExtender1ShowNeeded.Value.Equals("true"))
+            {
+                ModalPopupExtender1.Show();
+            }
+            hidIsModalPopupExtender1ShowNeeded.Value = "true";
             string strVendorCategory = "";// = new StringBuilder();
             foreach (System.Web.UI.WebControls.ListItem li in chkVendorCategoryList.Items)
             {
@@ -4203,7 +4280,6 @@ namespace JG_Prospect.Sr_App
                 chkVendorSubcategoryList.DataSource = null;
                 chkVendorSubcategoryList.DataBind();
                 chkVendorSubcategoryList.Items.Clear();
-
             }
             if (ViewState["CheckedVsc"] != null)
             {
@@ -4224,7 +4300,11 @@ namespace JG_Prospect.Sr_App
 
         protected void chkVendorSubcategoryList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ModalPopupExtender1.Show();
+            if (hidIsModalPopupExtender1ShowNeeded.Value.Equals("true"))
+            {
+                ModalPopupExtender1.Show();
+            }
+            hidIsModalPopupExtender1ShowNeeded.Value = "true";
             string strVendorsubCategory = "";// = new StringBuilder();
             foreach (System.Web.UI.WebControls.ListItem li in chkVendorSubcategoryList.Items)
             {

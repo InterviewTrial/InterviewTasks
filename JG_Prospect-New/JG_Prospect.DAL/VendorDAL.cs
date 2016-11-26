@@ -440,7 +440,7 @@ namespace JG_Prospect.DAL
                 SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
 
-                    DbCommand command = database.GetStoredProcCommand("UPP_savevendor");
+                    DbCommand command = database.GetStoredProcCommand("UDP_SaveVendor");//UPP_savevendor");
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@vendor_id", DbType.Int32, objvendor.vendor_id);
                     database.AddInParameter(command, "@vendor_name", DbType.String, objvendor.vendor_name);
@@ -467,9 +467,23 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@PaymentMethod", DbType.String, objvendor.PaymentMethod);
                     database.AddInParameter(command, "@TempID", DbType.String, objvendor.TempID);
                     database.AddInParameter(command, "@NotesTempID", DbType.String, objvendor.NotesTempID);
-                    database.AddInParameter(command, "@VendorCategories", DbType.String, objvendor.VendorCategories);
-                    database.AddInParameter(command, "@VendorSubCategories", DbType.String, objvendor.VendorSubCategories);
-
+                    if (!string.IsNullOrEmpty(objvendor.VendorCategories))
+                    { 
+                        database.AddInParameter(command, "@VendorCategories", DbType.String, objvendor.VendorCategories);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@VendorCategories", DbType.String, DBNull.Value);
+                    }
+                    if (!string.IsNullOrEmpty(objvendor.VendorSubCategories))
+                    {
+                        database.AddInParameter(command, "@VendorSubCategories", DbType.String, objvendor.VendorSubCategories);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@VendorSubCategories", DbType.String, DBNull.Value);
+                    }
+                    database.AddInParameter(command, "@UserID", DbType.String, objvendor.UserID);
                     database.ExecuteNonQuery(command);
                     return true;
                 }
@@ -1162,6 +1176,31 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@action", DbType.String, "2");
                     database.AddInParameter(command, "@TempId", DbType.String, TempId);
                     database.AddInParameter(command, "@VendorId", DbType.Int32, VendorId);
+                    DS = database.ExecuteDataSet(command);
+                    return DS;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Returns all Vendor Notes based on VendorID 
+        /// </summary>
+        /// <param name="VendorID">int value</param>
+        /// <returns>All Vendor Notes</returns>
+        public DataSet GetVendorNotes(int VendorID)
+        {
+            try
+            {
+                {
+                    SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                    DS = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("UDP_GetVendorNotes");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@VendorId", DbType.String, VendorID.ToString());
                     DS = database.ExecuteDataSet(command);
                     return DS;
                 }
