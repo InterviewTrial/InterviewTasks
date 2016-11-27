@@ -149,6 +149,12 @@
     transition: opacity 0.3s ease-in-out 0s;
     width: 400px;
 }
+#divUploadUserProfilPic .dz-default, #divUploadUserProfilPic .dz-message{
+    background-image: url("../images/uploadJg.png")!important;
+    background-position: 0 0;
+    background-repeat: no-repeat;
+    width: 400px;
+}
 @media not all, (min--moz-device-pixel-ratio: 1.5), not all, not all, (min-resolution: 138dpi), (min-resolution: 1.5dppx) {
 .dropzone .dz-default.dz-message {
     background-image: url("../images/spritemap@2x.png");

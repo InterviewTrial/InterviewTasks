@@ -136,7 +136,6 @@ ADD [UserInstallId] [varchar](50) NULL
 
 GO
 
-GO
 
 /****** Object:  StoredProcedure [dbo].[USP_SetUserDisplayID]    Script Date: 11/16/2016 8:36:37 PM ******/
 SET ANSI_NULLS ON
@@ -153,12 +152,23 @@ GO
 CREATE PROCEDURE [dbo].[USP_SetUserDisplayID] 
 	-- Add the parameters for the stored procedure here
 	@InstallUserID int = 0, 
-	@DesignationsCode varchar(15)	
+	@DesignationsCode varchar(15),
+	@UpdateCurrentSequence varchar (10) =''
 AS
 BEGIN
 	-- SET NOCOUNT ON added to prevent extra result sets from
 	-- interfering with SELECT statements.
 	SET NOCOUNT ON;
+
+IF (@UpdateCurrentSequence = 'YES')
+BEGIN
+-- SET UserInstallId as NULL. so following process will generae a new ID for respective user.
+
+	UPDATE tblInstallUsers
+		SET UserInstallId = null
+	WHERE Id = @InstallUserID
+END
+
 
 DECLARE @InstallId VARCHAR(50) = NULL
 

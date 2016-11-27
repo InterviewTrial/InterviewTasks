@@ -7,6 +7,8 @@ using JG_Prospect.Common;
 using JG_Prospect.Common.modal;
 using System.Data;
 using System.Xml;
+using System.Web.UI.HtmlControls;
+
 namespace JG_Prospect.BLL
 {
     public class InstallUserBLL
@@ -512,6 +514,18 @@ namespace JG_Prospect.BLL
         public DataSet GetUsersNDesignationForSalesFilter()
         {
             return InstallUserDAL.Instance.GetUsersNDesignationForSalesFilter();
+        }
+        public string AddUserEmails(string hidExtEmail, int UserId)
+        {
+            return InstallUserDAL.Instance.AddUserEmails(hidExtEmail, UserId);
+        }
+        public DataSet GetUserEmailByUseId(int UserId)
+        {
+            return InstallUserDAL.Instance.GetUserEmailByUseId(UserId);
+        }
+        public string AddUserPhone(bool isPrimaryPhone, string phoneText, int phoneType , int UserID)
+        {
+            return InstallUserDAL.Instance.AddUserPhone(isPrimaryPhone,phoneText,phoneType,UserID);
         }
     }
 }

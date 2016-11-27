@@ -27,6 +27,33 @@
         height:100%;
         position:absolute;
     }
+     .ProfilImg {
+        left: 1px;
+        top: 47px;        
+        position: absolute;
+        margin-left:-40px;
+        width: 181px;
+    }
+    .img-Profile {
+        border-radius: 50%;
+        width: 77px;
+        height: 76px;
+    }
+    .ProfilImg .caption {
+        opacity: 0;
+        position: absolute;
+        height: 28px;
+        width: 75px;
+        bottom: 0px;        
+        padding: 2px 0px;
+        color: #ffffff;
+        background: #1f211f;
+        text-align: center;
+        font-weight: bold;
+    }
+    .ProfilImg:hover .caption {
+        opacity: 0.6;
+    }
         /*#divTask:hover > nav {
             position:fixed;
         }*/
@@ -49,6 +76,11 @@
     <li>|</li>
     <li><a href="<%= Page.ResolveUrl("~/changepassword.aspx")%>">Change Password</a></li>
     </ul>
+      <div class="ProfilImg" >
+            <asp:Image CssClass="img-Profile" ID="imgProfile" runat="server" />
+            <asp:HyperLink runat="server" ID="hLnkEditProfil" Text="Edit"></asp:HyperLink>
+            <a href="#"><div class="caption">Edit</div></a>
+        </div>
   </div>
   <!--nav section-->
   <div class="nav">

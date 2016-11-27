@@ -17,6 +17,7 @@ namespace JG_Prospect.Controls
                
                 lbluser.Text = Session["Username"].ToString().Trim();
                 string AdminId = ConfigurationManager.AppSettings["AdminUserId"].ToString();
+                imgProfile.ImageUrl = JGSession.UserProfileImg;
 
                 if ((string)Session["AdminUserId"] == AdminId)
                 {

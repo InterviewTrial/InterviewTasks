@@ -22,6 +22,9 @@ namespace JG_Prospect.Sr_App
             if (Session["loginid"] != null)
             {
                 lbluser.Text = Session["Username"].ToString();
+                imgProfile.ImageUrl = JGSession.UserProfileImg;
+                hLnkEditProfil.NavigateUrl = "/Sr_App/CreateSalesUser.aspx?ID=" + JGSession.LoginUserID;
+
                 if ((string)Session["usertype"] == "SSE")
                 {
                     Li_Jr_app.Visible = false;
@@ -41,7 +44,6 @@ namespace JG_Prospect.Sr_App
                // Response.Redirect("/login.aspx");
                 ScriptManager.RegisterStartupScript(this, GetType(), "alsert", "alert('Your session has expired,login to continue');window.location='../login.aspx;')", true);
             }
-
         }
 
         protected void btnlogout_Click(object sender, EventArgs e)
@@ -61,10 +63,8 @@ namespace JG_Prospect.Sr_App
             Common.modal.UserAuditTrail objUserAudit = new Common.modal.UserAuditTrail();
 
             objUserAudit.LogOutTime = DateTime.Now;
-            objUserAudit.LogInGuID = Session[SessionKey.Key.GuIdAtLogin.ToString()].ToString();
-            
+            objUserAudit.LogInGuID = Session[SessionKey.Key.GuIdAtLogin.ToString()].ToString();            
             UserAuditTrailBLL.Instance.UpdateUserLogOutTime(objUserAudit);
-
         }
 
         protected void lbtWeather_Click(object sender, EventArgs e)

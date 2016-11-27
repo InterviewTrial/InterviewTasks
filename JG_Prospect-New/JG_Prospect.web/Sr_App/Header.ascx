@@ -34,6 +34,35 @@
     #test a {
         color:red;
     }
+    .ProfilImg {
+        left: 1px;
+        top: 47px;        
+        position: absolute;
+        margin-left:-40px;
+        width: 181px;
+    }
+    .img-Profile {
+        border-radius: 50%;
+        width: 77px;
+        height: 76px;
+    }
+    .ProfilImg .caption {
+        opacity: 0;
+        position: absolute;
+        height: 28px;
+        width: 75px;
+        bottom: 0px;        
+        padding: 2px 0px;
+        color: #ffffff;
+        background: #1f211f;
+        text-align: center;
+        font-weight: bold;
+        left:2px;
+    }
+    .ProfilImg:hover .caption {
+        opacity: 0.6;
+    }
+
 </style>
 <script>
 
@@ -62,19 +91,22 @@
         <div class="clr">
         </div>
         <ul>
+            <!--Email with # of unread msgs and new font-->
+            <li id="test"><a href="javascript:window.open('http://www.gmail.com/mail/','mywindow','width=600,height=400')" target="_blank">Email(<asp:Label ID="lbl_unreadCount" runat="server"></asp:Label>)</a></li>
             <li>Voice Mail(0)</li>
             <li>|</li>
             <li>Chat(1)</li>
         </ul>
+        <div class="ProfilImg" >
+            <asp:Image CssClass="img-Profile" ID="imgProfile" runat="server" />
+            <asp:HyperLink class="caption" runat="server" ID="hLnkEditProfil" Text="Edit"></asp:HyperLink>
+            <%--<a href="#"><div class="caption">Edit</div></a>--%>
+        </div>
         <div class="clr">
-        </div>
-        <!--Email with # of unread msgs and new font-->
-        <div id="test">
-            <ul>
-                <li><a href="javascript:window.open('http://www.gmail.com/mail/','mywindow','width=600,height=400')" target="_blank">Email(<asp:Label ID="lbl_unreadCount" runat="server"></asp:Label>)</a></li>
-            </ul>
-        </div>
+        </div>        
+        
     </div>
+    
 </div>
 <!--nav section-->
 <div class="nav">
