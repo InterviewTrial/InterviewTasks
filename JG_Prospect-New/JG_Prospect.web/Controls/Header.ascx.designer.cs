@@ -49,6 +49,24 @@ namespace JG_Prospect.Controls {
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl Lihome;
         
         /// <summary>
+        /// imgProfile control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Image imgProfile;
+        
+        /// <summary>
+        /// hLnkEditProfil control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HyperLink hLnkEditProfil;
+        
+        /// <summary>
         /// Lidashboard control.
         /// </summary>
         /// <remarks>

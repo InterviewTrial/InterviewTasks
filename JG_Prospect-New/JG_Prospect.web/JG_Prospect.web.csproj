@@ -282,6 +282,7 @@
     <Content Include="css\dropzone\images\spritemap%402x.png" />
     <Content Include="css\dropzone\images\spritemap.png" />
     <Content Include="css\dropzone\images\upload.png" />
+    <Content Include="css\dropzone\images\uploadJg.png" />
     <Content Include="css\JCarousel.css" />
     <Content Include="css\jquery-ui.css" />
     <Content Include="css\jquery.multiselect.css" />

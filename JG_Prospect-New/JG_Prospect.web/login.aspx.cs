@@ -543,6 +543,7 @@ namespace JG_Prospect
                     if (ds.Tables[0].Rows.Count > 0)
                     {
                         JGSession.Username = ds.Tables[0].Rows[0]["Username"].ToString().Trim();
+                        //JGSession.UserProfileImg = ds.Tables[0].Rows[0]["Picture"].ToString().Trim();
                         Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
                         AdminId = ConfigurationManager.AppSettings["AdminUserId"].ToString();
                         Session["DesigNew"] = ds.Tables[0].Rows[0]["Designation"].ToString().Trim();
