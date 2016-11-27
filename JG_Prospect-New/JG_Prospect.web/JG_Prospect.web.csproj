@@ -292,6 +292,7 @@
     <Content Include="Database Scripts\ShekharP\ITSN043\SP_New_UDP_GetVendorNotes_Nov_2016_ITSN043_v1.0.sql" />
     <Content Include="Database Scripts\ShekharP\ITSN043\SP_New_UDP_GetVendors_Nov_2016_ITSN043_v1.0.sql" />
     <Content Include="Database Scripts\ShekharP\ITSN043\SP_New_UDP_SaveVendor_Nov_2016_ITSN043_v1.0.sql" />
+    <Content Include="Database Scripts\ShekharP\ITSN043\SP_New_UDP_SelectVendorAddressByVendorID_Nov_2016_ITSN043_v1.0.sql" />
     <Content Include="Database Scripts\ShekharP\ITSN043\SP_New_USP_LoadSearchVendorAutoSuggestion_Nov_2016_ITSN043_v1.0.sql" />
     <Content Include="Database Scripts\ShekharP\ITSN043\SP_New_USP_SelectSearchedVendorByAutoSuggestion_Nov_2016_ITSN043_v1.0.sql" />
     <Content Include="Database Scripts\ShekharP\StoredProc_GetAllEditSalesUser_Nov_2016_ITSN0145_v1.0.sql" />
