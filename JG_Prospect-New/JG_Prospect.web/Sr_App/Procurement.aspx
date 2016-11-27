@@ -373,11 +373,11 @@
                 var EmailData = {
                     EmailType: "Primary",
                     Email: Emails,
-                    FirstName: $("input[name=nametxtPrimaryFName" + index + "]").val(),
-                    LastName: $("input[name=nametxtPrimaryLName" + index + "]").val(),
-                    Title: $("#ddlPrimaryTitle" + index).val() == undefined ? "" : $("#ddlPrimaryTitle" + index).val(),
+                    FirstName:  $(this).find(".clsfname").val(),
+                    LastName: $(this).find(".clslname").val(),
+                    Title: $(this).find(".clstitle").val() == undefined ? "" : $(this).find(".clstitle").val(),
                     Contact: c,
-                    Fax: $("input[name=nametxtPrimaryFax" + index + "]").val(),
+                    Fax: $(this).find(".clsfax").val(),
                     AddressID: $(".clsvendoraddress").val() == undefined || $(".clsvendoraddress").val() == "Select" ? "0" : $(".clsvendoraddress").val(),
                 };
                 VendorEmailData.push(EmailData);
@@ -399,11 +399,11 @@
                 var EmailData = {
                     EmailType: "Secondary",
                     Email: Emails,
-                    FirstName: $("#txtSecFName" + index).val(),
-                    LastName: $("#txtSecLName" + index).val(),
-                    Title: $("#ddlSecTitle" + index).val() == undefined ? "" : $("#ddlSecTitle" + index).val(),
+                    FirstName: $(this).find(".clsfname").val(),
+                    LastName: $(this).find(".clslname").val(),
+                    Title: $(this).find(".clstitle").val() == undefined ? "" : $(this).find(".clstitle").val(),
                     Contact: c,
-                    Fax: $("input[name=nametxtSecFax" + index + "]").val(),
+                    Fax: $(this).find(".clsfax").val(),
                     AddressID: $(".clsvendoraddress").val() == undefined || $(".clsvendoraddress").val() == "Select" ? "0" : $(".clsvendoraddress").val(),
                 };
                 VendorEmailData.push(EmailData);
@@ -425,11 +425,11 @@
                 var EmailData = {
                     EmailType: "Alternate",
                     Email: Emails,
-                    FirstName: $("#txtAltFName" + index).val(),
-                    LastName: $("#txtAltLName" + index).val(),
-                    Title: $("#ddlAltTitle" + index).val() == undefined ? "" : $("#ddlAltTitle" + index).val(),
+                    FirstName: $(this).find(".clsfname").val(),
+                    LastName: $(this).find(".clslname").val(),
+                    Title: $(this).find(".clstitle").val() == undefined ? "" : $(this).find(".clstitle").val(),
                     Contact: c,
-                    Fax: $("input[name=nametxtAltFax" + index + "]").val(),
+                    Fax: $(this).find(".clsfax").val(),
                     AddressID: $(".clsvendoraddress").val() == undefined || $(".clsvendoraddress").val() == "Select" ? "0" : $(".clsvendoraddress").val(),
                 };
                 VendorEmailData.push(EmailData);
@@ -462,6 +462,10 @@
             }
         }
 
+        function setProcSelectedValue(dropdownlist, sVal) {
+            $(dropdownlist).val(sVal);
+        }
+
         function AddVenderEmails(data) {
             var PID = -1;
             var SID = -1;
@@ -479,6 +483,8 @@
                 var EmailType = data[i].EmailType;
                 var FName = data[i].FName;
                 var LName = data[i].LName;
+                var Fax = data[i].Fax;
+                var Title = data[i].Title;
                 var SeqNo = data[i].SeqNo;
                 var VendorId = data[i].VendorId;
                 var TempID = data[i].TempID;
@@ -486,14 +492,38 @@
                 if (EmailType == "Primary") {
                     ID = "Primary";
                     PID++;
+                    $('#<%=txtPrimaryEmail0.ClientID%>').val(Email[0].Email);
+                    $('#<%=txtPrimaryContact0.ClientID%>').val(Contact[0].Number);
+                    $('#<%=txtPrimaryContactExten0.ClientID%>').val(Contact[0].Extension);
+                    $('#<%=txtPrimaryFax0.ClientID%>').val(Fax);
+                    $('#<%=txtPrimaryFName0.ClientID%>').val(FName);
+                    $('#<%=txtPrimaryLName0.ClientID%>').val(LName);
+                    setProcSelectedValue('#<%=ddlPrimaryTitle0.ClientID%>', Title);
+                    setProcSelectedValue('#<%=ddlPrimaryPhoneType0.ClientID%>', Contact[0].PhoneType);
                 }
                 if (EmailType == "Secondary") {
                     ID = "Sec";
                     SID++;
+                    $('#<%=txtSecEmail0.ClientID%>').val(Email[0].Email);
+                    $('#<%=txtSecContact0.ClientID%>').val(Contact[0].Number);
+                    $('#<%=txtSecContactExten0.ClientID%>').val(Contact[0].Extension);
+                    $('#<%=txtSecFax0.ClientID%>').val(Fax);
+                    $('#<%=txtSecFName0.ClientID%>').val(FName);
+                    $('#<%=txtSecLName0.ClientID%>').val(LName);
+                    setProcSelectedValue('#<%=ddlSecTitle0.ClientID%>', Title);
+                    setProcSelectedValue('#<%=ddlSecPhoneType0.ClientID%>', Contact[0].PhoneType);
                 }
                 if (EmailType == "Alternate") {
                     ID = "Alt";
                     AID++;
+                    $('#<%=txtAltEmail0.ClientID%>').val(Email[0].Email);
+                    $('#<%=txtAltContact0.ClientID%>').val(Contact[0].Number);
+                    $('#<%=txtAltContactExten0.ClientID%>').val(Contact[0].Extension);
+                    $('#<%=txtAltFax0.ClientID%>').val(Fax);
+                    $('#<%=txtAltFName0.ClientID%>').val(FName);
+                    $('#<%=txtAltLName0.ClientID%>').val(LName);
+                    setProcSelectedValue('#<%=ddlAltTitle0.ClientID%>', Title);
+                    setProcSelectedValue('#<%=ddlAltPhoneType0.ClientID%>', Contact[0].PhoneType);
                 }
 
                 var NewRow = 0;
@@ -1988,41 +2018,37 @@
                                                                             Primary Contact Email
                                                                         </label>
                                                                         <div class="newEmaildiv">
-                                                                            <input type='text' tabindex="1" id="txtPrimaryEmail0" name="nametxtPrimaryEmail0" placeholder="Email" class="clsemail" clientidmode='Static' />
+                                                                            <asp:TextBox ID="txtPrimaryEmail0" runat="server" placeholder='Email' class="clsemail" maxlength="50"  />
                                                                             <br />
                                                                             <a style="cursor: pointer" tabindex="1" data-emailtype="Primary" onclick="AddEmailRow(this)">Add New Row</a> &nbsp;&nbsp;
                                                                     <a onclick="AddEmail(this)" tabindex="1" style="cursor: pointer" data-emailtype="Primary" data-type="0">Add Email</a>
                                                                         </div>
                                                                     </td>
                                                                     <td>
-                                                                        <label>
+                                                                        <label> 
                                                                             First Name</label><br />
-                                                                        <input type='text' id="txtPrimaryFName0" tabindex="1" name="nametxtPrimaryFName0" maxlength="50" clientidmode='Static' />
+                                                                        <asp:TextBox ID="txtPrimaryFName0" runat="server" tabindex="1" maxlength="50" class="clsfname"  />
                                                                     </td>
 
                                                                     <td>
                                                                         <label>
                                                                             Last Name</label><br />
-                                                                        <input type='text' id="txtPrimaryLName0" tabindex="1" name="nametxtPrimaryLName0" maxlength="50" clientidmode='Static' />
+                                                                        <asp:TextBox ID="txtPrimaryLName0" runat="server" maxlength="50" class="clslname" />
                                                                         <%--    <asp:TextBox ID="txtPrimaryLName0" runat="server" MaxLength="50"></asp:TextBox>--%>
                                                                         <br />
 
                                                                     </td>
                                                                     <td>
                                                                         <label>Title</label><br />
-                                                                        <select id="ddlPrimaryTitle0" name="nameddlPrimaryTitle0" cliendidmode="static" tabindex="1">
-                                                                            <option value="">Select</option>
-                                                                            <option value="Secretary">Secretary</option>
-                                                                            <option value="FloorSalesman">Floor salesman</option>
-                                                                            <option value="SalesAcctExecutive">Sales/acct. executive</option>
-                                                                            <option value="Manager">Manager</option>
-                                                                            <option value="Owner">Owner</option>
-                                                                            <option value="Others">Others</option>
-                                                                            <%--<option value="DM">DM</option>
-                                                                            <option value="Spouse">Spouse</option>
-                                                                            <option value="Partner">Partner</option>
-                                                                            <option value="Others">Others</option>--%>
-                                                                        </select>
+                                                                        <asp:DropDownList ID="ddlPrimaryTitle0" runat="server" class="clstitle" >
+                                                                            <asp:ListItem Value="">Select</asp:ListItem>
+                                                                            <asp:ListItem value="Secretary">Secretary</asp:ListItem>
+                                                                            <asp:ListItem value="FloorSalesman">Floor salesman</asp:ListItem>
+                                                                            <asp:ListItem value="SalesAcctExecutive">Sales/acct. executive</asp:ListItem>
+                                                                            <asp:ListItem value="Manager">Manager</asp:ListItem>
+                                                                            <asp:ListItem value="Owner">Owner</asp:ListItem>
+                                                                            <asp:ListItem value="Others">Others</asp:ListItem>
+                                                                        </asp:DropDownList>
                                                                     </td>
                                                                     <td>
                                                                         <label>
@@ -2033,13 +2059,13 @@
                                                                             <asp:TextBox ID="txtPrimaryContact0" TabIndex="1" runat="server" placeholder='___-___-____' MaxLength="10" onkeypress="return isNumericKey(event);" CssClass="clsmaskphone" Width="50%"></asp:TextBox>
                                                                             <asp:TextBox ID="txtPrimaryContactExten0" TabIndex="1" runat="server" placeholder="Extension" class="clsmaskphoneexten" onkeypress="return isNumericKey(event);" MaxLength="6" Width="34%"></asp:TextBox>
                                                                             <label>Phone Type</label>
-                                                                            <select id="ddlPrimaryPhoneType0" name="nameddlPrimaryPhoneType0" cliendidmode="static" class="clsphonetype">
-                                                                                <option value="">Select</option>
-                                                                                <option value="Cell">Cell Phone #</option>
-                                                                                <option value="House">House Phone  #</option>
-                                                                                <option value="Work">Work Phone #</option>
-                                                                                <option value="Alt">Alt. Phone #</option>
-                                                                            </select>
+                                                                            <asp:DropDownList ID="ddlPrimaryPhoneType0" runat="server" class="clsphonetype">
+                                                                                <asp:ListItem value="">Select</asp:ListItem>
+                                                                                <asp:ListItem value="Cell">Cell Phone #</asp:ListItem>
+                                                                                <asp:ListItem value="House">House Phone  #</asp:ListItem>
+                                                                                <asp:ListItem value="Work">Work Phone #</asp:ListItem>
+                                                                                <asp:ListItem value="Alt">Alt. Phone #</asp:ListItem>
+                                                                            </asp:DropDownList>
                                                                             <br />
                                                                             <a onclick="AddContact(this)" tabindex="1" style="cursor: pointer" data-emailtype="Primary" data-type="0">Add Contact</a><br />
                                                                         </div>
@@ -2048,8 +2074,7 @@
                                                                     <td>
                                                                         <label>
                                                                             Fax</label><br />
-                                                                        <input type='text' id="txtPrimaryFax0" tabindex="1" name="nametxtPrimaryFax0" maxlength="15" onkeypress="return isNumericKey(event);" clientidmode='Static' />
-
+                                                                        <asp:TextBox ID="txtPrimaryFax0" runat="server" maxlength="15" class="clsfax"  onkeypress="return isNumericKey(event);"></asp:TextBox>
                                                                         <br />
                                                                     </td>
                                                                 </tr>
@@ -2064,7 +2089,7 @@
                                                                         <label>
                                                                             Secondary Contact Email</label><br />
                                                                         <div class="newEmaildiv">
-                                                                            <input type='text' id="txtSecEmail0" tabindex="1" name="nametxtSecEmail0" maxlength="50" class="clsemail" clientidmode='Static' />
+                                                                            <asp:TextBox ID="txtSecEmail0" runat="server" MaxLength="50" class="clsemail"></asp:TextBox>
                                                                             <br />
                                                                             <a style="cursor: pointer" tabindex="1" data-emailtype="Sec" onclick="AddEmailRow(this)">Add New Row</a> &nbsp;&nbsp;
                                                                     <a onclick="AddEmail(this)" tabindex="1" style="cursor: pointer" data-emailtype="Sec" data-type="0">Add Email</a>
@@ -2073,33 +2098,29 @@
                                                                     <td>
                                                                         <label>
                                                                             First Name</label><br />
-                                                                        <input type='text' id="txtSecFName0" tabindex="1" name="nametxtSecFName0" maxlength="50" clientidmode='Static' />
+                                                                        <asp:TextBox ID="txtSecFName0" runat="server" class="clsfname" MaxLength="50"></asp:TextBox>
                                                                         <%--<asp:TextBox ID="txtSecFName0" runat="server" MaxLength="50"></asp:TextBox>--%>
                                                                     </td>
 
                                                                     <td>
                                                                         <label>
                                                                             Last Name</label><br />
-                                                                        <input type='text' id="txtSecLName0" tabindex="1" name="nametxtSecLName0" maxlength="50" clientidmode='Static' />
+                                                                        <asp:TextBox ID="txtSecLName0" runat="server" class="clslname" MaxLength="50"></asp:TextBox>
                                                                         <%--  <asp:TextBox ID="txtSecLName0" runat="server" MaxLength="50"></asp:TextBox>--%>
                                                                         <br />
 
                                                                     </td>
                                                                     <td>
                                                                         <label>Title</label><br />
-                                                                        <select id="ddlSecTitle0" name="nameddlSecTitle0" cliendidmode="static" tabindex="1">
-                                                                            <option value="">Select</option>
-                                                                            <option value="Secretary">Secretary</option>
-                                                                            <option value="FloorSalesman">Floor salesman</option>
-                                                                            <option value="SalesAcctExecutive">Sales/acct. executive</option>
-                                                                            <option value="Manager">Manager</option>
-                                                                            <option value="Owner">Owner</option>
-                                                                            <option value="Others">Others</option>
-                                                                            <%--<option value="DM">DM</option>
-                                                                            <option value="Spouse">Spouse</option>
-                                                                            <option value="Partner">Partner</option>
-                                                                            <option value="Others">Others</option>--%>
-                                                                        </select>
+                                                                        <asp:DropDownList ID="ddlSecTitle0" runat="server" class="clstitle" >
+                                                                            <asp:ListItem Value="">Select</asp:ListItem>
+                                                                            <asp:ListItem value="Secretary">Secretary</asp:ListItem>
+                                                                            <asp:ListItem value="FloorSalesman">Floor salesman</asp:ListItem>
+                                                                            <asp:ListItem value="SalesAcctExecutive">Sales/acct. executive</asp:ListItem>
+                                                                            <asp:ListItem value="Manager">Manager</asp:ListItem>
+                                                                            <asp:ListItem value="Owner">Owner</asp:ListItem>
+                                                                            <asp:ListItem value="Others">Others</asp:ListItem>
+                                                                        </asp:DropDownList>
                                                                     </td>
                                                                     <td>
                                                                         <label>
@@ -2110,13 +2131,13 @@
                                                                             <asp:TextBox ID="txtSecContact0" TabIndex="1" runat="server" MaxLength="10" onkeypress="return isNumericKey(event);" placeholder='___-___-____' CssClass="clsmaskphone" Width="50%"></asp:TextBox>
                                                                             <asp:TextBox ID="txtSecContactExten0" TabIndex="1" runat="server" MaxLength="6" class="clsmaskphoneexten" onkeypress="return isNumericKey(event);" placeholder="Extension" Width="35%"></asp:TextBox>
                                                                             <label>Phone Type</label>
-                                                                            <select id="ddlSecPhoneType0" name="nameddlSecPhoneType0" cliendidmode="static" class="clsphonetype">
-                                                                                <option value="">Select</option>
-                                                                                <option value="Cell">Cell Phone #</option>
-                                                                                <option value="House">House Phone  #</option>
-                                                                                <option value="Work">Work Phone #</option>
-                                                                                <option value="Alt">Alt. Phone #</option>
-                                                                            </select>
+                                                                            <asp:DropDownList ID="ddlSecPhoneType0" runat="server" class="clsphonetype">
+                                                                                <asp:ListItem value="">Select</asp:ListItem>
+                                                                                <asp:ListItem value="Cell">Cell Phone #</asp:ListItem>
+                                                                                <asp:ListItem value="House">House Phone  #</asp:ListItem>
+                                                                                <asp:ListItem value="Work">Work Phone #</asp:ListItem>
+                                                                                <asp:ListItem value="Alt">Alt. Phone #</asp:ListItem>
+                                                                            </asp:DropDownList>
                                                                             <br />
                                                                             <a onclick="AddContact(this)" tabindex="1" data-emailtype="Sec" style="cursor: pointer" data-type="0">Add Contact</a>
                                                                             <br />
@@ -2126,7 +2147,7 @@
                                                                     <td>
                                                                         <label>
                                                                             Fax</label><br />
-                                                                        <input type='text' id="txtSecFax0" tabindex="1" name="nametxtSecFax0" onkeypress="return isNumericKey(event);" maxlength="15" clientidmode='Static' />
+                                                                            <asp:TextBox ID="txtSecFax0" runat="server" onkeypress="return isNumericKey(event);" maxlength="15" class="clsfax"></asp:TextBox>
                                                                         <br />
                                                                     </td>
                                                                 </tr>
@@ -2142,7 +2163,7 @@
                                                                         <label>
                                                                             Alt. Contact Email</label><br />
                                                                         <div class="newEmaildiv">
-                                                                            <input type='text' id="txtAltEmail0" tabindex="1" name="nametxtAltEmail0" maxlength="50" class="clsemail" clientidmode='Static' />
+                                                                            <asp:TextBox ID="txtAltEmail0" runat="server" MaxLength="50" class="clsemail"></asp:TextBox>
                                                                             <br />
                                                                             <a style="cursor: pointer" tabindex="1" data-emailtype="Alt" onclick="AddEmailRow(this)">Add New Row</a> &nbsp;&nbsp;
                                                                     <a onclick="AddEmail(this)" tabindex="1" style="cursor: pointer" data-emailtype="Alt" data-type="0">Add Email</a>
@@ -2151,7 +2172,7 @@
                                                                     <td>
                                                                         <label>
                                                                             First Name</label><br />
-                                                                        <input type='text' id="txtAltFName0" tabindex="1" name="nametxtAltFName0" maxlength="50" clientidmode='Static' />
+                                                                        <asp:TextBox ID="txtAltFName0" runat="server" class="clsfname" MaxLength="50"></asp:TextBox>
                                                                         <%--<asp:TextBox ID="txtAltFName0" runat="server" MaxLength="50"></asp:TextBox>--%>
                                                                         <br />
 
@@ -2160,25 +2181,21 @@
                                                                     <td>
                                                                         <label>
                                                                             Last Name</label><br />
-                                                                        <input type='text' id="txtAltLName0" tabindex="1" name="nametxtAltLName0" maxlength="50" clientidmode='Static' />
+                                                                        <asp:TextBox ID="txtAltLName0" runat="server" class="clslname" MaxLength="50"></asp:TextBox>
                                                                         <%--<asp:TextBox ID="txtAltLName0" runat="server" MaxLength="50"></asp:TextBox>--%>
                                                                         <br />
                                                                     </td>
                                                                     <td>
                                                                         <label>Title</label><br />
-                                                                        <select id="ddlAltTitle0" name="nameddlAltTitle0" cliendidmode="static" tabindex="1">
-                                                                            <option value="">Select</option>
-                                                                            <option value="Secretary">Secretary</option>
-                                                                            <option value="FloorSalesman">Floor salesman</option>
-                                                                            <option value="SalesAcctExecutive">Sales/acct. executive</option>
-                                                                            <option value="Manager">Manager</option>
-                                                                            <option value="Owner">Owner</option>
-                                                                            <option value="Others">Others</option>
-                                                                            <%--<option value="DM">DM</option>
-                                                                            <option value="Spouse">Spouse</option>
-                                                                            <option value="Partner">Partner</option>
-                                                                            <option value="Others">Others</option>--%>
-                                                                        </select>
+                                                                        <asp:DropDownList ID="ddlAltTitle0" runat="server" class="clstitle" >
+                                                                            <asp:ListItem Value="">Select</asp:ListItem>
+                                                                            <asp:ListItem value="Secretary">Secretary</asp:ListItem>
+                                                                            <asp:ListItem value="FloorSalesman">Floor salesman</asp:ListItem>
+                                                                            <asp:ListItem value="SalesAcctExecutive">Sales/acct. executive</asp:ListItem>
+                                                                            <asp:ListItem value="Manager">Manager</asp:ListItem>
+                                                                            <asp:ListItem value="Owner">Owner</asp:ListItem>
+                                                                            <asp:ListItem value="Others">Others</asp:ListItem>
+                                                                        </asp:DropDownList>
                                                                     </td>
                                                                     <td>
                                                                         <label>
@@ -2189,13 +2206,13 @@
                                                                             <asp:TextBox ID="txtAltContact0" TabIndex="1" runat="server" MaxLength="10" CssClass="clsmaskphone" onkeypress="return isNumericKey(event);" placeholder='___-___-____' Width="50%"></asp:TextBox>
                                                                             <asp:TextBox ID="txtAltContactExten0" TabIndex="1" runat="server" MaxLength="6" class="clsmaskphoneexten" onkeypress="return isNumericKey(event);" placeholder="Extension" Width="32%"></asp:TextBox>
                                                                             <label>Phone Type</label>
-                                                                            <select id="ddlAltPhoneType0" name="nameddlAltPhoneType0" cliendidmode="static" class="clsphonetype">
-                                                                                <option value="">Select</option>
-                                                                                <option value="Cell">Cell Phone #</option>
-                                                                                <option value="House">House Phone  #</option>
-                                                                                <option value="Work">Work Phone #</option>
-                                                                                <option value="Alt">Alt. Phone #</option>
-                                                                            </select>
+                                                                            <asp:DropDownList ID="ddlAltPhoneType0" runat="server" class="clsphonetype">
+                                                                                <asp:ListItem value="">Select</asp:ListItem>
+                                                                                <asp:ListItem value="Cell">Cell Phone #</asp:ListItem>
+                                                                                <asp:ListItem value="House">House Phone  #</asp:ListItem>
+                                                                                <asp:ListItem value="Work">Work Phone #</asp:ListItem>
+                                                                                <asp:ListItem value="Alt">Alt. Phone #</asp:ListItem>
+                                                                            </asp:DropDownList>
                                                                             <br />
                                                                             <a onclick="AddContact(this)" tabindex="1" style="cursor: pointer" data-emailtype="Alt" data-type="0">Add Contact</a>
                                                                             <br />
@@ -2204,7 +2221,7 @@
                                                                     <td>
                                                                         <label>
                                                                             Fax</label><br />
-                                                                        <input type='text' id="txtAltFax0" tabindex="1" name="nametxtAltFax0" onkeypress="return isNumericKey(event);" maxlength="15" clientidmode='Static' />
+                                                                        <asp:TextBox ID="txtAltFax0" runat="server" onkeypress="return isNumericKey(event);" maxlength="15" class="clsfax"></asp:TextBox>
                                                                         <br />
                                                                     </td>
                                                                 </tr>

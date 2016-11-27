@@ -204,6 +204,11 @@ namespace JG_Prospect.BLL
             return VendorDAL.Instance.GetVendorAddress(VendorId, TempID);
         }
 
+        public DataSet GetVendorAddressByVendorID(int VendorId)
+        {
+            return VendorDAL.Instance.GetVendorAddressByVendorID(VendorId);
+        }
+
         //public List<AutoCompleteVendor> SearchVendor(string searchString, string tableName)
         //{
         //    DataTable dt = VendorDAL.Instance.SearchVendor(searchString, tableName);

@@ -3731,7 +3731,7 @@ namespace JG_Prospect.Sr_App
             {
                 NewTempID = Convert.ToString(HttpContext.Current.Session["TempID"]);
             }
-            DataSet dsAddress = VendorBLL.Instance.GetVendorAddress(Convert.ToInt32(txtVendorId.Text), NewTempID);
+            DataSet dsAddress = VendorBLL.Instance.GetVendorAddressByVendorID(Convert.ToInt32(txtVendorId.Text));//GetVendorAddress(Convert.ToInt32(txtVendorId.Text), NewTempID);
 
             string AddressID = "0";
             if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0 && !string.IsNullOrEmpty(ds.Tables[0].Rows[0]["AddressID"].ToString()))

@@ -1205,6 +1205,25 @@ namespace JG_Prospect.DAL
             }
         }
 
+        public DataSet GetVendorAddressByVendorID(int VendorId)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("UDP_SelectVendorAddressByVendorID");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@VendorID", DbType.Int32, VendorId);
+                    DS = database.ExecuteDataSet(command);
+                    return DS;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
 
         //public DataTable SearchVendor(string searchString, string tableName)
         //{
