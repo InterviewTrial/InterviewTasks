@@ -1190,10 +1190,10 @@ namespace JG_Prospect
             DataSet DS = new DataSet();
             //DS = UserBLL.Instance.getallusers(usertype);
             DataSet ds = new DataSet();
-            DataSet dsDesignation = new DataSet();
+            
             ds = InstallUserBLL.Instance.GetAllSalesUserToExport();
             DS = InstallUserBLL.Instance.GetAllEditSalesUser();
-            dsDesignation = DesignationBLL.Instance.GetAllDesignationsForHumanResource();
+           
 
             BindPieChart(DS.Tables[0]);
 
@@ -1213,7 +1213,13 @@ namespace JG_Prospect
             //ddlDesignation.DataSource = lstDesignation;
 
             //ddlDesignation.DataBind();            
+            BindDesignations();
+        }
 
+        private void BindDesignations()
+        {
+            DataSet dsDesignation = new DataSet();
+            dsDesignation = DesignationBLL.Instance.GetAllDesignationsForHumanResource();
             if (dsDesignation.Tables.Count > 0)
             {
                 ddlDesignation.DataSource = dsDesignation.Tables[0];
@@ -2383,15 +2389,19 @@ namespace JG_Prospect
 
             DataTable dt = (DataTable)(Session["UserGridData"]);
             EnumerableRowCollection<DataRow> query = null;
+            int iSelectedDesignationID = 0;
+            if (ddlDesignation.SelectedIndex > 0) {
+                iSelectedDesignationID = string.IsNullOrEmpty(ddlDesignation.SelectedValue) ? 0 : Convert.ToInt32(ddlDesignation.SelectedValue);
+            }
             if ((ddlUserStatus.SelectedIndex != 0 || ddlDesignation.SelectedIndex != 0 || drpUser.SelectedIndex != 0 || ddlSource.SelectedIndex != 0)
                 && dt != null)
             {
                 string Status = ddlUserStatus.SelectedItem.Value;
                 query = from userdata in dt.AsEnumerable()
                         where (userdata.Field<string>("Status") == Status || ddlUserStatus.SelectedIndex == 0)
-                       && (userdata.Field<string>("Designation") == ddlDesignation.SelectedItem.Text || ddlDesignation.SelectedIndex == 0)
-                         && (userdata.Field<string>("AddedBy") == drpUser.SelectedItem.Text || drpUser.SelectedIndex == 0)
-                          && (userdata.Field<string>("Source") == ddlSource.SelectedItem.Text || ddlSource.SelectedIndex == 0)
+                        && (userdata.Field<Int32>("DesignationID") == iSelectedDesignationID || ddlDesignation.SelectedIndex == 0)
+                        && (userdata.Field<string>("AddedBy") == drpUser.SelectedItem.Text || drpUser.SelectedIndex == 0)
+                        && (userdata.Field<string>("Source") == ddlSource.SelectedItem.Text || ddlSource.SelectedIndex == 0)
                         select userdata;
                 if (query.Count() > 0)
                 {
