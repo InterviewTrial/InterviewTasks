@@ -1077,7 +1077,6 @@ namespace JG_Prospect.Sr_App
             Vendor objvendor = new Vendor();
             if (ddlVndrCategory.SelectedValue == "Select" && hidIsEditVendor.Value.Equals("true"))
             {
-
                 int VendorID = Convert.ToInt32(string.IsNullOrEmpty(txtVendorId.Text) ? "0" : txtVendorId.Text);
                 int AddressID = Convert.ToInt32(DrpVendorAddress.SelectedValue == "Select" ? "0" : DrpVendorAddress.SelectedValue);
                 LoadVendorEmails(VendorID, AddressID);
