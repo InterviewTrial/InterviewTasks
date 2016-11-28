@@ -2282,7 +2282,7 @@
                                         </div>
                                     </div>
                                 </ContentTemplate>
-                            </asp:UpdatePanel><asp:HiddenField ID="hidIsModalPopupExtender1ShowNeeded" runat="server" Value="true" />
+                            </asp:UpdatePanel>
                         </div>
                         <div id="tabs-2">
                             <p>&nbsp</p>
