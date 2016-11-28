@@ -100,6 +100,8 @@
     <Compile Include="modal\CustomerLocationPics.cs" />
     <Compile Include="modal\CustomerStatus.cs" />
     <Compile Include="modal\Customs.cs" />
+    <Compile Include="modal\Department.cs" />
+    <Compile Include="modal\Designation.cs" />
     <Compile Include="modal\NewVendorCategory.cs" />
     <Compile Include="modal\period.cs" />
     <Compile Include="modal\ProductSoldDetails.cs" />

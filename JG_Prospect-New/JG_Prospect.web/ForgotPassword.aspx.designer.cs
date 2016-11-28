@@ -31,6 +31,24 @@ namespace JG_Prospect {
         protected global::System.Web.UI.ScriptManager scriptmanager1;
         
         /// <summary>
+        /// rdCustomer control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButton rdCustomer;
+        
+        /// <summary>
+        /// rdSalesIns control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButton rdSalesIns;
+        
+        /// <summary>
         /// txtloginid control.
         /// </summary>
         /// <remarks>
@@ -47,6 +65,15 @@ namespace JG_Prospect {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator1;
+        
+        /// <summary>
+        /// validateEmail control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator validateEmail;
         
         /// <summary>
         /// btnsubmit control.

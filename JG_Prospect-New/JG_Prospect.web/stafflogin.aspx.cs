@@ -17,7 +17,7 @@ using ASPSnippets.FaceBookAPI;
 using System.Web.Script.Serialization;
 using ASPSnippets.GoogleAPI;
 using ASPSnippets.TwitterAPI;
-
+using DotNetOpenAuth.AspNet.Clients;
 using JG_Prospect.Common;
 
 namespace JG_Prospect
@@ -67,8 +67,6 @@ namespace JG_Prospect
             {
                 rdSalesIns.Checked = true;
                 Session["DesigNew"] = "";
-                pnlSignup.Visible = true;
-                btnSignUp.Visible = true;
                 if (Request.Cookies["UserName"] != null && Request.Cookies["Password"] != null)
                 {
                     txtloginid.Text = Request.Cookies["UserName"].Value;
@@ -204,8 +202,6 @@ namespace JG_Prospect
                             try
                             {
                                 InstallUserBLL.Instance.AddUserFB(username);
-                                pnlSignup.Visible = false;
-                                btnSignUp.Visible = false;
                                 Response.Redirect("~/home.aspx", true);
                                 //SendActivationLink(username);
                                 //ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Your account is successfully created')", true);
@@ -345,8 +341,6 @@ namespace JG_Prospect
                             try
                             {
                                 InstallUserBLL.Instance.AddUserFB(username);
-                                pnlSignup.Visible = false;
-                                btnSignUp.Visible = false;
                                 Response.Redirect("~/home.aspx", true);
                                 //SendActivationLink(username);
                                 //ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Your account is successfully created')", true);
@@ -492,8 +486,6 @@ namespace JG_Prospect
                                 try
                                 {
                                     InstallUserBLL.Instance.AddUserFB(username);
-                                    pnlSignup.Visible = false;
-                                    btnSignUp.Visible = false;
                                     Response.Redirect("~/home.aspx", true);
                                     //SendActivationLink(username);
                                     //ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Your account is successfully created')", true);
@@ -510,10 +502,302 @@ namespace JG_Prospect
                             ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Please enter a valid Loginid and password!');", true);
                             //  Response.Redirect("ErrorPage.aspx");
                         }
-
-                        #endregion
                     }
                 }
+                #endregion
+
+                #region Yahoo login
+                if (Session["yahoo"] != null && Convert.ToBoolean(Session["yahoo"]) == true)
+                {
+                    try
+                    {
+                        YahooOpenIdClient yahoo = new DotNetOpenAuth.AspNet.Clients.YahooOpenIdClient();
+                        var httpContextBase = new HttpContextWrapper(HttpContext.Current);
+                        var res = yahoo.VerifyAuthentication(httpContextBase);
+                        if (res.IsSuccessful)
+                        {
+                            string name, emailyahoo;
+                            name = res.ExtraData["fullName"];
+                            emailyahoo = res.ExtraData["email"];
+
+                            int isvaliduser = 0;
+                            DataSet ds = new DataSet();
+                            ds = UserBLL.Instance.getUser(emailyahoo);
+                            string AdminId = string.Empty;
+                            if (ds.Tables[0].Rows.Count > 0)
+                            {
+                                if (ds.Tables[0].Rows.Count > 0)
+                                {
+                                    Session["Username"] = ds.Tables[0].Rows[0]["Username"].ToString().Trim();
+                                    Session["loginpassword"] = ds.Tables[0].Rows[0]["Password"].ToString().Trim();
+                                    Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
+                                    AdminId = ConfigurationManager.AppSettings["AdminUserId"].ToString();
+                                    isvaliduser = UserBLL.Instance.chklogin(emailyahoo, txtpassword.Text);
+                                }
+
+                                if (isvaliduser > 0)
+                                {
+                                    Session["loginid"] = emailyahoo;
+                                    Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
+                                                                                                                //Session["loginpassword"] = txtpassword.Text.Trim();
+                                    RememberMe();
+                                    if (txtloginid.Text.Trim() == AdminId)
+                                    {
+                                        Session["AdminUserId"] = AdminId;
+                                        Session["usertype"] = "Admin";
+                                        Response.Redirect("~/Sr_App/home.aspx", true);
+                                    }
+
+                                    if (isvaliduser == 1)
+                                    {
+                                        Session["usertype"] = "Admin";
+                                        Response.Redirect("~/Sr_App/home.aspx", true);
+                                    }
+                                    else if (isvaliduser == 2)
+                                    {
+                                        Session["usertype"] = "JSE";
+                                        Response.Redirect("~/home.aspx", true);
+                                    }
+                                    else if (isvaliduser == 3)
+                                    {
+                                        Session["usertype"] = "SSE";
+                                        Response.Redirect("~/Sr_App/home.aspx", true);
+                                    }
+                                    else if (isvaliduser == 4)
+                                    {
+                                        Session["usertype"] = "MM";
+                                        Response.Redirect("~/home.aspx", true);
+                                    }
+                                    else if (isvaliduser == 5)
+                                    {
+                                        Session["usertype"] = "SM";
+                                        Response.Redirect("~/Sr_App/home.aspx", true);
+                                    }
+                                    else if (isvaliduser == 6)
+                                    {
+                                        Session["usertype"] = "AdminSec";
+                                        Response.Redirect("~/home.aspx", true);
+                                    }
+                                    else if (isvaliduser == 7)
+                                    {
+                                        Session["usertype"] = "Employee";
+                                        Response.Redirect("~/home.aspx", true);
+                                    }
+                                }
+                                else  // if installer
+                                {
+                                    ds = null;
+                                    ds = InstallUserBLL.Instance.getInstallerUserDetailsByLoginId(txtloginid.Text.Trim());
+                                    Session["Username"] = ds.Tables[0].Rows[0]["FristName"].ToString().Trim();
+                                    Session["loginpassword"] = ds.Tables[0].Rows[0]["Password"].ToString().Trim();
+                                    Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
+                                    string AdminInstallerId = ConfigurationManager.AppSettings["AdminUserId"].ToString();
+                                    int IsValidInstallerUser = InstallUserBLL.Instance.IsValidInstallerUser(txtloginid.Text.Trim(), txtpassword.Text);
+                                    if (IsValidInstallerUser > 0)
+                                    {
+                                        Session["loginid"] = txtloginid.Text.Trim();
+                                        Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
+
+                                        //Session["loginpassword"] = txtpassword.Text.Trim();
+                                        if (txtloginid.Text.Trim() == AdminInstallerId)
+                                        {
+                                            Session["AdminUserId"] = AdminInstallerId;
+                                        }
+                                        Session["usertype"] = "Installer";
+                                        RememberMe();
+                                        Response.Redirect("~/Installer/InstallerHome.aspx", true);
+                                    }
+                                    //else
+                                    //{
+                                    //    Session["loginid"] = null;
+                                    //    ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Please enter a valid Loginid and password!');", true);
+                                    //}
+                                }
+                            }
+                            else
+                            {
+                                string username = emailyahoo;
+                                //string password = txtSignupPassword.Text;
+                                string password = "";
+                                try
+                                {
+                                    InstallUserBLL.Instance.AddUserFB(username);
+                                    Response.Redirect("~/home.aspx", true);
+                                    //SendActivationLink(username);
+                                    //ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Your account is successfully created')", true);
+                                }
+                                catch (Exception ex)
+                                {
+
+                                }
+                            }
+                        }
+                        Session["yahoo"] = null;
+                    }
+                    catch (Exception ex)
+                    {
+                        //logErr.writeToLog(ex, this.Page.ToString(), Request.ServerVariables["remote_addr"].ToString());
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Please enter a valid Loginid and password!');", true);
+                        //  Response.Redirect("ErrorPage.aspx");
+                        Session["yahoo"] = null;
+                    }
+                }
+                #endregion
+
+                #region Microsoft login
+                if (Session["microsoft"] != null && Convert.ToBoolean(Session["microsoft"]) == true)
+                {
+                    try
+                    {
+                        if (Request.QueryString["error"] == "unauthorized_client")
+                        {
+                            ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('" + Request.QueryString["error_description"] + "')", true);
+                            return;
+                        }
+
+                        string appId = "00000000481C1797";
+                        string appSecrets = "cec1ShT5FFjexbtm08qv0w8";
+
+                        MicrosoftClient ms = new MicrosoftClient(appId, appSecrets);
+                        var httpContextBase = new HttpContextWrapper(HttpContext.Current);
+                        string returnUrl = Request.Url.AbsoluteUri.Split('?')[0];
+                        returnUrl = "http://jaylem.localtest.me/login.aspx";
+                        Uri authUrl = new Uri(returnUrl);
+
+                        var res = ms.VerifyAuthentication(httpContextBase, authUrl);
+
+                        if (res.IsSuccessful)
+                        {
+                            string name, emailyahoo, token;
+                            token = res.ExtraData["accesstoken"];
+                            //userData = GetUserData(token);
+
+                            name = res.ExtraData["name"];
+                            emailyahoo = res.ExtraData["username"];
+
+                            int isvaliduser = 0;
+                            DataSet ds = new DataSet();
+                            ds = UserBLL.Instance.getUser(emailyahoo);
+                            string AdminId = string.Empty;
+                            if (ds.Tables[0].Rows.Count > 0)
+                            {
+                                if (ds.Tables[0].Rows.Count > 0)
+                                {
+                                    Session["Username"] = ds.Tables[0].Rows[0]["Username"].ToString().Trim();
+                                    Session["loginpassword"] = ds.Tables[0].Rows[0]["Password"].ToString().Trim();
+                                    Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
+                                    AdminId = ConfigurationManager.AppSettings["AdminUserId"].ToString();
+                                    isvaliduser = UserBLL.Instance.chklogin(emailyahoo, txtpassword.Text);
+                                }
+
+                                if (isvaliduser > 0)
+                                {
+                                    Session["loginid"] = emailyahoo;
+                                    Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
+                                                                                                                //Session["loginpassword"] = txtpassword.Text.Trim();
+                                    RememberMe();
+                                    if (txtloginid.Text.Trim() == AdminId)
+                                    {
+                                        Session["AdminUserId"] = AdminId;
+                                        Session["usertype"] = "Admin";
+                                        Response.Redirect("~/Sr_App/home.aspx", true);
+                                    }
+
+                                    if (isvaliduser == 1)
+                                    {
+                                        Session["usertype"] = "Admin";
+                                        Response.Redirect("~/Sr_App/home.aspx", true);
+                                    }
+                                    else if (isvaliduser == 2)
+                                    {
+                                        Session["usertype"] = "JSE";
+                                        Response.Redirect("~/home.aspx", true);
+                                    }
+                                    else if (isvaliduser == 3)
+                                    {
+                                        Session["usertype"] = "SSE";
+                                        Response.Redirect("~/Sr_App/home.aspx", true);
+                                    }
+                                    else if (isvaliduser == 4)
+                                    {
+                                        Session["usertype"] = "MM";
+                                        Response.Redirect("~/home.aspx", true);
+                                    }
+                                    else if (isvaliduser == 5)
+                                    {
+                                        Session["usertype"] = "SM";
+                                        Response.Redirect("~/Sr_App/home.aspx", true);
+                                    }
+                                    else if (isvaliduser == 6)
+                                    {
+                                        Session["usertype"] = "AdminSec";
+                                        Response.Redirect("~/home.aspx", true);
+                                    }
+                                    else if (isvaliduser == 7)
+                                    {
+                                        Session["usertype"] = "Employee";
+                                        Response.Redirect("~/home.aspx", true);
+                                    }
+                                }
+                                else  // if installer
+                                {
+                                    ds = null;
+                                    ds = InstallUserBLL.Instance.getInstallerUserDetailsByLoginId(txtloginid.Text.Trim());
+                                    Session["Username"] = ds.Tables[0].Rows[0]["FristName"].ToString().Trim();
+                                    Session["loginpassword"] = ds.Tables[0].Rows[0]["Password"].ToString().Trim();
+                                    Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
+                                    string AdminInstallerId = ConfigurationManager.AppSettings["AdminUserId"].ToString();
+                                    int IsValidInstallerUser = InstallUserBLL.Instance.IsValidInstallerUser(txtloginid.Text.Trim(), txtpassword.Text);
+                                    if (IsValidInstallerUser > 0)
+                                    {
+                                        Session["loginid"] = txtloginid.Text.Trim();
+                                        Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
+
+                                        //Session["loginpassword"] = txtpassword.Text.Trim();
+                                        if (txtloginid.Text.Trim() == AdminInstallerId)
+                                        {
+                                            Session["AdminUserId"] = AdminInstallerId;
+                                        }
+                                        Session["usertype"] = "Installer";
+                                        RememberMe();
+                                        Response.Redirect("~/Installer/InstallerHome.aspx", true);
+                                    }
+                                    //else
+                                    //{
+                                    //    Session["loginid"] = null;
+                                    //    ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Please enter a valid Loginid and password!');", true);
+                                    //}
+                                }
+                            }
+                            else
+                            {
+                                string username = emailyahoo;
+                                //string password = txtSignupPassword.Text;
+                                string password = "";
+                                try
+                                {
+                                    InstallUserBLL.Instance.AddUserFB(username);
+                                    Response.Redirect("~/home.aspx", true);
+                                    //SendActivationLink(username);
+                                    //ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Your account is successfully created')", true);
+                                }
+                                catch (Exception ex)
+                                {
+
+                                }
+                            }
+                        }
+                        Session["microsoft"] = null;
+                    }
+                    catch (Exception ex)
+                    {
+                        //logErr.writeToLog(ex, this.Page.ToString(), Request.ServerVariables["remote_addr"].ToString());
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Please enter a valid Loginid and password!');", true);
+                        //  Response.Redirect("ErrorPage.aspx");
+                        Session["microsoft"] = null;
+                    }
+                }
+                #endregion
             }
         }
 
@@ -733,6 +1017,12 @@ namespace JG_Prospect
                         }
                         Response.Redirect(strRedirectUrl);
                     }
+                    else
+                    {
+                        Session["loginid"] = null;
+                        Session[SessionKey.Key.GuIdAtLogin.ToString()] = null;
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Check the UserName,password or its status to login.');", true);
+                    }
                 }
                 else if (rdCustomer.Checked)
                 {
@@ -744,6 +1034,10 @@ namespace JG_Prospect
                     {
                         if (Convert.ToString(ds.Tables[0].Rows[0][0]) != "")
                         {
+                            Session["loginid"] = txtloginid.Text.Trim();
+                            Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
+                            Session["loginpassword"] = txtpassword.Text.Trim();
+                            Session["Username"] = ds.Tables[0].Rows[0]["CustomerName"].ToString();
                             // Response.Redirect("~/Customer_Panel.php?Cust_Id=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
                             // Response.Redirect("50.191.13.206/JGP/Customer_Panel.php?Cust_Id=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
                             // Uri url = new Uri("http://50.191.13.206:82/JGP/Customer_Panel.php");                          
@@ -751,7 +1045,8 @@ namespace JG_Prospect
                             string host = uri.Scheme + Uri.SchemeDelimiter + uri.Host + ":82";
                             //  Response.Redirect(host + "/JGP/Customer_Panel.php?Cust_Id=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
 
-                            Response.Redirect("~/Customer_Panel.php?Cust_Id=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
+                            //Response.Redirect("~/Customer_Panel.php?Cust_Id=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
+                            Response.Redirect("~/Sr_App/Customer_Profile.aspx?CustomerId=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
                         }
                     }
                     else
@@ -781,65 +1076,6 @@ namespace JG_Prospect
         {
             //forgotpassword.Show();
             Response.Redirect("ForgotPassword.aspx");
-        }
-
-        protected void btnSignUp_Click(object sender, EventArgs e)
-        {
-            string username = txtSignupEmail.Text;
-            string password = txtSignupPassword.Text;
-            string PhoneNo = txtPhoneNumber.Text;
-            string DOB = "";//txtDateOfBith.Text;
-            try
-            {
-                if (rdoEmp.Checked)
-                {
-                    DataSet ds = InstallUserBLL.Instance.CheckRegistration(username, PhoneNo);
-                    if (ds.Tables[0].Rows.Count > 0)
-                    {
-                        ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('User name or phone number already exists')", true);
-                        return;
-                    }
-                    else
-                    {
-                        InstallUserBLL.Instance.AddUser(username, password, PhoneNo, DOB);
-                        pnlSignup.Visible = false;
-                        btnSignUp.Visible = false;
-                        SendActivationLink(username);
-                        ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Your account is successfully created')", true);
-                        return;
-                    }
-                }
-                else if (rdoCustomer.Checked)
-                {
-                    DataSet ds = InstallUserBLL.Instance.CheckCustomerRegistration(username, PhoneNo);
-                    if (ds.Tables[0].Rows.Count > 0)
-                    {
-                        ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('User name or phone number already exists')", true);
-                        return;
-                    }
-                    else
-                    {
-                        InstallUserBLL.Instance.AddCustomer(username, password, PhoneNo, DOB);
-                        pnlSignup.Visible = false;
-                        btnSignUp.Visible = false;
-                        SendActivationLink(username);
-
-                        //Clear All field after registration....
-                        txtSignupEmail.Text = string.Empty;
-                        txtPhoneNumber.Text = string.Empty;
-                        txtSignupPassword.Text = string.Empty;
-                        txtSignupCPassword.Text = string.Empty;
-                        //txtDateOfBith.Text = string.Empty;
-                        ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Your account is successfully created')", true);
-                        return;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Your account is successfully created')", true);
-                return;
-            }
         }
 
         protected void btnSubForgotPassword_Click(object sender, EventArgs e)
@@ -889,7 +1125,6 @@ namespace JG_Prospect
         {
             Session["facebook"] = true;
             FaceBookConnect.Authorize("user_photos,email", Request.Url.AbsoluteUri.Split('?')[0]);
-
         }
 
         protected void ImageButton2_Click(object sender, ImageClickEventArgs e)
@@ -909,22 +1144,29 @@ namespace JG_Prospect
 
         protected void ImageButton5_Click(object sender, ImageClickEventArgs e)
         {
-            //DotNetOpenAuth
+            Session["microsoft"] = true;
+            string appId = "00000000481C1797";
+            string appSecrets = "cec1ShT5FFjexbtm08qv0w8";
+            string returnUrl = Request.Url.AbsoluteUri.Split('?')[0];
+            returnUrl = "http://jaylem.localtest.me/login.aspx";
 
+            MicrosoftClient ms = new DotNetOpenAuth.AspNet.Clients.MicrosoftClient(appId, appSecrets);
+            Uri authUrl = new Uri(returnUrl);
+            var httpContextBase = new HttpContextWrapper(HttpContext.Current);
+            ms.RequestAuthentication(httpContextBase, authUrl);
         }
 
         protected void ImageButton4_Click(object sender, ImageClickEventArgs e)
         {
             Session["yahoo"] = true;
-            string consumerKey = "dj0yJmk9SFdTcU10ejdiZjg0JmQ9WVdrOWRqWm9jRWR4TXpBbWNHbzlNQS0tJnM9Y29uc3VtZXJzZWNyZXQmeD0yNQ--";
+            string consumerKey = ConfigurationManager.AppSettings["YahooConsumerKey"];
+            string consumerSecret = ConfigurationManager.AppSettings["YahooConsumerSecret"];
             string returnUrl = Request.Url.AbsoluteUri.Split('?')[0];
 
-
-            //var v = "https://api.login.yahoo.com/oauth/v2/get_request_token?oauth_nonce=123456789&oauth_timestamp=1257965367&oauth_consumer_key=ef1uGeq4fP9vbnDXQAtlN0IcKvY8RTef0MztKJfBRYacPiuYmQXFdi10DOU3WSDVfn7MQw5basdrn92urX47wlD3F6G4oOA6JHE6&oauth_signature_method=plaintext&oauth_signature=1e782b9c13315e30d2fbac12348942cc9db674f2%26&oauth_version=1.0&xoauth_lang_pref=en-us&oauth_callback=http://mysite.com/callbackurl.aspx"
-            /*Sending User To Authorize Access Page*/
-            string url = "https://api.login.yahoo.com/oauth2/request_auth?client_id=" + consumerKey + "&redirect_uri=" + returnUrl + "&response_type=code&language=en-us";
-            Response.Redirect(url);
-            /*End*/
+            YahooOpenIdClient yahoo = new DotNetOpenAuth.AspNet.Clients.YahooOpenIdClient();
+            Uri authUrl = new Uri(returnUrl);
+            var httpContextBase = new HttpContextWrapper(HttpContext.Current);
+            yahoo.RequestAuthentication(httpContextBase, authUrl);
         }
 
         protected void rdUserType_CheckedChanged(object sender, EventArgs e)
@@ -982,38 +1224,6 @@ namespace JG_Prospect
             }
             Response.Cookies["UserName"].Value = txtloginid.Text.Trim();
             Response.Cookies["Password"].Value = txtpassword.Text.Trim();
-        }
-
-        private void SendActivationLink(string username)
-        {
-            string str_Body = "";
-            string activationLink = "";
-            string strEmailId = System.Configuration.ConfigurationManager.AppSettings["ForgotPassEmail"].ToString();
-            string strPass = System.Configuration.ConfigurationManager.AppSettings["ForgotPass"].ToString();
-            username = HttpUtility.UrlEncode(Encrypt(username));
-            str_Body = "Hello,</br></br>Your registration to the JM Grove Construction is successful.To activate your account click on the following link</br>";
-            activationLink = System.Configuration.ConfigurationManager.AppSettings["Activation"].ToString() + "?UserId=" + username;
-            str_Body = str_Body + "<a href = '" + activationLink + "'>Click here to activate your account.</a>";
-            str_Body = str_Body + "</br></br>Thanks & Regards";
-            str_Body = str_Body + "</br></br>JM Grove Constructions";
-            //using (MailMessage mm = new MailMessage("hr@jmgrove.com", txtSignupEmail.Text.Trim()))
-            using (MailMessage mm = new MailMessage(strEmailId, txtSignupEmail.Text))
-            {
-                mm.Subject = "JM Grove Construction:Forgot Password";
-                mm.Body = str_Body;
-                mm.IsBodyHtml = true;
-                SmtpClient smtp = new SmtpClient();
-                //smtp.Host = "mail.jmgroveconstruction.com";
-                smtp.Host = "smtp.gmail.com";
-                smtp.EnableSsl = true;
-                NetworkCredential NetworkCred = new NetworkCredential(strEmailId, strPass);
-                smtp.UseDefaultCredentials = true;
-                smtp.Credentials = NetworkCred;
-                //smtp.Port = 25;
-                smtp.Port = 25;
-                smtp.Send(mm);
-                //ClientScript.RegisterStartupScript(GetType(), "alert", "alert('Email sent.');", true);
-            }
         }
 
         #endregion

@@ -18,13 +18,21 @@ namespace JG_Prospect
             if (!IsPostBack)
             {
                 txtloginid.Text = "";
+                rdCustomer.Checked = true;
             }
         }
 
         protected void btnsubmit_Click(object sender, EventArgs e)
         {
             string password = "";
-            password = InstallUserBLL.Instance.GetPassword(txtloginid.Text);
+            if (rdCustomer.Checked)
+            {
+                password = InstallUserBLL.Instance.GetCustomerPassword(txtloginid.Text);
+            }
+            else
+            {
+                password = InstallUserBLL.Instance.GetPassword(txtloginid.Text);
+            }
             string strEmailId = System.Configuration.ConfigurationManager.AppSettings["ForgotPassEmail"].ToString();
             string strPass = System.Configuration.ConfigurationManager.AppSettings["ForgotPass"].ToString();
             if (password != "")
@@ -51,10 +59,18 @@ namespace JG_Prospect
                     smtp.Credentials = new System.Net.NetworkCredential("qat2015team@gmail.com", "q$7@wt%j*65ba#3M@9P6");
                     //smtp.Port = 25;
                     smtp.Port = 25;
-                    smtp.Send(mm);
+                    try
+                    {
+                        smtp.Send(mm);
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Password send to your registered email id.');window.location ='login.aspx';", true);
+                    }
+                    catch(Exception ex)
+                    {
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Forgot password send to your registered email id is fail.');window.location ='login.aspx';", true);
+                    }
                     //ClientScript.RegisterStartupScript(GetType(), "alert", "alert('Email sent.');", true);
                 }
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Password send to your registered email id.');window.location ='login.aspx';", true);
+                
                 //return;
             }
             else

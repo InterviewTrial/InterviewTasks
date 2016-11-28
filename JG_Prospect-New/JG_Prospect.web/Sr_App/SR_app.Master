@@ -531,6 +531,7 @@
                                     <li id="li_hrreports" runat="server"><a href="~/Sr_App/HRReports.aspx" runat="server">Human Resource</a></li>
                                     <li id="li_installcreateprospect" runat="server"><a href="~/Sr_App/InstallCreateProspect.aspx" runat="server">Install Prospect</a></li>
                                     <li id="li_statusemailtemplate" runat="server" visible="false"><a href="#" runat="server">Email Templates</a></li>
+                                    <li id="li_department" runat="server"><a href="~/Sr_App/DepartmentList.aspx" runat="server">Department</a></li>
                                 </ul>
                             </li>
                         </ul>

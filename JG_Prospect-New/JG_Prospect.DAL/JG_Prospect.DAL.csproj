@@ -69,6 +69,7 @@
     <Compile Include="AdminDAL.cs" />
     <Compile Include="CustomDAL.cs" />
     <Compile Include="Database\MSSQLDataBase.cs" />
+    <Compile Include="DepartmentDAL.cs" />
     <Compile Include="DesignationDAL.cs" />
     <Compile Include="DLLAttendence.cs" />
     <Compile Include="existing_customerDAL.cs" />

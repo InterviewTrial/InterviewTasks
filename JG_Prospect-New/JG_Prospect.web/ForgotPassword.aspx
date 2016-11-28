@@ -51,12 +51,21 @@
                                         </tr>
                                         <tr>
                                             <td>
-                                                <label>Login Id Or Phone number<span>*</span></label>
+                                                <label>User Type.<span>*</span></label>
+                                                <asp:RadioButton ID="rdCustomer" runat="server" Style="width: 10% !important;" Text="Customer" GroupName="Login" />
+                                                <asp:RadioButton ID="rdSalesIns" runat="server" Style="width: 10% !important;" Text="Staff" GroupName="Login"  />
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
+                                                <label style="line-height:14px !important;">Login Id (Email)<span>*</span></label>
                                                 <asp:TextBox ID="txtloginid" runat="server" TabIndex="1" Width="312px"></asp:TextBox>
                                                 <br />
                                                 <label></label>
                                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ValidationGroup="Login"
-                                                    ControlToValidate="txtloginid" Display="Dynamic" ForeColor="Red">Please Enter UserName Or Phone number.</asp:RequiredFieldValidator>
+                                                    ControlToValidate="txtloginid" Display="Dynamic" ForeColor="Red">Please enter Username.</asp:RequiredFieldValidator>
+                                                <asp:RegularExpressionValidator ID="validateEmail" runat="server" ValidationGroup="Login" ErrorMessage="Please enter valid email address."
+                                                    ControlToValidate="txtloginid" Display="Dynamic" ForeColor="Red" ValidationExpression="^([\w\.\-]+)@([\w\-]+)((\.(\w){2,3})+)$" />
                                             </td>
                                         </tr>
                                     </table>
