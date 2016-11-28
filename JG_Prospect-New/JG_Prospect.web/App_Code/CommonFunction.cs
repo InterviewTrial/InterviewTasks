@@ -472,6 +472,37 @@ namespace JG_Prospect
             }
         }
 
+        public static string UserProfileImg
+        {
+            get
+            {
+                if (HttpContext.Current.Session["UserProfileImg"] == null || HttpContext.Current.Session["UserProfileImg"].ToString() == "")
+                    return "../img/JG-Logo-white.gif";
+                else
+                    return Convert.ToString(HttpContext.Current.Session["UserProfileImg"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["UserProfileImg"] = value;
+            }
+        }
+
+        public static string LoginUserID
+        {
+            get
+            {
+                if (HttpContext.Current.Session["LoginUserID"] == null)
+                    return null;
+                return Convert.ToString(HttpContext.Current.Session["LoginUserID"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["LoginUserID"] = value;
+            }
+        }
+
+
+
         public static bool? IsInstallUser
         {
             get

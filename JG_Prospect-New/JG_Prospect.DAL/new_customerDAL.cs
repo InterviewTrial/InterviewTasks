@@ -583,7 +583,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public string CheckDuplicateSalesUser(string ValForValidation, int ValidationType, int UserId)
+        public string CheckDuplicateSalesUser(string ValForValidation, int ValidationType, int UserId,int PhoneTypeID)
         {
             DataSet dsResult = new DataSet();
             try
@@ -595,6 +595,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@CurrentID", DbType.Int32, UserId);
                     database.AddInParameter(command, "@DataForValidation", DbType.String, ValForValidation);
                     database.AddInParameter(command, "@DataType", DbType.Int32, ValidationType);
+                    database.AddInParameter(command, "@PhoneTypeID", DbType.Int32, ValidationType);
 
                     dsResult = database.ExecuteDataSet(command);
 
