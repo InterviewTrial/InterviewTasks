@@ -903,6 +903,7 @@ namespace JG_Prospect
                                 Session["Username"] = ds.Tables[0].Rows[0]["FristName"].ToString().Trim();
                                 JGSession.UserProfileImg = ds.Tables[0].Rows[0]["Picture"].ToString();
                                 Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
+                                JGSession.LoginUserID = ds.Tables[0].Rows[0]["Id"].ToString();
                                 // Session["UserTypeNew"] = ds.Tables[0].Rows[0]["usertype"].ToString().Trim();
                                 Session["DesigNew"] = ds.Tables[0].Rows[0]["Designation"].ToString().Trim();
                             }

@@ -23,7 +23,10 @@ namespace JG_Prospect.Sr_App
             {
                 lbluser.Text = Session["Username"].ToString();
                 imgProfile.ImageUrl = JGSession.UserProfileImg;
-                hLnkEditProfil.NavigateUrl = "/Sr_App/CreateSalesUser.aspx?ID=" + JGSession.LoginUserID;
+                if (JGSession.LoginUserID != null)                
+                    hLnkEditProfil.NavigateUrl = "/Sr_App/CreateSalesUser.aspx?ID=" + JGSession.LoginUserID;
+                else
+                    hLnkEditProfil.NavigateUrl = "#";
 
                 if ((string)Session["usertype"] == "SSE")
                 {
