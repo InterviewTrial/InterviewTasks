@@ -40,15 +40,15 @@ namespace JG_Prospect.Sr_App
         {
             if (!IsPostBack)
             {
-                if (Session["loginid"] == null)
+                if (Session["loginid"] == null && Session["usertype"] == null)
                 {
                     ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('You have to login first');", true);
                     Response.Redirect("~/login.aspx?returnurl=" + Request.Url.PathAndQuery);
                 }
-                //else if (Session["usertype"].ToString() != "Admin")
-                //{
-                //    Response.Redirect("~/home.aspx", true);
-                //}
+                else if (Session["usertype"] != null && Session["usertype"].ToString() != "Admin")
+                {
+                    Response.Redirect("~/home.aspx", true);
+                }
                 else
                 {
                     if (Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] != null)
