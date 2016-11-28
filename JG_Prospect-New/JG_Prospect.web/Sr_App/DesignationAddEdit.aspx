@@ -27,7 +27,7 @@
             <li><a href="CallSheet.aspx">Call Sheet</a></li>
         </ul>
         <!-- Tabs starts -->
-        <h1>Designation Add/Edit</h1>
+        <h1>Designation</h1>
         <div class="form_panel_custom">
             <ul>
                 <li></li>
