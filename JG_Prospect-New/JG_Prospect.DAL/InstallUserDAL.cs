@@ -262,6 +262,50 @@ namespace JG_Prospect.DAL
             return tupResult;
         }
 
+        public string AddTouchPointLogRecord(int loginUserID, int userID, string loginUserInstallID, DateTime LogTime, string changeLog)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("Sp_InsertTouchPointLog");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@userID", DbType.Int32, userID);
+                    database.AddInParameter(command, "@loginUserID", DbType.Int32, loginUserID);
+                    database.AddInParameter(command, "@loginUserInstallID", DbType.String, loginUserInstallID);
+                    database.AddInParameter(command, "@LogTime", DbType.DateTime, LogTime);
+                    database.AddInParameter(command, "@changeLog", DbType.String, changeLog);
+                    
+                    string lResult = database.ExecuteScalar(command).ToString();
+                    return lResult;
+                }
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
+
+        public DataSet GetTouchPointLogDataByUserID(int userID)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("Sp_GetTouchPointLogDataByUserID");
+                    database.AddInParameter(command, "@userID", DbType.Int32, userID);
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+                    return returndata;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public string AddUserPhone(bool isPrimaryPhone, string phoneText, int phoneType, int userID)
         {
             try
