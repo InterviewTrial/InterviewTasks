@@ -274,6 +274,37 @@
         //http://preview.tinyurl.com/prugz6k
 
         $(document).ready(function () {
+
+            $('.tblGeneral td').hide();
+            $('#btnGeneralMinus').hide();
+
+            $('.tblSkillAssessment td').hide();
+            $('#btnSkillAssMinusNew').hide();
+
+            $("#btnGeneralMinus").click(function () {
+                $('.tblGeneral td').hide("slow");
+                $('#btnGeneralPlus').show();
+                $('#btnGeneralMinus').hide();
+            });
+            $("#btnGeneralPlus").click(function () {                
+                $(".tblGeneral td").show("slow");
+                $('#btnGeneralPlus').hide();
+                $('#btnGeneralMinus').show();                
+            });
+
+
+
+            $("#btnSkillAssMinusNew").click(function () {
+                $('.tblSkillAssessment td').hide("slow");
+                $('#btnSkillAssPlusNew').show();
+                $('#btnSkillAssMinusNew').hide();
+            });
+            $("#btnSkillAssPlusNew").click(function () {
+                $(".tblSkillAssessment td").show("slow");
+                $('#btnSkillAssPlusNew').hide();
+                $('#btnSkillAssMinusNew').show();
+            });
+
             //============$ Formation for sarlary =======START======
 
             $('#<%=txtSalaryRequirments.ClientID%>').on('input', function (e) {            
@@ -801,8 +832,14 @@
 
     </script>
     <style type="text/css">
-
-
+        .formCtrl {
+            padding: 5px;
+            border-radius: 5px;
+            border: #b5b4b4 1px solid;
+            margin-left: 0;
+            margin-right: 0;
+            margin-bottom: 0;
+        }
         .PrimaryPhonechk {
             display      : inline-block;
             margin-left  : -28px;
@@ -947,23 +984,7 @@
             return false;
         }
     </script>
-    <%-- <script>
-        function AssemblyFileUpload_Started(sender, args) {
-            var filename = args.get_fileName();
-            var ext = filename.substring(filename.lastIndexOf(".") + 1);
-            if (ext != 'png' && ext != 'jpg' && ext != 'bmp') {
-                throw {
-                    name: "Invalid File Type",
-                    level: "Error",
-                    message: "Invalid File Type (Only .png)",
-                    htmlMessage: "Invalid File Type (Only .png,.jpg and bmp)"
-                }
-                return false;
-            }
-            return true;
-        }
-
-</script>--%>
+     
     <style type="text/css">
         .Autocomplete {
             overflow: auto;
@@ -1323,11 +1344,12 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colspan="1" style="vertical-align:top;">
+                                    <td colspan="1" style="vertical-align:top;padding-top:2px;">
                                         <label>Designation<span>*</span></label>
                                         <asp:DropDownList Width="160px" ID="ddldesignation" AppendDataBoundItems="true" TabIndex="508" runat="server" ClientIDMode="Static" AutoPostBack="True" OnSelectedIndexChanged="ddldesignation_SelectedIndexChanged1">
+                                            <asp:ListItem Text="--Select--" Value="0" Selected="True"></asp:ListItem>
                                             <asp:ListItem Text="Admin" Value="Admin"></asp:ListItem>
-                                            <asp:ListItem Text="Jr. Sales" Value="Jr. Sales" Selected="True"></asp:ListItem>
+                                            <asp:ListItem Text="Jr. Sales" Value="Jr. Sales"></asp:ListItem>
                                             <asp:ListItem Text="Jr Project Manager" Value="Jr Project Manager"></asp:ListItem>
                                             <asp:ListItem Text="Office Manager" Value="Office Manager"></asp:ListItem>
                                             <asp:ListItem Text="Recruiter" Value="Recruiter"></asp:ListItem>
@@ -1362,10 +1384,11 @@
 
                                     </td>
                                     <td colspan="1" style="vertical-align:top;">
-                                        Position Applied For<label><span>*</span></label>
+                                        Position Applied For<label style="padding-top: 0px;"><span>*</span></label>
                                         <asp:DropDownList Width="160" ID="ddlPositionAppliedFor"  TabIndex="509" AppendDataBoundItems="true" runat="server" ClientIDMode="Static" AutoPostBack="false" >
+                                            <asp:ListItem Text="--Select--" Value="0" Selected="True"></asp:ListItem>
                                             <asp:ListItem Text="Admin" Value="Admin"></asp:ListItem>
-                                            <asp:ListItem Text="Jr. Sales" Value="Jr. Sales" Selected="True"></asp:ListItem>
+                                            <asp:ListItem Text="Jr. Sales" Value="Jr. Sales"></asp:ListItem>
                                             <asp:ListItem Text="Jr Project Manager" Value="Jr Project Manager"></asp:ListItem>
                                             <asp:ListItem Text="Office Manager" Value="Office Manager"></asp:ListItem>
                                             <asp:ListItem Text="Recruiter" Value="Recruiter"></asp:ListItem>
@@ -1434,7 +1457,6 @@
                                         Salary Requirments
                                         <br />
                                         <asp:TextBox ID="txtSalaryRequirments" TabIndex="514" runat="server"></asp:TextBox> / Year
-                                        
                                     </td>
                                     <td colspan="3">
                                             Zip<span><asp:Label ID="lblReqZip" runat="server" Text="*" TabIndex="515" ForeColor="Blue"></asp:Label></span>                                        
@@ -1458,23 +1480,54 @@
                             </table>
                         </li>
                         <li style="width: 97%;">
-                            <asp:Panel ID="touchPointlogPanel" runat="server">
+                             
 
                         <div class="grid">
-                            <table cellspacing="0" rules="all" border="1" style=" border-collapse: collapse;">
+                            <div class="clsOverFlow">
+                            <asp:GridView ID="gvTouchPointLog" runat="server" ShowHeaderWhenEmpty="true" EmptyDataRowStyle-HorizontalAlign="Center"
+                        HeaderStyle-BackColor="Black" HeaderStyle-ForeColor="Black" BackColor="White" EmptyDataRowStyle-ForeColor="Black"
+                        EmptyDataText="No Touch Point log available!" CssClass="table" Width="90%" CellSpacing="0" CellPadding="0"
+                        AutoGenerateColumns="False" GridLines="Vertical" DataKeyNames="UserTouchPointLogID">
+                        <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
+                        <HeaderStyle CssClass="trHeader" />
+                        <RowStyle CssClass="FirstRow" />
+                        <AlternatingRowStyle CssClass="AlternateRow " />
+                        <Columns>
+                            <asp:TemplateField HeaderText="User Id"  HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center">
+                                <ItemTemplate>
+                                    <asp:HyperLink runat="server" ForeColor="Blue"
+                                        NavigateUrl='<%# Eval("UpdatedByUserID", "CreateSalesUser.aspx?id={0}") %>'
+                                        Text='<%# Eval("UpdatedUserInstallID")%>' />
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            
+                            <asp:TemplateField HeaderText="Date & Time" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center">
+                                <ItemTemplate>
+                                    <%#Eval("ChangeDateTime")%>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderText="Note / Status" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Left">
+                                <ItemTemplate>
+                                    <%#Eval("LogDescription")%>
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                        </Columns>
+                    </asp:GridView>
+                            
+                            <%--<table cellspacing="0" rules="all" border="1" style=" border-collapse: collapse;">
                                 <tr>
                                     <th style="width: 40px;">Ref #:</th>
                                     <th style="width: 125px;">User Id</th>
                                     <th style="width: 135px;">Date & Time</th>
                                     <th>Note / Status</th>
                                 </tr>
-                            </table>
+                            </table>--%>
                             <%--  --%>
-                            <div class="clsOverFlow">
+                            
 
-                                <asp:UpdatePanel ID="UpdatePanel5" runat="server">
+                               <%-- <asp:UpdatePanel ID="UpdatePanel5" runat="server">
                                     <ContentTemplate>
-                                        <%--<asp:Panel ID="pnlAddress" runat="server"></asp:Panel>--%>
+                                        
                                         <asp:PlaceHolder runat="server" ID="PlaceHolder1"></asp:PlaceHolder>
                                         <asp:GridView ID="grdTouchPointLog" runat="server" Width="100%" AutoGenerateColumns="false" CssClass="GridView1 clsFixWidth"
                                             ShowHeader="false" OnRowDataBound="grdTouchPointLog_RowDataBound">
@@ -1488,9 +1541,10 @@
                                     </ContentTemplate>
                                     <Triggers>
                                         <asp:AsyncPostBackTrigger ControlID="btnAddNotes" />
-                                    </Triggers>
-                                    <%--   <asp:Button ID="btnAddNotes" runat="server" Text="Add Notes" OnClick="btnAddNotes_Click" ClientIDMode="Static" />--%>
-                                </asp:UpdatePanel>
+                                    </Triggers>                                   
+                                </asp:UpdatePanel>--%>
+
+                                <%--   <asp:Button ID="btnAddNotes" runat="server" Text="Add Notes" OnClick="btnAddNotes_Click" ClientIDMode="Static" />--%>
 
                             </div>
                         </div>
@@ -1525,14 +1579,80 @@
                                 </td>
                             </tr>
                         </table>
+                                <table width="100%" style="height: 50px;">
+                                    <tr>
+                                        <td class="auto-style10" style="width: 60px;">
+                                            <%--<asp:Button ID="btnPlusNew" runat="server" Text="+" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" OnClick="btnPlusNew_Click" />
+                                            <asp:Button ID="btnMinusNew" runat="server" Text="-" OnClick="btnMinusNew_Click" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" />--%>
+                                            <input type="button"  id="btnSkillAssPlusNew"  value="+" style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" />
+                                            <input type="button" id="btnSkillAssMinusNew"  value="-"  style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" />
+                                        </td>
+                                        <td style="font-weight: bold; font-size: large">Skill Assessment</td>
+                                    </tr>
+                                </table>
+
+                                <table id="tblSkillAssessment" class="tblSkillAssessment"> 
+                                        <tr>
+                                            <td style="font-size: large; font-weight: bold">Admin Sales Skill assesment<br />
+                                                <br />
+                                            </td>
+                                        </tr>
+                                        
+                                        <tr>
+                                            <td class="auto-style15">Are you computer literate?  
+                                                        <br />
+                                                <br />
+                                                <asp:RadioButton ID="rdoCompLitYes" runat="server" Text="Yes" GroupName="CompLit" /><%--TabIndex="188"--%>
+                                                <asp:RadioButton ID="rdoCompLitNo" runat="server" Text="No" GroupName="CompLit" /><%--TabIndex="189"--%> 
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="auto-style15">FELONY or DUI charges?  
+                                                        <br />
+                                                <br />
+                                                <asp:RadioButton ID="rdoFELONYYes" runat="server" Text="Yes" GroupName="FELONY" /><%--TabIndex="188"--%>
+                                                <asp:RadioButton ID="rdoFELONYNo" runat="server" Text="No" GroupName="FELONY" /><%--TabIndex="189" --%>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="auto-style15">
+                                                <label>Salary Requirements</label>
+                                                &nbsp;&nbsp;
+                                                        <asp:TextBox ID="txtSalRequirement" onkeypress="return isNumericKey(event);" runat="server" Width="194px"></asp:TextBox><%--TabIndex="197"--%>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="auto-style15">What is your short term availability
+                                        <br />
+                                                <br />
+                                                <asp:TextBox ID="txtShortTermAvail" runat="server" Width="251px"></asp:TextBox>
+                                                <%--TabIndex="197"--%>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="auto-style15">Why are you the best candidate for the job?
+                                        <br />
+                                                <br />
+                                                <asp:TextBox ID="txtWhyBest" runat="server" Width="251px"></asp:TextBox><%-- TabIndex="197"--%>
+                                            </td>
+                                        </tr>
+                                    
+                                </table>
                         <br />
-                    </asp:Panel>
+                     
                         </li>
                         <li style="width: 99%;">
                             <table border="0" cellspacing="0" cellpadding="0" style="margin-left: 0;">
                                 <tr>
-                                    <td class="tr-RadioButton">
-                                        <%--Have you previously worked for or applied at j.m grove construction or supply?--%>
+                                    <td>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;
+                                    </td>
+                                    <td>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="tr-RadioButton">                                        
                                         Have you previously worked for J.M Grove ? &nbsp;&nbsp;&nbsp;&nbsp;
                                         <asp:RadioButton Width="45px" ID="rdoJMApplyYes" runat="server" Text="Yes" GroupName="JMApply" />
                                         <asp:RadioButton Width="45px" ID="rdoJMApplyNo" runat="server" Text="No" GroupName="JMApply" />
@@ -1586,15 +1706,7 @@
                             <li style="width: 100%;">
                                 <%--<asp:UpdatePanel ID="UpdatePanel21" runat="server">
                             <ContentTemplate>--%>
-                                <table width="100%" style="height: 50px;">
-                                    <tr>
-                                        <td class="auto-style10" style="width: 60px;">
-                                            <asp:Button ID="btnPlusNew" runat="server" Text="+" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" OnClick="btnPlusNew_Click" /><%--TabIndex="171" --%>
-                                            <asp:Button ID="btnMinusNew" runat="server" Text="-" OnClick="btnMinusNew_Click" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" /><%--TabIndex="172"--%>
-                                        </td>
-                                        <td style="font-weight: bold; font-size: large">Skill Assessment</td>
-                                    </tr>
-                                </table>
+                                
                                 <%--</ContentTemplate>
                             <Triggers>
                                 <asp:AsyncPostBackTrigger ControlID="btnPlusNew" EventName="Click" />
@@ -1687,50 +1799,7 @@
                                         <asp:TextBox ID="txtPrinciple" runat="server" TextMode="MultiLine" Width="361px" TabIndex="205" Height="94px"></asp:TextBox>
                                     </td>
                                 </tr>--%>
-                                        <tr>
-                                            <td style="font-size: large; font-weight: bold">Admin Sales Skill assesment<br />
-                                                <br />
-                                            </td>
-                                        </tr>
                                         
-                                        <tr>
-                                            <td class="auto-style15">Are you computer literate?  
-                                                        <br />
-                                                <br />
-                                                <asp:RadioButton ID="rdoCompLitYes" runat="server" Text="Yes" GroupName="CompLit" /><%--TabIndex="188"--%>
-                                                <asp:RadioButton ID="rdoCompLitNo" runat="server" Text="No" GroupName="CompLit" /><%--TabIndex="189"--%> 
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="auto-style15">FELONY or DUI charges?  
-                                                        <br />
-                                                <br />
-                                                <asp:RadioButton ID="rdoFELONYYes" runat="server" Text="Yes" GroupName="FELONY" /><%--TabIndex="188"--%>
-                                                <asp:RadioButton ID="rdoFELONYNo" runat="server" Text="No" GroupName="FELONY" /><%--TabIndex="189" --%>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="auto-style15">
-                                                <label>Salary Requirements</label>
-                                                &nbsp;&nbsp;
-                                                        <asp:TextBox ID="txtSalRequirement" onkeypress="return isNumericKey(event);" runat="server" Width="194px"></asp:TextBox><%--TabIndex="197"--%>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="auto-style15">What is your short term availability
-                                        <br />
-                                                <br />
-                                                <asp:TextBox ID="txtShortTermAvail" runat="server" Width="251px"></asp:TextBox>
-                                                <%--TabIndex="197"--%>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="auto-style15">Why are you the best candidate for the job?
-                                        <br />
-                                                <br />
-                                                <asp:TextBox ID="txtWhyBest" runat="server" Width="251px"></asp:TextBox><%-- TabIndex="197"--%>
-                                            </td>
-                                        </tr>
                                         <tr>
                                             <td class="auto-style15" style="font-size: large; font-weight: bold">Recruiter Assesment
                                             </td>
@@ -2578,7 +2647,165 @@
                     </asp:Panel>
 
                     <%--New Hire , Fingure Print Report -- END--%>
+                    <ul style="margin-bottom: 10px;">
+                        <li style="width: 99%;">
+                            <span class="auto-style15" style="font-size: large; font-weight: bold">
+                                <input id ="btnGeneralPlus" class="formCtrl" type="button" value="+" style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" />
+                                <input id ="btnGeneralMinus" class="formCtrl" type="button" value="-" style="background: url(img/main-header-bg.png) repeat-x; color: #fff;"  />
+                                
+                                 General
+                            </span>
 
+                                <table border="0" class="tblGeneral" cellspacing="0" cellpadding="0" style="margin-left: 0;">
+                                    <tr>
+                                        <td>
+                                             Company Email
+                                            <br />
+                                            <asp:TextBox ID="txtCompanyEmail" runat="server"></asp:TextBox>
+                                        </td>
+                                        <td>
+                                             Password
+                                            <br />
+                                            <asp:TextBox ID="TextBox1" TextMode="Password" runat="server"></asp:TextBox>
+                                        </td>
+                                        <td>
+                                            Confirm Password
+                                            <br />
+                                            <asp:TextBox ID="TextBox2" TextMode="Password" runat="server"></asp:TextBox>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            Address
+                                            <br />
+                                            <asp:TextBox ID="txtCompanyAddress" TextMode="MultiLine" runat="server"></asp:TextBox>
+                                        </td>
+                                        <td>
+                                            City
+                                            <br />
+                                            <asp:TextBox ID="TextBox4" TextMode="Password" runat="server"></asp:TextBox>
+                                        </td>
+                                        <td>
+                                            State
+                                            <br />
+                                            <asp:TextBox ID="TextBox5" TextMode="Password" runat="server"></asp:TextBox>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <table>
+                                                <tr>
+                                                    <td colspan="2" style="background-color:gray">
+                                                        <div>Contact info Confimation:</div>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <table>
+                                                            <tr>
+                                                                <td>
+
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    Home Address
+                                                                    <br />
+                                                                    <asp:TextBox ID="txtHomeAddress" runat="server" TextMode="MultiLine"></asp:TextBox>
+                                                                </td>
+                                                            </tr>    
+                                                            <tr>
+                                                                <td>
+                                                                    Zip
+                                                                    <br />
+                                                                    <asp:TextBox ID="TextBox3" runat="server" ></asp:TextBox>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    City
+                                                                    <br />
+                                                                    <asp:TextBox ID="TextBox6" runat="server" ></asp:TextBox>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    Country
+                                                                    <br />
+                                                                    <asp:TextBox ID="TextBox8" runat="server" ></asp:TextBox>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    Suite / Apt./ Room (If applicable)
+                                                                    <br />
+                                                                    <asp:TextBox ID="TextBox7" runat="server" ></asp:TextBox>
+                                                                </td>
+                                                                </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    Date of Birth
+                                                                    <br />
+                                                                    <asp:TextBox ID="txtDatofBithe" runat="server" ></asp:TextBox>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    <input name="AddExtEmail" id="AddGeneralAddress." value="Add Address" style="margin-top: 12px;height: 30px; background: url(img/main-header-bg.png) repeat-x; color: #fff;" type="button">
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </td>
+                                                    <td>
+                                                        <%--<table>
+                                                            <tr>
+                                                                <td>
+                                                                    <input type="checkbox" /><span> &nbsp;&nbsp; Is Business address same as Home address</span>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    
+                                                                    Secondary Address
+                                                                    <br />
+                                                                    <asp:TextBox ID="TextBox8" runat="server" TextMode="MultiLine"></asp:TextBox>
+                                                                </td>
+                                                            </tr>    
+                                                            <tr>
+                                                                <td>
+                                                                    Zip
+                                                                    <br />
+                                                                    <asp:TextBox ID="TextBox9" runat="server" ></asp:TextBox>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    City
+                                                                    <br />
+                                                                    <asp:TextBox ID="TextBox10" runat="server" ></asp:TextBox>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td>
+                                                                    Suite / Apt./ Room (If applicable)
+                                                                    <br />
+                                                                    <asp:TextBox ID="TextBox11" runat="server" ></asp:TextBox>
+                                                                </td>
+                                                                </tr>
+                                                            
+                                                            
+                                                        </table>--%>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+
+                                
+                        </li>
+                        
+                    </ul>
                     <ul style="margin-bottom: 10px;">
                         <li style="width: 49%;">
                             <table border="0" cellspacing="0" cellpadding="0">

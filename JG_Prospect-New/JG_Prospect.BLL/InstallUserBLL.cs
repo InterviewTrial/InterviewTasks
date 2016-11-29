@@ -537,5 +537,15 @@ namespace JG_Prospect.BLL
         {
             return InstallUserDAL.Instance.AddUserPhone(isPrimaryPhone,phoneText,phoneType,UserID);
         }
+
+        public string AddTouchPointLogRecord(int LoginUserID, int UserID, string LoginUserInstallID, DateTime now, string ChangeLog)
+        {
+            return InstallUserDAL.Instance.AddTouchPointLogRecord(LoginUserID, UserID, LoginUserInstallID, now, ChangeLog);
+        }
+
+        public DataSet GetTouchPointLogDataByUserID(int UserID)
+        {
+            return InstallUserDAL.Instance.GetTouchPointLogDataByUserID(UserID);
+        }
     }
 }

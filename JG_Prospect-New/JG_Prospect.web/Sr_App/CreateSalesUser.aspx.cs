@@ -81,7 +81,8 @@ namespace JG_Prospect.Sr_App
                 Session["ID"] = Convert.ToInt32(Request.QueryString["ID"]);
                 hidID.Value = Request.QueryString["ID"].ToString();
 
-                bindGrid();
+                ///////bindGrid();
+                BindTouchPointLog();
                 // hlnkUserID.Text = GetInstallIdFromDesignation(ddldesignation.SelectedItem.Text) + "-A" + Session["ID"].ToString();
             }
             else
@@ -120,8 +121,8 @@ namespace JG_Prospect.Sr_App
                 dtReviewDate.Attributes.Add("readonly", "readonly");
                 dtLastDate.Attributes.Add("readonly", "readonly");
                 txtDateSourced.Attributes.Add("readonly", "readonly");
-                btnMinusNew.Visible = true;
-                btnPlusNew.Visible = false;
+                //////btnMinusNew.Visible = true;
+                //////btnPlusNew.Visible = false;
                 Panel3.Visible = true;
                 Panel4.Visible = true;
                 pnl4.Visible = false;
@@ -2803,6 +2804,7 @@ namespace JG_Prospect.Sr_App
         protected void ddlstatus_SelectedIndexChanged(object sender, EventArgs e)
         {
             ValidationSummary1.ValidationGroup = btncreate.ValidationGroup = "submit";
+            fullTouchPointLog();
             if (Convert.ToString(Session["PreviousStatusNew"]) == "Active" && (!(Convert.ToString(Session["usertype"]).Contains("Admin"))))
             {
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Status cannot be changed to any other status other than Deactive once user is Active')", true);
@@ -3177,15 +3179,15 @@ namespace JG_Prospect.Sr_App
             }
             if (ddlstatus.SelectedValue == "Applicant" || ddlstatus.SelectedValue == "InterviewDate" || ddlstatus.SelectedValue == "PhoneScreened")
             {
-                btnMinusNew.Visible = true;
-                btnPlusNew.Visible = false;
+                //////btnMinusNew.Visible = true;
+                //////btnPlusNew.Visible = false;
                 Panel3.Visible = true;
                 Panel4.Visible = true;
             }
             else
             {
-                btnMinusNew.Visible = false;
-                btnPlusNew.Visible = true;
+                ////////btnMinusNew.Visible = false;
+                ////////btnPlusNew.Visible = true;
                 Panel3.Visible = false;
                 Panel4.Visible = false;
             }
@@ -3545,7 +3547,7 @@ namespace JG_Prospect.Sr_App
             }
             #endregion
         }
-
+        
         private void showHideNewHireSection(bool ShowSection)
         {
             pnlAll.Visible = ShowSection;
@@ -4239,8 +4241,8 @@ namespace JG_Prospect.Sr_App
          
         protected void btnPlusNew_Click(object sender, EventArgs e)
         {
-            btnMinusNew.Visible = true;
-            btnPlusNew.Visible = false;
+            ////////btnMinusNew.Visible = true;
+            ////////btnPlusNew.Visible = false;
             Panel3.Visible = true;
             Panel4.Visible = true;
             if (ddldesignation.SelectedItem.Text == "Installer")
@@ -4257,8 +4259,8 @@ namespace JG_Prospect.Sr_App
 
         protected void btnMinusNew_Click(object sender, EventArgs e)
         {
-            btnMinusNew.Visible = false;
-            btnPlusNew.Visible = true;
+            ////////btnMinusNew.Visible = false;
+            ////////btnPlusNew.Visible = true;
             Panel3.Visible = false;
             Panel4.Visible = false;
             if (ddldesignation.SelectedItem.Text == "Installer")
@@ -5844,13 +5846,13 @@ namespace JG_Prospect.Sr_App
 
         protected void bindGrid()
         {
-            if (!String.IsNullOrEmpty(Session["ID"].ToString()))
-            {
-                int CustomerId = Convert.ToInt32(Session["ID"]);
-                DataSet ds = InstallUserBLL.Instance.GetSalesTouchPointLogData(CustomerId, UserId);
-                grdTouchPointLog.DataSource = ds;
-                grdTouchPointLog.DataBind();
-            }
+            //////if (!String.IsNullOrEmpty(Session["ID"].ToString()))
+            //////{
+            //////    int CustomerId = Convert.ToInt32(Session["ID"]);
+            //////    DataSet ds = InstallUserBLL.Instance.GetSalesTouchPointLogData(CustomerId, UserId);
+            //////    grdTouchPointLog.DataSource = ds;
+            //////    grdTouchPointLog.DataBind();
+            //////}
             // txtAddNotes.Text = "";
         }
 
@@ -6093,6 +6095,37 @@ namespace JG_Prospect.Sr_App
         private void FillPhoneValueTohid(int id)
         {
 
+        }
+
+        private void fullTouchPointLog()
+        {
+            if (Session["ID"] != null || Session["ID"].ToString() != "")//Fill Touch Point Log only if it is edit mode.
+            {
+                
+                string strUserInstallId = JGSession.LoginUserID;
+
+                if (Session["Username"] != null)
+                {
+                    strUserInstallId = Session["Username"]  +" - "+ JGSession.LoginUserID;
+                }
+
+                InstallUserBLL.Instance.AddTouchPointLogRecord(
+                    Convert.ToInt32(JGSession.LoginUserID)
+                    ,Convert.ToInt32(Session["ID"])
+                    , strUserInstallId
+                    , DateTime.Now," Status To : " + ddlstatus.SelectedItem.Text);
+            }
+
+            BindTouchPointLog();
+        }
+
+        private void BindTouchPointLog()
+        {
+            DataSet DsTouchPointLog;
+            DsTouchPointLog = InstallUserBLL.Instance.GetTouchPointLogDataByUserID(Convert.ToInt32(Session["ID"]));
+            
+            gvTouchPointLog.DataSource = DsTouchPointLog;
+            gvTouchPointLog.DataBind();
         }
 
         #endregion
