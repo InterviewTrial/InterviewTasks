@@ -355,6 +355,15 @@ namespace JG_Prospect {
         protected global::System.Web.UI.WebControls.DropDownList ddlSource;
         
         /// <summary>
+        /// chkAllDates control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkAllDates;
+        
+        /// <summary>
         /// Label3 control.
         /// </summary>
         /// <remarks>

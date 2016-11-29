@@ -405,7 +405,7 @@
                         <asp:Label ID="lblAddedBy" Text="Added By" runat="server" /></td>
                     <td>
                         <asp:Label ID="lblSourceH" Text="Source" runat="server" /></td>
-                    <td>
+                    <td colspan="2">
                         <asp:Label ID="Label2" Text="Select Period" runat="server" /></td>
                 </tr>
                 <tr style="text-align: center; width: 100%">
@@ -429,17 +429,18 @@
                         <asp:DropDownList ID="drpUser" runat="server" Width="140px" OnSelectedIndexChanged="ddlFilter_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList></td>
                     <td>
                         <asp:DropDownList ID="ddlSource" runat="server" Width="140px" OnSelectedIndexChanged="ddlFilter_SelectedIndexChanged" AutoPostBack="true"></asp:DropDownList></td>
+                    <td><asp:CheckBox ID="chkAllDates" runat="server" Checked="true" Text="All" OnCheckedChanged="chkAllDates_CheckedChanged" AutoPostBack="true"/></td>
                     <td>
                         <asp:Label ID="Label3" Text="From :*" runat="server" />
                         <asp:TextBox ID="txtfrmdate" runat="server" TabIndex="2" CssClass="date"
                             onkeypress="return false" MaxLength="10" AutoPostBack="true"
-                            Style="width: 80px;" OnTextChanged="txtfrmdate_TextChanged"></asp:TextBox>
+                            Style="width: 80px;" OnTextChanged="txtfrmdate_TextChanged" Enabled="false"></asp:TextBox>
                         <cc1:CalendarExtender ID="calExtendFromDate" runat="server" TargetControlID="txtfrmdate">
                         </cc1:CalendarExtender>
                         <asp:Label ID="Label4" Text="From :*" runat="server" />
                         <asp:TextBox ID="txtTodate" CssClass="date" onkeypress="return false"
                             MaxLength="10" runat="server" TabIndex="3" AutoPostBack="true"
-                            Style="width: 80px;" OnTextChanged="txtTodate_TextChanged"></asp:TextBox>
+                            Style="width: 80px;" OnTextChanged="txtTodate_TextChanged" Enabled="false"></asp:TextBox>
                         <cc1:CalendarExtender ID="CalendarExtender2" runat="server" TargetControlID="txtTodate">
                         </cc1:CalendarExtender>
                         <br />
@@ -567,8 +568,7 @@
                                         </asp:DropDownList><br />
                                         <asp:Label ID="lblRejectDetail" runat="server" Text='<%#Eval("RejectDetail") %>'></asp:Label>
                                         <br />   
-                                        <span><%#string.IsNullOrEmpty(Eval("InterviewDetail").ToString())?"":Eval("InterviewDetail").ToString().Split(' ')[0]%></span>&nbsp<span style="color:red"><%#string.IsNullOrEmpty(Eval("InterviewDetail").ToString())?"":Eval("InterviewDetail").ToString().Remove(0, Eval("InterviewDetail").ToString().IndexOf(' ') + 1)%></span>&nbsp<span><%#string.IsNullOrEmpty(Eval("InterviewDetail").ToString())?"":"(EST)"%></span>
-                                        <asp:Label ID="lblInterviewDetail" runat="server" Visible="false" Text='<%#Eval("InterviewDetail") %>'></asp:Label>
+                                        <span><%#string.IsNullOrEmpty(Eval("InterviewDetail").ToString())?"":Eval("InterviewDetail").ToString().Split(' ')[0]%></span>&nbsp<span style="color:red"><%#string.IsNullOrEmpty(Eval("InterviewDetail").ToString())?"":Eval("InterviewDetail").ToString().Remove(0, Eval("InterviewDetail").ToString().IndexOf(' ') + 1)%></span>&nbsp<span><%#string.IsNullOrEmpty(Eval("InterviewDetail").ToString())?"":"(EST)"%></span><asp:Label ID="lblInterviewDetail" runat="server" Visible="false" Text='<%#Eval("InterviewDetail") %>'></asp:Label>
                                     </ItemTemplate>
                                     <ItemStyle HorizontalAlign="Center"></ItemStyle>
                                 </asp:TemplateField>
@@ -576,10 +576,9 @@
                                     <ItemTemplate>
                                         <asp:Label ID="lblSource" runat="server" Text='<%#Eval("Source")%>'></asp:Label>
                                         <br />
-                                        <asp:Label ID="lblAddedBy" runat="server" Text='<%#Eval("AddedBy")%>'></asp:Label>-<asp:LinkButton ID="lnkAddedByUserInstallId" Text='<%#(string.IsNullOrEmpty(Eval("AddedByUserInstallId").ToString()))?"Not Available":Eval("AddedByUserInstallId")%>' CommandName="EditAddedByUserInstall" runat="server"
-                                            CommandArgument='<%#(string.IsNullOrEmpty(Eval("AddedByUserInstallId").ToString()))?"Not Available":Eval("AddedByUserInstallId")%>' Enabled='<%#(string.IsNullOrEmpty(Eval("AddedByUserInstallId").ToString()))?false:true%>'></asp:LinkButton>
+                                        <asp:Label ID="lblAddedBy" runat="server" Text='<%#Eval("AddedBy")%>'></asp:Label>
                                         <br />
-                                        <span><%#String.Format("{0:d/M/yyyy}", Eval("CreatedDateTime"))%></span>&nbsp<span style="color:red"><%#String.Format("{0:hh:mm:ss tt}", Eval("CreatedDateTime"))%></span>&nbsp<span>(EST)</span>
+                                        <span><%#String.Format("{0:M/d/yyyy}", Eval("CreatedDateTime"))%></span>&nbsp<span style="color:red"><%#String.Format("{0:hh:mm:ss tt}", Eval("CreatedDateTime"))%></span>&nbsp<span>(EST)</span>
                                     </ItemTemplate>
                                     <ItemStyle HorizontalAlign="Center" Width="200px"></ItemStyle>
                                 </asp:TemplateField>
@@ -636,7 +635,7 @@
                     </td>
                         
                     <td>
-                        <label>Upload Prospects using xlsx file:<asp:FileUpload ID="BulkProspectUploader" runat="server" /></label>
+                        <label>Upload Prospects using xlsx file:  <label>Upload Prospects using xlsx file:<asp:FileUpload ID="BulkProspectUploader" runat="server" /></label>
                         <asp:RequiredFieldValidator ID="RequiredFieldValidator3" ControlToValidate="BulkProspectUploader" runat="server" ErrorMessage="Select file to import data." ValidationGroup="BulkImport"></asp:RequiredFieldValidator>
                     </td>
                 </tr>

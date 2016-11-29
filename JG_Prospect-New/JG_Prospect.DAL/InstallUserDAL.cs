@@ -1977,7 +1977,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public DataSet GetHrData(DateTime fromdate, DateTime todate, int userid)
+        public DataSet GetHrData(DateTime? fromdate, DateTime? todate, int userid)
         {
             returndata = new DataSet();
             try
@@ -1987,8 +1987,22 @@ namespace JG_Prospect.DAL
                     DbCommand command = database.GetStoredProcCommand("sp_GetHrData");
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@UserId", DbType.Int16, userid);
-                    database.AddInParameter(command, "@FromDate", DbType.Date, fromdate);
-                    database.AddInParameter(command, "@ToDate", DbType.Date, todate);
+                    if (fromdate != null)
+                    { 
+                        database.AddInParameter(command, "@FromDate", DbType.Date, fromdate);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@FromDate", DbType.Date, DBNull.Value);
+                    }
+                    if (todate != null)
+                    {
+                        database.AddInParameter(command, "@ToDate", DbType.Date, todate);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@ToDate", DbType.Date, DBNull.Value);
+                    }
                     returndata = database.ExecuteDataSet(command);
                     return returndata;
                 }

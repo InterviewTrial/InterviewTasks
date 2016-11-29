@@ -1285,7 +1285,7 @@ namespace JG_Prospect
                 var rows = dtUsers.AsEnumerable();
 
                 //get all users comma seperated ids with interviewdate status
-                String DeactivatedUsers = String.Join(",", (from r in rows where (r.Field<string>("Status") == "Deactive") select r.Field<Int32>("Id").ToString()));
+                String DeactivatedUsers = String.Join(",", (from r in rows where (r.Field<string>("GroupNumber") == "Group2") select r.Field<Int32>("Id").ToString()));
 
                 // for each userid find it into user dropdown list and apply red color to it.
                 foreach (String user in DeactivatedUsers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
@@ -1297,14 +1297,28 @@ namespace JG_Prospect
                         item = ddlUsers.Items.FindByValue(user);
                         item.Attributes.Add("style", "color:grey;");
                     }
-
                 }
 
                 //get all users comma seperated ids with interviewdate status
-                String OfferMadeUsers = String.Join(",", (from r in rows where (r.Field<string>("Status") == "OfferMade" || r.Field<string>("Status") == "Offer Made") select r.Field<Int32>("Id").ToString()));
+                String InstallProspectUsers = String.Join(",", (from r in rows where (r.Field<string>("GroupNumber") == "Group3") select r.Field<Int32>("Id").ToString()));
 
                 // for each userid find it into user dropdown list and apply red color to it.
-                foreach (String user in OfferMadeUsers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                foreach (String user in InstallProspectUsers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                {
+                    ListItem item;
+
+                    if (ddlUsers != null)
+                    {
+                        item = ddlUsers.Items.FindByValue(user);
+                        item.Attributes.Add("style", "color:green;");
+                    }
+                }
+
+                //get all users comma seperated ids with interviewdate status
+                String OfferMadeInterviewDateUsers = String.Join(",", (from r in rows where (r.Field<string>("GroupNumber") == "Group4") select r.Field<Int32>("Id").ToString()));
+
+                // for each userid find it into user dropdown list and apply red color to it.
+                foreach (String user in OfferMadeInterviewDateUsers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
                 {
                     ListItem item;
 
@@ -1313,25 +1327,7 @@ namespace JG_Prospect
                         item = ddlUsers.Items.FindByValue(user);
                         item.Attributes.Add("style", "color:red;");
                     }
-
                 }
-
-                //get all users comma seperated ids with interviewdate status
-                String InterviewDateUsers = String.Join(",", (from r in rows where (r.Field<string>("Status") == "InterviewDate" || r.Field<string>("Status") == "Interview Date") select r.Field<Int32>("Id").ToString()));
-
-                // for each userid find it into user dropdown list and apply red color to it.
-                foreach (String user in InterviewDateUsers.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
-                {
-                    ListItem item;
-
-                    if (ddlUsers != null)
-                    {
-                        item = ddlUsers.Items.FindByValue(user);
-                        item.Attributes.Add("style", "color:red;");
-                    }
-
-                }
-
             }
         }
 
@@ -2390,9 +2386,19 @@ namespace JG_Prospect
             DataTable dt = (DataTable)(Session["UserGridData"]);
             EnumerableRowCollection<DataRow> query = null;
             int iSelectedDesignationID = 0;
+            int iAddedByUserID = 0;
+            int iSourceID = 0;
             if (ddlDesignation.SelectedIndex > 0) {
                 iSelectedDesignationID = string.IsNullOrEmpty(ddlDesignation.SelectedValue) ? 0 : Convert.ToInt32(ddlDesignation.SelectedValue);
             }
+            //if (drpUser.SelectedIndex > 0)
+            //{
+            //    iAddedByUserID = string.IsNullOrEmpty(drpUser.SelectedValue) ? 0 : Convert.ToInt32(drpUser.SelectedValue);
+            //}
+            //if (ddlSource.SelectedIndex > 0)
+            //{
+            //    iSourceID = string.IsNullOrEmpty(ddlSource.SelectedValue) ? 0 : Convert.ToInt32(ddlSource.SelectedValue);
+            //}
             if ((ddlUserStatus.SelectedIndex != 0 || ddlDesignation.SelectedIndex != 0 || drpUser.SelectedIndex != 0 || ddlSource.SelectedIndex != 0)
                 && dt != null)
             {
@@ -2400,8 +2406,8 @@ namespace JG_Prospect
                 query = from userdata in dt.AsEnumerable()
                         where (userdata.Field<string>("Status") == Status || ddlUserStatus.SelectedIndex == 0)
                         && (userdata.Field<Int32>("DesignationID") == iSelectedDesignationID || ddlDesignation.SelectedIndex == 0)
-                        && (userdata.Field<string>("AddedBy") == drpUser.SelectedItem.Text || drpUser.SelectedIndex == 0)
-                        && (userdata.Field<string>("Source") == ddlSource.SelectedItem.Text || ddlSource.SelectedIndex == 0)
+                        && (userdata.Field<string>("AddedBy") == drpUser.SelectedValue || drpUser.SelectedIndex == 0)
+                        && (userdata.Field<string>("Source") == ddlSource.SelectedValue || ddlSource.SelectedIndex == 0)
                         select userdata;
                 if (query.Count() > 0)
                 {
@@ -2418,11 +2424,17 @@ namespace JG_Prospect
 
         private void ShowHRData()
         {
-            DateTime fromDate = Convert.ToDateTime(txtfrmdate.Text, JG_Prospect.Common.JGConstant.CULTURE);
-            DateTime toDate = Convert.ToDateTime(txtTodate.Text, JG_Prospect.Common.JGConstant.CULTURE);
-            if (fromDate < toDate)
+            DateTime? fromDate = null;
+            DateTime? toDate = null;
+            if (!chkAllDates.Checked)
             {
-                DataSet ds = InstallUserBLL.Instance.GetHrData(fromDate, toDate, Convert.ToInt16(drpUser.SelectedValue));
+                fromDate = Convert.ToDateTime(txtfrmdate.Text, JG_Prospect.Common.JGConstant.CULTURE);
+                toDate = Convert.ToDateTime(txtTodate.Text, JG_Prospect.Common.JGConstant.CULTURE);
+            }
+            string strUserStatus = string.Empty; 
+            if (fromDate < toDate || (fromDate==null && toDate==null))
+            {
+                DataSet ds = InstallUserBLL.Instance.GetHrData(fromDate, toDate, Convert.ToInt32(drpUser.SelectedValue));
                 if (ds != null)
                 {
                     DataTable dtHrData = ds.Tables[0];
@@ -2811,5 +2823,20 @@ namespace JG_Prospect
         //}
 
         #endregion
+
+        protected void chkAllDates_CheckedChanged(object sender, EventArgs e)
+        {
+            if (chkAllDates.Checked)
+            {
+                txtfrmdate.Enabled = false;
+                txtTodate.Enabled = false;
+            }
+            else
+            {
+                txtfrmdate.Enabled = true;
+                txtTodate.Enabled = true;
+            }
+            BindGrid();
+        }
     }
 }
