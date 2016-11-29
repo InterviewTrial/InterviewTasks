@@ -288,7 +288,7 @@ namespace JG_Prospect.Sr_App
                 rqSSN1.Enabled = false;
                 rqSSN2.Enabled = false;
                 rqSSN3.Enabled = false;
-                lblReqDOB.Visible = false;
+                ////lblReqDOB.Visible = false;
                 rqDOB.Enabled = false;
                 lblReqPOP.Visible = false;
                 rqPenalty.Enabled = false;
@@ -483,7 +483,7 @@ namespace JG_Prospect.Sr_App
                                 rqSSN1.Enabled = false;
                                 rqSSN2.Enabled = false;
                                 rqSSN3.Enabled = false;
-                                lblReqDOB.Visible = false;
+                                //////lblReqDOB.Visible = false;
                                 rqDOB.Enabled = false;
                                 lblReqPOP.Visible = false;
                                 rqPenalty.Enabled = false;
@@ -540,7 +540,7 @@ namespace JG_Prospect.Sr_App
                                 rqSSN1.Enabled = false;
                                 rqSSN2.Enabled = false;
                                 rqSSN3.Enabled = false;
-                                lblReqDOB.Visible = false;
+                                ////////lblReqDOB.Visible = false;
                                 rqDOB.Enabled = false;
                                 lblReqPOP.Visible = false;
                                 rqPenalty.Enabled = false;
@@ -598,7 +598,7 @@ namespace JG_Prospect.Sr_App
                                 rqSSN1.Enabled = false;
                                 rqSSN2.Enabled = false;
                                 rqSSN3.Enabled = false;
-                                lblReqDOB.Visible = false;
+                                ////////lblReqDOB.Visible = false;
                                 rqDOB.Enabled = false;
                                 lblReqPOP.Visible = false;
                                 rqPenalty.Enabled = false;
@@ -667,7 +667,7 @@ namespace JG_Prospect.Sr_App
                                 rqSSN1.Enabled = true;
                                 rqSSN2.Enabled = true;
                                 rqSSN3.Enabled = true;
-                                lblReqDOB.Visible = false;
+                                ////////lblReqDOB.Visible = false;
                                 rqDOB.Enabled = false;
                                 lblReqPOP.Visible = true;
                                 rqPenalty.Enabled = true;
@@ -3309,7 +3309,7 @@ namespace JG_Prospect.Sr_App
                 rqSSN1.Enabled = false;
                 rqSSN2.Enabled = false;
                 rqSSN3.Enabled = false;
-                lblReqDOB.Visible = false;
+                ////////lblReqDOB.Visible = false;
                 rqDOB.Enabled = false;
                 lblReqPOP.Visible = false;
                 rqPenalty.Enabled = false;
@@ -3368,7 +3368,7 @@ namespace JG_Prospect.Sr_App
                 rqSSN1.Enabled = false;
                 rqSSN2.Enabled = false;
                 rqSSN3.Enabled = false;
-                lblReqDOB.Visible = false;
+                ////////lblReqDOB.Visible = false;
                 rqDOB.Enabled = false;
                 lblReqPOP.Visible = false;
                 rqPenalty.Enabled = false;
@@ -3441,7 +3441,7 @@ namespace JG_Prospect.Sr_App
                 rqSSN1.Enabled = true;
                 rqSSN2.Enabled = true;
                 rqSSN3.Enabled = true;
-                lblReqDOB.Visible = true;
+                ////////lblReqDOB.Visible = true;
                 rqDOB.Enabled = true;
                 lblReqPOP.Visible = true;
                 rqPenalty.Enabled = true;
@@ -3515,7 +3515,7 @@ namespace JG_Prospect.Sr_App
                 rqSSN1.Enabled = false;
                 rqSSN2.Enabled = false;
                 rqSSN3.Enabled = false;
-                lblReqDOB.Visible = false;
+                ////////lblReqDOB.Visible = false;
                 rqDOB.Enabled = false;
                 lblReqPOP.Visible = false;
                 rqPenalty.Enabled = false;
