@@ -16,7 +16,7 @@ namespace JG_Prospect.BLL
         public static VendorBLL Instance
         {
             get { return m_VendorBLL; }
-            set { ;}
+            set { ; }
         }
         public bool AddVendorQuotes(string soldJobId, string originalFileName, string temporaryFileName, int vendorId)
         {

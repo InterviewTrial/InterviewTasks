@@ -22,7 +22,7 @@ namespace JG_Prospect.DAL
         public static VendorDAL Instance
         {
             get { return m_VendorDAL; }
-            set { ;}
+            set { ; }
         }
         private DataSet DS = new DataSet();
         public DataSet fetchallvendorDetails()
