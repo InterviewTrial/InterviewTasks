@@ -166,8 +166,7 @@ namespace JG_Prospect.Sr_App
                     {
                         lblerrornew.Text = ex.Message + ex.StackTrace;
                     }
-
-
+                    
                     //added by harshit
                     //7-april-2016
                     UserType = Session[JG_Prospect.Common.SessionKey.Key.usertype.ToString()].ToString();
@@ -228,8 +227,6 @@ namespace JG_Prospect.Sr_App
         }
         #endregion
 
-        #region drpPayPeriod SelectedIndexChanged
-
         protected void drpPayPeriod_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (drpPayPeriod.SelectedIndex != -1)
@@ -242,8 +239,6 @@ namespace JG_Prospect.Sr_App
                 }
             }
         }
-
-        #endregion
 
         #region Others
 
@@ -515,7 +510,6 @@ namespace JG_Prospect.Sr_App
             ddlVendorSubCategory.DataValueField = "VendorSubCategoryId";
             ddlVendorSubCategory.DataBind();
             ddlVendorSubCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select", "Select"));
-
         }
 
         public void BindVendorSubCatByVendorCat1(string VendorCatId)
@@ -527,7 +521,6 @@ namespace JG_Prospect.Sr_App
             ddlVendorSubCategory1.DataValueField = "VendorSubCategoryId";
             ddlVendorSubCategory1.DataBind();
             ddlVendorSubCategory1.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select", "Select"));
-
         }
 
         protected void ddlVendorSubCategory_SelectedIndexChanged(object sender, EventArgs e)
