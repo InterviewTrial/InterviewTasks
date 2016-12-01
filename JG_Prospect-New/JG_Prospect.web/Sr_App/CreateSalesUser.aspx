@@ -463,17 +463,35 @@
                 $('#div-AdminAssess').html(optionSelected + " Skill Assessment")
                 $('.tblSkillMain').show("slow");
                 $('.tblSkillMain td').show("slow");
+
+
+                $(".tblSkillAssessment td").show("slow");
+                $('#btnSkillAssPlusNew').hide();
+                $('#btnSkillAssMinusNew').show();
             } 
             else if ((optionSelected == "Jr. Sales") || (optionSelected == "Jr Project Manager") || (optionSelected == "Sr. Sales") || (optionSelected == "Sales Manager")) {
                 $('#div-SalesAssess').html(optionSelected + " Skill Assessment")
                 $('.tblSaleMain').show("slow");
                 $('.tblSaleMain td').show("slow");
 
+
+                $(".tblSalesAssesment td").show("slow");
+                $('#btnSalesPlusNew').hide();
+                $('#btnSalesAssMinusNew').show();
+
+
+
             }
             else if (optionSelected == "Recruiter") {
                 $('#div-RecuiterAssess').html(optionSelected + " Skill Assessment")
                 $('.tblRecruiterMain').show("slow");
                 $('.tblRecruiterMain td').show("slow");
+                
+
+                $(".tblRecruiterAssMinusNew td").show("slow");
+                $('#btnRecruiterPlusNew').hide();
+                $('#btnRecruiterAssMinusNew').show();
+
             }
             
         }
@@ -1328,19 +1346,20 @@
                                 <tr>
                                     <td style="text-align:center">
                                         ID#: <asp:HyperLink  Font-Bold="true" Text="AXXX-XXX" NavigateUrl="#" ID="hlnkUserID"  runat="server"></asp:HyperLink>
-
                                     </td>
                                     <td colspan="3">
                                         <label>
                                             <asp:Label ID="lblUser" runat="server" ForeColor="Black" Text="User Status"></asp:Label>
                                             <asp:Label ID="lblReqDesig" ForeColor="Red" runat="server" Text="*"></asp:Label>></label>
-                                            <asp:DropDownList ID="ddlstatus" runat="server" AutoPostBack="true" Width="249px" OnSelectedIndexChanged="ddlstatus_SelectedIndexChanged" TabIndex="502" OnPreRender="ddlstatus_PreRender">
+
+                                            <asp:DropDownList ID="ddlstatus" runat="server" AutoPostBack="true" Width="349px" OnSelectedIndexChanged="ddlstatus_SelectedIndexChanged" TabIndex="502" OnPreRender="ddlstatus_PreRender">
                                             <asp:ListItem Text="<span>Referral applicant</span>" Value="ReferralApplicant"></asp:ListItem>
-                                            <asp:ListItem Text="<span>Applicant</span> <span class='ddlstatus-per-text' id='ddlstatusApplicant'>25%</span>" Value="Applicant"></asp:ListItem>
-                                            <asp:ListItem Text="Interview Date" Value="InterviewDate"></asp:ListItem>
-                                            <asp:ListItem Text="Rejected" Value="Rejected"></asp:ListItem>
-                                            <asp:ListItem Text="Offer Made" Value="OfferMade"></asp:ListItem>
-                                            <asp:ListItem Text="Active <span class='ddlstatus-per-text' id='ddlstatusActive'>26%</span>" Value="Active"></asp:ListItem>
+                                            <asp:ListItem Text="<span>Applicant</span> <span class='ddlstatus-per-text' id='ddlstatusApplicant'><img src='../Sr_App/img/yellow-astrek.png' class='fnone'>Applicant Screened : 25%</span>" Value="Applicant"></asp:ListItem>
+                                            <asp:ListItem Text="Interview Date <span class='ddlstatus-per-text' id='ddlstatusInterviewDate'><img src='../Sr_App/img/purple-astrek.png' class='fnone'>Applicant Screened : 20%</span>" Value="InterviewDate"></asp:ListItem>
+                                            <asp:ListItem Text="Rejected" Value="Rejected"></asp:ListItem> 
+                                            <asp:ListItem Text="Offer Made <span class='ddlstatus-per-text' id='ddlstatusOfferMade'><img src='../Sr_App/img/black-astrek.png' class='fnone'>?New Hire : 80%</span>" Value="OfferMade"></asp:ListItem>
+                                                
+                                            <asp:ListItem Text="Active" Value="Active"></asp:ListItem>
 
                                             <asp:ListItem Text="Deactive" Value="Deactive"></asp:ListItem>
                                             

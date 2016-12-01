@@ -4496,7 +4496,7 @@ namespace JG_Prospect.Sr_App
                         ddlstatus.Items[i].Attributes["data-image"] = imageURL;
                         break;
                     case "InterviewDate":
-                        imageURL = "../Sr_App/img/purple-astrek.png";
+                        imageURL = "../Sr_App/img/Light-Blue-astrek.png"; //purple-astrek.png
                         ddlstatus.Items[i].Attributes["data-image"] = imageURL;
                         break;
                     default:
@@ -5116,7 +5116,7 @@ namespace JG_Prospect.Sr_App
             txtReson.Text = ""; dtInterviewDate.Text = "";
             GridView1.DataSource = null;
             ddlcitizen.SelectedValue = "0";
-            ddldesignation.SelectedValue = "Jr. Sales";
+            //ddldesignation.SelectedValue = "Jr. Sales";
             ddlstatus.SelectedValue = "Applicant";
             ddlInstallerType.SelectedValue = "Foreman";
             txtHireDate.Text = DateTime.Today.ToShortDateString();

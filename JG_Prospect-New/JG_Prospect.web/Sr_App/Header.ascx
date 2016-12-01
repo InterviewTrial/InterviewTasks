@@ -38,7 +38,7 @@
         left: 1px;
         top: 5px;        
         position: absolute;
-        margin-left:-65px;
+        margin-left:-58px;
         width: 181px;
     }
     .img-Profile {
