@@ -60,9 +60,29 @@
                 }
 </style>
 
+<script>
+    function showLogPage(obj) {
+        debugger;
+        var PageUrl = obj.getAttribute("data-urlOfPage");
+        debugger;
+        var $dialog = $('<div></div>')
+                       .html('<iframe style="border: 0px; " src="' + PageUrl + '" width="100%" height="100%"></iframe>')
+                       .dialog({
+                           autoOpen: false,
+                           modal: true,
+                           height: 625,
+                           width: 600,
+                           title: "User Log"
+                       });
+        $dialog.dialog('open');
+         
+    }
+</script>
+
 <table>
 
-
+    <div id="dialog" style="display: none" align="center"></div>
+    <input type="button" id="btnlog" value="Btn of Page" onclick="showLogPage('http://localhost:61394/Sr_App/CreateSalesUser.aspx?id=990')" />
     <tr style="overflow: scroll; height: 100px;">
 
         <td colspan="3">
@@ -113,7 +133,7 @@
                                                     <asp:Label ID="lblVisitedOn" runat="server" Text='<%# Eval("VisitedOn") %>' />
                                                 </td>
                                                 <td>
-                                                    <a href="<%# Eval("PageName") %>" target="_blank" ><%# Eval("PageName") %></a>
+                                                    <a href="javascript:void(0);"  onclick="showLogPage(this)" data-urlOfPage="<%# Eval("PageName") %>" ><%# Eval("PageName") %></a>
                                                     <%--<asp:Label ID="lblPageName" runat="server" Text='<%# Eval("PageName") %>' />--%>
                                                 </td>
                                             </tr>

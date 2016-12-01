@@ -365,7 +365,7 @@
                 var optionSelected = $("option:selected", this).text(); 
                 if (optionSelected == "Other") {
                     var newPhoeType = prompt("Please enter New Phone Type to Add ", "New Type");
-                    AddNewPhoneType(newPhoeType);
+                    AddNewPhoneType("Other : " + newPhoeType);
                 }
             });
 
@@ -793,7 +793,7 @@
                 SetEmailValuefromCtlToHid();
             }
         }
-
+        
         // == Add New Phone Type in To DB..
         function AddNewPhoneType(newPhoneType) {            
             
@@ -856,6 +856,7 @@
                 }
             });
         }
+
 
         // Add New Item to dropDownList.
         function AppendItemToDropDown(newPhoneType) {
