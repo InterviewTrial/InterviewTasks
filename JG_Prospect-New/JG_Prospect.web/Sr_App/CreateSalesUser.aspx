@@ -1358,7 +1358,7 @@
                                             <asp:ListItem Text="<span>Applicant</span> <span class='ddlstatus-per-text' id='ddlstatusApplicant'><img src='../Sr_App/img/yellow-astrek.png' class='fnone'>Applicant Screened : 25%</span>" Value="Applicant"></asp:ListItem>
                                             <asp:ListItem Text="Interview Date <span class='ddlstatus-per-text' id='ddlstatusInterviewDate'><img src='../Sr_App/img/purple-astrek.png' class='fnone'>Applicant Screened : 20%</span>" Value="InterviewDate"></asp:ListItem>
                                             <asp:ListItem Text="Rejected" Value="Rejected"></asp:ListItem> 
-                                            <asp:ListItem Text="Offer Made <span class='ddlstatus-per-text' id='ddlstatusOfferMade'><img src='../Sr_App/img/black-astrek.png' class='fnone'>?New Hire : 80%</span>" Value="OfferMade"></asp:ListItem>
+                                            <asp:ListItem Text="Offer Made <span class='ddlstatus-per-text' id='ddlstatusOfferMade'><img src='../Sr_App/img/black-astrek.png' class='fnone'>New Hire : 80%</span>" Value="OfferMade"></asp:ListItem>
                                                 
                                             <asp:ListItem Text="Active" Value="Active"></asp:ListItem>
 
