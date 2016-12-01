@@ -63,7 +63,7 @@
 <table>
 
 
-    <tr style="overflow: scroll; height:100px;">
+    <tr style="overflow: scroll; height: 100px;">
 
         <td colspan="3">
             <ul class="tab">
@@ -72,10 +72,10 @@
                 <li><a href="javascript:void(0)" class="tablinks" onclick="ShowAuditData(3);">Last Quarter</a></li>
                 <li><a href="javascript:void(0)" class="tablinks" onclick="ShowAuditData(4);">Show All</a></li>
             </ul>
-            <div style="overflow:scroll;height:215px;"> 
+            <div style="overflow: scroll; height: 215px;">
                 <asp:Repeater ID="rptUserAudit" runat="server" OnItemDataBound="OnItemDataBound">
                     <HeaderTemplate>
-                        <table id="tblAuditGrd" class="table filter_section" style="margin-left: 0px;" cellspacing="0" rules="all" border="1" >
+                        <table id="tblAuditGrd" class="table filter_section" style="margin-left: 0px;" cellspacing="0" rules="all" border="1">
                             <tr class="trHeader titlerow">
                                 <th scope="col">&nbsp;
                                 </th>
@@ -113,7 +113,8 @@
                                                     <asp:Label ID="lblVisitedOn" runat="server" Text='<%# Eval("VisitedOn") %>' />
                                                 </td>
                                                 <td>
-                                                    <asp:Label ID="lblPageName" runat="server" Text='<%# Eval("PageName") %>' />
+                                                    <a href="<%# Eval("PageName") %>" target="_blank" ><%# Eval("PageName") %></a>
+                                                    <%--<asp:Label ID="lblPageName" runat="server" Text='<%# Eval("PageName") %>' />--%>
                                                 </td>
                                             </tr>
                                         </ItemTemplate>
@@ -124,7 +125,7 @@
                                 </asp:Panel>
                                 <asp:HiddenField ID="hfAuditID" runat="server" Value='<%# Eval("AuditID") %>' />
                             </td>
-                            <td style="text-align: center" >
+                            <td style="text-align: center">
                                 <asp:Label ID="lblLastLoginOn" runat="server" Text='<%# Eval("LastLoginOn") %>' />
                             </td>
                             <td style="text-align: center" class="rowDataSd">
@@ -139,8 +140,8 @@
                     <FooterTemplate>
                         <tr class="totalColumn">
                             <td></td>
-                            <td style="text-align:right;font-weight:700;">Total:</td>
-                            <td class="totalCol" style="font-weight:700;text-align:center"></td>
+                            <td style="text-align: right; font-weight: 700;">Total:</td>
+                            <td class="totalCol" style="font-weight: 700; text-align: center"></td>
                             <td></td>
                         </tr>
                         </table>
@@ -162,7 +163,7 @@
 <script type="text/javascript">
     function ShowAuditData(TabId) {
         var i, tablinks;
-        
+
         $('.dayTab').hide();
         $('.MonthTab').hide();
         $('.QTab').hide();
@@ -197,7 +198,7 @@
         }
     }
 
-    
+
 
     $("body").on("click", "[src*=plus]", function () {
 
@@ -213,29 +214,25 @@
 
     //Footer Total Cal START
 
-    
 
-    function GetTimeTotal(ShowTotalCalFor)
-    {
+
+    function GetTimeTotal(ShowTotalCalFor) {
         var totals = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
         var $dataRows = $("#tblAuditGrd tr:not('.totalColumn, .titlerow')");
 
-        if (ShowTotalCalFor == 'dayTab')
-        {
+        if (ShowTotalCalFor == 'dayTab') {
             //showing calculation for respective selected tab only.
             $dataRows = $("#tblAuditGrd tr:not('.totalColumn, .titlerow, .MonthTab, .QTab')");
         }
-        else if (ShowTotalCalFor == 'MonthTab')
-        {
+        else if (ShowTotalCalFor == 'MonthTab') {
             $dataRows = $("#tblAuditGrd tr:not('.totalColumn, .titlerow, .dayTab, .QTab')");
         }
-        else if (ShowTotalCalFor == 'QTab')
-        {
+        else if (ShowTotalCalFor == 'QTab') {
             $dataRows = $("#tblAuditGrd tr:not('.totalColumn, .titlerow, .MonthTab, .dayTab')");
         }
-        
+
         $dataRows.each(function () {
-            
+
             //$(this).find('.rowDataSd').each(function (i) {
             $(this).find('.rowDataSd').each(function (i) {
 
@@ -259,7 +256,7 @@
                     totals[i][0] += parseInt(time[0]);
             });
         });
-        $("#tblAuditGrd td.totalCol").each(function (i) {             
+        $("#tblAuditGrd td.totalCol").each(function (i) {
             console.log(totals[i]);
             $(this).html(totals[i][0] + ":" + totals[i][1] + ":" + totals[i][2]);
         });

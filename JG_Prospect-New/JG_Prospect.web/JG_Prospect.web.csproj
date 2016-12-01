@@ -333,6 +333,7 @@
     <Content Include="css\jquery-ui.css" />
     <Content Include="css\jquery.multiselect.css" />
     <Content Include="css\pgwslideshow.min.css" />
+    <Content Include="Database Scripts\Bhavik\Nov\ITSN029_AuditUser_LogChange.sql" />
     <Content Include="datetime\css\jquery-ui-timepicker-addon.css" />
     <Content Include="datetime\css\jquery.timepicker.css" />
     <Content Include="datetime\css\timeStyle.css" />
@@ -1863,7 +1864,6 @@
     <Folder Include="CustomerDocs\PurchaseOrder\" />
     <Folder Include="CustomerDocs\VendorEmailDocument\" />
     <Folder Include="CustomerDocs\VendorQuotes\" />
-    <Folder Include="Database Scripts\" />
     <Folder Include="InvoicePdf\" />
     <Folder Include="Resources\" />
     <Folder Include="Sr_App\MailDocument\MailAttachments\" />
