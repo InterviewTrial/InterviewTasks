@@ -329,6 +329,7 @@
     <Content Include="css\dropzone\images\spritemap.png" />
     <Content Include="css\dropzone\images\upload.png" />
     <Content Include="css\dropzone\images\uploadJg.png" />
+    <Content Include="css\intTel\intlTelInput.css" />
     <Content Include="css\JCarousel.css" />
     <Content Include="css\jquery-ui.css" />
     <Content Include="css\jquery.multiselect.css" />
@@ -627,6 +628,7 @@
     <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\utils\mctabs.js" />
     <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\utils\validate.js" />
     <Content Include="js\ice\src\ice.js" />
+    <Content Include="js\intTel\intlTelInput.js" />
     <Content Include="js\JCarousel.js" />
     <Content Include="js\jquery-latest.js" />
     <Content Include="js\jquery-latest_old.js" />
@@ -1864,6 +1866,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="css\img\" />
     <Folder Include="CustomerDocs\CustomerDocs\CustomerEmailDocument\" />
     <Folder Include="CustomerDocs\CustomerDocs\LocationPics\" />
     <Folder Include="CustomerDocs\CustomerEmailDocument\" />
