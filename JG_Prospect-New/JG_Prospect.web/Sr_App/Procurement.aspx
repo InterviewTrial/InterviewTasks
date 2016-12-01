@@ -1528,7 +1528,7 @@
                                                  </asp:GridView>
                                              </div>
                                                 </div>
-                                                <div style="width: 50%; float: left; margin-left: 3%; margin-top: 20px; box-sizing: border-box;">
+                                                <div style="width: 50%; float: initial; margin-left: 3%; margin-top: 20px; box-sizing: border-box;">
                                                     <div id="googleMap" style="width: 100%; height: 254px;"></div>
                                                 </div>
                                             </div>
