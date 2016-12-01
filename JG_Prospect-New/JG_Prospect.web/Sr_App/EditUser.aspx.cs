@@ -21,6 +21,7 @@ using System.Xml.Serialization;
 using System.Xml;
 using JG_Prospect.App_Code;
 using OfficeOpenXml;
+using Newtonsoft.Json;
 
 namespace JG_Prospect
 {
@@ -88,6 +89,37 @@ namespace JG_Prospect
 
         #endregion
 
+        #region WebMethods
+        [System.Web.Services.WebMethod]
+        public static List<Task> GetTasksForDesignation(string designationID)
+        {
+            List<Task> taskList = new List<Task>();
+            DataSet dsTechTaskForDesignation;
+            
+            if (!string.IsNullOrEmpty(designationID) && !designationID.Equals("All"))
+            {
+                int iDesignationID = Convert.ToInt32(designationID);
+                dsTechTaskForDesignation = TaskGeneratorBLL.Instance.GetAllActiveTechTaskForDesignationID(iDesignationID);
+                if(dsTechTaskForDesignation!=null & dsTechTaskForDesignation.Tables.Count > 0) {
+                    //taskJSON = JsonConvert.SerializeObject(dsTechTaskForDesignation.Tables[0]);
+                    if (dsTechTaskForDesignation.Tables[0].Rows.Count > 0)
+                    {
+                        for (int iCurrentRow = 0; iCurrentRow < dsTechTaskForDesignation.Tables[0].Rows.Count; iCurrentRow++)
+                        {
+                            taskList.Add(new Task
+                            {
+                                TaskId = Convert.ToInt32(dsTechTaskForDesignation.Tables[0].Rows[iCurrentRow]["TaskId"]),
+                                Title = dsTechTaskForDesignation.Tables[0].Rows[iCurrentRow]["Title"].ToString()
+                            });
+                        }
+                    }
+                }
+            }
+            return taskList;
+        }
+        
+        #endregion
+
         #region '--Page Events--'
 
         protected void Page_Load(object sender, EventArgs e)
@@ -117,7 +149,8 @@ namespace JG_Prospect
                 DataSet dsCurrentPeriod = UserBLL.Instance.Getcurrentperioddates();
                 //bindPayPeriod(dsCurrentPeriod);
                 FillCustomer();
-                txtfrmdate.Text = DateTime.Now.AddDays(-14).ToString("MM/dd/yyyy");
+                //txtfrmdate.Text = DateTime.Now.AddDays(-14).ToString("MM/dd/yyyy");
+                txtfrmdate.Text = "All";
                 txtTodate.Text = DateTime.Now.ToString("MM/dd/yyyy");
                 ShowHRData();
             }
@@ -1226,8 +1259,14 @@ namespace JG_Prospect
                 ddlDesignation.DataTextField = "DesignationName";
                 ddlDesignation.DataValueField = "ID";
                 ddlDesignation.DataBind();
+
+                ddlDesignationForTask.DataSource = dsDesignation.Tables[0];
+                ddlDesignationForTask.DataTextField = "DesignationName";
+                ddlDesignationForTask.DataValueField = "ID";
+                ddlDesignationForTask.DataBind();
             }
             ddlDesignation.Items.Insert(0, "--All--");
+            ddlDesignationForTask.Items.Insert(0, "--All--");
         }
 
         private void FillCustomer()
@@ -2372,12 +2411,20 @@ namespace JG_Prospect
             DataSet dsTechTask;
 
             dsTechTask = TaskGeneratorBLL.Instance.GetAllActiveTechTask();
-
-            ddlTechTask.DataSource = dsTechTask;
-            ddlTechTask.DataTextField = "Title";
-            ddlTechTask.DataValueField = "TaskId";
-            ddlTechTask.DataBind();
+            if(dsTechTask!=null & dsTechTask.Tables.Count > 0) { 
+                DataTable dtTechTask = dsTechTask.Tables[0];
+                //dtTechTask.Columns.Add("TitleWithLink");
+                //for (int iCurrentRow = 0; iCurrentRow < dtTechTask.Rows.Count; iCurrentRow++)
+                //{
+                //    dtTechTask.Rows[iCurrentRow]["TitleWithLink"] = dtTechTask.Rows[iCurrentRow]["Title"] + " - <a href=TaskGenerator.aspx?TaskId=" + dtTechTask.Rows[iCurrentRow]["TaskId"] + ">" + dtTechTask.Rows[iCurrentRow]["TaskId"] +"</a>";
+                //}
+                ddlTechTask.DataSource = dtTechTask;
+                ddlTechTask.DataTextField = "Title";
+                ddlTechTask.DataValueField = "TaskId";
+                ddlTechTask.DataBind();
+            }
         }
+        
 
         private void BindGrid()
         {
@@ -2830,11 +2877,13 @@ namespace JG_Prospect
             {
                 txtfrmdate.Enabled = false;
                 txtTodate.Enabled = false;
+                txtfrmdate.Text = "All";
             }
             else
             {
                 txtfrmdate.Enabled = true;
                 txtTodate.Enabled = true;
+                txtfrmdate.Text = DateTime.Now.AddDays(-14).ToString("MM/dd/yyyy");
             }
             BindGrid();
         }

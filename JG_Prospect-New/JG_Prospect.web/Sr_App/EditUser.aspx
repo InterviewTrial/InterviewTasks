@@ -137,7 +137,24 @@
             }
             return isValidFile;
         }
-
+        
+        function SetDesignationForTask()
+        {
+                var dID = $('#<%=ddlDesignationForTask.ClientID%>').val();
+                $.ajax({
+                    type: "POST",
+                    url: "EditUser.aspx/GetTasksForDesignation",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "JSON",
+                    data: JSON.stringify({ designationID: dID }),
+                    success: function (Result) {
+                        $('#<%=ddlTechTask.ClientID%>').empty();
+                        $.each(Result.d, function (key, value) {
+                            $('#<%=ddlTechTask.ClientID%>').append($("<option></option>").val(value.TaskId).html(value.Title));
+                        });
+                    }
+                });
+        }
     </script>
     <style type="text/css">
         .modalBackground {
@@ -437,7 +454,7 @@
                             Style="width: 80px;" OnTextChanged="txtfrmdate_TextChanged" Enabled="false"></asp:TextBox>
                         <cc1:CalendarExtender ID="calExtendFromDate" runat="server" TargetControlID="txtfrmdate">
                         </cc1:CalendarExtender>
-                        <asp:Label ID="Label4" Text="From :*" runat="server" />
+                        <asp:Label ID="Label4" Text="To :*" runat="server" />
                         <asp:TextBox ID="txtTodate" CssClass="date" onkeypress="return false"
                             MaxLength="10" runat="server" TabIndex="3" AutoPostBack="true"
                             Style="width: 80px;" OnTextChanged="txtTodate_TextChanged" Enabled="false"></asp:TextBox>
@@ -635,7 +652,7 @@
                     </td>
                         
                     <td>
-                        <label>Upload Prospects using xlsx file:  <label>Upload Prospects using xlsx file:<asp:FileUpload ID="BulkProspectUploader" runat="server" /></label>
+                        <label>Upload Prospects using xlsx file:  <asp:FileUpload ID="BulkProspectUploader" runat="server" /></label>
                         <asp:RequiredFieldValidator ID="RequiredFieldValidator3" ControlToValidate="BulkProspectUploader" runat="server" ErrorMessage="Select file to import data." ValidationGroup="BulkImport"></asp:RequiredFieldValidator>
                     </td>
                 </tr>
@@ -718,6 +735,13 @@
                                 <asp:DropDownList ID="ddlUsers" runat="server" />
                                 <asp:RequiredFieldValidator ID="rfvddlUsers" runat="server" ErrorMessage="Select Recruiter" ControlToValidate="ddlUsers"
                                     ValidationGroup="InterviewDate" InitialValue="0" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">Designation</td>
+                            <td>: </td>
+                            <td align="left">
+                                <asp:DropDownList ID="ddlDesignationForTask" runat="server" Width="140px" EnableViewState="true" onchange="SetDesignationForTask();" ></asp:DropDownList>
                             </td>
                         </tr>
                         <tr>

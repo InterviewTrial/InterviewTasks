@@ -717,6 +717,27 @@ namespace JG_Prospect.DAL
 
         }
 
+        public DataSet GetAllActiveTechTaskForDesignationID(int iDesignationID)
+        {
+            DataSet result = new DataSet();
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("UDP_GetAllActiveTechTaskForDesignationID");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@DesignationID", DbType.Int32, iDesignationID);
+                    result = database.ExecuteDataSet(command);
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
+
         public DataSet GetTaskUserDetails(Int16 TaskID)
         {
             try
