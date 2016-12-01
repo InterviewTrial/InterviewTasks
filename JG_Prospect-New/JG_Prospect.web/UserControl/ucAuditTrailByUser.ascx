@@ -71,7 +71,7 @@
                            autoOpen: false,
                            modal: true,
                            height: 625,
-                           width: 600,
+                           width: 800,
                            title: "User Log"
                        });
         $dialog.dialog('open');

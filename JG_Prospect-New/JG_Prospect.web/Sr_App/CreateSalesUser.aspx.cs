@@ -54,7 +54,7 @@ namespace JG_Prospect.Sr_App
 
         protected void Page_Load(object sender, EventArgs e)
         {
-
+             
             if (Session["Username"] != null)
             {
                 // txtSource.Text = Session["Username"].ToString();
@@ -96,13 +96,15 @@ namespace JG_Prospect.Sr_App
                
             }
 
+            #region -- Page Load --
+
             if (!IsPostBack)
             {
                 FillPhoneTypeDropDown();
                 BindProducts1();
                 BindProducts2();
                 BindProducts3();
-                
+
                 chkMaddAdd.Checked = true;
                 CalendarExtender1.StartDate = DateTime.Today;
                 this.BarcodeImage.Visible = false;
@@ -123,8 +125,8 @@ namespace JG_Prospect.Sr_App
                 txtDateSourced.Attributes.Add("readonly", "readonly");
                 //////btnMinusNew.Visible = true;
                 //////btnPlusNew.Visible = false;
-                Panel3.Visible = true;
-                Panel4.Visible = true;
+                //////Panel3.Visible = true;
+                //////Panel4.Visible = true;
                 pnl4.Visible = false;
                 ddlInsteviewtime.DataSource = GetTimeIntervals();
                 ddlInsteviewtime.DataBind();
@@ -214,12 +216,11 @@ namespace JG_Prospect.Sr_App
                 Session["ExtraIncomeAmt"] = null;
                 gvYtd.DataSource = null;
                 gvYtd.DataBind();
-                pnlFngPrint.Visible = false;
+                //////pnlFngPrint.Visible = false;
                 pnlGrid.Visible = false;
-                pnlnewHire.Visible = false;
+                //pnlnewHire.Visible = false;
                 pnlNew2.Visible = false;
-                btnNewPluse.Visible = true;
-                btnNewMinus.Visible = false;
+
                 txtReson.Visible = false;
                 dtInterviewDate.Visible = false;
                 btnPluse.Visible = true;
@@ -274,7 +275,7 @@ namespace JG_Prospect.Sr_App
                 lblReqSig.Visible = false;
                 rqSign.Enabled = false;
                 lblReqMarSt.Visible = false;
-                rqMaritalStatus.Enabled = false;                
+                rqMaritalStatus.Enabled = false;
                 // lblReqDL.Visible = false;
                 lblReqPicture.Style["display"] = "none";
                 lblReqDL.Style["display"] = "none";
@@ -338,7 +339,7 @@ namespace JG_Prospect.Sr_App
                 //}
                 if (Request.QueryString["ID"] != null)
                 {
-                    
+
                     btnUpdate.Visible = true;
                     btncreate.Visible = false;
                     btnreset.Visible = false;
@@ -365,9 +366,9 @@ namespace JG_Prospect.Sr_App
                         lblICardName.Text = ds.Tables[0].Rows[0][1].ToString() + " " + ds.Tables[0].Rows[0][2].ToString();
 
                         lblICardPosition.Text = ds.Tables[0].Rows[0][5].ToString();
-                        lblICardIDNo.Text = ds.Tables[0].Rows[0]["UserInstallId"].ToString();                        
+                        lblICardIDNo.Text = ds.Tables[0].Rows[0]["UserInstallId"].ToString();
                         Session["installId"] = ds.Tables[0].Rows[0]["UserInstallId"].ToString();
-                        
+
                         //lblICardIDNo.Text = ds.Tables[0].Rows[0][62].ToString();
                         //Session["installId"] = ds.Tables[0].Rows[0][62].ToString();
 
@@ -469,7 +470,7 @@ namespace JG_Prospect.Sr_App
                                 lblReqSig.Visible = false;
                                 rqSign.Enabled = false;
                                 lblReqMarSt.Visible = false;
-                                rqMaritalStatus.Enabled = false;                                
+                                rqMaritalStatus.Enabled = false;
                                 // lblReqDL.Visible = false;
                                 lblReqPicture.Style["display"] = "none";
                                 lblReqDL.Style["display"] = "none";
@@ -582,7 +583,7 @@ namespace JG_Prospect.Sr_App
                                 lblReqSig.Visible = false;
                                 rqSign.Enabled = false;
                                 lblReqMarSt.Visible = false;
-                                rqMaritalStatus.Enabled = false;                                
+                                rqMaritalStatus.Enabled = false;
                                 //  lblReqDL.Visible = false;
 
                                 lblReqPicture.Style["display"] = "none";
@@ -652,7 +653,7 @@ namespace JG_Prospect.Sr_App
                                 //rqConPass.Enabled = true;
                                 rqSign.Enabled = false;
                                 lblReqMarSt.Visible = true;
-                                rqMaritalStatus.Enabled = true;                                
+                                rqMaritalStatus.Enabled = true;
                                 //  lblReqDL.Visible = false;
                                 lblReqPicture.Style["display"] = "block";
                                 lblReqDL.Style["display"] = "block";
@@ -698,22 +699,20 @@ namespace JG_Prospect.Sr_App
                         Session["PreviousStatus"] = Convert.ToString(ds.Tables[0].Rows[0][6]);
                         if (ds.Tables[0].Rows[0][6].ToString() == "Active" || ds.Tables[0].Rows[0][6].ToString() == "OfferMade")
                         {
-                            pnlFngPrint.Visible = true;
+                            ////////pnlFngPrint.Visible = true;
                             pnlGrid.Visible = true;
                             pnl4.Visible = false;
-                            pnlnewHire.Visible = true;
+                            //pnlnewHire.Visible = true;
                             pnlNew2.Visible = true;
-                            btnNewPluse.Visible = false;
-                            btnNewMinus.Visible = true;
+
                         }
                         else
                         {
-                            pnlFngPrint.Visible = false;
+                            ////////pnlFngPrint.Visible = false;
                             pnlGrid.Visible = false;
-                            pnlnewHire.Visible = false;
+                            //pnlnewHire.Visible = false;
                             pnlNew2.Visible = false;
-                            btnNewPluse.Visible = true;
-                            btnNewMinus.Visible = false;
+
                             pnl4.Visible = false;
                         }
                         if (ds.Tables[0].Rows[0][6].ToString() == "Deactive")
@@ -1038,7 +1037,7 @@ namespace JG_Prospect.Sr_App
                             lblInstallerType.Visible = false;
                             ddlInstallerType.Visible = false;
                         }
-                        
+
                         if (Convert.ToString(ds.Tables[0].Rows[0][106]) != "")
                         {
                             if (Convert.ToBoolean(ds.Tables[0].Rows[0][106]))
@@ -1167,6 +1166,9 @@ namespace JG_Prospect.Sr_App
                 rqAccountType.Enabled = false;
             }
 
+            #endregion
+
+            pnlFngPrint.Visible = false;            
         }
         
         private void SetUserControlValue(string LoginID)
@@ -2893,14 +2895,7 @@ namespace JG_Prospect.Sr_App
             }
             else if (ddlstatus.SelectedValue == "OfferMade")
             {
-                ddlInsteviewtime.Visible = false;
-                txtReson.Visible = false;
-                RequiredFieldValidator7.Enabled = false;
-                dtInterviewDate.Visible = false;
-                pnlnewHire.Visible = true;
-                pnlNew2.Visible = true;
-                btnNewPluse.Visible = false;
-                btnNewMinus.Visible = true;
+                ddlOfferMade();
             }
             else
             {
@@ -2914,22 +2909,20 @@ namespace JG_Prospect.Sr_App
                 lblReqDL.Style["display"] = "block";
                 //txtHireDate.Text = DateTime.Now.ToShortDateString();
                 dtReviewDate.Text = DateTime.Now.AddDays(30).ToShortDateString();
-                pnlFngPrint.Visible = true;
+                //////pnlFngPrint.Visible = true;
                 pnlGrid.Visible = true;
                 pnl4.Visible = false;
-                pnlnewHire.Visible = true;
+                //pnlnewHire.Visible = true;
                 pnlNew2.Visible = true;
-                btnNewPluse.Visible = false;
-                btnNewMinus.Visible = true;
+                
             }
             else
             {
-                pnlFngPrint.Visible = false;
+                //////pnlFngPrint.Visible = false;
                 pnlGrid.Visible = false;
-                pnlnewHire.Visible = false;
+                //pnlnewHire.Visible = false;
                 pnlNew2.Visible = false;
-                btnNewPluse.Visible = true;
-                btnNewMinus.Visible = false;
+                
                 pnl4.Visible = false;
             }
             if (ddlstatus.SelectedValue == "Deactive")
@@ -2938,32 +2931,7 @@ namespace JG_Prospect.Sr_App
             }
             if (ddlstatus.SelectedValue == "OfferMade")
             {
-                rqdtResignition.Enabled = false;
-                pnlnewHire.Visible = true;
-                pnlAll.Visible = true;
-                pnlNew2.Visible = true;
-                btnNewPluse.Visible = false;
-                btnNewMinus.Visible = true;
-                //rqDtNewReview.Enabled = false;
-                //rqLastReviewDate.Enabled = false;
-
-                if (Session["ID"] != null && !string.IsNullOrEmpty(Convert.ToString(Session["ID"])))
-                {
-                    txtOfferReqMail.Enabled = false;
-                    txtOfferReqMail.ReadOnly = true;
-                    txtOfferConPassword.Attributes.Add("value", "jmgrove");
-                    txtOfferPassword.Attributes.Add("value", "jmgrove");
-                }
-                else
-                {
-                    txtOfferReqMail.Enabled = true;
-                    txtOfferReqMail.ReadOnly = false;
-                    txtOfferConPassword.Attributes.Add("value", "jmgrove");
-                    txtOfferPassword.Attributes.Add("value", "jmgrove");
-                }
-
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "OverlayPopupOfferMade();", true);
-                return;
+                ddlOfferMade2();
             }
             else if (ddlstatus.SelectedValue == "Active")
             {
@@ -3181,15 +3149,15 @@ namespace JG_Prospect.Sr_App
             {
                 //////btnMinusNew.Visible = true;
                 //////btnPlusNew.Visible = false;
-                Panel3.Visible = true;
-                Panel4.Visible = true;
+                //////Panel3.Visible = true;
+                //////Panel4.Visible = true;
             }
             else
             {
                 ////////btnMinusNew.Visible = false;
                 ////////btnPlusNew.Visible = true;
-                Panel3.Visible = false;
-                Panel4.Visible = false;
+                //////Panel3.Visible = false;
+                ////////////Panel4.Visible = false;
             }
 
             if ((ddlstatus.SelectedValue == "InterviewDate")
@@ -3547,16 +3515,55 @@ namespace JG_Prospect.Sr_App
             }
             #endregion
         }
-        
+
+        private void ddlOfferMade2()
+        {
+            rqdtResignition.Enabled = false;
+            //pnlnewHire.Visible = true;
+            pnlAll.Visible = true;
+            pnlNew2.Visible = true;
+            
+            //rqDtNewReview.Enabled = false;
+            //rqLastReviewDate.Enabled = false;
+
+            if (Session["ID"] != null && !string.IsNullOrEmpty(Convert.ToString(Session["ID"])))
+            {
+                txtOfferReqMail.Enabled = false;
+                txtOfferReqMail.ReadOnly = true;
+                txtOfferConPassword.Attributes.Add("value", "jmgrove");
+                txtOfferPassword.Attributes.Add("value", "jmgrove");
+            }
+            else
+            {
+                txtOfferReqMail.Enabled = true;
+                txtOfferReqMail.ReadOnly = false;
+                txtOfferConPassword.Attributes.Add("value", "jmgrove");
+                txtOfferPassword.Attributes.Add("value", "jmgrove");
+            }
+
+            ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "OverlayPopupOfferMade();", true);
+            return;
+        }
+
+        private void ddlOfferMade()
+        {
+            ddlInsteviewtime.Visible = false;
+            txtReson.Visible = false;
+            RequiredFieldValidator7.Enabled = false;
+            dtInterviewDate.Visible = false;
+            //pnlnewHire.Visible = true;
+            pnlNew2.Visible = true;
+            
+        }
+
         private void showHideNewHireSection(bool ShowSection)
         {
             pnlAll.Visible = ShowSection;
-            pnlFngPrint.Visible = ShowSection;
-            pnlnewHire.Visible = ShowSection;
+            //////pnlFngPrint.Visible = ShowSection;
+            //pnlnewHire.Visible = ShowSection;
             pnlNew2.Visible = ShowSection;
 
-            btnNewPluse.Visible = !ShowSection;
-            btnNewMinus.Visible = ShowSection;
+            
         }
 
         protected void btnPluse_Click(object sender, EventArgs e)
@@ -3659,11 +3666,10 @@ namespace JG_Prospect.Sr_App
 
         protected void btnNewPluse_Click(object sender, EventArgs e)
         {
-            pnlnewHire.Visible = true;
+            //pnlnewHire.Visible = true;
             pnlNew2.Visible = true;
-            btnNewPluse.Visible = false;
-            btnNewMinus.Visible = true;
-            pnlFngPrint.Visible = true;
+            
+            //////pnlFngPrint.Visible = true;
             pnlGrid.Visible = true;
             if (rdoCheque.Checked)
             {
@@ -3699,12 +3705,11 @@ namespace JG_Prospect.Sr_App
 
         protected void btnNewMinus_Click(object sender, EventArgs e)
         {
-            pnlFngPrint.Visible = false;
+            //////pnlFngPrint.Visible = false;
             pnlGrid.Visible = false;
-            pnlnewHire.Visible = false;
+            //pnlnewHire.Visible = false;
             pnlNew2.Visible = false;
-            btnNewPluse.Visible = true;
-            btnNewMinus.Visible = false;
+            
             if (rdoCheque.Checked)
             {
                 lblAba.Visible = false;
@@ -4243,8 +4248,8 @@ namespace JG_Prospect.Sr_App
         {
             ////////btnMinusNew.Visible = true;
             ////////btnPlusNew.Visible = false;
-            Panel3.Visible = true;
-            Panel4.Visible = true;
+            //////Panel3.Visible = true;
+            //////Panel4.Visible = true;
             if (ddldesignation.SelectedItem.Text == "Installer")
             {
                 lblInstallerType.Visible = true;
@@ -4261,8 +4266,8 @@ namespace JG_Prospect.Sr_App
         {
             ////////btnMinusNew.Visible = false;
             ////////btnPlusNew.Visible = true;
-            Panel3.Visible = false;
-            Panel4.Visible = false;
+            //////Panel3.Visible = false;
+            //////Panel4.Visible = false;
             if (ddldesignation.SelectedItem.Text == "Installer")
             {
                 lblInstallerType.Visible = true;
@@ -6099,7 +6104,7 @@ namespace JG_Prospect.Sr_App
 
         private void fullTouchPointLog()
         {
-            if (Session["ID"] != null || Session["ID"].ToString() != "")//Fill Touch Point Log only if it is edit mode.
+            if (Session["ID"] != null && Session["ID"].ToString() != "")//Fill Touch Point Log only if it is edit mode.
             {
                 
                 string strUserInstallId = JGSession.LoginUserID;
@@ -6111,19 +6116,20 @@ namespace JG_Prospect.Sr_App
 
                 InstallUserBLL.Instance.AddTouchPointLogRecord(
                     Convert.ToInt32(JGSession.LoginUserID)
-                    ,Convert.ToInt32(Session["ID"])
+                    , Convert.ToInt32(Session["ID"])
                     , strUserInstallId
-                    , DateTime.Now," Status To : " + ddlstatus.SelectedItem.Text);
-            }
+                    , DateTime.Now, " Status To : " + ddlstatus.SelectedItem.Text);
 
-            BindTouchPointLog();
+                BindTouchPointLog();
+            }
+            
         }
 
         private void BindTouchPointLog()
         {
             DataSet DsTouchPointLog;
             DsTouchPointLog = InstallUserBLL.Instance.GetTouchPointLogDataByUserID(Convert.ToInt32(Session["ID"]));
-            
+
             gvTouchPointLog.DataSource = DsTouchPointLog;
             gvTouchPointLog.DataBind();
         }

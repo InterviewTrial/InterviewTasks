@@ -10,6 +10,7 @@
     <link href="../css/dropzone/css/dropzone.css" rel="stylesheet" />
     <script type="text/javascript" src="../js/dropzone.js"></script>
     <link rel="stylesheet" href="../css/jquery-ui.css" />
+    <link rel="stylesheet" href="../css/intTel/intlTelInput.css" />
 
     <link href="../datetime/css/jquery-ui-1.7.1.custom.css" rel="stylesheet" type="text/css" />
     <link href="../datetime/css/stylesheet.css" rel="stylesheet" type="text/css" />
@@ -112,6 +113,8 @@
         }
 
         $(document).ready(function () {
+            $('#<%=txtPhone.ClientID%>').intlTelInput();
+
             var text_max = 50;
             $('#textarea_CharCount').html(text_max + ' characters remaining');
 
@@ -273,9 +276,8 @@
 
         //http://preview.tinyurl.com/prugz6k
 
-        $(document).ready(function () {
-
-            
+        function SetSectionShowHideOnReady ()
+        {
             $('#btnGeneralPlus').hide();
 
             $('.tblSkillAssessment td').hide();
@@ -287,7 +289,12 @@
 
             $('.tblSalesAssesment td').hide();
             $('#btnSalesAssMinusNew').hide();
-            
+
+            //$('.tblSalesAssesment td').hide();
+            $('#btnBasicPlusNew').hide();
+
+            $('#btnNewHirePluse').hide();
+
 
 
             $("#btnGeneralMinus").click(function () {
@@ -295,10 +302,10 @@
                 $('#btnGeneralPlus').show();
                 $('#btnGeneralMinus').hide();
             });
-            $("#btnGeneralPlus").click(function () {                
+            $("#btnGeneralPlus").click(function () {
                 $(".tblGeneral td").show("slow");
                 $('#btnGeneralPlus').hide();
-                $('#btnGeneralMinus').show();                
+                $('#btnGeneralMinus').show();
             });
 
 
@@ -307,13 +314,14 @@
                 $('.tblSkillAssessment td').hide("slow");
                 $('#btnSkillAssPlusNew').show();
                 $('#btnSkillAssMinusNew').hide();
+                $('#tblBasicAssessment').hide();
             });
             $("#btnSkillAssPlusNew").click(function () {
                 $(".tblSkillAssessment td").show("slow");
                 $('#btnSkillAssPlusNew').hide();
                 $('#btnSkillAssMinusNew').show();
+                $('#tblBasicAssessment').show();
             });
-
 
 
 
@@ -321,27 +329,72 @@
                 $('.tblRecruiterAssMinusNew td').hide("slow");
                 $('#btnRecruiterPlusNew').show();
                 $('#btnRecruiterAssMinusNew').hide();
+                $('#tblBasicAssessment').hide();
             });
             $("#btnRecruiterPlusNew").click(function () {
                 $(".tblRecruiterAssMinusNew td").show("slow");
                 $('#btnRecruiterPlusNew').hide();
                 $('#btnRecruiterAssMinusNew').show();
+                $('#tblBasicAssessment').show();
             });
-             
+
 
             $("#btnSalesAssMinusNew").click(function () {
                 $('.tblSalesAssesment td').hide("slow");
                 $('#btnSalesPlusNew').show();
                 $('#btnSalesAssMinusNew').hide();
+                $('#tblBasicAssessment').hide();
+
             });
             $("#btnSalesPlusNew").click(function () {
                 $(".tblSalesAssesment td").show("slow");
                 $('#btnSalesPlusNew').hide();
                 $('#btnSalesAssMinusNew').show();
+                $('#tblBasicAssessment').show();
+
+            });
+
+             
+
+            // Basic Skill Assessment section
+            $("#btnBasicAssMinusNew").click(function () {
+                $('.tblBasicAssessment td').hide("slow");
+                $('#btnBasicPlusNew').show();
+                $('#btnBasicAssMinusNew').hide();
+
+            });
+            $("#btnBasicPlusNew").click(function () {
+                $(".tblBasicAssessment td").show("slow");
+                $('#btnBasicPlusNew').hide();
+                $('#btnBasicAssMinusNew').show();
+
+            });
+
+
+
+
+
+
+            $("#btnNewHireMinus").click(function () {
+                $('.tblNewHire td').hide("slow");
+                $('#btnNewHirePluse').show();
+                $('#btnNewHireMinus').hide();
+
+            });
+            $("#btnNewHirePluse").click(function () {
+                $(".tblNewHire td").show("slow");
+                $('#btnNewHirePluse').hide();
+                $('#btnNewHireMinus').show();
+
             });
 
             ShowHideRespectiveTableData('');
+        }
 
+        $(document).ready(function () {
+
+            SetSectionShowHideOnReady();
+             
             $('#<%= ddlPositionAppliedFor.ClientID %>').on('change', function (e) {
 
                 var optionSelected = $("option:selected", this).text();
@@ -428,8 +481,7 @@
             } catch (e) {
                 alert(e.message);
             }
-        })
-
+        }) 
 
         function ShowHideRespectiveTableData(optionSelected)
         {
@@ -457,9 +509,24 @@
             $('.tblSaleMain').hide();
             $('.tblRecruiterMain').hide();
             $('.tblSkillMain').hide();
-             
 
-            if (optionSelected == "Admin") {
+            $('.tblBasicAssessmentMain').hide();
+
+            //alert(optionSelected);
+
+            //if ((optionSelected == "0") || (optionSelected == "--Select--")) {
+
+            //    $('#div-AdminAssess').html("Select Skill Assessment")
+            //    $('.tblSkillMain').show("slow");
+            //    $('.tblSkillMain td').show("slow");
+
+            //    $(".tblSkillAssessment td").show("slow");
+            //    $('#btnSkillAssPlusNew').hide();
+            //    $('#btnSkillAssMinusNew').show();
+
+            //} else
+
+             if (optionSelected == "Admin") {
                 $('#div-AdminAssess').html(optionSelected + " Skill Assessment")
                 $('.tblSkillMain').show("slow");
                 $('.tblSkillMain td').show("slow");
@@ -491,7 +558,21 @@
                 $(".tblRecruiterAssMinusNew td").show("slow");
                 $('#btnRecruiterPlusNew').hide();
                 $('#btnRecruiterAssMinusNew').show();
+            }
+            else {
+                // show for all user.
+               // alert(optionSelected);
 
+                if ((optionSelected == "0") || (optionSelected == "--Select--")) {
+                    $('#div-BasicAssessment').html("Select Skill Assessment")
+                }
+                else {
+                    $('#div-BasicAssessment').html(optionSelected + " Skill Assessment");
+                }
+
+                
+                $('#tblBasicAssessmentMain').show();
+                $('#tblBasicAssessment').show();
             }
             
         }
@@ -2135,11 +2216,27 @@
                                     </td>
                                 </tr>
                             </table>
-                             
+                            
+                            <table width="99%" style="height: 50px;" id="tblBasicAssessmentMain" class="tblBasicAssessmentMain">
+                                <tr>
+                                    <td class="auto-style10" style="width: 60px;">
+                                        <input type="button" id="btnBasicPlusNew" value="+" style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" />
+                                        <input type="button" id="btnBasicAssMinusNew" value="-" style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" />
+
+                                    </td>
+                                    <td style="font-weight: bold; font-size: large">
+                                        <div id="div-BasicAssessment"> </div>
+                                    </td>
+                                </tr>
+                            </table>
+
+
                      
                         </li>
                         <li style="width: 99%;">
-                            <table border="0" cellspacing="0" cellpadding="0" style="margin-left: 0;">
+
+
+                            <table class="tblBasicAssessment" border="0" cellspacing="0" cellpadding="0" style="margin-left: 0;">
                                 <tr>
                                     <td>
                                         &nbsp;&nbsp;&nbsp;&nbsp;
@@ -2198,212 +2295,25 @@
                     
                     <%-- new code --%>
 
-                    <asp:Panel ID="Panel2" runat="server">
-                        <ul style="overflow: hidden; margin-bottom: 10px;">
-                            <li style="width: 100%;">
-                                <%--<asp:UpdatePanel ID="UpdatePanel21" runat="server">
-                            <ContentTemplate>--%>
-                                
-                                <%--</ContentTemplate>
-                            <Triggers>
-                                <asp:AsyncPostBackTrigger ControlID="btnPlusNew" EventName="Click" />
-                                <asp:AsyncPostBackTrigger ControlID="btnMinusNew" EventName="Click" />
-                            </Triggers>
-                        </asp:UpdatePanel>--%>
-                            </li>
-                            <li style="width: 49%;">
-                                <%--<asp:UpdatePanel ID="UpdatePanel22" runat="server">
-                            <ContentTemplate>--%>
-
-                                <asp:Panel ID="Panel3" runat="server">
-                                    
-                                </asp:Panel>
-                                <%--</ContentTemplate>
-                            <Triggers>
-                                <asp:AsyncPostBackTrigger ControlID="btnPlusNew" EventName="Click" />
-                                <asp:AsyncPostBackTrigger ControlID="btnMinusNew" EventName="Click" />
-                            </Triggers>
-                        </asp:UpdatePanel>--%>
-                            </li>
-                            <li style="width: 49%;">
-                                <%-- <asp:UpdatePanel ID="UpdatePanel26" runat="server">
-                            <ContentTemplate>--%>
-                                <asp:Panel ID="Panel4" runat="server">
-                                    <table border="0" cellspacing="0" cellpadding="0">
-                                        <%--<tr>
-                                    <td class="auto-style14">How many full time positions have you had in the last 5 years?
-                                                            <br />
-                                        <br />
-                                        <asp:TextBox ID="txtFullTimePos"  onkeypress="return IsNumeric(event);" MaxLength="2" runat="server" Width="222px" TabIndex="177"></asp:TextBox>
-                                        <br />
-                                        <br />
-                                        <br />
-                                        <br />
-                                    </td>
-                                </tr>--%>
-                                        <%--<tr>
-                                    <td class="auto-style15">
-                                        Please list major tools you own for your primary trade only!
-                                                        <asp:TextBox ID="txtMajorTools" runat="server" TextMode="MultiLine" Width="230px" Height="33px" TabIndex="181"></asp:TextBox>
-
-                                        <br />
-
-                                    </td>
-                                </tr>
-                                <%--<tr>
-                                    <td class="auto-style15">Have you previously worked for or applied at j.m grove construction or supply? 
-                                                        <br />
-                                        <br />
-                                        <asp:RadioButton ID="rdoJMApplyYes" runat="server" Text="Yes" GroupName="JMApply" TabIndex="188" />
-                                        <asp:RadioButton ID="rdoJMApplyNo" runat="server" Text="No" GroupName="JMApply" TabIndex="189" />
-                                    </td>
-                                </tr>-%>
-                                <tr>
-                                    
-                                </tr>
-
-
-                                <tr>
-                                    <td class="auto-style15">
-                                        <label>
-                                            Certification/training
-                                        </label>
-                                        &nbsp;<asp:FileUpload ID="flpCirtification" runat="server" Width="221px" TabIndex="201" />
-                                        &nbsp;
-                                                        <asp:Button ID="btnCirtification" runat="server" CssClass="cancel" with="10%" Text="Upload" Height="27px" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" OnClick="btnCirtification_Click" OnClientClick="return ValidateFileCirtificate()" TabIndex="202" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="auto-style15">
-                                        How long have you been doing business under your present company name? Yrs.
-                                                        <asp:TextBox ID="txtCurrentComp" runat="server" onkeypress="return IsNumeric(event);" TabIndex="204" MaxLength="2"></asp:TextBox>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="auto-style15">
-                                        Add Employee & Partners(If Any)
-                                                        <br />
-                                        <br />
-                                        <label>Type:</label>
-                                        <asp:DropDownList ID="ddlType" runat="server" TabIndex="206" ClientIDMode="Static">
-                                            <asp:ListItem Text="Select" Value="0"></asp:ListItem>
-                                            <asp:ListItem Text="Employee" Value="Employee"></asp:ListItem>
-                                            <asp:ListItem Text="Parnter" Value="Partner"></asp:ListItem>
-                                        </asp:DropDownList>
-                                        <br />
-                                        <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="ddlType" InitialValue="0" ValidationGroup="type" ForeColor="Red" ErrorMessage="Select type"></asp:RequiredFieldValidator>
-                                        <br />
-                                        <label>
-                                            Name:</label>
-                                        <asp:TextBox ID="txtName" runat="server" TabIndex="207" Width="242px"></asp:TextBox>
-                                        <br />
-                                        <asp:RequiredFieldValidator ID="RequiredFieldValidator2" ControlToValidate="txtName" runat="server" ValidationGroup="type" ForeColor="Red" ErrorMessage="Enter name"></asp:RequiredFieldValidator>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="auto-style15">
-                                        <asp:Button ID="btnAddEmpPartner" TabIndex="208" runat="server" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" ValidationGroup="type" CssClass="cancel" Height="27px" Text="Add" with="10%" OnClick="btnAddEmpPartner_Click" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="auto-style15">
-                                        <asp:UpdatePanel ID="UpdatePanel23" runat="server">
-                                            <ContentTemplate>
-                                                <asp:Panel runat="server" ID="Panel5">
-                                                    <div class="form_panel" style="padding-bottom: 0px; min-height: 100px;">
-                                                        <div class="grid">
-                                                            <%--<table id="table2" class="auto-style11">
-                                    <tr>
-                                        <td>-%>
-                                                            <asp:GridView ID="GridView2" Width="100%" ShowHeaderWhenEmpty="true" AutoGenerateColumns="False" AllowPaging="false" HeaderStyle-BackColor="#cccccc" AllowSorting="false" runat="server">
-                                                                <EmptyDataTemplate>
-                                                                    No data to display
-                                                                </EmptyDataTemplate>
-                                                                <Columns>
-                                                                    <asp:TemplateField ShowHeader="True" HeaderText="Deduction For" ControlStyle-ForeColor="Black"
-                                                                        ItemStyle-HorizontalAlign="Center">
-                                                                        <ItemTemplate>
-                                                                            <asp:Label ID="lblDeductionFor" runat="server" Text='<%#Eval("PersonName")%>'></asp:Label>
-                                                                        </ItemTemplate>
-                                                                        <ControlStyle ForeColor="Black" />
-                                                                        <ControlStyle ForeColor="Black" />
-                                                                        <ItemStyle HorizontalAlign="Center"></ItemStyle>
-                                                                    </asp:TemplateField>
-                                                                    <asp:TemplateField ShowHeader="True" HeaderText="Type" ControlStyle-ForeColor="Black"
-                                                                        ItemStyle-HorizontalAlign="Center">
-                                                                        <ItemTemplate>
-                                                                            <asp:Label ID="lblType" runat="server" Text='<%#Eval("PersonType")%>'></asp:Label>
-                                                                        </ItemTemplate>
-                                                                        <ControlStyle ForeColor="Black" />
-                                                                        <ControlStyle ForeColor="Black" />
-                                                                        <ItemStyle HorizontalAlign="Center"></ItemStyle>
-                                                                    </asp:TemplateField>
-                                                                </Columns>
-                                                            </asp:GridView>
-                                                            <br />
-                                                            <%--</td>
-                                    </tr>
-                                </table>%>
-                                                        </div>
-                                                    </div>
-                                                </asp:Panel>
-                                            </ContentTemplate>
-                                            <Triggers>
-                                                <asp:AsyncPostBackTrigger ControlID="btnAddEmpPartner" EventName="Click" />
-                                            </Triggers>
-                                        </asp:UpdatePanel>
-                                    </td>
-                                </tr>--%>
-                                                                                
-                                        
-              
-                                        
-                                         
-                                        
-                                            
-                                        
-                                         
-
-                                        
-                                    </table>
-                                </asp:Panel>
-                                <%--</ContentTemplate>
-                            <Triggers>
-                                <asp:AsyncPostBackTrigger ControlID="btnPlusNew" EventName="Click" />
-                                <asp:AsyncPostBackTrigger ControlID="btnMinusNew" EventName="Click" />
-                            </Triggers>
-                        </asp:UpdatePanel>--%>
-                            </li>
-                        </ul>
-                    </asp:Panel>
+                    
                     <%--New Hire , Fingure Print Report -- START--%>
 
                     <asp:Panel ID="pnlAll" runat="server">
                         <ul style="overflow: hidden; margin-bottom: 10px;">
                             <li style="width: 100%;">
-                                <table width="100%" style="height: 30px;">
+                                <table width="100%" id="tblMainNewHire" style="height: 30px;">
                                     <tr>
                                         <td class="auto-style10" style="width: 60px;">
-                                            <%--<asp:UpdatePanel ID="UpdatePanel8" runat="server">
-                                                <ContentTemplate>--%>
-                                            <asp:Button ID="btnNewPluse" runat="server" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" Text="+" OnClick="btnNewPluse_Click" /><%-- TabIndex="149" --%>
-                                            <asp:Button ID="btnNewMinus" runat="server" Text="-" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" OnClick="btnNewMinus_Click" />
-                                            <%--TabIndex="150"--%>
-                                            <%--</ContentTemplate>
-                                                <Triggers>
-                                                    <asp:AsyncPostBackTrigger ControlID="btnNewPluse" EventName="Click" />
-                                                    <asp:AsyncPostBackTrigger ControlID="btnNewMinus" EventName="Click" />
-                                                    <asp:AsyncPostBackTrigger ControlID="ddlstatus" EventName="SelectedIndexChanged" />
-                                                </Triggers>
-                                            </asp:UpdatePanel>--%>
+                                            <input type="button" id="btnNewHirePluse" value="+" style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" />
+                                            <input type="button" id="btnNewHireMinus" value="-" style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" />                                            
                                         </td>
                                         <td style="font-weight: bold; font-size: large">New Hire</td>
                                     </tr>
                                 </table>
                             </li>
                             <li style="width: 49%;">
-                                <asp:Panel ID="pnlnewHire" runat="server">
-                                    <table border="0" cellspacing="0" cellpadding="0">
+                                <asp:Panel ID="pnlnewHire" runat="server">                                    
+                                    <table border="0" class="tblNewHire" cellspacing="0" cellpadding="0">
                                         <tr>
                                             <td style="height: 50px;">
                                                 <label>
@@ -2531,7 +2441,7 @@
 
                             <li style="width: 49%;">
                                 <asp:Panel ID="pnlNew2" runat="server">
-                                    <table border="0" cellspacing="0" cellpadding="0">
+                                    <table border="0" class="tblNewHire" cellspacing="0" cellpadding="0">
                                         <tr>
                                             <td style="height: 50px;">
                                                 <label>
@@ -2911,11 +2821,32 @@
                     <%--New Hire , Fingure Print Report -- END--%>
                     <ul style="margin-bottom: 10px;">
                         <li style="width: 99%;">
-                            <span class="auto-style15" style="font-size: large; font-weight: bold; margin-left: 35px;">
-                                <input id ="btnGeneralPlus" class="formCtrl" type="button" value="+" style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" />
-                                <input id ="btnGeneralMinus" class="formCtrl" type="button" value="-" style="background: url(img/main-header-bg.png) repeat-x; color: #fff;"  />                                
-                                 General Contact Info Confirmation :
-                            </span>
+
+                            <table width="99%" style="height: 50px;" id="tblBasicAssessmentMain" class="tblBasicAssessmentMain">
+                                <tr>
+                                    <td class="auto-style10" style="width: 60px;">
+                                        <input type="button" id="btnBasicPlusNew" value="+" style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" />
+                                        <input type="button" id="btnBasicAssMinusNew" value="-" style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" />
+
+                                    </td>
+                                    <td style="font-weight: bold; font-size: large">
+                                        <div id="div-BasicAssessment"> </div>
+                                    </td>
+                                </tr>
+                            </table>
+                            
+                            <table width="98%" style="height: 50px; max-width:1000px;" >
+                                <tr>
+                                    <td class="auto-style10" style="width: 60px;">
+                                        <input id ="btnGeneralPlus" class="formCtrl" type="button" value="+" style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" />
+                                <input id ="btnGeneralMinus" class="formCtrl" type="button" value="-" style="background: url(img/main-header-bg.png) repeat-x; color: #fff;"  />
+
+                                    </td>
+                                    <td style="font-weight: bold; font-size: large">
+                                        <div>General Contact Info Confirmation </div>
+                                    </td>
+                                </tr>
+                            </table>
 
                                 <table border="0" class="tblGeneral" cellspacing="0" cellpadding="0" style="margin-left: 11px;">
                                     <tr>
@@ -5005,5 +4936,152 @@
         --%>
 
     </script>
+
+    
+    <script src="../js/intTel/intlTelInput.js"></script> 
+
+
+
+
+    <%--
+    <asp:Panel ID="Panel2" runat="server">
+                        <ul style="overflow: hidden; margin-bottom: 10px;">
+                            <li style="width: 100%;">
+                                
+                            </li>
+                            
+                            <li style="width: 49%;">
+                                 <asp:Panel ID="Panel4" runat="server">
+                                    <table border="0" cellspacing="0" cellpadding="0">
+                                        <tr>
+                                    <td class="auto-style14">How many full time positions have you had in the last 5 years?
+                                                            <br />
+                                        <br />
+                                        <asp:TextBox ID="txtFullTimePos"  onkeypress="return IsNumeric(event);" MaxLength="2" runat="server" Width="222px" TabIndex="177"></asp:TextBox>
+                                        <br />
+                                        <br />
+                                        <br />
+                                        <br />
+                                    </td>
+                                </tr>--%>
+                                        <%--<tr>
+                                    <td class="auto-style15">
+                                        Please list major tools you own for your primary trade only!
+                                                        <asp:TextBox ID="txtMajorTools" runat="server" TextMode="MultiLine" Width="230px" Height="33px" TabIndex="181"></asp:TextBox>
+
+                                        <br />
+
+                                    </td>
+                                </tr>
+                                <%--<tr>
+                                    <td class="auto-style15">Have you previously worked for or applied at j.m grove construction or supply? 
+                                                        <br />
+                                        <br />
+                                        <asp:RadioButton ID="rdoJMApplyYes" runat="server" Text="Yes" GroupName="JMApply" TabIndex="188" />
+                                        <asp:RadioButton ID="rdoJMApplyNo" runat="server" Text="No" GroupName="JMApply" TabIndex="189" />
+                                    </td>
+                                </tr>-%>
+                                <tr>
+                                    
+                                </tr>
+
+
+                                <tr>
+                                    <td class="auto-style15">
+                                        <label>
+                                            Certification/training
+                                        </label>
+                                        &nbsp;<asp:FileUpload ID="flpCirtification" runat="server" Width="221px" TabIndex="201" />
+                                        &nbsp;
+                                                        <asp:Button ID="btnCirtification" runat="server" CssClass="cancel" with="10%" Text="Upload" Height="27px" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" OnClick="btnCirtification_Click" OnClientClick="return ValidateFileCirtificate()" TabIndex="202" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="auto-style15">
+                                        How long have you been doing business under your present company name? Yrs.
+                                                        <asp:TextBox ID="txtCurrentComp" runat="server" onkeypress="return IsNumeric(event);" TabIndex="204" MaxLength="2"></asp:TextBox>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="auto-style15">
+                                        Add Employee & Partners(If Any)
+                                                        <br />
+                                        <br />
+                                        <label>Type:</label>
+                                        <asp:DropDownList ID="ddlType" runat="server" TabIndex="206" ClientIDMode="Static">
+                                            <asp:ListItem Text="Select" Value="0"></asp:ListItem>
+                                            <asp:ListItem Text="Employee" Value="Employee"></asp:ListItem>
+                                            <asp:ListItem Text="Parnter" Value="Partner"></asp:ListItem>
+                                        </asp:DropDownList>
+                                        <br />
+                                        <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="ddlType" InitialValue="0" ValidationGroup="type" ForeColor="Red" ErrorMessage="Select type"></asp:RequiredFieldValidator>
+                                        <br />
+                                        <label>
+                                            Name:</label>
+                                        <asp:TextBox ID="txtName" runat="server" TabIndex="207" Width="242px"></asp:TextBox>
+                                        <br />
+                                        <asp:RequiredFieldValidator ID="RequiredFieldValidator2" ControlToValidate="txtName" runat="server" ValidationGroup="type" ForeColor="Red" ErrorMessage="Enter name"></asp:RequiredFieldValidator>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="auto-style15">
+                                        <asp:Button ID="btnAddEmpPartner" TabIndex="208" runat="server" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" ValidationGroup="type" CssClass="cancel" Height="27px" Text="Add" with="10%" OnClick="btnAddEmpPartner_Click" />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="auto-style15">
+                                        <asp:UpdatePanel ID="UpdatePanel23" runat="server">
+                                            <ContentTemplate>
+                                                <asp:Panel runat="server" ID="Panel5">
+                                                    <div class="form_panel" style="padding-bottom: 0px; min-height: 100px;">
+                                                        <div class="grid">
+                                                            <%--<table id="table2" class="auto-style11">
+                                    <tr>
+                                        <td>-%>
+                                                            <asp:GridView ID="GridView2" Width="100%" ShowHeaderWhenEmpty="true" AutoGenerateColumns="False" AllowPaging="false" HeaderStyle-BackColor="#cccccc" AllowSorting="false" runat="server">
+                                                                <EmptyDataTemplate>
+                                                                    No data to display
+                                                                </EmptyDataTemplate>
+                                                                <Columns>
+                                                                    <asp:TemplateField ShowHeader="True" HeaderText="Deduction For" ControlStyle-ForeColor="Black"
+                                                                        ItemStyle-HorizontalAlign="Center">
+                                                                        <ItemTemplate>
+                                                                            <asp:Label ID="lblDeductionFor" runat="server" Text='<%#Eval("PersonName")%>'></asp:Label>
+                                                                        </ItemTemplate>
+                                                                        <ControlStyle ForeColor="Black" />
+                                                                        <ControlStyle ForeColor="Black" />
+                                                                        <ItemStyle HorizontalAlign="Center"></ItemStyle>
+                                                                    </asp:TemplateField>
+                                                                    <asp:TemplateField ShowHeader="True" HeaderText="Type" ControlStyle-ForeColor="Black"
+                                                                        ItemStyle-HorizontalAlign="Center">
+                                                                        <ItemTemplate>
+                                                                            <asp:Label ID="lblType" runat="server" Text='<%#Eval("PersonType")%>'></asp:Label>
+                                                                        </ItemTemplate>
+                                                                        <ControlStyle ForeColor="Black" />
+                                                                        <ControlStyle ForeColor="Black" />
+                                                                        <ItemStyle HorizontalAlign="Center"></ItemStyle>
+                                                                    </asp:TemplateField>
+                                                                </Columns>
+                                                            </asp:GridView>
+                                                            <br />
+                                                            <%--</td>
+                                    </tr>
+                                </table>%>
+                                                        </div>
+                                                    </div>
+                                                </asp:Panel>
+                                            </ContentTemplate>
+                                            <Triggers>
+                                                <asp:AsyncPostBackTrigger ControlID="btnAddEmpPartner" EventName="Click" />
+                                            </Triggers>
+                                        </asp:UpdatePanel>
+                                    </td>
+                                </tr>
+                                                           
+                                    </table>
+                                </asp:Panel>
+                            </li>
+                        </ul>
+                    </asp:Panel>--%>
 
 </asp:Content>
