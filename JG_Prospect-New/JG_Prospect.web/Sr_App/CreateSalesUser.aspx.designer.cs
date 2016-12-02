@@ -1354,15 +1354,6 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.GridView GridView1;
         
         /// <summary>
-        /// pnlFngPrint control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlFngPrint;
-        
-        /// <summary>
         /// txtPDBR control.
         /// </summary>
         /// <remarks>
@@ -1487,6 +1478,15 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.GridView gvYtd;
+        
+        /// <summary>
+        /// pnlFngPrint control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Panel pnlFngPrint;
         
         /// <summary>
         /// txtCompanyEmail control.

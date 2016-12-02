@@ -2230,11 +2230,8 @@
                                 </tr>
                             </table>
 
-
-                     
                         </li>
                         <li style="width: 99%;">
-
 
                             <table class="tblBasicAssessment" border="0" cellspacing="0" cellpadding="0" style="margin-left: 0;">
                                 <tr>
@@ -2441,7 +2438,7 @@
 
                             <li style="width: 49%;">
                                 <asp:Panel ID="pnlNew2" runat="server">
-                                    <table border="0" class="tblNewHire" cellspacing="0" cellpadding="0">
+                                  <table border="0" class="tblNewHire" cellspacing="0" cellpadding="0">
                                         <tr>
                                             <td style="height: 50px;">
                                                 <label>
@@ -2648,16 +2645,9 @@
                                     </table>
                                 </asp:Panel>
                             </li>
-                        </ul>
 
-                    </asp:Panel>
-
-                    <ul style="overflow-x: hidden; margin-bottom: 10px;">
-                        <li style="width: 100%;">
-                            <%--<asp:UpdatePanel ID="UpdatePanel6" runat="server">
-                        <ContentTemplate>--%>
-                            <asp:Panel ID="pnlFngPrint" runat="server">
-                                <table id="table1" class="auto-style11">
+                            <li style="width: 99%;">
+                                <table id="table1" class="tblNewHire">
                                     <tr>
                                         <td colspan="4" style="font-weight: bold">Fingure Print Report</td>
                                     </tr>
@@ -2715,21 +2705,15 @@
                                             <asp:TextBox ID="txtHDUD" runat="server"></asp:TextBox>
                                         </td>
                                     </tr>
-                                </table>
-                            </asp:Panel>
-                            <%--</ContentTemplate>
-                        <Triggers>
-                            <asp:AsyncPostBackTrigger ControlID="ddlstatus" EventName="SelectedIndexChanged" />
-                        </Triggers>
-                    </asp:UpdatePanel>--%>
-                        </li>
-                    </ul>
 
-                    <%--Following Grid is not in Used. --%>
-                    <asp:Panel runat="server" ID="pnlGrid">
+                                    <tr>
+                                        <td colspan="4">
+                                            <br />
+                                            <%--Following Grid is not in Used. --%>
+                                             <asp:Panel runat="server" ID="pnlGrid">
                         <div class="form_panel" style="padding-bottom: 0px; min-height: 100px;">
                             <div class="grid">
-                                <asp:GridView ID="gvYtd" Width="100%" ShowHeaderWhenEmpty="true" AutoGenerateColumns="False" AllowPaging="false" HeaderStyle-BackColor="#cccccc" AllowSorting="false" runat="server">
+                                <asp:GridView ID="gvYtd" Width="95%" ShowHeaderWhenEmpty="true" AutoGenerateColumns="False" AllowPaging="false" HeaderStyle-BackColor="#cccccc" AllowSorting="false" runat="server">
                                     <EmptyDataTemplate>
                                         No data to display
                                     </EmptyDataTemplate>
@@ -2817,6 +2801,32 @@
                             </div>
                         </div>
                     </asp:Panel>
+                                        </td>
+
+                                    </tr>
+                                </table>
+                            </li>
+
+                        </ul>
+
+                    </asp:Panel>
+
+                    <ul style="overflow-x: hidden; margin-bottom: 10px;">
+                        <li style="width: 100%;">
+                            <%--<asp:UpdatePanel ID="UpdatePanel6" runat="server">
+                        <ContentTemplate>--%>
+                            <asp:Panel ID="pnlFngPrint" runat="server">
+                                --
+                            </asp:Panel>
+                            <%--</ContentTemplate>
+                        <Triggers>
+                            <asp:AsyncPostBackTrigger ControlID="ddlstatus" EventName="SelectedIndexChanged" />
+                        </Triggers>
+                    </asp:UpdatePanel>--%>
+                        </li>
+                    </ul>
+
+                    
 
                     <%--New Hire , Fingure Print Report -- END--%>
                     <ul style="margin-bottom: 10px;">

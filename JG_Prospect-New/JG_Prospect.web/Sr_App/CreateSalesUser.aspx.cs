@@ -211,15 +211,14 @@ namespace JG_Prospect.Sr_App
                 txtAccountType.Visible = false;
                 //txtOtherTrade.Visible = false;
                 //txtSecTradeOthers.Visible = false;
-                pnlAll.Visible = false;
                 Session["ExtraIncomeName"] = null;
                 Session["ExtraIncomeAmt"] = null;
                 gvYtd.DataSource = null;
                 gvYtd.DataBind();
                 //////pnlFngPrint.Visible = false;
-                pnlGrid.Visible = false;
+                //pnlGrid.Visible = false;
                 //pnlnewHire.Visible = false;
-                pnlNew2.Visible = false;
+                showHideNewHireSection(false);
 
                 txtReson.Visible = false;
                 dtInterviewDate.Visible = false;
@@ -699,20 +698,17 @@ namespace JG_Prospect.Sr_App
                         Session["PreviousStatus"] = Convert.ToString(ds.Tables[0].Rows[0][6]);
                         if (ds.Tables[0].Rows[0][6].ToString() == "Active" || ds.Tables[0].Rows[0][6].ToString() == "OfferMade")
                         {
-                            ////////pnlFngPrint.Visible = true;
-                            pnlGrid.Visible = true;
+                            
+                            //pnlGrid.Visible = true;
                             pnl4.Visible = false;
-                            //pnlnewHire.Visible = true;
-                            pnlNew2.Visible = true;
+                            showHideNewHireSection(true);
 
                         }
                         else
                         {
-                            ////////pnlFngPrint.Visible = false;
-                            pnlGrid.Visible = false;
-                            //pnlnewHire.Visible = false;
-                            pnlNew2.Visible = false;
-
+                            showHideNewHireSection(false);
+                            //pnlGrid.Visible = false;
+                            showHideNewHireSection(false);
                             pnl4.Visible = false;
                         }
                         if (ds.Tables[0].Rows[0][6].ToString() == "Deactive")
@@ -727,7 +723,7 @@ namespace JG_Prospect.Sr_App
                         }
                         else
                         {
-                            pnlAll.Visible = false;
+                            showHideNewHireSection(false);
                         }
                         if (ds.Tables[0].Rows[0][38].ToString() != "")
                         {
@@ -2882,7 +2878,7 @@ namespace JG_Prospect.Sr_App
                 ddlInsteviewtime.SelectedValue = "10:00";
                 ddlTechTask = Utilits.FullDropDown.FillTechTaskDropDown(ddlTechTask);
 
-                showHideNewHireSection(true);
+                showHideNewHireSection(false);
 
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "overlayInterviewDate();", true);
             }
@@ -2910,19 +2906,17 @@ namespace JG_Prospect.Sr_App
                 //txtHireDate.Text = DateTime.Now.ToShortDateString();
                 dtReviewDate.Text = DateTime.Now.AddDays(30).ToShortDateString();
                 //////pnlFngPrint.Visible = true;
-                pnlGrid.Visible = true;
+                //pnlGrid.Visible = true;
                 pnl4.Visible = false;
                 //pnlnewHire.Visible = true;
-                pnlNew2.Visible = true;
-                
+                showHideNewHireSection(true);
+
+
             }
             else
             {
-                //////pnlFngPrint.Visible = false;
-                pnlGrid.Visible = false;
-                //pnlnewHire.Visible = false;
-                pnlNew2.Visible = false;
-                
+                //pnlGrid.Visible = false;
+                showHideNewHireSection(false);
                 pnl4.Visible = false;
             }
             if (ddlstatus.SelectedValue == "Deactive")
@@ -2938,17 +2932,16 @@ namespace JG_Prospect.Sr_App
                 lblReqPicture.Style["display"] = "block";
                 lblReqDL.Style["display"] = "block";
                 rqdtResignition.Enabled = true;
-                //rqDtNewReview.Enabled = true;
-                //rqLastReviewDate.Enabled = true;
                 showHideNewHireSection(true);
             }
             else
             {
                 rqdtResignition.Enabled = false;
-                //rqDtNewReview.Enabled = false;
-                //rqLastReviewDate.Enabled = false;
+                showHideNewHireSection(false);
             }
-            if (ddlstatus.SelectedValue == "Active" && (!(Convert.ToString(Session["usertype"]).Contains("Admin")) && !(Convert.ToString(Session["usertype"]).Contains("SM"))))
+            if (ddlstatus.SelectedValue == "Active" 
+                && (!(Convert.ToString(Session["usertype"]).Contains("Admin")) 
+                && !(Convert.ToString(Session["usertype"]).Contains("SM"))))
             {
                 lblReqPicture.Style["display"] = "block";
                 lblReqDL.Style["display"] = "block";
@@ -2961,6 +2954,7 @@ namespace JG_Prospect.Sr_App
                 //{
                 //    ddlstatus.SelectedValue = "Applicant";
                 //}
+                showHideNewHireSection(true);
                 return;
             }
 
@@ -2979,7 +2973,7 @@ namespace JG_Prospect.Sr_App
             }
             if ((ddlstatus.SelectedValue == "OfferMade") && (ddldesignation.SelectedItem.Text == "ForeMan" || ddldesignation.SelectedItem.Text == "Installer"))
             {
-                pnlAll.Visible = true;
+                showHideNewHireSection(true);
                 txtReson.Visible = false;
                 //pnlnewHire.Visible = true;
                 RequiredFieldValidator7.Enabled = true;
@@ -2988,14 +2982,14 @@ namespace JG_Prospect.Sr_App
             {
                 lblReqPicture.Style["display"] = "block";
                 lblReqDL.Style["display"] = "block";
-                pnlAll.Visible = true;
+                showHideNewHireSection(true);
                 txtReson.Visible = false;
                 //pnlnewHire.Visible = true;
                 RequiredFieldValidator7.Enabled = false;
             }
             else
             {
-                pnlAll.Visible = false;
+                showHideNewHireSection(false);
             }
             if (rdoCheque.Checked)
             {
@@ -3160,13 +3154,16 @@ namespace JG_Prospect.Sr_App
                 ////////////Panel4.Visible = false;
             }
 
-            if ((ddlstatus.SelectedValue == "InterviewDate")
-                || (ddlstatus.SelectedValue == "Active")
-                || (ddlstatus.SelectedValue == "Deactive")
+            if ((ddlstatus.SelectedValue == "Active")
                 || (ddlstatus.SelectedValue == "OfferMade"))
             {
                 showHideNewHireSection(true);
             }
+            else
+            {
+                showHideNewHireSection(false);
+            }
+
 
 
             #region NewRequiredFields
@@ -3519,13 +3516,8 @@ namespace JG_Prospect.Sr_App
         private void ddlOfferMade2()
         {
             rqdtResignition.Enabled = false;
-            //pnlnewHire.Visible = true;
-            pnlAll.Visible = true;
-            pnlNew2.Visible = true;
+            showHideNewHireSection(true);
             
-            //rqDtNewReview.Enabled = false;
-            //rqLastReviewDate.Enabled = false;
-
             if (Session["ID"] != null && !string.IsNullOrEmpty(Convert.ToString(Session["ID"])))
             {
                 txtOfferReqMail.Enabled = false;
@@ -3552,7 +3544,7 @@ namespace JG_Prospect.Sr_App
             RequiredFieldValidator7.Enabled = false;
             dtInterviewDate.Visible = false;
             //pnlnewHire.Visible = true;
-            pnlNew2.Visible = true;
+            showHideNewHireSection(true);
             
         }
 
@@ -3562,8 +3554,7 @@ namespace JG_Prospect.Sr_App
             //////pnlFngPrint.Visible = ShowSection;
             //pnlnewHire.Visible = ShowSection;
             pnlNew2.Visible = ShowSection;
-
-            
+            pnlGrid.Visible = ShowSection;
         }
 
         protected void btnPluse_Click(object sender, EventArgs e)
@@ -3664,83 +3655,7 @@ namespace JG_Prospect.Sr_App
             pnl4.Visible = false;
         } 
 
-        protected void btnNewPluse_Click(object sender, EventArgs e)
-        {
-            //pnlnewHire.Visible = true;
-            pnlNew2.Visible = true;
-            
-            //////pnlFngPrint.Visible = true;
-            pnlGrid.Visible = true;
-            if (rdoCheque.Checked)
-            {
-                lblAba.Visible = false;
-                txtRoutingNo.Visible = false;
-                lblAccount.Visible = false;
-                txtAccountNo.Visible = false;
-                lblAccountType.Visible = false;
-                txtAccountType.Visible = false;
-                //txtOtherTrade.Visible = false;
-            }
-            else
-            {
-                lblAba.Visible = true;
-                txtRoutingNo.Visible = true;
-                lblAccount.Visible = true;
-                txtAccountNo.Visible = true;
-                lblAccountType.Visible = true;
-                txtAccountType.Visible = true;
-                //txtOtherTrade.Visible = true;
-            }
-            if (ddldesignation.SelectedItem.Text == "Installer")
-            {
-                lblInstallerType.Visible = true;
-                ddlInstallerType.Visible = true;
-            }
-            else
-            {
-                lblInstallerType.Visible = false;
-                ddlInstallerType.Visible = false;
-            }
-        }
 
-        protected void btnNewMinus_Click(object sender, EventArgs e)
-        {
-            //////pnlFngPrint.Visible = false;
-            pnlGrid.Visible = false;
-            //pnlnewHire.Visible = false;
-            pnlNew2.Visible = false;
-            
-            if (rdoCheque.Checked)
-            {
-                lblAba.Visible = false;
-                txtRoutingNo.Visible = false;
-                lblAccount.Visible = false;
-                txtAccountNo.Visible = false;
-                lblAccountType.Visible = false;
-                txtAccountType.Visible = false;
-                //txtOtherTrade.Visible = false;
-            }
-            else
-            {
-                lblAba.Visible = true;
-                txtRoutingNo.Visible = true;
-                lblAccount.Visible = true;
-                txtAccountNo.Visible = true;
-                lblAccountType.Visible = true;
-                txtAccountType.Visible = true;
-                //txtOtherTrade.Visible = true;
-            }
-            if (ddldesignation.SelectedItem.Text == "Installer")
-            {
-                lblInstallerType.Visible = true;
-                ddlInstallerType.Visible = true;
-            }
-            else
-            {
-                lblInstallerType.Visible = false;
-                ddlInstallerType.Visible = false;
-            }
-        }
 
         protected void btnAddExtraIncome_Click(object sender, EventArgs e)
         {
@@ -3926,14 +3841,12 @@ namespace JG_Prospect.Sr_App
 
         protected void ddldesignation_SelectedIndexChanged1(object sender, EventArgs e)
         {
-            if (ddlstatus.SelectedValue == "Active" && (ddldesignation.SelectedItem.Text == "ForeMan" || ddldesignation.SelectedItem.Text == "Installer"))
-            {
-                pnlAll.Visible = true;
-            }
+            if (ddlstatus.SelectedValue == "Active" && 
+                    (ddldesignation.SelectedItem.Text == "ForeMan" || ddldesignation.SelectedItem.Text == "Installer"))
+                showHideNewHireSection(true);
             else
-            {
-                pnlAll.Visible = false;
-            }
+                showHideNewHireSection(false);
+
             if (ddldesignation.SelectedItem.Text == "Installer")
             {
                 lblInstallerType.Visible = true;
@@ -6138,6 +6051,83 @@ namespace JG_Prospect.Sr_App
 
         #region Old code - May not be in use
 
+        protected void btnNewPluse_Click(object sender, EventArgs e)
+        {
+            //pnlnewHire.Visible = true;
+            showHideNewHireSection(true);
+
+            //////pnlFngPrint.Visible = true;
+            //pnlGrid.Visible = true;
+            if (rdoCheque.Checked)
+            {
+                lblAba.Visible = false;
+                txtRoutingNo.Visible = false;
+                lblAccount.Visible = false;
+                txtAccountNo.Visible = false;
+                lblAccountType.Visible = false;
+                txtAccountType.Visible = false;
+                //txtOtherTrade.Visible = false;
+            }
+            else
+            {
+                lblAba.Visible = true;
+                txtRoutingNo.Visible = true;
+                lblAccount.Visible = true;
+                txtAccountNo.Visible = true;
+                lblAccountType.Visible = true;
+                txtAccountType.Visible = true;
+                //txtOtherTrade.Visible = true;
+            }
+            if (ddldesignation.SelectedItem.Text == "Installer")
+            {
+                lblInstallerType.Visible = true;
+                ddlInstallerType.Visible = true;
+            }
+            else
+            {
+                lblInstallerType.Visible = false;
+                ddlInstallerType.Visible = false;
+            }
+        }
+
+        protected void btnNewMinus_Click(object sender, EventArgs e)
+        {
+            //////pnlFngPrint.Visible = false;
+            //pnlGrid.Visible = false;
+            //pnlnewHire.Visible = false;
+            showHideNewHireSection(false);
+
+            if (rdoCheque.Checked)
+            {
+                lblAba.Visible = false;
+                txtRoutingNo.Visible = false;
+                lblAccount.Visible = false;
+                txtAccountNo.Visible = false;
+                lblAccountType.Visible = false;
+                txtAccountType.Visible = false;
+                //txtOtherTrade.Visible = false;
+            }
+            else
+            {
+                lblAba.Visible = true;
+                txtRoutingNo.Visible = true;
+                lblAccount.Visible = true;
+                txtAccountNo.Visible = true;
+                lblAccountType.Visible = true;
+                txtAccountType.Visible = true;
+                //txtOtherTrade.Visible = true;
+            }
+            if (ddldesignation.SelectedItem.Text == "Installer")
+            {
+                lblInstallerType.Visible = true;
+                ddlInstallerType.Visible = true;
+            }
+            else
+            {
+                lblInstallerType.Visible = false;
+                ddlInstallerType.Visible = false;
+            }
+        }
 
         private string GetId(string Desig)
         {
