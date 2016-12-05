@@ -95,9 +95,9 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@State", DbType.String, objuser.state);
                     database.AddInParameter(command, "@City", DbType.String, objuser.city);
 
-                    database.AddInParameter(command, "@Zip2", DbType.String, objuser.Zip2);//added by Ramya
-                    database.AddInParameter(command, "@State2", DbType.String, objuser.State2);//added by Ramya
-                    database.AddInParameter(command, "@City2", DbType.String, objuser.City2);//added by Ramya
+                    //database.AddInParameter(command, "@Zip2", DbType.String, objuser.Zip2);//added by Ramya
+                    //database.AddInParameter(command, "@State2", DbType.String, objuser.State2);//added by Ramya
+                    //database.AddInParameter(command, "@City2", DbType.String, objuser.City2);//added by Ramya
 
                     database.AddInParameter(command, "@password", DbType.String, objuser.password);
                     database.AddInParameter(command, "@designation", DbType.String, objuser.designation);
@@ -244,6 +244,8 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@AddedBy", DbType.Int32, objuser.AddedBy);
 
                     database.AddInParameter(command, "@PositionAppliedFor", DbType.String, objuser.PositionAppliedFor);
+                    database.AddInParameter(command, "@PhoneISDCode", DbType.String, objuser.PhoneISDCode);
+                    database.AddInParameter(command, "@PhoneExtNo", DbType.String, objuser.PhoneExtNo);
 
                     database.AddOutParameter(command, "@result", DbType.Int32, 1);
                     database.AddOutParameter(command, "@Id", DbType.Int32, 0);
@@ -306,7 +308,8 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public string AddUserPhone(bool isPrimaryPhone, string phoneText, int phoneType, int userID)
+        public string AddUserPhone(bool isPrimaryPhone, string phoneText, int phoneType, int userID,
+                                    string PhoneExtNo,string PhoneISDCode, bool ClearDataBeforInsert)
         {
             try
             {
@@ -318,6 +321,9 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@phoneText", DbType.String, phoneText);
                     database.AddInParameter(command, "@phoneType", DbType.Int32, phoneType);
                     database.AddInParameter(command, "@UserID", DbType.Int32, userID);
+                    database.AddInParameter(command, "@PhoneExtNo", DbType.String, PhoneExtNo);
+                    database.AddInParameter(command, "@PhoneISDCode", DbType.String, PhoneISDCode);
+                    database.AddInParameter(command, "@ClearPastRecord", DbType.Boolean, ClearDataBeforInsert);
 
                     string lResult = database.ExecuteScalar(command).ToString();
                     return lResult;
@@ -348,6 +354,28 @@ namespace JG_Prospect.DAL
                 return null;
             }
         }
+
+        public DataSet GetUserPhoneByUseId(int userId)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("SP_GetUserPhoneUserId");
+                    database.AddInParameter(command, "@UserId", DbType.Int32, userId);
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+                    return returndata;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        
 
         public string AddUserEmails(string ExtEmail, int userId)
         {
@@ -1301,6 +1329,8 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@TC", DbType.Boolean, objuser.TC);
 
                     database.AddInParameter(command, "@PositionAppliedFor", DbType.String, objuser.PositionAppliedFor);
+                    database.AddInParameter(command, "@PhoneISDCode", DbType.String, objuser.PhoneISDCode);
+                    database.AddInParameter(command, "@PhoneExtNo", DbType.String, objuser.PhoneExtNo);
 
                     database.AddOutParameter(command, "@result", DbType.Int32, 1);
                     database.ExecuteScalar(command);
@@ -2148,7 +2178,7 @@ namespace JG_Prospect.DAL
         }
 
 
-        public DataSet SetUserDisplayID(int UserId, string strDesignationsCode)
+        public DataSet SetUserDisplayID(int UserId, string strDesignationsCode, string UpdateCurrentSequence)
         {
             DataSet dsTemp = new DataSet();
             try

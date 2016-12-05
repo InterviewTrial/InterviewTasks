@@ -516,9 +516,9 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.GetAllUserPhoneType();
         }
 
-        public DataSet SetUserDisplayID(int UserId, string strDesignationsCode)
+        public DataSet SetUserDisplayID(int UserId, string strDesignationsCode, string UpdateCurrentSequence)
         {
-            return InstallUserDAL.Instance.SetUserDisplayID(UserId, strDesignationsCode);
+            return InstallUserDAL.Instance.SetUserDisplayID(UserId, strDesignationsCode, UpdateCurrentSequence);
         }
 
         public DataSet GetUsersNDesignationForSalesFilter()
@@ -533,9 +533,13 @@ namespace JG_Prospect.BLL
         {
             return InstallUserDAL.Instance.GetUserEmailByUseId(UserId);
         }
-        public string AddUserPhone(bool isPrimaryPhone, string phoneText, int phoneType , int UserID)
+        public DataSet GetUserPhoneByUseId(int UserId)
         {
-            return InstallUserDAL.Instance.AddUserPhone(isPrimaryPhone,phoneText,phoneType,UserID);
+            return InstallUserDAL.Instance.GetUserPhoneByUseId(UserId);
+        }
+        public string AddUserPhone(bool isPrimaryPhone, string phoneText, int phoneType , int UserID , string PhoneExtNo, string PhoneISDCode ,bool ClearDataBeforInsert)
+        {
+            return InstallUserDAL.Instance.AddUserPhone(isPrimaryPhone,phoneText,phoneType,UserID, PhoneExtNo , PhoneISDCode, ClearDataBeforInsert);
         }
 
         public string AddTouchPointLogRecord(int LoginUserID, int UserID, string LoginUserInstallID, DateTime now, string ChangeLog)

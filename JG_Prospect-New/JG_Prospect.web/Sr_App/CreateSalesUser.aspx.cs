@@ -396,6 +396,10 @@ namespace JG_Prospect.Sr_App
                         txtpassword.Text = ds.Tables[0].Rows[0][7].ToString();
                         txtpassword1.Text = ds.Tables[0].Rows[0][7].ToString();
 
+                        hidPhoneISDCode.Value = ds.Tables[0].Rows[0]["PhoneISDCode"].ToString();
+                        txtPhone.Text = ds.Tables[0].Rows[0]["Phone"].ToString();
+                        txtPhoneExt.Text = ds.Tables[0].Rows[0]["PhoneExtNo"].ToString();
+
                         if (ds.Tables[0].Rows[0]["PositionAppliedFor"].ToString() != "")
                         {
                             ddlPositionAppliedFor.ClearSelection();
@@ -756,7 +760,7 @@ namespace JG_Prospect.Sr_App
                             txtReson.Visible = false;
                             dtInterviewDate.Visible = false;
                         }
-                        txtPhone.Text = ds.Tables[0].Rows[0][8].ToString();
+                        
                         ViewState["Phone"] = ds.Tables[0].Rows[0][8].ToString();
                         if (ds.Tables[0].Rows[0][9].ToString() != "")
                         {
@@ -1831,6 +1835,11 @@ namespace JG_Prospect.Sr_App
                 objuser.UserType = "SalesUser";
 
                 objuser.PositionAppliedFor = ddlPositionAppliedFor.SelectedItem.Text;
+                objuser.PhoneExtNo = txtPhoneExt.Text.Trim();
+                objuser.PhoneISDCode = hidPhoneISDCode.Value;
+                objuser.phonetype = phoneTypeDropDownList.SelectedItem.Text;
+                
+
                 objuser.StartDate = txtStartDate.Text;
                 objuser.SalaryReq = txtSalaryRequirments.Text;
 
@@ -1923,6 +1932,8 @@ namespace JG_Prospect.Sr_App
 
                 string[] PhoneTypes = strHidPhoneValue.Split(new string[] { delimeter }, StringSplitOptions.None);
 
+                InstallUserBLL.Instance.AddUserPhone(false, "", 0, UserID,"","", true);
+
                 foreach (string SubItems in PhoneTypes)
                 {
                     if (SubItems.Trim() != "")
@@ -1930,12 +1941,19 @@ namespace JG_Prospect.Sr_App
                         string[] PhoneTypeItems = SubItems.Split(new string[] { Subdelimeter }, StringSplitOptions.None);
                         if (PhoneTypeItems != null)
                         {
-                            bool IsPrimaryPhone;
-                            Boolean.TryParse(PhoneTypeItems[0].ToString(), out IsPrimaryPhone);
-                            string PhoneText = PhoneTypeItems[1].ToString();
+                            bool IsPrimaryPhone = false;
+                            
+                            if (PhoneTypeItems[0].ToString() == "1")
+                                IsPrimaryPhone = true;
+                            
+                            string PhoneISDCode = PhoneTypeItems[1].ToString(); 
+                            string PhoneText = PhoneTypeItems[2].ToString();
+                            string PhoneExtNo = PhoneTypeItems[3].ToString();
                             int intPhoneType;
-                            Int32.TryParse(PhoneTypeItems[2].ToString(), out intPhoneType);
-                            InstallUserBLL.Instance.AddUserPhone(IsPrimaryPhone, PhoneText, intPhoneType, UserID);
+                            Int32.TryParse(PhoneTypeItems[4].ToString(), out intPhoneType);
+                            
+                            InstallUserBLL.Instance.AddUserPhone(IsPrimaryPhone, PhoneText, intPhoneType
+                                , UserID, PhoneExtNo , PhoneISDCode , false);
                         }
                     }
                 }
@@ -2415,7 +2433,10 @@ namespace JG_Prospect.Sr_App
                 objuser.aThreeTwo = txtaThreeTwo.Text;
                 objuser.bThree = txtbThree.Text;
                 objuser.cThree = txtcThree.Text;
+
                 objuser.PositionAppliedFor = ddlPositionAppliedFor.SelectedItem.Text;
+                objuser.PhoneExtNo = txtPhoneExt.Text.Trim();
+                objuser.PhoneISDCode = hidPhoneISDCode.Value;
 
                 if (Convert.ToString(Session["PrevDesig"]) != ddldesignation.SelectedValue || ddlstatus.SelectedValue == "Deactive")
                 {
@@ -5028,7 +5049,7 @@ namespace JG_Prospect.Sr_App
 
         private void clearcontrols()
         {
-
+            hidPhoneISDCode.Value = "us"; // Default country ISDcode
             Session["ExtraIncomeName"] = Session["ExtraIncomeAmt"] = lblDoller.Text = lblExtra.Text = "";
             Session["DtTemp"] = "";
             txtReson.Text = ""; dtInterviewDate.Text = "";
@@ -5969,12 +5990,13 @@ namespace JG_Prospect.Sr_App
             string strDesignationsCode = GetInstallIdFromDesignation(ddldesignation.SelectedItem.Text);
             string OldDesignationCode = GetInstallIdFromDesignation(OldDesignation);
 
-            if (OldDesignationCode != OldDesignationCode)
+            if (strDesignationsCode != OldDesignationCode)
             {
                 //Set tblInstallUsers > UserInstallId to null.
+                InstallUserBLL.Instance.SetUserDisplayID(UserID, strDesignationsCode,"YES");
             }
-
-            InstallUserBLL.Instance.SetUserDisplayID(UserID, strDesignationsCode);
+            else
+            InstallUserBLL.Instance.SetUserDisplayID(UserID, strDesignationsCode,"NO");
         }
 
         protected void btnAddAttachment_Click(object sender, EventArgs e)
@@ -6012,7 +6034,34 @@ namespace JG_Prospect.Sr_App
 
         private void FillPhoneValueTohid(int id)
         {
+            DataSet DsUserPhone = null;
+            string Subdelimeter = "|%|";
+            //PhoneValue = '0' + Subdelimeter + 'in' + Subdelimeter + 'Phone1' + Subdelimeter + '08' + Subdelimeter + '2';
 
+            DsUserPhone = InstallUserBLL.Instance.GetUserPhoneByUseId(id);
+
+            foreach (DataRow DataRow in DsUserPhone.Tables[0].Rows)
+            {
+                string strIsPrimayrPhone = "1";
+                string strCurrPhoneValue = "";
+
+                if (DataRow["IsPrimary"].ToString().ToLower() == "false" || DataRow["IsPrimary"].ToString() =="")
+                {
+                    strIsPrimayrPhone = "0";
+                }
+
+                strCurrPhoneValue = strIsPrimayrPhone + Subdelimeter 
+                                    + DataRow["PhoneISDCode"] + Subdelimeter
+                                    + DataRow["Phone"].ToString() + Subdelimeter
+                                    + DataRow["PhoneExtNo"] + Subdelimeter
+                                    + DataRow["PhoneTypeID"] + Subdelimeter
+                                    + "|,|";
+
+                if (hidExtPhone.Value.Trim() == "")
+                    hidExtPhone.Value = strCurrPhoneValue;
+                else
+                    hidExtPhone.Value = hidExtPhone.Value + strCurrPhoneValue;
+            }
         }
 
         private void fullTouchPointLog()

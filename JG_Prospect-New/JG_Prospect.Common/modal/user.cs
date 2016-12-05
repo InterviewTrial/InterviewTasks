@@ -181,7 +181,9 @@ namespace JG_Prospect.Common.modal
         public string SalesExperience;
 
         public string PositionAppliedFor;
-        
+        public string PhoneISDCode;
+        public string PhoneExtNo;
+
     }
 
     public class user1
