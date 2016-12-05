@@ -42,8 +42,10 @@ namespace JG_Prospect.UserControl
         {
             DataSet dsReturn = new DataSet();
 
-            dsReturn= dS.Clone();
-            
+            if (dS != null)
+            {
+                dsReturn = dS.Clone();
+
 
             foreach (DataRow datarowProcess in dS.Tables[0].Rows)
             {
@@ -57,7 +59,8 @@ namespace JG_Prospect.UserControl
 
                 //Calculate Total
 
-                dsReturn.Tables[0].Rows.Add(datarowProcess.ItemArray);
+                    dsReturn.Tables[0].Rows.Add(datarowProcess.ItemArray);
+                } 
             }
 
             

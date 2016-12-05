@@ -668,7 +668,7 @@ namespace JG_Prospect {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvddlUsers;
-        
+
         /// <summary>
         /// ddlDesignationForTask control.
         /// </summary>
@@ -677,7 +677,7 @@ namespace JG_Prospect {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlDesignationForTask;
-        
+
         /// <summary>
         /// ddlTechTask control.
         /// </summary>

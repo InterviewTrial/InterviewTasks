@@ -59,12 +59,10 @@ namespace JG_Prospect.Sr_App
                     DataRow dr = ds.Tables[0].Rows[i];
                     drpPayPeriod.Items.Add(new ListItem(dr["Periodname"].ToString(), dr["Id"].ToString()));
                 }
-                if (dsCurrentPeriod.Tables[0].Rows.Count > 0)
-                { 
-                    drpPayPeriod.SelectedValue = dsCurrentPeriod.Tables[0].Rows[0]["Id"].ToString();
-                    txtDtFrom.Text = Convert.ToDateTime(dsCurrentPeriod.Tables[0].Rows[0]["FromDate"].ToString()).ToString("MM/dd/yyyy");
-                    txtDtTo.Text = Convert.ToDateTime(dsCurrentPeriod.Tables[0].Rows[0]["ToDate"].ToString()).ToString("MM/dd/yyyy");
-                }
+                drpPayPeriod.SelectedValue = dsCurrentPeriod.Tables[0].Rows[0]["Id"].ToString();
+                txtDtFrom.Text = Convert.ToDateTime(dsCurrentPeriod.Tables[0].Rows[0]["FromDate"].ToString()).ToString("MM/dd/yyyy");
+                txtDtTo.Text = Convert.ToDateTime(dsCurrentPeriod.Tables[0].Rows[0]["ToDate"].ToString()).ToString("MM/dd/yyyy");
+
                 // Filter Drop down for Pay Period
 
                 ddlPayPeriodFilter.Items.Insert(0, new ListItem("Select", "0"));
@@ -73,12 +71,9 @@ namespace JG_Prospect.Sr_App
                     DataRow dr = ds.Tables[0].Rows[i];
                     ddlPayPeriodFilter.Items.Add(new ListItem(dr["Periodname"].ToString(), dr["Id"].ToString()));
                 }
-                if (dsCurrentPeriod.Tables[0].Rows.Count > 0)
-                {
-                    ddlPayPeriodFilter.SelectedValue = dsCurrentPeriod.Tables[0].Rows[0]["Id"].ToString();
-                    txtDtFromfilter.Text = Convert.ToDateTime(dsCurrentPeriod.Tables[0].Rows[0]["FromDate"].ToString()).ToString("MM/dd/yyyy");
-                    txtDtToFilter.Text = Convert.ToDateTime(dsCurrentPeriod.Tables[0].Rows[0]["ToDate"].ToString()).ToString("MM/dd/yyyy");
-                }
+                ddlPayPeriodFilter.SelectedValue = dsCurrentPeriod.Tables[0].Rows[0]["Id"].ToString();
+                txtDtFromfilter.Text = Convert.ToDateTime(dsCurrentPeriod.Tables[0].Rows[0]["FromDate"].ToString()).ToString("MM/dd/yyyy");
+                txtDtToFilter.Text = Convert.ToDateTime(dsCurrentPeriod.Tables[0].Rows[0]["ToDate"].ToString()).ToString("MM/dd/yyyy");
             }
             else
             {

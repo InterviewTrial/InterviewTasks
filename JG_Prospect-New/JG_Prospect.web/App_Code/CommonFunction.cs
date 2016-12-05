@@ -1,4 +1,5 @@
 ﻿using JG_Prospect.BLL;
+using JG_Prospect.Common;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -6,11 +7,9 @@ using System.Data;
 using System.IO;
 using System.Net;
 using System.Net.Mail;
-using System.Text;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using System.Linq;
 
 namespace JG_Prospect.App_Code
 {
@@ -82,6 +81,14 @@ namespace JG_Prospect.App_Code
             return formateddatetime;
         }
 
+        public static void AuthenticateUser()
+        {
+            if (!JGSession.IsActive)
+            {
+                HttpContext.Current.Response.Redirect("~/login.aspx?returnurl=" + HttpContext.Current.Request.Url.PathAndQuery);
+            }
+        }
+
         /// <summary>
         /// Used in task related controls to enable / disable features based on user type.
         /// Admin, Office manager, Sales Managers, Tech Leads, IT Enginners, Foremans are given Admin rights for task controls.
@@ -117,6 +124,33 @@ namespace JG_Prospect.App_Code
         }
 
         /// <summary>
+        /// Used in task related controls to enable / disable features based on user type.
+        /// Admin, Tech Leads are given different default values for task controls.
+        /// </summary>
+        /// <returns></returns>
+        public static bool CheckAdminAndItLeadMode()
+        {
+            // Please refer InstallCreateProspect.ascx.cs control to find list of available designations for install user in BindDesignation method.
+
+            bool returnVal = false;
+            if (HttpContext.Current.Session["DesigNew"] != null)
+            {
+                switch (HttpContext.Current.Session["DesigNew"].ToString().ToUpper())
+                {
+                    case "ADMIN": // admin
+                    case "ITLEAD": // it engineer | tech lead
+                        returnVal = true;
+                        break;
+                    default: // other designations
+                        returnVal = false;
+                        break;
+                }
+            }
+
+            return returnVal;
+        }
+
+        /// <summary>
         /// Sends an email.
         /// </summary>
         /// <param name="strEmailTemplate"></param>
@@ -146,10 +180,7 @@ namespace JG_Prospect.App_Code
                 MailMessage Msg = new MailMessage();
                 Msg.From = new MailAddress(userName, "JGrove Construction");
                 Msg.To.Add(strToAddress);
-                //Msg.To.Add("christianjackson5168@gmail.com");
-                Msg.Bcc.Add(new MailAddress("shabbir.kanchwala@straitapps.com", "Shabbir Kanchwala"));
                 Msg.CC.Add(new MailAddress("jgrove.georgegrove@gmail.com", "Justin Grove"));
-
                 Msg.Subject = strSubject;// "JG Prospect Notification";
                 Msg.Body = strBody;
                 Msg.IsBodyHtml = true;
@@ -175,7 +206,8 @@ namespace JG_Prospect.App_Code
                 }
                 catch (Exception ex)
                 {
-
+                    // throw will call application error event, which will log error details.
+                    throw ex;
                 }
 
                 Msg = null;
@@ -184,7 +216,8 @@ namespace JG_Prospect.App_Code
             }
             catch (Exception ex)
             {
-                Console.WriteLine("{0} Exception caught.", ex);
+                // throw will call application error event, which will log error details.
+                throw ex;
             }
         }
 
@@ -235,9 +268,12 @@ namespace JG_Prospect.App_Code
                 sc.Dispose();
                 sc = null;
             }
-            catch (Exception ex)
+            catch
             {
-                Console.WriteLine("{0} Exception caught.", ex);
+                // do not add throw clause here.
+                // it will lead to infinite loop.
+                // because application error event calls this method to send error details.
+                // here, we need to supress the exception.
             }
         }
 
@@ -423,17 +459,117 @@ namespace JG_Prospect.App_Code
             return ReturnSequence;
         }
 
+        /// <summary>
+        /// Gets next sequence value based on current value.
+        /// </summary>
+        /// <param name="strStartAt">First value of sequence. i.e. A, 1, I.</param>
+        /// <param name="strCurrentSequence">current sequence number. i.e. C, 5, III.</param>
+        /// <param name="blIsRoman">I can be an alphabet as well as a romal number. This flag is used to differenciate both.</param>
+        /// <returns>
+        /// input  : ouput
+        ///    ''  :     A
+        ///     1  :     2 
+        ///     A  :     B 
+        ///     Z  :    AA 
+        ///    A1  :    A2
+        ///    Z1  :    Z2
+        ///    A9  :   AA0
+        ///    Z9  :   AZ0
+        ///    A-  :   A-0
+        ///    Z-  :   Z-0
+        /// </returns>
+        public static string GetTaskWorkSpecificationSequence(string strStartAt, string strCurrentSequence = "", bool blIsRoman = false)
+        {
+            string strReturnValue = strStartAt.ToString();
+
+            if (!string.IsNullOrEmpty(strCurrentSequence))
+            {
+                string strPrefix = string.Empty;
+
+                char chInputPostfix = strCurrentSequence[strCurrentSequence.Length - 1];
+                string strPostfix = chInputPostfix.ToString();
+                if (strCurrentSequence.Length > 1)
+                {
+                    strPrefix = strCurrentSequence.Substring(0, strCurrentSequence.Length - 1);
+                }
+
+                int intaCode = (int)'a';
+                int intzCode = (int)'z';
+                int intACode = (int)'A';
+                int intZCode = (int)'Z';
+                int intInputCode = (int)chInputPostfix;
+
+                int intNumber;
+
+                if (blIsRoman && ExtensionMethods.TryRomanParse(strCurrentSequence, out intNumber))
+                {
+                    return ExtensionMethods.ToRoman((++intNumber));
+                }
+                else if (Char.IsDigit(chInputPostfix))
+                {
+                    intNumber = (int)Char.GetNumericValue(chInputPostfix);
+
+                    if (intNumber == 9)
+                    {
+                        strPrefix = "A" + strPrefix;
+                        //chInputPostfix = chStartAt;
+                        strPostfix = strStartAt;
+                    }
+                    else
+                    {
+                        //chInputPostfix = (++intNumber).ToString()[0];
+                        strPostfix = (++intNumber).ToString();
+                    }
+                }
+                else if (
+                            (intInputCode >= intaCode && intInputCode <= intzCode) ||
+                            (intInputCode >= intACode && intInputCode <= intZCode)
+                        )
+                {
+                    if (intInputCode == intzCode || intInputCode == intZCode)
+                    {
+                        strPrefix = "A" + strPrefix;
+                        //chInputPostfix = chStartAt;
+                        strPostfix = strStartAt;
+                    }
+                    else
+                    {
+                        //chInputPostfix = (char)(++intInputCode);
+                        strPostfix = ((char)(++intInputCode)).ToString();
+                    }
+                }
+                else
+                {
+                    strPrefix = strPrefix + chInputPostfix;
+                    //chInputPostfix = chStartAt;
+                    strPostfix = strStartAt;
+                }
+
+                //strReturnValue = strPrefix + chInputPostfix;
+                strReturnValue = strPrefix + strPostfix;
+            }
+
+            return strReturnValue;
+        }
+
         public static System.Web.UI.WebControls.ListItemCollection GetTaskStatusList()
         {
             ListItemCollection objListItemCollection = new ListItemCollection();
-            objListItemCollection.Add(new ListItem("Open", Convert.ToByte(TaskStatus.Open).ToString()));
-            objListItemCollection.Add(new ListItem("Requested", Convert.ToByte(TaskStatus.Requested).ToString()));
-            objListItemCollection.Add(new ListItem("Assigned", Convert.ToByte(TaskStatus.Assigned).ToString()));
-            objListItemCollection.Add(new ListItem("In Progress", Convert.ToByte(TaskStatus.InProgress).ToString()));
-            objListItemCollection.Add(new ListItem("Pending", Convert.ToByte(TaskStatus.Pending).ToString()));
-            objListItemCollection.Add(new ListItem("Re-Opened", Convert.ToByte(TaskStatus.ReOpened).ToString()));
-            objListItemCollection.Add(new ListItem("Closed", Convert.ToByte(TaskStatus.Closed).ToString()));
-            //objListItemCollection[1].Enabled = false;
+
+            objListItemCollection.Add(new ListItem("Open", Convert.ToByte(JGConstant.TaskStatus.Open).ToString()));
+            objListItemCollection.Add(new ListItem("Requested", Convert.ToByte(JGConstant.TaskStatus.Requested).ToString()));
+            objListItemCollection.Add(new ListItem("Assigned", Convert.ToByte(JGConstant.TaskStatus.Assigned).ToString()));
+            objListItemCollection.Add(new ListItem("In Progress", Convert.ToByte(JGConstant.TaskStatus.InProgress).ToString()));
+            objListItemCollection.Add(new ListItem("Pending", Convert.ToByte(JGConstant.TaskStatus.Pending).ToString()));
+            objListItemCollection.Add(new ListItem("Re-Opened", Convert.ToByte(JGConstant.TaskStatus.ReOpened).ToString()));
+            objListItemCollection.Add(new ListItem("Closed", Convert.ToByte(JGConstant.TaskStatus.Closed).ToString()));
+            objListItemCollection.Add(new ListItem("Specs In Progress", Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()));
+
+            if (CheckAdminAndItLeadMode())
+            {
+                objListItemCollection.Add(new ListItem("Deleted", Convert.ToByte(JGConstant.TaskStatus.Deleted).ToString()));
+            }
+
             return objListItemCollection;
         }
 
@@ -442,14 +578,86 @@ namespace JG_Prospect.App_Code
             ListItemCollection objListItemCollection = new ListItemCollection();
 
             objListItemCollection.Add(new ListItem("--None--", "0"));
-            objListItemCollection.Add(new ListItem("Bug", Convert.ToInt16(TaskType.Bug).ToString()));
-            objListItemCollection.Add(new ListItem("BetaError", Convert.ToInt16(TaskType.BetaError).ToString()));
-            objListItemCollection.Add(new ListItem("Enhancement", Convert.ToInt16(TaskType.Enhancement).ToString()));
+            objListItemCollection.Add(new ListItem("Bug", Convert.ToInt16(JGConstant.TaskType.Bug).ToString()));
+            objListItemCollection.Add(new ListItem("BetaError", Convert.ToInt16(JGConstant.TaskType.BetaError).ToString()));
+            objListItemCollection.Add(new ListItem("Enhancement", Convert.ToInt16(JGConstant.TaskType.Enhancement).ToString()));
 
             //objListItemCollection[1].Enabled = false;
             return objListItemCollection;
         }
 
+        public static System.Web.UI.WebControls.ListItemCollection GetTaskPriorityList()
+        {
+            ListItemCollection objListItemCollection = new ListItemCollection();
+
+            objListItemCollection.Add(new ListItem("--None--", "0"));
+            objListItemCollection.Add(new ListItem("Critical", Convert.ToInt16(JGConstant.TaskPriority.Critical).ToString()));
+            objListItemCollection.Add(new ListItem("High", Convert.ToInt16(JGConstant.TaskPriority.High).ToString()));
+            objListItemCollection.Add(new ListItem("Medium", Convert.ToInt16(JGConstant.TaskPriority.Medium).ToString()));
+            objListItemCollection.Add(new ListItem("Low", Convert.ToInt16(JGConstant.TaskPriority.Low).ToString()));
+
+            return objListItemCollection;
+        }
+
+        public static bool IsImageFile(string fileName)
+        {
+            bool isImageFile = false;
+            string fileExtension = Path.GetExtension(fileName).ToLower();
+
+            if (fileExtension.Contains(".jpg") || fileExtension.Contains(".jpeg") || fileExtension.Contains(".bmp") || fileExtension.Contains(".gif") || fileExtension.Contains(".png"))
+            {
+                isImageFile = true;
+            }
+            return isImageFile;
+        }
+
+        public static string GetFileTypeIcon(string FileName)
+        {
+            string fileExtension = Path.GetExtension(FileName).ToLower();
+
+            string iconFile = string.Empty;
+
+            switch (fileExtension)
+            {
+                case ".zip":
+                case ".rar":
+                    iconFile = "/img/zip-icon.png";
+                    break;
+                case ".mp3":
+                case ".wav":
+                case ".m4a":
+                    iconFile = "/img/audio-icon.png";
+                    break;
+                case ".wmv":
+                case ".avi":
+                case ".mov":
+                case ".mpg":
+                case ".mp4":
+                    iconFile = "/img/video-icon.png";
+                    break;
+                case ".pdf":
+                    iconFile = "/img/pdf-icon.png";
+                    break;
+                case ".xlsx":
+                case ".xls":
+                    iconFile = "/img/excel-icon.png";
+                    break;
+                case ".txt":
+                case ".rtf":
+                case ".docx":
+                case ".doc":
+                    iconFile = "/img/word-icon.png";
+                    break;
+                case ".png":
+                case ".jpg":
+                case ".jpeg":
+                case ".bmp":
+                case ".gif":
+                default:
+                    break;
+            }
+            return iconFile;
+        }
     }
 }
 
@@ -458,6 +666,34 @@ namespace JG_Prospect
 
     public static class JGSession
     {
+        public static bool IsActive
+        {
+            get
+            {
+                if (HttpContext.Current.Session == null || JGSession.UserId == 0)
+                {
+                    return false;
+                }
+                return true;
+            }
+        }
+
+        public static Int32 UserId
+        {
+            get
+            {
+                if (HttpContext.Current.Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] == null)
+                {
+                    return 0;
+                }
+                return Convert.ToInt32(HttpContext.Current.Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+            }
+            set
+            {
+                HttpContext.Current.Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = value;
+            }
+        }
+
         public static string Username
         {
             get

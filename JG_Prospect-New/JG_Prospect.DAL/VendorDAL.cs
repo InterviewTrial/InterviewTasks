@@ -22,7 +22,7 @@ namespace JG_Prospect.DAL
         public static VendorDAL Instance
         {
             get { return m_VendorDAL; }
-            set { ; }
+            set {; }
         }
         private DataSet DS = new DataSet();
         public DataSet fetchallvendorDetails()
@@ -442,7 +442,7 @@ namespace JG_Prospect.DAL
 
                     DbCommand command = database.GetStoredProcCommand("UDP_SaveVendor");//UPP_savevendor");
                     command.CommandType = CommandType.StoredProcedure;
-                    if (objvendor.vendor_id>0)
+                    if (objvendor.vendor_id > 0)
                     {
                         database.AddInParameter(command, "@vendor_id", DbType.Int32, objvendor.vendor_id);
                     }
@@ -554,7 +554,7 @@ namespace JG_Prospect.DAL
                     {
                         database.AddInParameter(command, "@AutoTruckInsurance", DbType.String, DBNull.Value);
                     }
-                    if (objvendor.vendor_subcategory_id>0)
+                    if (objvendor.vendor_subcategory_id > 0)
                     {
                         database.AddInParameter(command, "@VendorSubCategoryId", DbType.Int16, objvendor.vendor_subcategory_id);
                     }
@@ -594,7 +594,7 @@ namespace JG_Prospect.DAL
                     {
                         database.AddInParameter(command, "@Vendrosource", DbType.String, DBNull.Value);
                     }
-                    if (objvendor.AddressID>0)
+                    if (objvendor.AddressID > 0)
                     {
                         database.AddInParameter(command, "@AddressID", DbType.Int32, objvendor.AddressID);
                     }
@@ -635,7 +635,7 @@ namespace JG_Prospect.DAL
                         database.AddInParameter(command, "@NotesTempID", DbType.String, DBNull.Value);
                     }
                     if (!string.IsNullOrEmpty(objvendor.VendorCategories))
-                    { 
+                    {
                         database.AddInParameter(command, "@VendorCategories", DbType.String, objvendor.VendorCategories);
                     }
                     else
@@ -758,7 +758,7 @@ namespace JG_Prospect.DAL
                     DS = new DataSet();
                     DbCommand command = database.GetStoredProcCommand("UDP_GetVendors");
                     command.CommandType = CommandType.StoredProcedure;
-                    
+
                     if (!string.IsNullOrEmpty(strVendorStatus))
                     {
                         database.AddInParameter(command, "@VendorStatus", DbType.String, strVendorStatus);
@@ -768,9 +768,9 @@ namespace JG_Prospect.DAL
                         database.AddInParameter(command, "@VendorStatus", DbType.String, DBNull.Value);
                     }
                     database.AddInParameter(command, "@IsRetailWholesale", DbType.Boolean, IsRetailWholesale);
-                    
+
                     if (!string.IsNullOrEmpty(iProductCategoryID))
-                    { 
+                    {
                         database.AddInParameter(command, "@ProductCategoryID", DbType.String, iProductCategoryID);
                     }
                     else
@@ -830,7 +830,7 @@ namespace JG_Prospect.DAL
                     {
                         database.AddInParameter(command, "@SearchValue", DbType.String, DBNull.Value);
                     }
-                    
+
                     DS = database.ExecuteDataSet(command);
                     return DS;
                 }
@@ -1760,6 +1760,6 @@ namespace JG_Prospect.DAL
             }
 
         }
-        
+
     }
 }

@@ -127,9 +127,7 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@maritalstatus", DbType.String, objuser.maritalstatus);
                     database.AddInParameter(command, "@PrimeryTradeId", DbType.Int32, objuser.PrimeryTradeId);
                     //database.AddInParameter(command, "@SecondoryTradeId", DbType.Int32, objuser.SecondoryTradeId);
-
-                    database.AddInParameter(command, "@SecondoryTradeId", DbType.String, objuser.sSecondoryTradeId);//added by Ramya
-
+                    
                     database.AddInParameter(command, "@Source", DbType.String, objuser.Source);
                     database.AddInParameter(command, "@Notes", DbType.String, objuser.Notes);
                     database.AddInParameter(command, "@StatusReason", DbType.String, objuser.Reason);

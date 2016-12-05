@@ -67,33 +67,6 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.Literal ltrlAssigningManager;
         
         /// <summary>
-        /// hdnNoteId control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputHidden hdnNoteId;
-        
-        /// <summary>
-        /// hdnNoteAttachments control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputHidden hdnNoteAttachments;
-        
-        /// <summary>
-        /// hdnNoteFileType control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputHidden hdnNoteFileType;
-        
-        /// <summary>
         /// tblAdminTaskView control.
         /// </summary>
         /// <remarks>
@@ -139,13 +112,22 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.UpdatePanel upnlAssigned;
         
         /// <summary>
-        /// ddcbAssigned control.
+        /// ddlAssignedUsers control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Saplin.Controls.DropDownCheckBoxes ddcbAssigned;
+        protected global::Saplin.Controls.DropDownCheckBoxes ddlAssignedUsers;
+        
+        /// <summary>
+        /// lbtnViewAcceptanceLog control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton lbtnViewAcceptanceLog;
         
         /// <summary>
         /// chkTechTask control.
@@ -193,22 +175,76 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.HiddenField hdnTaskId;
         
         /// <summary>
-        /// lbtnWorkSpecificationFiles control.
+        /// lbtnShowWorkSpecificationSection control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton lbtnWorkSpecificationFiles;
+        protected global::System.Web.UI.WebControls.LinkButton lbtnShowWorkSpecificationSection;
         
         /// <summary>
-        /// lbtnFinishedWorkFiles control.
+        /// lbtnShowFinishedWorkFiles control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton lbtnFinishedWorkFiles;
+        protected global::System.Web.UI.WebControls.LinkButton lbtnShowFinishedWorkFiles;
+        
+        /// <summary>
+        /// cmbStatus control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList cmbStatus;
+        
+        /// <summary>
+        /// ddlTaskPriority control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.DropDownList ddlTaskPriority;
+        
+        /// <summary>
+        /// ltrlFreezedSpecificationByUserLinkMain control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltrlFreezedSpecificationByUserLinkMain;
+        
+        /// <summary>
+        /// txtAdminPasswordToFreezeSpecificationMain control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtAdminPasswordToFreezeSpecificationMain;
+        
+        /// <summary>
+        /// txtITLeadPasswordToFreezeSpecificationMain control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtITLeadPasswordToFreezeSpecificationMain;
+        
+        /// <summary>
+        /// txtUserPasswordToFreezeSpecificationMain control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtUserPasswordToFreezeSpecificationMain;
         
         /// <summary>
         /// txtDescription control.
@@ -220,247 +256,13 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.TextBox txtDescription;
         
         /// <summary>
-        /// rfvDesc control.
+        /// objucTaskHistory_Admin control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvDesc;
-        
-        /// <summary>
-        /// upTaskHistory control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.UpdatePanel upTaskHistory;
-        
-        /// <summary>
-        /// tcTaskHistory control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.TabContainer tcTaskHistory;
-        
-        /// <summary>
-        /// tpTaskHistory_All control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.TabPanel tpTaskHistory_All;
-        
-        /// <summary>
-        /// upTaskUsers control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.UpdatePanel upTaskUsers;
-        
-        /// <summary>
-        /// gdTaskUsers control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gdTaskUsers;
-        
-        /// <summary>
-        /// tpTaskHistory_Notes control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.TabPanel tpTaskHistory_Notes;
-        
-        /// <summary>
-        /// gdTaskUsersNotes control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gdTaskUsersNotes;
-        
-        /// <summary>
-        /// tpTaskHistory_FilesAndDocs control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.TabPanel tpTaskHistory_FilesAndDocs;
-        
-        /// <summary>
-        /// reapeaterLogDoc control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater reapeaterLogDoc;
-        
-        /// <summary>
-        /// tpTaskHistory_Images control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.TabPanel tpTaskHistory_Images;
-        
-        /// <summary>
-        /// reapeaterLogImages control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater reapeaterLogImages;
-        
-        /// <summary>
-        /// tpTaskHistory_Links control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.TabPanel tpTaskHistory_Links;
-        
-        /// <summary>
-        /// tpTaskHistory_Videos control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.TabPanel tpTaskHistory_Videos;
-        
-        /// <summary>
-        /// reapeaterLogVideoc control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater reapeaterLogVideoc;
-        
-        /// <summary>
-        /// tpTaskHistory_Audios control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.TabPanel tpTaskHistory_Audios;
-        
-        /// <summary>
-        /// reapeaterLogAudio control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater reapeaterLogAudio;
-        
-        /// <summary>
-        /// divTableNote control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divTableNote;
-        
-        /// <summary>
-        /// txtNote control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtNote;
-        
-        /// <summary>
-        /// RequiredFieldValidatorName control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidatorName;
-        
-        /// <summary>
-        /// divAddNoteOrImage control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divAddNoteOrImage;
-        
-        /// <summary>
-        /// btnAddNote control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnAddNote;
-        
-        /// <summary>
-        /// ValidationSummary2 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.ValidationSummary ValidationSummary2;
-        
-        /// <summary>
-        /// imgBtnLogFiles control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.ImageButton imgBtnLogFiles;
-        
-        /// <summary>
-        /// divNoteDropzone control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divNoteDropzone;
-        
-        /// <summary>
-        /// divNoteDropzonePreview control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divNoteDropzonePreview;
-        
-        /// <summary>
-        /// btnUploadLogFiles control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnUploadLogFiles;
+        protected global::JG_Prospect.Sr_App.Controls.ucTaskHistory objucTaskHistory_Admin;
         
         /// <summary>
         /// trSubTaskList control.
@@ -472,274 +274,13 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.HtmlControls.HtmlTableRow trSubTaskList;
         
         /// <summary>
-        /// upSubTasks control.
+        /// objucSubTasks_Admin control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.UpdatePanel upSubTasks;
-        
-        /// <summary>
-        /// gvSubTasks control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvSubTasks;
-        
-        /// <summary>
-        /// upAddSubTask control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.UpdatePanel upAddSubTask;
-        
-        /// <summary>
-        /// lbtnAddNewSubTask control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton lbtnAddNewSubTask;
-        
-        /// <summary>
-        /// vsSubTask control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.ValidationSummary vsSubTask;
-        
-        /// <summary>
-        /// divSubTask control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divSubTask;
-        
-        /// <summary>
-        /// hdnSubTaskId control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField hdnSubTaskId;
-        
-        /// <summary>
-        /// hdnSubTaskIndex control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField hdnSubTaskIndex;
-        
-        /// <summary>
-        /// txtTaskListID control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtTaskListID;
-        
-        /// <summary>
-        /// listIDOpt control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal listIDOpt;
-        
-        /// <summary>
-        /// ddlTaskType control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlTaskType;
-        
-        /// <summary>
-        /// txtSubTaskTitle control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtSubTaskTitle;
-        
-        /// <summary>
-        /// rfvSubTaskTitle control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvSubTaskTitle;
-        
-        /// <summary>
-        /// txtSubTaskDescription control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtSubTaskDescription;
-        
-        /// <summary>
-        /// rfvSubTaskDescription control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator rfvSubTaskDescription;
-        
-        /// <summary>
-        /// hdnAttachments control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputHidden hdnAttachments;
-        
-        /// <summary>
-        /// divSubTaskDropzone control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divSubTaskDropzone;
-        
-        /// <summary>
-        /// divSubTaskDropzonePreview control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divSubTaskDropzonePreview;
-        
-        /// <summary>
-        /// trDateHours control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTableRow trDateHours;
-        
-        /// <summary>
-        /// txtSubTaskDueDate control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtSubTaskDueDate;
-        
-        /// <summary>
-        /// txtSubTaskHours control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtSubTaskHours;
-        
-        /// <summary>
-        /// revSubTaskHours control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RegularExpressionValidator revSubTaskHours;
-        
-        /// <summary>
-        /// trSubTaskStatus control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTableRow trSubTaskStatus;
-        
-        /// <summary>
-        /// ddlSubTaskStatus control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlSubTaskStatus;
-        
-        /// <summary>
-        /// btnSaveSubTask control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnSaveSubTask;
-        
-        /// <summary>
-        /// ddlUserAcceptance control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlUserAcceptance;
-        
-        /// <summary>
-        /// txtDueDate control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtDueDate;
-        
-        /// <summary>
-        /// txtHours control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtHours;
-        
-        /// <summary>
-        /// revHours control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RegularExpressionValidator revHours;
-        
-        /// <summary>
-        /// cmbStatus control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList cmbStatus;
+        protected global::JG_Prospect.Sr_App.Controls.ucSubTasks objucSubTasks_Admin;
         
         /// <summary>
         /// btnSaveTask control.
@@ -769,6 +310,33 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.Literal ltlTUDesig;
         
         /// <summary>
+        /// divAcceptRejectButtons control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divAcceptRejectButtons;
+        
+        /// <summary>
+        /// lbtnAcceptTask control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton lbtnAcceptTask;
+        
+        /// <summary>
+        /// lbtnRejectTask control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton lbtnRejectTask;
+        
+        /// <summary>
         /// ddlTUStatus control.
         /// </summary>
         /// <remarks>
@@ -776,6 +344,15 @@ namespace JG_Prospect.Sr_App {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.DropDownList ddlTUStatus;
+        
+        /// <summary>
+        /// ltrlTaskPriority control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Literal ltrlTaskPriority;
         
         /// <summary>
         /// ltlTUTitle control.
@@ -787,22 +364,22 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.Literal ltlTUTitle;
         
         /// <summary>
-        /// lbtnFinishedWorkFiles1 control.
+        /// lbtnShowWorkSpecificationSection1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton lbtnFinishedWorkFiles1;
+        protected global::System.Web.UI.WebControls.LinkButton lbtnShowWorkSpecificationSection1;
         
         /// <summary>
-        /// lbtnWorkSpecificationFiles1 control.
+        /// lbtnShowFinishedWorkFiles1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton lbtnWorkSpecificationFiles1;
+        protected global::System.Web.UI.WebControls.LinkButton lbtnShowFinishedWorkFiles1;
         
         /// <summary>
         /// txtTUDesc control.
@@ -814,274 +391,22 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.TextBox txtTUDesc;
         
         /// <summary>
-        /// upTaskHistroryUser control.
+        /// objucTaskHistory_User control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.UpdatePanel upTaskHistroryUser;
+        protected global::JG_Prospect.Sr_App.Controls.ucTaskHistory objucTaskHistory_User;
         
         /// <summary>
-        /// tcTaskHistoryUser control.
+        /// objucSubTasks_User control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::AjaxControlToolkit.TabContainer tcTaskHistoryUser;
-        
-        /// <summary>
-        /// tpTaskHistoryUser_Notes control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.TabPanel tpTaskHistoryUser_Notes;
-        
-        /// <summary>
-        /// upTaskUsers1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.UpdatePanel upTaskUsers1;
-        
-        /// <summary>
-        /// gdTaskUsers1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gdTaskUsers1;
-        
-        /// <summary>
-        /// tpTaskHistory_Notes1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.TabPanel tpTaskHistory_Notes1;
-        
-        /// <summary>
-        /// gdTaskUsersNotes1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gdTaskUsersNotes1;
-        
-        /// <summary>
-        /// TabPanel2 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.TabPanel TabPanel2;
-        
-        /// <summary>
-        /// reapeaterLogDoc1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater reapeaterLogDoc1;
-        
-        /// <summary>
-        /// TabPanel3 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.TabPanel TabPanel3;
-        
-        /// <summary>
-        /// reapeaterLogImages1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater reapeaterLogImages1;
-        
-        /// <summary>
-        /// TabPanel4 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.TabPanel TabPanel4;
-        
-        /// <summary>
-        /// reapeaterLogVideoc1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater reapeaterLogVideoc1;
-        
-        /// <summary>
-        /// TabPanel5 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::AjaxControlToolkit.TabPanel TabPanel5;
-        
-        /// <summary>
-        /// reapeaterLogAudio1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater reapeaterLogAudio1;
-        
-        /// <summary>
-        /// div1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl div1;
-        
-        /// <summary>
-        /// txtNote1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtNote1;
-        
-        /// <summary>
-        /// RequiredFieldValidator1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RequiredFieldValidator RequiredFieldValidator1;
-        
-        /// <summary>
-        /// divAddNoteOrImage1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divAddNoteOrImage1;
-        
-        /// <summary>
-        /// btnAddNote1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnAddNote1;
-        
-        /// <summary>
-        /// ValidationSummary3 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.ValidationSummary ValidationSummary3;
-        
-        /// <summary>
-        /// imgBtnLogFiles1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.ImageButton imgBtnLogFiles1;
-        
-        /// <summary>
-        /// divNoteDropzone1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divNoteDropzone1;
-        
-        /// <summary>
-        /// divNoteDropzonePreview1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divNoteDropzonePreview1;
-        
-        /// <summary>
-        /// btnUploadLogFiles1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnUploadLogFiles1;
-        
-        /// <summary>
-        /// gvSubTasks1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView gvSubTasks1;
-        
-        /// <summary>
-        /// ddlTUAcceptance control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList ddlTUAcceptance;
-        
-        /// <summary>
-        /// ltlTUDueDate control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltlTUDueDate;
-        
-        /// <summary>
-        /// ltlTUHrsTask control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltlTUHrsTask;
-        
-        /// <summary>
-        /// ValidationSummary1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.ValidationSummary ValidationSummary1;
+        protected global::JG_Prospect.Sr_App.Controls.ucSubTasks objucSubTasks_User;
         
         /// <summary>
         /// hdnWorkFiles control.
@@ -1102,121 +427,139 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.Button btnAddAttachment;
         
         /// <summary>
-        /// divWorkSpecifications control.
+        /// divFixedSection control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divWorkSpecifications;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divFixedSection;
         
         /// <summary>
-        /// upWorkSpecificationFiles control.
+        /// divAcceptanceLog control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.UpdatePanel upWorkSpecificationFiles;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divAcceptanceLog;
         
         /// <summary>
-        /// trFreezeWorkSpecification control.
+        /// upAcceptanceLog control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTableCell trFreezeWorkSpecification;
+        protected global::System.Web.UI.UpdatePanel upAcceptanceLog;
         
         /// <summary>
-        /// chkFreeze control.
+        /// gvAcceptanceLog control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CheckBox chkFreeze;
+        protected global::System.Web.UI.WebControls.GridView gvAcceptanceLog;
         
         /// <summary>
-        /// txtWorkSpecification control.
+        /// divWorkSpecificationSection control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtWorkSpecification;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divWorkSpecificationSection;
         
         /// <summary>
-        /// lbtnDownloadWorkSpecificationFilePreview control.
+        /// upWorkSpecificationSection control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton lbtnDownloadWorkSpecificationFilePreview;
+        protected global::System.Web.UI.UpdatePanel upWorkSpecificationSection;
         
         /// <summary>
-        /// lbtnDownloadWorkSpecificationFile control.
+        /// upWorkSpecifications control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton lbtnDownloadWorkSpecificationFile;
+        protected global::System.Web.UI.UpdatePanel upWorkSpecifications;
         
         /// <summary>
-        /// ltrlLastCheckedInBy control.
+        /// upWorkSpecificationAttachments control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltrlLastCheckedInBy;
+        protected global::System.Web.UI.UpdatePanel upWorkSpecificationAttachments;
         
         /// <summary>
-        /// ltrlLastVersionUpdateBy control.
+        /// ltrlFreezedSpecificationByUserLinkPopup control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal ltrlLastVersionUpdateBy;
+        protected global::System.Web.UI.WebControls.Literal ltrlFreezedSpecificationByUserLinkPopup;
         
         /// <summary>
-        /// trSaveWorkSpecification control.
+        /// txtAdminPasswordToFreezeSpecificationPopup control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTableRow trSaveWorkSpecification;
+        protected global::System.Web.UI.WebControls.TextBox txtAdminPasswordToFreezeSpecificationPopup;
         
         /// <summary>
-        /// btnSaveWorkSpecification control.
+        /// txtITLeadPasswordToFreezeSpecificationPopup control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnSaveWorkSpecification;
+        protected global::System.Web.UI.WebControls.TextBox txtITLeadPasswordToFreezeSpecificationPopup;
         
         /// <summary>
-        /// hdnWorkSpecificationId control.
+        /// txtUserPasswordToFreezeSpecificationPopup control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField hdnWorkSpecificationId;
+        protected global::System.Web.UI.WebControls.TextBox txtUserPasswordToFreezeSpecificationPopup;
         
         /// <summary>
-        /// rptWorkFiles control.
+        /// upnlAttachments control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater rptWorkFiles;
+        protected global::System.Web.UI.UpdatePanel upnlAttachments;
+        
+        /// <summary>
+        /// grdWorkSpecificationAttachments control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Repeater grdWorkSpecificationAttachments;
+        
+        /// <summary>
+        /// objucTaskWorkSpecifications control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::JG_Prospect.Sr_App.Controls.ucTaskWorkSpecifications objucTaskWorkSpecifications;
         
         /// <summary>
         /// divFinishedWorkFiles control.
@@ -1228,228 +571,129 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl divFinishedWorkFiles;
         
         /// <summary>
-        /// upFinishedWorkFiles control.
+        /// txtEstHrsOfTaskFWF control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.UpdatePanel upFinishedWorkFiles;
+        protected global::System.Web.UI.WebControls.TextBox txtEstHrsOfTaskFWF;
         
         /// <summary>
-        /// divFreez control.
+        /// txtActualHrsOfTaskFWF control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divFreez;
+        protected global::System.Web.UI.WebControls.TextBox txtActualHrsOfTaskFWF;
         
         /// <summary>
-        /// UpWorkspecApprooval control.
+        /// ddlUserAcceptance control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.UpdatePanel UpWorkspecApprooval;
+        protected global::System.Web.UI.WebControls.DropDownList ddlUserAcceptance;
         
         /// <summary>
-        /// txtAuthenticateUser control.
+        /// txtDueDate control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtAuthenticateUser;
+        protected global::System.Web.UI.WebControls.TextBox txtDueDate;
         
         /// <summary>
-        /// btnSetApproval control.
+        /// ltlTUDueDate control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnSetApproval;
+        protected global::System.Web.UI.WebControls.Literal ltlTUDueDate;
         
         /// <summary>
-        /// HiddenField1 control.
+        /// ltlTUHrsTask control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.HiddenField HiddenField1;
+        protected global::System.Web.UI.WebControls.Literal ltlTUHrsTask;
         
         /// <summary>
-        /// hiddenFilePath control.
+        /// txtHours control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputHidden hiddenFilePath;
+        protected global::System.Web.UI.WebControls.TextBox txtHours;
         
         /// <summary>
-        /// hiddenFileName control.
+        /// revHours control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputHidden hiddenFileName;
+        protected global::System.Web.UI.WebControls.RegularExpressionValidator revHours;
         
         /// <summary>
-        /// lnkFake control.
+        /// ddlSubTasksFWF control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.LinkButton lnkFake;
+        protected global::System.Web.UI.WebControls.DropDownList ddlSubTasksFWF;
         
         /// <summary>
-        /// mpe control.
+        /// ddlSubTaskStatusFWF control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::AjaxControlToolkit.ModalPopupExtender mpe;
+        protected global::System.Web.UI.WebControls.DropDownList ddlSubTaskStatusFWF;
         
         /// <summary>
-        /// Panel1 control.
+        /// DateOfFileSubmissionFWF control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel Panel1;
+        protected global::System.Web.UI.WebControls.TextBox DateOfFileSubmissionFWF;
         
         /// <summary>
-        /// lblFName control.
+        /// txtSubTaskCommentFWF control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblFName;
+        protected global::System.Web.UI.WebControls.TextBox txtSubTaskCommentFWF;
         
         /// <summary>
-        /// pnlpopup control.
+        /// txtTestPageUrl control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Panel pnlpopup;
+        protected global::System.Web.UI.WebControls.TextBox txtTestPageUrl;
         
         /// <summary>
-        /// lblFileName control.
+        /// btnSaveFWF control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblFileName;
-        
-        /// <summary>
-        /// imgPreview control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Image imgPreview;
-        
-        /// <summary>
-        /// divVideo control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divVideo;
-        
-        /// <summary>
-        /// videomp4 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlSource videomp4;
-        
-        /// <summary>
-        /// video3gpp control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlSource video3gpp;
-        
-        /// <summary>
-        /// videompeg control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlSource videompeg;
-        
-        /// <summary>
-        /// videowmv control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlSource videowmv;
-        
-        /// <summary>
-        /// videowebm control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlSource videowebm;
-        
-        /// <summary>
-        /// divAudio control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl divAudio;
-        
-        /// <summary>
-        /// audiomp3 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlSource audiomp3;
-        
-        /// <summary>
-        /// audiomp4 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlSource audiomp4;
-        
-        /// <summary>
-        /// audiowma control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlSource audiowma;
+        protected global::System.Web.UI.WebControls.Button btnSaveFWF;
     }
 }

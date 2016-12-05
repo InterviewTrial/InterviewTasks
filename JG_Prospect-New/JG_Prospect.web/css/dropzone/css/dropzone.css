@@ -133,21 +133,21 @@
     background: rgba(0, 0, 0, 0.03) none repeat scroll 0 0;
     border: 1px solid rgba(0, 0, 0, 0.03);
     border-radius: 3px;
-    height: 60px;
-    padding: 8px;
-    max-width:425px;
+    height: auto;
+    padding: 3px;
+    max-width:330px;
+    display:inline-block;
 }
 .dropzone .dz-default.dz-message {
     background-image: url("../images/upload.png");
     background-position: 0 0;
     background-repeat: no-repeat;
     filter: none;
-    height: 50px;
-    
+    height: 41px;
     opacity: 1;
     
     transition: opacity 0.3s ease-in-out 0s;
-    width: 400px;
+    width: 315px;
 }
 #divUploadUserProfilPic .dz-default, #divUploadUserProfilPic .dz-message{
     background-image: url("../images/uploadJg.png")!important;

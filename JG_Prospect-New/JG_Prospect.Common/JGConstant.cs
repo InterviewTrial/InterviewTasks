@@ -72,6 +72,15 @@ namespace JG_Prospect.Common
         public const string RESHEDULE_INTERVIEW_DATE = "RESHEDULEINTERVIEWDATE";
         public const string ProfilPic_Upload_Folder = "~/UploadeProfile";
         public const string Default_PassWord = "jgrove";
+        /// <summary>
+        /// These values are also used in ApplicationEnvironment appSettings to identify current environment for application.
+        /// </summary>
+        public enum ApplicationEnvironment
+        {
+            Local = 1,
+            Staging = 2,
+            Live = 3
+        }
 
         public enum ProductType
         {
@@ -89,11 +98,49 @@ namespace JG_Prospect.Common
 
         public enum TaskStatus
         {
-            Assigned = 1,
-            InProgress = 2,
-            Pending = 3,
-            ReOpened = 4,
-            Closed = 5
+            Open = 1,
+            Requested = 2,
+            Assigned = 3,
+            InProgress = 4,
+            Pending = 5,
+            ReOpened = 6,
+            Closed = 7,
+            SpecsInProgress = 8,
+            Deleted = 9
+        }
+
+        public enum TaskPriority
+        {
+            Critical = 1,
+            High = 2,
+            Medium = 3,
+            Low = 4
+        }
+
+        public enum TaskType
+        {
+            Bug = 1,
+            BetaError = 2,
+            Enhancement = 3
+        }
+
+        public enum TaskFileDestination
+        {
+            Task = 1,
+            SubTask = 2,
+            WorkSpecification = 3,
+            FinishedWork = 4,
+            TaskNote = 5
+        }
+
+        public enum TaskUserFileType
+        {
+            Notes = 1,
+            Audio = 2, 
+            Video = 3, 
+            Images = 4, 
+            Docu = 5, 
+            Other = 6
         }
 
         #region '-- Page Name --'
@@ -105,5 +152,14 @@ namespace JG_Prospect.Common
 
 
         #endregion
+
+        /// <summary>
+        /// Gets key names to access ContentSetting from database.
+        /// Keep updating this class to have all KEY values as per database.
+        /// </summary>
+        public static class ContentSettings
+        {
+            public const string TASK_HELP_TEXT = "TASK_HELP_TEXT";
+        }
     }
 }

@@ -8,6 +8,7 @@ using Microsoft.Practices.EnterpriseLibrary.Data.Sql;
 
 using JG_Prospect.DAL.Database;
 using JG_Prospect.Common.modal;
+using JG_Prospect.Common;
 
 
 namespace JG_Prospect.DAL
@@ -43,8 +44,7 @@ namespace JG_Prospect.DAL
 
                     if (!string.IsNullOrEmpty(objTask.DueDate))
                     {
-                        DateTime dateDueDate = DateTime.ParseExact(objTask.DueDate, "dd/MM/yyyy", null);
-                        database.AddInParameter(command, "@DueDate", DbType.DateTime, dateDueDate);
+                        database.AddInParameter(command, "@DueDate", DbType.DateTime, Convert.ToDateTime(objTask.DueDate));
                     }
 
                     database.AddInParameter(command, "@Hours", DbType.String, objTask.Hours);
@@ -66,6 +66,7 @@ namespace JG_Prospect.DAL
                         database.AddInParameter(command, "@TaskPriority", DbType.Int16, objTask.TaskPriority.Value);
                     }
                     database.AddInParameter(command, "@IsTechTask", DbType.Int16, objTask.IsTechTask);
+                    database.AddInParameter(command, "@DeletedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Deleted);
 
                     database.AddOutParameter(command, "@Result", DbType.Int32, 0);
 
@@ -119,6 +120,33 @@ namespace JG_Prospect.DAL
 
         }
 
+        public int UpdateTaskPriority(Task objTask)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_UpdateTaskPriority");
+
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@TaskId", DbType.Int64, objTask.TaskId);
+                    database.AddInParameter(command, "@TaskPriority", DbType.Int16, objTask.TaskPriority);
+
+                    int result = database.ExecuteNonQuery(command);
+
+                    return result;
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return 0;
+            }
+
+        }
+
         public bool DeleteTask(UInt64 taskId)
         {
             try
@@ -129,6 +157,7 @@ namespace JG_Prospect.DAL
 
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@TaskId", SqlDbType.BigInt, taskId);
+                    database.AddInParameter(command, "@DeletedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Deleted);
 
                     int result = database.ExecuteNonQuery(command);
 
@@ -350,21 +379,21 @@ namespace JG_Prospect.DAL
 
         }
 
-        public bool UpadateTaskNotes(ref TaskUser objTaskUser)
+        public bool SaveTaskDescription(Int64 TaskId, String TaskDescription)
         {
             try
             {
                 SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
-                    DbCommand command = database.GetStoredProcCommand("usp_UpadateTaskNotes");
+                    DbCommand command = database.GetStoredProcCommand("usp_SaveTaskDescription");
 
                     command.CommandType = CommandType.StoredProcedure;
-                    database.AddInParameter(command, "@Id", DbType.Int64, objTaskUser.Id);
-                    database.AddInParameter(command, "@Notes", DbType.String, objTaskUser.Notes);
-                    
+
+                    database.AddInParameter(command, "@TaskId", DbType.Int64, TaskId);
+
+                    database.AddInParameter(command, "@Description", DbType.String, TaskDescription);
 
                     int result = database.ExecuteNonQuery(command);
-
 
                     if (result > 0)
                     {
@@ -384,6 +413,7 @@ namespace JG_Prospect.DAL
             }
 
         }
+
 
         public bool UpdateTaskUserAcceptance(ref TaskUser objTaskUser)
         {
@@ -420,34 +450,16 @@ namespace JG_Prospect.DAL
 
         }
 
-        public bool SaveOrDeleteTaskUserFiles(TaskUser objTaskUser)
+        public bool DeleteTaskUserFile(Int64 Id)
         {
             try
             {
                 SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
-                    DbCommand command = database.GetStoredProcCommand("SP_SaveOrDeleteTaskUserFiles");
+                    DbCommand command = database.GetStoredProcCommand("usp_DeleteTaskAttachmentFile");
 
                     command.CommandType = CommandType.StoredProcedure;
-                    database.AddInParameter(command, "@Mode", SqlDbType.TinyInt, objTaskUser.Mode);
-
-
-                    if (objTaskUser.TaskUpdateId != null)
-                    {
-                        database.AddInParameter(command, "@TaskUpDateId", SqlDbType.BigInt, objTaskUser.TaskUpdateId);
-                    }
-                    else
-                    {
-                        database.AddInParameter(command, "@TaskUpDateId", SqlDbType.BigInt, DBNull.Value);
-                    }
-
-                    database.AddInParameter(command, "@TaskId", SqlDbType.BigInt, objTaskUser.TaskId);
-                    database.AddInParameter(command, "@UserId", SqlDbType.Int, objTaskUser.UserId);
-                    database.AddInParameter(command, "@Attachment", DbType.String, objTaskUser.Attachment);
-                    database.AddInParameter(command, "@OriginalFileName", DbType.String, objTaskUser.OriginalFileName);
-                    database.AddInParameter(command, "@UserType", DbType.String, objTaskUser.UserType);
-                    database.AddInParameter(command, "@FileType", DbType.String, objTaskUser.FileType);
-
+                    database.AddInParameter(command, "@Id", SqlDbType.BigInt, Id);
 
                     int result = database.ExecuteNonQuery(command);
 
@@ -471,136 +483,59 @@ namespace JG_Prospect.DAL
 
         }
 
-        public int InsertTaskWorkSpecification(TaskWorkSpecification objTaskWorkSpecification)
-        {
-            try
-            {
-                TaskWorkSpecificationVersions objTaskWorkSpecificationVersions = objTaskWorkSpecification.TaskWorkSpecificationVersions[0];
-
-                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
-                {
-                    DbCommand command = database.GetStoredProcCommand("InsertTaskWorkSpecification");
-
-                    command.CommandType = CommandType.StoredProcedure;
-
-                    database.AddInParameter(command, "@TaskId", DbType.Int64, objTaskWorkSpecification.TaskId);
-                    database.AddInParameter(command, "@Content", DbType.String, objTaskWorkSpecificationVersions.Content);
-                    database.AddInParameter(command, "@UserId", DbType.Int32, objTaskWorkSpecificationVersions.UserId);
-                    database.AddInParameter(command, "@IsInstallUser", DbType.Boolean, objTaskWorkSpecificationVersions.IsInstallUser);
-                    database.AddInParameter(command, "@Status", DbType.Boolean, objTaskWorkSpecificationVersions.Status);
-
-                    int result = database.ExecuteNonQuery(command);
-
-                    return result;
-                }
-            }
-            catch (Exception ex)
-            {
-                return 0;
-            }
-        }
-
-        public int UpdateTaskWorkSpecification(TaskWorkSpecification objTaskWorkSpecification)
-        {
-            try
-            {
-                TaskWorkSpecificationVersions objTaskWorkSpecificationVersions = objTaskWorkSpecification.TaskWorkSpecificationVersions[0];
-
-                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
-                {
-                    DbCommand command = database.GetStoredProcCommand("UpdateTaskWorkSpecification");
-
-                    command.CommandType = CommandType.StoredProcedure;
-
-                    database.AddInParameter(command, "@TaskWorkSpecificationId", DbType.Int32, objTaskWorkSpecification.Id);
-                    database.AddInParameter(command, "@Content", DbType.String, objTaskWorkSpecificationVersions.Content);
-                    database.AddInParameter(command, "@UserId", DbType.Int32, objTaskWorkSpecificationVersions.UserId);
-                    database.AddInParameter(command, "@IsInstallUser", DbType.Boolean, objTaskWorkSpecificationVersions.IsInstallUser);
-                    database.AddInParameter(command, "@Status", DbType.Boolean, objTaskWorkSpecificationVersions.Status);
-
-                    int result = database.ExecuteNonQuery(command);
-
-                    return result;
-                }
-            }
-            catch (Exception ex)
-            {
-                return 0;
-            }
-        }
-
-        public DataSet GetLatestTaskWorkSpecification(Int32 TaskId, bool? bytStatus)
+        public bool SaveOrDeleteTaskUserFiles(TaskUser objTaskUser)
         {
             try
             {
                 SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
-                    returndata = new DataSet();
-                    DbCommand command = database.GetStoredProcCommand("GetLatestTaskWorkSpecification");
-                    command.CommandType = CommandType.StoredProcedure;
+                    DbCommand command = database.GetStoredProcCommand("SP_SaveOrDeleteTaskUserFiles");
 
-                    database.AddInParameter(command, "@TaskId", DbType.Int32, TaskId);
-                    if (bytStatus.HasValue)
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@Mode", SqlDbType.TinyInt, objTaskUser.Mode);
+
+
+                    if (objTaskUser.TaskUpdateId != null)
                     {
-                        database.AddInParameter(command, "@Status", DbType.Boolean, bytStatus.Value);
+                        database.AddInParameter(command, "@TaskUpDateId", SqlDbType.BigInt, objTaskUser.TaskUpdateId);
+                    }
+                    else
+                    {
+                        database.AddInParameter(command, "@TaskUpDateId", SqlDbType.BigInt, DBNull.Value);
                     }
 
-                    returndata = database.ExecuteDataSet(command);
+                    if (objTaskUser.TaskFileDestination.HasValue)
+                    {
+                        database.AddInParameter(command, "@FileDestination", SqlDbType.TinyInt, Convert.ToByte(objTaskUser.TaskFileDestination.Value));
+                    }
 
-                    return returndata;
+                    database.AddInParameter(command, "@TaskId", SqlDbType.BigInt, objTaskUser.TaskId);
+                    database.AddInParameter(command, "@UserId", SqlDbType.Int, objTaskUser.UserId);
+                    database.AddInParameter(command, "@Attachment", DbType.String, objTaskUser.Attachment);
+                    database.AddInParameter(command, "@OriginalFileName", DbType.String, objTaskUser.OriginalFileName);
+                    database.AddInParameter(command, "@UserType", DbType.String, objTaskUser.UserType);
+                    database.AddInParameter(command, "@FileType", DbType.String, objTaskUser.FileType);
+
+                    int result = database.ExecuteNonQuery(command);
+
+                    if (result > 0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
                 }
             }
 
             catch (Exception ex)
             {
-                return null;
-            }
-        }
-        public DataSet GetAdmUserPassword(string LoginId)
-        {
-            try
-            {
-                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
-                {
-                    returndata = new DataSet();
-                    DbCommand command = database.GetStoredProcCommand("USP_GetPassword");
-                    command.CommandType = CommandType.StoredProcedure;
-
-                    database.AddInParameter(command, "@Login_Id", DbType.String, LoginId);
-                    returndata = database.ExecuteDataSet(command);
-
-                    return returndata;
-                }
+                return false;
             }
 
-            catch (Exception ex)
-            {
-                return null;
-            }
         }
 
-        public DataSet GetInstallUserDetailByLoginID(string LoginId)
-        {
-            try
-            {
-                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
-                {
-                    returndata = new DataSet();
-                    DbCommand command = database.GetStoredProcCommand("UDP_GetInstallerUserDetailsByLoginId");
-                    command.CommandType = CommandType.StoredProcedure;
-
-                    database.AddInParameter(command, "@loginId", DbType.String, LoginId);
-                    returndata = database.ExecuteDataSet(command);
-
-                    return returndata;
-                }
-            }
-
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
         //Get details for task with user and attachments
         public DataSet GetTaskDetails(Int32 TaskId)
         {
@@ -627,7 +562,7 @@ namespace JG_Prospect.DAL
         }
 
         //Get details for sub tasks with user and attachments
-        public DataSet GetSubTasks(Int32 TaskId)
+        public DataSet GetSubTasks(Int32 TaskId, bool blIsAdmin, string strSortExpression)
         {
             try
             {
@@ -638,6 +573,19 @@ namespace JG_Prospect.DAL
                     command.CommandType = CommandType.StoredProcedure;
 
                     database.AddInParameter(command, "@TaskId", DbType.Int32, TaskId);
+                    database.AddInParameter(command, "@Admin", DbType.Boolean, blIsAdmin);
+
+                    database.AddInParameter(command, "@SortExpression", DbType.String, strSortExpression);
+
+                    database.AddInParameter(command, "@OpenStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Open);
+                    database.AddInParameter(command, "@RequestedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Requested);
+                    database.AddInParameter(command, "@AssignedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Assigned);
+                    database.AddInParameter(command, "@InProgressStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.InProgress);
+                    database.AddInParameter(command, "@PendingStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Pending);
+                    database.AddInParameter(command, "@ReOpenedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.ReOpened);
+                    database.AddInParameter(command, "@ClosedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Closed);
+                    database.AddInParameter(command, "@SpecsInProgressStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.SpecsInProgress);
+                    database.AddInParameter(command, "@DeletedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Deleted);
 
                     returndata = database.ExecuteDataSet(command);
 
@@ -651,7 +599,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public DataSet GetTaskUserFiles(Int32 TaskId)
+        public DataSet GetTaskUserFiles(Int32 TaskId, JGConstant.TaskFileDestination? objTaskFileDestination, Int32? intPageIndex, Int32? intPageSize)
         {
             try
             {
@@ -662,6 +610,20 @@ namespace JG_Prospect.DAL
                     command.CommandType = CommandType.StoredProcedure;
 
                     database.AddInParameter(command, "@TaskId", DbType.Int32, TaskId);
+
+                    if (objTaskFileDestination.HasValue)
+                    {
+                        database.AddInParameter(command, "@FileDestination", DbType.Int32, Convert.ToByte(objTaskFileDestination.Value));
+                    }
+
+                    if (intPageIndex.HasValue)
+                    {
+                        database.AddInParameter(command, "@PageIndex", DbType.Int32, intPageIndex.Value);
+                    }
+                    if (intPageSize.HasValue)
+                    {
+                        database.AddInParameter(command, "@PageSize", DbType.Int32, intPageSize);
+                    }
 
                     returndata = database.ExecuteDataSet(command);
 
@@ -680,12 +642,20 @@ namespace JG_Prospect.DAL
             DataSet result = new DataSet();
             try
             {
+
+                string[] arrDesignation = Designastion.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+                for (int i = 0; i < arrDesignation.Length; i++)
+                {
+                    arrDesignation[i] = arrDesignation[i].Trim();
+                }
+
                 SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
                     DbCommand command = database.GetStoredProcCommand("SP_GetInstallUsers");
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@Key", DbType.Int16, Key);
-                    database.AddInParameter(command, "@Designations", DbType.String, Designastion);
+                    database.AddInParameter(command, "@Designations", DbType.String, string.Join(",", arrDesignation));
                     result = database.ExecuteDataSet(command);
                 }
                 return result;
@@ -705,28 +675,7 @@ namespace JG_Prospect.DAL
                 SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
                     DbCommand command = database.GetStoredProcCommand("SP_GetAllActiveTechTask");
-                    command.CommandType = CommandType.StoredProcedure;                    
-                    result = database.ExecuteDataSet(command);
-                }
-                return result;
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-
-        }
-
-        public DataSet GetAllActiveTechTaskForDesignationID(int iDesignationID)
-        {
-            DataSet result = new DataSet();
-            try
-            {
-                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
-                {
-                    DbCommand command = database.GetStoredProcCommand("UDP_GetAllActiveTechTaskForDesignationID");
                     command.CommandType = CommandType.StoredProcedure;
-                    database.AddInParameter(command, "@DesignationID", DbType.Int32, iDesignationID);
                     result = database.ExecuteDataSet(command);
                 }
                 return result;
@@ -761,6 +710,28 @@ namespace JG_Prospect.DAL
                 return null;
             }
         }
+
+        public DataSet GetAllActiveTechTaskForDesignationID(int iDesignationID)
+        {
+            DataSet result = new DataSet();
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("UDP_GetAllActiveTechTaskForDesignationID");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@DesignationID", DbType.Int32, iDesignationID);
+                    result = database.ExecuteDataSet(command);
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
+
 
         /// <summary>
         /// to GetUserDetails by Id
@@ -848,7 +819,7 @@ namespace JG_Prospect.DAL
         /// <param name="Start"></param>
         /// <param name="PageLimit"></param>
         /// <returns></returns>
-        public DataSet GetTasksList(int? UserID, string Title, string Designation, Int16? Status, DateTime? CreatedFrom, DateTime? CreatedTo, string Statuses, string Designations, bool isAdmin, int Start, int PageLimit)
+        public DataSet GetTasksList(int? UserID, string Title, string Designation, Int16? Status, DateTime? CreatedFrom, DateTime? CreatedTo, string Statuses, string Designations, bool isAdmin, int Start, int PageLimit, string strSortExpression)
         {
             returndata = new DataSet();
 
@@ -856,85 +827,6 @@ namespace JG_Prospect.DAL
             {
                 SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
-                    /*
-                    DbCommand command = database.GetStoredProcCommand("usp_SearchUserTasks");
-
-                    if (UserID != null)
-                    {
-                        database.AddInParameter(command, "@UserID", DbType.Int32, Convert.ToInt32(UserID));
-                    }
-                    else
-                    {
-                        database.AddInParameter(command, "@UserID", DbType.Int32, DBNull.Value);
-                    }
-
-                    if (!String.IsNullOrEmpty(Title))
-                    {
-                        database.AddInParameter(command, "@Title", DbType.String, Title);
-                    }
-                    else
-                    {
-                        database.AddInParameter(command, "@Title", DbType.String, DBNull.Value);
-                    }
-
-                    if (!String.IsNullOrEmpty(Designation))
-                    {
-                        database.AddInParameter(command, "@Designation", DbType.String, Designation);
-                    }
-                    else
-                    {
-                        database.AddInParameter(command, "@Designation", DbType.String, DBNull.Value);
-                    }
-
-                    if (Status != null)
-                    {
-                        database.AddInParameter(command, "@Status", DbType.Int16, Convert.ToInt16(Status));
-                    }
-                    else
-                    {
-                        database.AddInParameter(command, "@Status", DbType.Int16, DBNull.Value);
-                    }
-                    if (CreatedFrom != null)
-                    {
-                        database.AddInParameter(command, "@CreatedFrom", DbType.DateTime, Convert.ToDateTime(CreatedFrom));
-                    }
-                    else
-                    {
-                        database.AddInParameter(command, "@CreatedFrom", DbType.DateTime, DBNull.Value);
-                    }
-                    if (CreatedTo != null)
-                    {
-                        database.AddInParameter(command, "@CreatedTo", DbType.DateTime, Convert.ToDateTime(CreatedTo));
-                    }
-                    else
-                    {
-                        database.AddInParameter(command, "@CreatedTo", DbType.DateTime, DBNull.Value);
-                    }
-
-                    database.AddInParameter(command, "@Start", DbType.Int32, Start);
-                    database.AddInParameter(command, "@PageLimit", DbType.Int32, PageLimit);
-
-                    database.AddInParameter(command, "@IsAdmin", DbType.Boolean, isAdmin);
-
-                    if (!String.IsNullOrEmpty(Designations))
-                    {
-                        database.AddInParameter(command, "@Designations", DbType.String, Designations);
-                    }
-                    else
-                    {
-                        database.AddInParameter(command, "@Designations", DbType.String, DBNull.Value);
-                    }
-
-                    if (!String.IsNullOrEmpty(Statuses))
-                    {
-                        database.AddInParameter(command, "@Statuses", DbType.String, Statuses);
-                    }
-                    else
-                    {
-                        database.AddInParameter(command, "@Statuses", DbType.String, DBNull.Value);
-                    }       
-                    */
-
                     DbCommand command = database.GetStoredProcCommand("uspSearchTasks");
 
                     if (!String.IsNullOrEmpty(Designations))
@@ -991,9 +883,25 @@ namespace JG_Prospect.DAL
                         database.AddInParameter(command, "@SearchTerm", DbType.String, DBNull.Value);
                     }
 
+                    //database.AddInParameter(command, "@ExcludeStatus", DbType.Int16, Convert.ToInt16(JG_Prospect.Common.JGConstant.TaskStatus.SpecsInProgress));
+                    database.AddInParameter(command, "@ExcludeStatus", DbType.Int16, DBNull.Value);
+
+                    database.AddInParameter(command, "@Admin", DbType.Boolean, isAdmin);
+
                     database.AddInParameter(command, "@PageIndex", DbType.Int32, Start);
                     database.AddInParameter(command, "@PageSize", DbType.Int32, PageLimit);
+                    database.AddInParameter(command, "@SortExpression", DbType.String, strSortExpression);
 
+                    database.AddInParameter(command, "@OpenStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Open);
+                    database.AddInParameter(command, "@RequestedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Requested);
+                    database.AddInParameter(command, "@AssignedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Assigned);
+                    database.AddInParameter(command, "@InProgressStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.InProgress);
+                    database.AddInParameter(command, "@PendingStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Pending);
+                    database.AddInParameter(command, "@ReOpenedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.ReOpened);
+                    database.AddInParameter(command, "@ClosedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Closed);
+                    database.AddInParameter(command, "@SpecsInProgressStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.SpecsInProgress);
+                    database.AddInParameter(command, "@DeletedStatus", SqlDbType.SmallInt, (byte)Common.JGConstant.TaskStatus.Deleted);
+                    
                     command.CommandType = CommandType.StoredProcedure;
                     returndata = database.ExecuteDataSet(command);
                     return returndata;
@@ -1006,99 +914,6 @@ namespace JG_Prospect.DAL
             }
             return returndata;
         }
-
-        /// <summary>
-        /// Will fetch task lists based on various filter parameters provided.
-        /// </summary>
-        /// <param name="UserID"></param>
-        /// <param name="Title"></param>
-        /// <param name="Designation"></param>
-        /// <param name="Status"></param>
-        /// <param name="CreatedOn"></param>
-        /// <param name="Start"></param>
-        /// <param name="PageLimit"></param>
-        /// <returns></returns>
-        public DataSet GetTasksList(List<int> UserIDs, string Title, string Designation, Int16? Status, DateTime? CreatedFrom, DateTime? CreatedTo, string Statuses, string Designations, bool isAdmin, int Start, int PageLimit)
-        {
-            returndata = new DataSet();
-
-            try
-            {
-                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
-                {
-                    DbCommand command = database.GetStoredProcCommand("RT_SearchTasks");
-
-                    if (!String.IsNullOrEmpty(Designations))
-                    {
-                        database.AddInParameter(command, "@Designations", DbType.String, Designation);
-                    }
-                    else
-                    {
-                        database.AddInParameter(command, "@Designations", DbType.String, DBNull.Value);
-                    }
-
-                    if (UserIDs.Count > 0)
-                    {
-                        database.AddInParameter(command, "@UserIDs", DbType.String, String.Join(",", UserIDs));
-                    }
-                    else
-                    {
-                        database.AddInParameter(command, "@UserIDs", DbType.String, DBNull.Value);
-                    }
-
-                    if (Status.HasValue)
-                    {
-                        database.AddInParameter(command, "@Status", DbType.Int16, Status.Value);
-                    }
-                    else
-                    {
-                        database.AddInParameter(command, "@Status", DbType.Int16, DBNull.Value);
-                    }
-
-                    if (CreatedFrom.HasValue)
-                    {
-                        database.AddInParameter(command, "@CreatedFrom", DbType.DateTime, CreatedFrom.Value);
-                    }
-                    else
-                    {
-                        database.AddInParameter(command, "@CreatedFrom", DbType.DateTime, DBNull.Value);
-                    }
-
-                    if (CreatedTo.HasValue)
-                    {
-                        database.AddInParameter(command, "@CreatedTo", DbType.DateTime, CreatedTo.Value);
-                    }
-                    else
-                    {
-                        database.AddInParameter(command, "@CreatedTo", DbType.DateTime, DBNull.Value);
-                    }
-
-                    if (!String.IsNullOrEmpty(Title))
-                    {
-                        database.AddInParameter(command, "@SearchTerm", DbType.String, Title);
-                    }
-                    else
-                    {
-                        database.AddInParameter(command, "@SearchTerm", DbType.String, DBNull.Value);
-                    }
-
-                    database.AddInParameter(command, "@PageIndex", DbType.Int32, Start);
-                    database.AddInParameter(command, "@PageSize", DbType.Int32, PageLimit);
-
-                    command.CommandType = CommandType.StoredProcedure;
-                    returndata = database.ExecuteDataSet(command);
-                    return returndata;
-                }
-            }
-
-            catch (Exception ex)
-            {
-                throw ex;
-                //LogManager.Instance.WriteToFlatFile(ex);
-            }
-            return returndata;
-        }
-
 
         /// <summary>
         /// Get all Users and their designtions in system for whom tasks are available in system.
@@ -1126,5 +941,468 @@ namespace JG_Prospect.DAL
             return returndata;
         }
 
+        public bool UpadateTaskNotes(ref TaskUser objTaskUser)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_UpadateTaskNotes");
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@Id", DbType.Int64, objTaskUser.Id);
+                    database.AddInParameter(command, "@Notes", DbType.String, objTaskUser.Notes);
+
+
+                    int result = database.ExecuteNonQuery(command);
+
+
+                    if (result > 0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return false;
+            }
+
+        }
+
+        #region TaskWorkSpecification
+
+        public int InsertTaskWorkSpecification(TaskWorkSpecification objTaskWorkSpecification)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("InsertTaskWorkSpecification");
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@CustomId", DbType.String, objTaskWorkSpecification.CustomId);
+                    database.AddInParameter(command, "@TaskId", DbType.Int64, objTaskWorkSpecification.TaskId);
+                    database.AddInParameter(command, "@Description", DbType.String, objTaskWorkSpecification.Description);
+                    database.AddInParameter(command, "@Title", DbType.String, objTaskWorkSpecification.Title);
+                    database.AddInParameter(command, "@URL", DbType.String, objTaskWorkSpecification.URL);
+
+                    database.AddInParameter(command, "@AdminStatus", DbType.Boolean, objTaskWorkSpecification.AdminStatus);
+                    database.AddInParameter(command, "@AdminUserId", DbType.Int32, objTaskWorkSpecification.AdminUserId);
+                    database.AddInParameter(command, "@IsAdminInstallUser", DbType.Boolean, objTaskWorkSpecification.IsAdminInstallUser);
+
+                    database.AddInParameter(command, "@TechLeadStatus", DbType.Boolean, objTaskWorkSpecification.TechLeadStatus);
+                    database.AddInParameter(command, "@TechLeadUserId", DbType.Int32, objTaskWorkSpecification.TechLeadUserId);
+                    database.AddInParameter(command, "@IsTechLeadInstallUser", DbType.Boolean, objTaskWorkSpecification.IsTechLeadInstallUser);
+
+                    database.AddInParameter(command, "@OtherUserStatus", DbType.Boolean, objTaskWorkSpecification.OtherUserStatus);
+                    database.AddInParameter(command, "@OtherUserId", DbType.Int32, objTaskWorkSpecification.OtherUserId);
+                    database.AddInParameter(command, "@IsOtherUserInstallUser", DbType.Boolean, objTaskWorkSpecification.IsOtherUserInstallUser);
+
+                    if (objTaskWorkSpecification.ParentTaskWorkSpecificationId.HasValue)
+                    {
+                        database.AddInParameter(command, "@ParentTaskWorkSpecificationId", SqlDbType.BigInt, objTaskWorkSpecification.ParentTaskWorkSpecificationId.Value);
+                    }
+
+                    return database.ExecuteNonQuery(command);
+                }
+            }
+            catch
+            {
+                return -1;
+            }
+        }
+
+        public int UpdateTaskWorkSpecification(TaskWorkSpecification objTaskWorkSpecification)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("UpdateTaskWorkSpecification");
+
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@Id", DbType.Int64, objTaskWorkSpecification.Id);
+                    database.AddInParameter(command, "@CustomId", DbType.String, objTaskWorkSpecification.CustomId);
+                    database.AddInParameter(command, "@TaskId", DbType.Int64, objTaskWorkSpecification.TaskId);
+                    database.AddInParameter(command, "@Description", DbType.String, objTaskWorkSpecification.Description);
+                    database.AddInParameter(command, "@Title", DbType.String, objTaskWorkSpecification.Title);
+                    database.AddInParameter(command, "@URL", DbType.String, objTaskWorkSpecification.URL);
+
+                    if (objTaskWorkSpecification.ParentTaskWorkSpecificationId.HasValue)
+                    {
+                        database.AddInParameter(command, "@ParentTaskWorkSpecificationId", SqlDbType.BigInt, objTaskWorkSpecification.ParentTaskWorkSpecificationId.Value);
+                    }
+
+                    return database.ExecuteNonQuery(command);
+                }
+            }
+            catch
+            {
+                return -1;
+            }
+        }
+
+        public int DeleteTaskWorkSpecification(long intTaskWorkSpecification)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("DeleteTaskWorkSpecification");
+
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@Id", DbType.Int64, intTaskWorkSpecification);
+
+                    return database.ExecuteNonQuery(command);
+                }
+            }
+            catch
+            {
+                return -1;
+            }
+        }
+
+        public DataSet GetTaskWorkSpecifications(Int32 TaskId, bool blIsAdmin, Int64? intParentTaskWorkSpecificationId, Int32? intPageIndex, Int32? intPageSize)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("GetTaskWorkSpecifications");
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@TaskId", DbType.Int32, TaskId);
+                    database.AddInParameter(command, "@Admin", DbType.Boolean, blIsAdmin);
+
+                    if (intParentTaskWorkSpecificationId.HasValue)
+                    {
+                        database.AddInParameter(command, "@ParentTaskWorkSpecificationId", DbType.Int64, intParentTaskWorkSpecificationId.Value);
+                    }
+
+                    if (intPageIndex.HasValue)
+                    {
+                        database.AddInParameter(command, "@PageIndex", DbType.Int32, intPageIndex.Value);
+                    }
+                    if (intPageSize.HasValue)
+                    {
+                        database.AddInParameter(command, "@PageSize", DbType.Int32, intPageSize);
+                    }
+
+                    return database.ExecuteDataSet(command);
+                }
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public TaskWorkSpecification GetTaskWorkSpecificationById(Int64 Id)
+        {
+            TaskWorkSpecification objTaskWorkSpecification = null;
+
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("GetTaskWorkSpecificationById");
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@Id", DbType.Int64, Id);
+
+                    DataSet dsTaskWorkSpecification = database.ExecuteDataSet(command);
+
+                    if (
+                        dsTaskWorkSpecification != null &&
+                        dsTaskWorkSpecification.Tables.Count > 0 &&
+                        dsTaskWorkSpecification.Tables[0].Rows.Count > 0
+                       )
+                    {
+                        objTaskWorkSpecification = GetTaskWorkSpecification(dsTaskWorkSpecification.Tables[0].Rows[0]);
+                    }
+
+                    return objTaskWorkSpecification;
+                }
+            }
+            catch
+            {
+                return objTaskWorkSpecification;
+            }
+        }
+
+        public int UpdateTaskWorkSpecificationStatusByTaskId(TaskWorkSpecification objTaskWorkSpecification, bool blIsAdmin, bool blIsTechLead, bool blIsUser)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("UpdateTaskWorkSpecificationStatusByTaskId");
+
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@TaskId", DbType.Int64, objTaskWorkSpecification.TaskId);
+                    if (blIsAdmin)
+                    {
+                        database.AddInParameter(command, "@AdminStatus", DbType.Boolean, objTaskWorkSpecification.AdminStatus);
+                        database.AddInParameter(command, "@UserId", DbType.Int32, objTaskWorkSpecification.AdminUserId);
+                        database.AddInParameter(command, "@IsInstallUser", DbType.Boolean, objTaskWorkSpecification.IsAdminInstallUser);
+                    }
+                    else if (blIsTechLead)
+                    {
+                        database.AddInParameter(command, "@TechLeadStatus", DbType.Boolean, objTaskWorkSpecification.TechLeadStatus);
+                        database.AddInParameter(command, "@UserId", DbType.Int32, objTaskWorkSpecification.TechLeadUserId);
+                        database.AddInParameter(command, "@IsInstallUser", DbType.Boolean, objTaskWorkSpecification.IsTechLeadInstallUser);
+                    }
+                    else if (blIsUser)
+                    {
+                        database.AddInParameter(command, "@OtherUserStatus", DbType.Boolean, objTaskWorkSpecification.OtherUserStatus);
+                        database.AddInParameter(command, "@UserId", DbType.Int32, objTaskWorkSpecification.OtherUserId);
+                        database.AddInParameter(command, "@IsInstallUser", DbType.Boolean, objTaskWorkSpecification.IsOtherUserInstallUser);
+                    }
+
+                    return database.ExecuteNonQuery(command);
+                }
+            }
+            catch
+            {
+                return -1;
+            }
+        }
+
+        public int UpdateTaskWorkSpecificationStatusById(TaskWorkSpecification objTaskWorkSpecification, bool blIsAdmin, bool blIsTechLead, bool blIsUser)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("UpdateTaskWorkSpecificationStatusById");
+
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@Id", DbType.Int64, objTaskWorkSpecification.Id);
+                    if (blIsAdmin)
+                    {
+                        database.AddInParameter(command, "@AdminStatus", DbType.Boolean, objTaskWorkSpecification.AdminStatus);
+                        database.AddInParameter(command, "@UserId", DbType.Int32, objTaskWorkSpecification.AdminUserId);
+                        database.AddInParameter(command, "@IsInstallUser", DbType.Boolean, objTaskWorkSpecification.IsAdminInstallUser);
+                    }
+                    else if (blIsTechLead)
+                    {
+                        database.AddInParameter(command, "@TechLeadStatus", DbType.Boolean, objTaskWorkSpecification.TechLeadStatus);
+                        database.AddInParameter(command, "@UserId", DbType.Int32, objTaskWorkSpecification.TechLeadUserId);
+                        database.AddInParameter(command, "@IsInstallUser", DbType.Boolean, objTaskWorkSpecification.IsTechLeadInstallUser);
+                    }
+                    else if (blIsUser)
+                    {
+                        database.AddInParameter(command, "@OtherUserStatus", DbType.Boolean, objTaskWorkSpecification.OtherUserStatus);
+                        database.AddInParameter(command, "@UserId", DbType.Int32, objTaskWorkSpecification.OtherUserId);
+                        database.AddInParameter(command, "@IsInstallUser", DbType.Boolean, objTaskWorkSpecification.IsOtherUserInstallUser);
+                    }
+
+                    return database.ExecuteNonQuery(command);
+                }
+            }
+            catch
+            {
+                return -1;
+            }
+        }
+
+        public DataSet GetPendingTaskWorkSpecificationCount(Int32 TaskId)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("GetPendingTaskWorkSpecificationCount");
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@TaskId", DbType.Int32, TaskId);
+                    return database.ExecuteDataSet(command);
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Get a TaskWorkSpecification object based on values in DataRow.
+        /// </summary>
+        /// <param name="drTaskWorkSpecification">possible DataRow containing TaskWorkSpecification data.</param>
+        /// <returns></returns>
+        private TaskWorkSpecification GetTaskWorkSpecification(DataRow drTaskWorkSpecification)
+        {
+            TaskWorkSpecification objTaskWorkSpecification = new TaskWorkSpecification();
+
+            #region Prepare TaskWorkSpecification Object
+
+            objTaskWorkSpecification.Id = Convert.ToInt64(drTaskWorkSpecification["Id"]);
+            objTaskWorkSpecification.CustomId = Convert.ToString(drTaskWorkSpecification["CustomId"]);
+            objTaskWorkSpecification.TaskId = Convert.ToInt64(drTaskWorkSpecification["TaskId"]);
+            objTaskWorkSpecification.Description = Convert.ToString(drTaskWorkSpecification["Description"]);
+            objTaskWorkSpecification.Title = Convert.ToString(drTaskWorkSpecification["Title"]);
+            objTaskWorkSpecification.URL = Convert.ToString(drTaskWorkSpecification["URL"]);
+
+            if (!string.IsNullOrEmpty(Convert.ToString(drTaskWorkSpecification["AdminUserId"])))
+            {
+                objTaskWorkSpecification.AdminUserId = Convert.ToInt32(drTaskWorkSpecification["AdminUserId"]);
+                objTaskWorkSpecification.IsAdminInstallUser = Convert.ToBoolean(drTaskWorkSpecification["IsAdminInstallUser"]);
+                objTaskWorkSpecification.AdminUsername = Convert.ToString(drTaskWorkSpecification["AdminUsername"]);
+                objTaskWorkSpecification.AdminUserFirstname = Convert.ToString(drTaskWorkSpecification["AdminUserFirstName"]);
+                objTaskWorkSpecification.AdminUserLastname = Convert.ToString(drTaskWorkSpecification["AdminUserLastName"]);
+                objTaskWorkSpecification.AdminUserEmail = Convert.ToString(drTaskWorkSpecification["AdminUserEmail"]);
+            }
+
+            if (!string.IsNullOrEmpty(Convert.ToString(drTaskWorkSpecification["TechLeadUserId"])))
+            {
+                objTaskWorkSpecification.AdminUserId = Convert.ToInt32(drTaskWorkSpecification["TechLeadUserId"]);
+                objTaskWorkSpecification.IsAdminInstallUser = Convert.ToBoolean(drTaskWorkSpecification["IsTechLeadInstallUser"]);
+                objTaskWorkSpecification.TechLeadUsername = Convert.ToString(drTaskWorkSpecification["TechLeadUsername"]);
+                objTaskWorkSpecification.TechLeadUserFirstname = Convert.ToString(drTaskWorkSpecification["TechLeadUserFirstName"]);
+                objTaskWorkSpecification.TechLeadUserLastname = Convert.ToString(drTaskWorkSpecification["TechLeadUserLastName"]);
+                objTaskWorkSpecification.TechLeadUserEmail = Convert.ToString(drTaskWorkSpecification["TechLeadUserEmail"]);
+            }
+
+            if (!string.IsNullOrEmpty(Convert.ToString(drTaskWorkSpecification["OtherUserId"])))
+            {
+                objTaskWorkSpecification.OtherUserId = Convert.ToInt32(drTaskWorkSpecification["OtherUserId"]);
+                objTaskWorkSpecification.IsOtherUserInstallUser = Convert.ToBoolean(drTaskWorkSpecification["IsOtherUserInstallUser"]);
+                objTaskWorkSpecification.OtherUsername = Convert.ToString(drTaskWorkSpecification["OtherUsername"]);
+                objTaskWorkSpecification.OtherUserFirstname = Convert.ToString(drTaskWorkSpecification["OtherUserFirstName"]);
+                objTaskWorkSpecification.OtherUserLastname = Convert.ToString(drTaskWorkSpecification["OtherUserLastName"]);
+                objTaskWorkSpecification.OtherUserEmail = Convert.ToString(drTaskWorkSpecification["OtherUserEmail"]);
+            }
+
+            objTaskWorkSpecification.AdminStatus = Convert.ToBoolean(drTaskWorkSpecification["AdminStatus"]);
+            objTaskWorkSpecification.TechLeadStatus = Convert.ToBoolean(drTaskWorkSpecification["TechLeadStatus"]);
+            objTaskWorkSpecification.OtherUserStatus = Convert.ToBoolean(drTaskWorkSpecification["OtherUserStatus"]);
+            objTaskWorkSpecification.DateCreated = Convert.ToDateTime(drTaskWorkSpecification["DateCreated"]);
+            objTaskWorkSpecification.DateUpdated = Convert.ToDateTime(drTaskWorkSpecification["DateUpdated"]);
+
+            #endregion
+
+            return objTaskWorkSpecification;
+        }
+
+
+        #endregion
+
+        public int UpdateSubTaskStatusById(Task objTask, bool blIsAdmin, bool blIsTechLead, bool blIsUser)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("UpdateSubTaskStatusById");
+
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@TaskId", DbType.Int64, objTask.TaskId);
+                    if (blIsAdmin)
+                    {
+                        database.AddInParameter(command, "@AdminStatus", DbType.Boolean, objTask.AdminStatus);
+                        database.AddInParameter(command, "@UserId", DbType.Int32, objTask.AdminUserId);
+                        database.AddInParameter(command, "@IsInstallUser", DbType.Boolean, objTask.IsAdminInstallUser);
+                    }
+                    else if (blIsTechLead)
+                    {
+                        database.AddInParameter(command, "@TechLeadStatus", DbType.Boolean, objTask.TechLeadStatus);
+                        database.AddInParameter(command, "@UserId", DbType.Int32, objTask.TechLeadUserId);
+                        database.AddInParameter(command, "@IsInstallUser", DbType.Boolean, objTask.IsTechLeadInstallUser);
+                    }
+                    else if (blIsUser)
+                    {
+                        database.AddInParameter(command, "@OtherUserStatus", DbType.Boolean, objTask.OtherUserStatus);
+                        database.AddInParameter(command, "@UserId", DbType.Int32, objTask.OtherUserId);
+                        database.AddInParameter(command, "@IsInstallUser", DbType.Boolean, objTask.IsOtherUserInstallUser);
+                    }
+
+                    return database.ExecuteNonQuery(command);
+                }
+            }
+            catch
+            {
+                return -1;
+            }
+        }
+
+        public DataSet GetPendingSubTaskCount(Int32 TaskId)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("GetPendingSubTaskCount");
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@TaskId", DbType.Int32, TaskId);
+                    return database.ExecuteDataSet(command);
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        #region TaskAcceptance
+
+        public DataSet GetTaskAcceptances(Int64 TaskId)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("GetTaskAcceptances");
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@TaskId", DbType.Int64, TaskId);
+                    return database.ExecuteDataSet(command);
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public int InsertTaskAcceptance(TaskAcceptance objTaskAcceptance)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("InsertTaskAcceptance");
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@TaskId", DbType.Int64, objTaskAcceptance.TaskId);
+                    database.AddInParameter(command, "@UserId", DbType.Int64, objTaskAcceptance.UserId);
+                    database.AddInParameter(command, "@IsInstallUser", DbType.Boolean, objTaskAcceptance.IsInstallUser);
+                    database.AddInParameter(command, "@IsAccepted", DbType.Boolean, objTaskAcceptance.IsAccepted);
+
+                    return database.ExecuteNonQuery(command);
+                }
+            }
+            catch
+            {
+                return -1;
+            }
+        }
+
+        #endregion
     }
 }

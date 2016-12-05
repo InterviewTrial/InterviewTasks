@@ -28,6 +28,9 @@
     <%--<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.1/themes/base/jquery-ui.css" />--%>
     <!--accordion jquery-->
     <script type="text/javascript" src="/js/ddaccordion.js"></script>
+
+    <script type="text/javascript" src="/js/jg-common.js"></script>
+
     <style type="text/css">
         .ui-widget-header {
             border: 0;
@@ -145,7 +148,7 @@
           /* Absolute Center Spinner */
         .loading {
             position: fixed;
-            z-index: 999;
+            z-index: 1100;
             height: 2em;
             width: 2em;
             overflow: show;
@@ -377,7 +380,7 @@
                  <uc2:leftmenu ID="left1" runat="server" />
                     <ul class="left_nav"> 
                     <li><a href="ShowResourcesJr.aspx"> Resources</a></li> 
-                        <li><a href="<%= Page.ResolveUrl("~/Sr_App/InstallCreateProspect.aspx")%>"> Employee Referral</a></li>
+                        <li><a href="<%= Page.ResolveUrl("~/Sr_App/InstallCreateProspect.aspx")%>">Install Prospect</a></li>
                         <%--<li><a href="../ProgressReport.aspx">Progress Report</a></li>--%>    
                         <li>
                             <ul>

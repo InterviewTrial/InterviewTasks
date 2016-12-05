@@ -78,7 +78,7 @@ namespace JG_Prospect.JGCalender
 
 
             sb.Append("  SELECT f.Id as event_id,   ");
-            sb.Append("  ISNULL(c.State,'') + ', ' + ISNULL(c.City,'') + ', ' + ISNULL(c.ZipCode,'') as CommonAddress, ");
+           // sb.Append("  ISNULL(c.State,'') + ', ' + ISNULL(c.City,'') + ', ' + ISNULL(c.ZipCode,'') as CommonAddress, ");
             sb.Append("  isnull((Cast( c.id as varchar(10)) +' ## Last Name: '+ c.LastName+' ## First Name: '+ c.CustomerName+'  ## Contact: '+ ISNULL(c.PrimaryContact,'')+' ## Address: '   ");
             sb.Append("  + c.CustomerAddress+' ## Zip: '+ c.ZipCode+' ## Status: '+ f.MeetingStatus+ ' ## Product ' +cast( isnull(p.ProductName,'')  as varchar(10))),'') as  description,  ");
             sb.Append("  isnull(( c.LastName+'  ## '+ISNULL(c.cellPh,'')+' ##  '   ");
@@ -151,7 +151,7 @@ namespace JG_Prospect.JGCalender
                 cevent.description = ((string)reader["description"]).Replace("##", "<br>");
                 cevent.start = (DateTime)reader["event_start"];
                 cevent.end = (DateTime)reader["event_end"];
-                cevent.CommonAddress = reader["CommonAddress"].ToString();
+              //  cevent.CommonAddress = reader["CommonAddress"].ToString();
                 cevent.allDay = Convert.ToBoolean(reader["all_day"]);
                 cevent.status = reader["status"].ToString();
                 cevent.customerid = Convert.ToInt32(reader["id"]);

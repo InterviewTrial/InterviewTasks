@@ -100,7 +100,7 @@ namespace JG_Prospect.Sr_App.Controls {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Saplin.Controls.DropDownCheckBoxes ddlUsers;
+        protected global::System.Web.UI.WebControls.DropDownList ddlUsers;
         
         /// <summary>
         /// ddlTaskStatus control.

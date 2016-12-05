@@ -15,6 +15,7 @@ namespace JG_Prospect.Sr_App
         protected void Page_Load(object sender, EventArgs e)
         {
             //Page.Form.DefaultButton = searchbutton.UniqueID;
+
             if (Session["loginid"] != null)
             {
                 if ((string)Session["usertype"] == "MM" || (string)Session["usertype"] == "SSE")
@@ -30,22 +31,20 @@ namespace JG_Prospect.Sr_App
                     btnNewScript.Visible = false;
                     ScriptEditor.Enabled = false;
                     ScriptEditor.Attributes.Add("readonly", "readonly");
-                    li_department.Visible = false;
+                    li_department.Visible = true;
                 }
-
-                //AddUpdateUserAuditTrailRecord(this.Parent.ToString(), Session["loginid"].ToString());
                 AddUpdateUserAuditTrailRecord(Request.Url.ToString(), Session["loginid"].ToString());
-                
             }
             else
-            {   
-                Response.Redirect("~/login.aspx");
+            {
+                Response.Redirect("~/login.aspx?returnurl=" + Request.Url.PathAndQuery);
                 AddUpdateUserAuditTrailRecord("Session Expired", Session["loginid"].ToString());
             }
         }
-        
+
+
         protected void searchbutton_Click(object sender, EventArgs e)
-        {            
+        {
             Response.Redirect("http://www.google.com/search");
         }
 
@@ -56,7 +55,7 @@ namespace JG_Prospect.Sr_App
                 System.Diagnostics.Process objP = new System.Diagnostics.Process();
                 objP.StartInfo.UseShellExecute = false;
                 objP.StartInfo.UserName = "en12";
-                objP.StartInfo.FileName = @"D:\FileZilla FTP Client\filezilla.exe";               
+                objP.StartInfo.FileName = @"D:\FileZilla FTP Client\filezilla.exe";
                 objP.Start();
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Process started successfully');", true);
             }

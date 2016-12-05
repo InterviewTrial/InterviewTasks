@@ -166,13 +166,13 @@ namespace JG_Prospect.Sr_App
                     {
                         lblerrornew.Text = ex.Message + ex.StackTrace;
                     }
-                    
+
                     //added by harshit
                     //7-april-2016
                     UserType = Session[JG_Prospect.Common.SessionKey.Key.usertype.ToString()].ToString();
                     DataSet dsCurrentPeriod = UserBLL.Instance.Getcurrentperioddates();
-                    if(dsCurrentPeriod.Tables.Count>0 && dsCurrentPeriod.Tables[0].Rows.Count > 0)
-                    { 
+                    if (dsCurrentPeriod.Tables.Count > 0 && dsCurrentPeriod.Tables[0].Rows.Count > 0)
+                    {
                         DateTime fromDate = Convert.ToDateTime(dsCurrentPeriod.Tables[0].Rows[0]["FromDate"].ToString());
                         DateTime toDate = Convert.ToDateTime(dsCurrentPeriod.Tables[0].Rows[0]["ToDate"].ToString());
                     }
@@ -254,8 +254,8 @@ namespace JG_Prospect.Sr_App
                     DataRow dr = ds.Tables[0].Rows[i];
                     drpPayPeriod.Items.Add(new System.Web.UI.WebControls.ListItem(dr["Periodname"].ToString(), dr["Id"].ToString()));
                 }
-                if(dsCurrentPeriod.Tables.Count>0 && dsCurrentPeriod.Tables[0].Rows.Count > 0)
-                { 
+                if (dsCurrentPeriod.Tables.Count > 0 && dsCurrentPeriod.Tables[0].Rows.Count > 0)
+                {
                     drpPayPeriod.SelectedValue = dsCurrentPeriod.Tables[0].Rows[0]["Id"].ToString();
                     txtfrmdate.Text = Convert.ToDateTime(dsCurrentPeriod.Tables[0].Rows[0]["FromDate"].ToString()).ToString("MM/dd/yyyy");
                     txtTodate.Text = Convert.ToDateTime(dsCurrentPeriod.Tables[0].Rows[0]["ToDate"].ToString()).ToString("MM/dd/yyyy");
@@ -419,9 +419,9 @@ namespace JG_Prospect.Sr_App
             }
 
             DataSet ds = new DataSet();
-            ds = VendorBLL.Instance.GetVendorList(strVendorStatus, IsRetailWholesale,  iProductCategoryID, iVendorCategoryID, iVendorSubCategoryID);
-            if(ds!=null && ds.Tables.Count > 0)
-            { 
+            ds = VendorBLL.Instance.GetVendorList(strVendorStatus, IsRetailWholesale, iProductCategoryID, iVendorCategoryID, iVendorSubCategoryID);
+            if (ds != null && ds.Tables.Count > 0)
+            {
                 grdVendorList.DataSource = ds.Tables[0];
             }
             else
@@ -488,7 +488,7 @@ namespace JG_Prospect.Sr_App
                 //FilterVendors(ddlVndrCategory.SelectedValue.ToString(), "VendorCategory", ManufacturerType, "", GetVendorStatus());
                 ViewState["CheckedVc"] = ddlVndrCategory.SelectedValue;
             }
-            else if(ddlVendorStatusfltr.SelectedValue.ToString() != "All")
+            else if (ddlVendorStatusfltr.SelectedValue.ToString() != "All")
             {
                 FilterVendorByProductCategory();
             }
@@ -694,7 +694,7 @@ namespace JG_Prospect.Sr_App
                 }
             }
             HttpContext.Current.Session["dtVendorAddress"] = dtVendorAddress as DataTable;
-         }
+        }
 
         [WebMethod]
         public static string CheckVendorDetails()
@@ -708,14 +708,14 @@ namespace JG_Prospect.Sr_App
 
         [WebMethod]
         public static string SearchVendor(string searchstring)
-        {          
+        {
             DataSet dsSuggestions;
             string SearchSuggestions = string.Empty;
             dsSuggestions = VendorBLL.Instance.GetVendorSearchAutoSuggestion(searchstring);
             if (dsSuggestions != null && dsSuggestions.Tables.Count > 0 && dsSuggestions.Tables[0].Rows.Count > 0)
             {
                 SearchSuggestions = JsonConvert.SerializeObject(dsSuggestions.Tables[0]);
-            }            
+            }
             return SearchSuggestions;
         }
 
@@ -857,7 +857,7 @@ namespace JG_Prospect.Sr_App
             {
                 objvendor.VendorStatus = "Prospect";
             }
-            objvendor.Website = txtWebsite.Text;            
+            objvendor.Website = txtWebsite.Text;
             if (!ddlSource.SelectedValue.Equals("Select Source"))
             {
                 objvendor.Vendrosource = ddlSource.SelectedValue;
@@ -867,7 +867,7 @@ namespace JG_Prospect.Sr_App
                 objvendor.AddressID = Convert.ToInt32((DrpVendorAddress.SelectedValue == "Select") ? "0" : DrpVendorAddress.SelectedValue);
             }
             if (!DrpPaymentTerms.SelectedValue.Equals("Select"))
-            { 
+            {
                 objvendor.PaymentTerms = DrpPaymentTerms.SelectedValue;
             }
             if (!DrpPaymentMode.SelectedValue.Equals("Select"))
@@ -1021,7 +1021,7 @@ namespace JG_Prospect.Sr_App
         {
             BindFilteredVendorList();
         }
-        
+
         protected void bindvendorcategory()
         {
             DataSet ds = new DataSet();
@@ -3405,7 +3405,7 @@ namespace JG_Prospect.Sr_App
 
             DrpVendorAddress.Items.Clear();
             DrpVendorAddress.Items.Add(new System.Web.UI.WebControls.ListItem("Select", "Select"));
-            if (dsAddress != null && dsAddress.Tables.Count>0 && dsAddress.Tables[0].Rows.Count > 0)
+            if (dsAddress != null && dsAddress.Tables.Count > 0 && dsAddress.Tables[0].Rows.Count > 0)
             {
                 for (int i = 0; i < dsAddress.Tables[0].Rows.Count; i++)
                 {
@@ -3630,7 +3630,7 @@ namespace JG_Prospect.Sr_App
             txtPrimaryAddress.Text = "";
             ddlCountry.ClearSelection();
             ddlCountry.SelectedValue = "US";
-            
+
             string NewTempID = "";
             if (HttpContext.Current.Session["TempID"] != null)
             {
@@ -4287,7 +4287,7 @@ namespace JG_Prospect.Sr_App
         {
             if (ddlpaymode.SelectedIndex == 2)
             {
-              //  Response.Redirect("~/Sr_App/Procurement.aspx");
+                //  Response.Redirect("~/Sr_App/Procurement.aspx");
             }
         }
 

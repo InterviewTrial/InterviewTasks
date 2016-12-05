@@ -3,7 +3,6 @@
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajaxToolkit" %>
 <%@ Register Src="~/UserControl/UCAddress.ascx" TagPrefix="uc1" TagName="UCAddress" %>
-<%--<%@ Register TagPrefix="Ajaxified" Assembly="ajaxified" Namespace="Ajaxified" %>--%>
 <script runat="server">
 
 </script>
@@ -181,7 +180,11 @@
             float: right;
         }
 
-        
+        .tblBestTimeToContact > tbody tr td {
+            height: 0px !important;
+            /*padding: 5px 0px!important;*/
+            padding: 0px 0px !important;
+        }
     </style>
     <script src="../Scripts/jquery.maskedinput.min.js" type="text/javascript"></script>
     <script type="text/javascript">
@@ -226,13 +229,13 @@
             }
             window.onload = InitializeMap;
         }
-        catch (e2) { }
+        catch(e2){}
     </script>
 
     <script language="JavaScript" type="text/javascript">
         var PrimaryRadio = 0;
         var SecondaryRadio = 0;
-
+     
         function GetCityStateOnBlur(e) {
             //debugger;
             $.ajax({
@@ -253,7 +256,7 @@
 
 
         function CheckForDuplication() {
-           
+            debugger;
             //Get the Value an assign hidden field
             var tbl = document.getElementById("tblBestTime");
             var row = tbl.getElementsByTagName("tr");
@@ -274,13 +277,8 @@
             }
             var formData = [];
             var formPushData = [];
-            debugger;
-            //var txtestimatetime = $('#basic_example_2').timepicker()[0].value;
-            //$('#txtestimate_time').val(txtestimatetime);
-
             $("#form1").find("input[name]:text,select[name],input:hidden[name][id^='hdn'],input[name]:radio,textarea[name],input[name]:checkbox").each(function (index, node) {
 
-                debugger;
                 //formData[node.name] = node.value;
                 if (node.type == "checkbox") {
                     node.value = $('#' + node.id).is(':checked');
@@ -300,17 +298,6 @@
                 }
 
                 else {
-                    //added on 15092016 :: check validate values
-                    if (node.name == "txtFName1") {
-                        alert("Please enter First Name")
-                        return false;
-                    }
-
-                    if (node.name == "txtPhone1") {
-                        alert("Please enter the Phone Number")
-                        return false;
-                    }
-
                     formPushData.push({
                         key: node.name,
                         value: node.value
@@ -318,8 +305,6 @@
                 }
 
             });
-
-            debugger;
             $.ajax({
                 type: "POST",
                 url: "new_customer.aspx/CheckForDuplication",
@@ -386,16 +371,9 @@
         }
 
         function AddDayTime(e) {
-
-            if ($("#ContentPlaceHolder1_txtestimate_time").val().trim() == "") {
-                alert("Should contain option for user to select time!");
-                return false;
-            }
-
             if ($("#txtBestDayToContact").val().trim() == "") {
                 alert("Please Select Best Day to Contact");
                 return false;
-                
             }
 
             if ($("#txtBestStartTime").val().trim() == "") {
@@ -452,16 +430,16 @@
 
         $(document).ready(function () {
             try {
-
+                
                 $(".date").datepicker();
 
-                try { $('.clsMaskPhone').mask("999-999-9999") } catch (e) { }
+                try { $('.clsMaskPhone').mask("999-999-9999") }catch(e){}
                 //$('#txtBestTimetoContact').ptDaySelect({});
                 $('#txtBestDayToContact').ptDayOnlySelect({});
                 $('#txtBestStartTime').ptTimeOnlySelect({});
                 $('#txtBestEndTime').ptTimeOnlySelect({});
             }
-            catch (e) { }
+            catch(e){}
         });
 
 
@@ -526,122 +504,34 @@
         }
 
         function CheckDuplicateCustomerCred(obj, type) {
-<<<<<<< HEAD
-            debugger;
-            var valueForValid = "";
-            if (type == 1) {
-                var contact = obj.value
-                valueForValid = contact.replace('-', '');
-                valueForValid = valueForValid.replace('-', '');
-            }
-            else {
-                valueForValid = obj.value;
-            }
             $.ajax({
                 type: "POST",
                 url: "new_customer.aspx/CheckDuplicateCustomerCredentials",
                 contentType: "application/json; charset=utf-8",
                 dataType: "JSON",
-                data: "{'pValueForValidation':'" + valueForValid + "', 'pValidationType':" + type + "}",
-
+                data: "{'pValueForValidation':'" + obj.value + "', 'pValidationType':"+type+"}",
+                
                 success: function (data) {
                     debugger;
-
-                    var dataInput = (data.d.split('#'));
-                    //myString.split('/')
+                    var dataInput = (data.d);
                     if (dataInput != '') {
-                        debugger;
-                        var title = "";
-                        var existsMessage = "";
-                        $("#dialog")[0].innerHTML = "";
-                        if (type == 1) {
-                            existsMessage = "Contact " + obj.value;
-                            $("#dialog")[0].innerHTML = existsMessage + " " + "already exists: would you like to redirect to this customer profile page?";;
-                            title = "Contact already exists";
-                        }
-                        else {
-                            existsMessage = "Email " + obj.value;
-                            $("#dialog")[0].innerHTML = existsMessage + " " + "already exists: would you like to redirect to this customer profile page?";
-                            title = "Email already exists";
-                        }
-
-                        $("#dialog").dialog({
-                            modal: true,
-                            autoOpen: false,
-                            title: title,
-                            width: 350,
-                            height: 160,
-                            buttons: [
-                            {
-                                id: "Yes",
-                                text: "Yes",
-                                click: function () {
-                                    debugger;
-                                    window.location = "Customer_Profile.aspx?CustomerId=" + dataInput[0];
-                                }
-                            },
-                            {
-                                id: "Cancel",
-                                text: "Cancel",
-                                click: function () {
-                                    $(this).dialog('close');
-                                }
-                            }
-                            ]
-                        });
-
-                        $('#dialog').dialog('open');
-
-                        //alert(dataInput);
+                        alert(dataInput);
                         obj.value = '';
-=======
-            if (obj.value.trim() != "") {
-                $.ajax({
-                    type: "POST",
-                    url: "new_customer.aspx/CheckDuplicateCustomerCredentials",
-                    contentType: "application/json; charset=utf-8",
-                    dataType: "JSON",
-                    data: "{'pValueForValidation':'" + obj.value + "', 'pValidationType':" + type + "}",
-
-                    success: function (data) {
-                        debugger;
-                        var dataInput = (data.d);
-                        if (dataInput != '') {
-                            // alert(dataInput);
-                            confirm("contact"+obj.value+" already exists: would you like to redirect to this customer profile page?");
-
-                            
-                            obj.value = '';
-                        }
->>>>>>> origin/jaylem-interviewtask
                     }
-                });
-            }
-            else {
-               
-                if(obj.id=="txtEMail1" || obj.id=="ContentPlaceHolder1_txtEMail2")
-                alert("Email field cannot be empty");
-            }
+                }
+            });
         }
 
-        function CheckDuplicatePhone(obj) {
-            //added on 14092016 :: checked not empty value 
-            debugger;
-            if (obj.value != "") {
-                CheckDuplicateCustomerCred(obj, 1);
-            }
+        function CheckDuplicatePhone(obj){
+            CheckDuplicateCustomerCred(obj, 1);
         }
 
         function CheckDuplicateEmail(obj) {
-            //added on 14092016 :: checked not empty value 
-            debugger;
-            if (obj.value != "") {
-                CheckDuplicateCustomerCred(obj, 2);
-            }
+            CheckDuplicateCustomerCred(obj, 2);
         }
         function AddTemplate(e) {
             debugger;
-
+            
             var liCount = $("#divPrimaryContact ul li").length + 1;
 
             $(e).closest('li').after("<li style='width: 100%;'><div class='tblPrimaryContact' style='margin-top: 10px; width: 100%'><div style='width: 40%; float: left;'>" +
@@ -665,7 +555,7 @@
 
         function Phone(e) {
             debugger;
-
+            
             var dataTypeValue = $(e).attr("data-type");
             var subCount = $(e).closest('table').find('tr').length - 1;
             $(e).closest('tr').prev().after("<tr><td class='paddingtd'></td><td><input type='text' onblur='CheckDuplicatePhone(this);' clientidmode='Static' id='txtPhone" + dataTypeValue + subCount + "' name='nametxtPhone" + dataTypeValue + subCount + "' tabindex='7' class='clsMaskPhone' placeholder='___-___-____' /></td>" +
@@ -677,7 +567,7 @@
 
         function Email(e) {
             debugger;
-
+            
             //<input type='text' ID='TextBox2' TabIndex='7' MaxLength='15' placeholder='EMail' value='bbb@gmail.com'>
             var dataTypeValue = $(e).attr("data-type");
             var subCount = $(e).closest('table').find('tr').length - 1;
@@ -818,46 +708,9 @@
                 "<button style='color:white;background-color:#9B3435;width:11px;cursor: pointer;' onclick='removeProduct(this)'>X</button><input type='hidden' id='hdnSecondaryId' name='hdnSecondaryId' value='" + $(e).val() + "'/><input type='hidden' id='hdnSecondaryType' name='hdnSecondaryType' value='Secondary'/></div>");
             SecondaryRadio++;
         }
-
-
+       
     </script>
 
-    <%--<link href="../SiteStyle.css" rel="stylesheet" />--%>
-    <%--<link href="../datetime/css/timeStyle.css" rel="stylesheet" />
-
-    <script language="javascript" type="text/javascript">
-        function clientShowing(sender) {
-
-        }
-        function clientShown(sender) {
-
-        }
-        function clientHiding(sender) {
-
-        }
-        function clientHidden(sender) {
-
-        }
-        function selectionChanged(sender) {
-            //alert(sender._selectedTime);
-        }
-    </script>--%>
-
-
-
-    <%--<link rel="stylesheet" media="all" type="text/css" href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css" />
-    <link href="../datetime/css/jquery-ui-timepicker-addon.css" rel="stylesheet" />
-    <script type="text/javascript" src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
-    <script type="text/javascript" src="http://code.jquery.com/ui/1.11.0/jquery-ui.min.js"></script>
-    <script src="../datetime/js/jquery-ui-timepicker-addon.js"></script>
-    <script src="../datetime/i18n/jquery-ui-timepicker-addon-i18n.min.js"></script>
-    <script src="../datetime/js/jquery-ui-sliderAccess.js"></script>--%>
-
-    <style type="text/css">
-        #ui-datepicker-div, .ui-datepicker {
-            font-size: 85%;
-        }
-    </style>
     <%---------end script for Datetime Picker----------%>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -883,14 +736,15 @@
                 <ul>
                     <li style="width: 100%;">
                         <div class="tblPrimaryContact" style="margin-top: 10px; width: 100%">
-                            <div style="width: 38%; float: left;">
+                            <div style="width: 40%; float: left;">
                                 <table>
+
                                     <tr>
                                         <td>
                                             <input type="checkbox" id="chkContactType1" name="chkContactType1" />
                                         </td>
                                         <td>
-                                            <select id="selContactType1" clientidmode="Static" runat="server" tabindex="4" name="selContactType1" class="drop_down" style="margin-top:15px; width:30px">
+                                            <select id="selContactType1" clientidmode="Static" runat="server" tabindex="4" name="selContactType1" class="drop_down">
                                                 <option value="0">Select</option>
                                                 <option value="DM">DM</option>
                                                 <option value="Spouse">Spouse</option>
@@ -913,7 +767,7 @@
                                     </tr>
                                 </table>
                             </div>
-                            <div style="width: 35%; float: left;">
+                            <div style="width: 40%; float: left;">
                                 <table>
                                     <tr>
                                         <td class="paddingtd"></td>
@@ -924,7 +778,7 @@
                                             <label class="clsFullWidth">Phone Type</label>
                                         </td>
                                         <td>
-                                            <select style="margin-top:15px; width:30px" id="selPhoneType1" class="clsFullWidth" clientidmode="Static" data-type="1" runat="server" tabindex="4" name="selPhoneType1">
+                                            <select id="selPhoneType1" class="clsFullWidth" clientidmode="Static" data-type="1" runat="server" tabindex="4" name="selPhoneType1">
                                                 <option value="0">Select</option>
                                                 <option value="CellPhone">Cell Phone #</option>
                                                 <option value="HousePhone">House Phone #</option>
@@ -935,13 +789,13 @@
                                     </tr>
                                     <tr>
                                         <td class="paddingtd">
-                                            <input type="button" id="Button4" runat="server" value="Add" data-type="1" class="clsFullWidth cls_btn_plus" tabindex="31"
-                                                />
+                                            <input type="button" id="Button4" runat="server" value="Add" data-type="1" class="clsFullWidth cls_btn_plus" tabindex="31" 
+                                                onclick="Phone(this)" />
                                         </td>
                                     </tr>
                                 </table>
                             </div>
-                            <div style="width: 27%; float: left;">
+                            <div style="width: 20%; float: left;">
                                 <table>
                                     <tr>
                                         <td class="paddingtd"></td>
@@ -951,7 +805,7 @@
                                     </tr>
                                     <tr>
                                         <td class="paddingtd">
-                                            <input type="button" id="Button7" runat="server" value="Add" data-type="1" class="clsFullWidth cls_btn_plus" tabindex="31"
+                                            <input type="button" id="Button7" runat="server" value="Add" data-type="1" class="clsFullWidth cls_btn_plus" tabindex="31" 
                                                 onclick="Email(this)" />
                                         </td>
                                     </tr>
@@ -962,7 +816,7 @@
 
                     <li style="width: 100%;">
                         <div class="tblPrimaryContact" style="margin-top: 10px; width: 100%">
-                            <div style="width: 38%; float: left;">
+                            <div style="width: 40%; float: left;">
                                 <table>
                                     <tr>
                                         <td>
@@ -993,7 +847,7 @@
                                     </tr>
                                 </table>
                             </div>
-                            <div style="width: 38%; float: left;">
+                            <div style="width: 40%; float: left;">
                                 <table>
                                     <tr>
                                         <td class="paddingtd"></td>
@@ -1021,12 +875,12 @@
                                     </tr>
                                 </table>
                             </div>
-                            <div style="width: 34%; float: left;">
+                            <div style="width: 20%; float: left;">
                                 <table>
                                     <tr>
                                         <td class="paddingtd"></td>
                                         <td>
-                                            <input type="text" id="txtEMail2" runat="server" tabindex="7" placeholder="EMail" onblur="CheckDuplicateEmail(this)" />
+                                            <input type="text" id="txtEMail2" runat="server" tabindex="7" placeholder="EMail" onblur="CheckDuplicateEmail(this)"/>
                                         </td>
                                     </tr>
                                     <tr>
@@ -1091,7 +945,8 @@
                         </div>
 
                     </td>
-                    <td></td>
+                    <td>
+                    </td>
                 </tr>
             </table>
             <div class="grid_h">
@@ -1115,7 +970,7 @@
                         </tr>
                         <tr>
                             <td>
-                                <label style="line-height: 21px;">Contact Preference</label>
+                                <label style="line-height:21px;">Contact Preference</label>
                                 <asp:CheckBox ID="chbemail" runat="server" Width="14%" Text="Email " TabIndex="17"
                                     onclick="fnCheckOne(this)" />
                                 <asp:CheckBox ID="chbcall" runat="server" Text="Call" Checked="false" Width="14%"
@@ -1155,7 +1010,7 @@
                     </table>
                 </li>
                 <li class="last" style="width: 49%;">
-                    <table border="0" cellspacing="0" cellpadding="0" style="width: 100%; border: 1px;">
+                    <table border="0" cellspacing="0" cellpadding="0" style="width:100%;border:1px;">
                         <tr>
                             <td>
                                 <label>Secondary Product of Interest (6 months)</label>
@@ -1167,56 +1022,18 @@
                             <td>
                                 <label>Competitor Bids</label>
                                 <asp:TextBox ID="txtCompetitorBids" runat="server" TabIndex="6"></asp:TextBox>
-
+                                
                             </td>
                         </tr>
                         <tr>
-                            <td class="login_form_panel" style="background: none !important; min-height: 0px !important; border-top: none !important; padding: 0px !important">
-
-                                <label style="line-height: 40px; vertical-align: top; padding-top: 0px;">
+                            <td>
+                              
+                                <label style="line-height:40px;vertical-align:top;padding-top:0px;">
                                     Estimate Time</label>
-                                <asp:TextBox ID="txtestimate_time" runat="server" TabIndex="6"
-                                    onkeypress="return false" Visible="false"></asp:TextBox>
-
-                                <input type="text" name="input_txtestimate_time" id="input_txtestimate_time" value=""/>
-
-
-                                <script type="text/javascript">
-                                    $(function () {
-                                        $('#input_txtestimate_time').timepicker();
-                                    });
-	                             </script>
-
-                                <%--   <div >--%>
-
-                                <%--  <ul>
-                                    <li>
-                                        <table border="0" cellspacing="0" cellpadding="0" class="last">
-
-                                            <tr>
-                                                <td>
-                                                    <label style="line-height: 40px; vertical-align: top; padding-top: 0px;">
-                                                        Estimate Time</label>
-                                                    <asp:TextBox ID="txtestimate_time" runat="server" Text="" TabIndex="6">
-                                                    </asp:TextBox>
-                                                    <Ajaxified:TimePicker ID="TimePicker1" runat="server" TargetControlID="txtestimate_time" MinuteStep="15" CloseOnSelection="true"></Ajaxified:TimePicker>
-
-                                                </td>
-                                            </tr>
-
-                                        </table>
-
-                                    </li>
-                                </ul>--%>
-
-                                <%--  </div>--%>
-                                <%--<input id="basicExample" type="text" class="time" runat="server" />
-
-                                <script>
-                                    $('#basicExample').timepicker();
-                                </script>--%>
-
-                                
+                                <asp:TextBox ID="txtestimate_time" CssClass="time" runat="server" TabIndex="6"
+                                    onkeypress="return false"></asp:TextBox>
+                                <label>
+                                </label>
                             </td>
                         </tr>
                         <tr>
@@ -1253,7 +1070,7 @@
                                 </div>
                             </td>
                         </tr>
-
+                        
                         <tr>
                             <td>
                                 <div>
@@ -1358,13 +1175,12 @@
                                 </td>
                                 <td style="width: 42%">
                                     <asp:Label ID="lblEndAddress" runat="server" Font-Size="15px" Font-Bold="true">End:</asp:Label>
-
+                                
                                     <asp:TextBox ID="txtEndAddress" runat="server" Width="205px" Height="25px" onblur="return BindMap()"></asp:TextBox>
 
                                     <ajaxToolkit:AutoCompleteExtender ID="ddlCompany1" runat="server" TargetControlID="txtEndAddress" Enabled="True"
                                         MinimumPrefixLength="1" EnableCaching="true" CompletionSetCount="1" CompletionInterval="1000" ServicePath=""
-                                        ServiceMethod="LoadAddress" DelimiterCharacters="">
-                                        <%--OnClientItemSelected="OnSelectAddress"--%>
+                                        ServiceMethod="LoadAddress" DelimiterCharacters="" > <%--OnClientItemSelected="OnSelectAddress"--%>
                                     </ajaxToolkit:AutoCompleteExtender>
                                     <%--<td>
                                    <asp:Image ID="imgBefore" Width="40%" Height="40px" runat="server" />
@@ -1451,41 +1267,37 @@
 
 
                                                 </tr>
-                                            </table>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td valign="top">
-                                            <div id="map" style="height: 390px; width: 489px"></div>
-                                        </td>
-                                        <td valign="top">
-                                            <div id="directionpanel" style="height: 390px; overflow: auto"></div>
-                                        </td>
-                                    </tr>
                                 </table>
-                            </div>
-
-                        </div>
                     </td>
-                    <td style="width: 50%; position: relative;" valign="top"></td>
                 </tr>
-
+                <tr>
+                    <td valign="top">
+                        <div id="map" style="height: 390px; width: 489px"></div>
+                    </td>
+                    <td valign="top">
+                        <div id="directionpanel" style="height: 390px; overflow: auto"></div>
+                    </td>
+                </tr>
             </table>
-
         </div>
-        <!-- Tabs endss -->
 
-        <div id="dialog" style="display: none" align="center">
-            <%-- already exists: would you like to redirect to this customer profile page?--%>
-        </div>
     </div>
-    <%-- </asp:Panel>--%>
-    <%--<link href="../datetime/jq/ui-lightness/jquery-ui-1.10.0.custom.min.css" rel="stylesheet" />--%>
+    </td>
+                        <td style="width: 50%; position: relative;" valign="top"></td>
+    </tr>
+
+                </table>
+
+            </div>
+            <!-- Tabs endss -->
+    </div>
+   <%-- </asp:Panel>--%>
+    <link href="../datetime/jq/ui-lightness/jquery-ui-1.10.0.custom.min.css" rel="stylesheet" />
     <link href="../datetime/jq/jquery.ui.timepicker.css" rel="stylesheet" />
-  <%--  <script src="../datetime/jq/jquery-1.9.0.min.js"></script>--%>
- <%--   <script src="../datetime/jq/jquery.ui.core.min.js"></script>--%>
+    <script src="../datetime/jq/jquery-1.9.0.min.js"></script>
+    <script src="../datetime/jq/jquery.ui.core.min.js"></script>
     <script src="../datetime/jq/jquery.ui.position.min.js"></script>
-  <%--  <script src="../datetime/jq/jquery.ui.widget.min.js"></script>--%>
+    <script src="../datetime/jq/jquery.ui.widget.min.js"></script>
     <script src="../datetime/jq/jquery.ui.timepicker.js"></script>
     <script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
     <script type="text/javascript">

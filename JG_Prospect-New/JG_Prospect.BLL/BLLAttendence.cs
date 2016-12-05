@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using JG_Prospect.DAL;
 using System.Data;
 
 namespace JG_Prospect.BLL

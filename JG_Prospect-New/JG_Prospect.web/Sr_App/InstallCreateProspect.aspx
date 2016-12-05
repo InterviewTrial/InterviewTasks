@@ -42,7 +42,7 @@
 
         function IsNumeric(e) {
             var keyCode = e.which ? e.which : e.keyCode
-            var ret = ((keyCode >= 48 && keyCode <= 57) || (keyCode == 9) || specialKeys.indexOf(keyCode) != -1 || e.keyCode == 39 || e.keyCode == 37 || charCode != 46);
+            var ret = ((keyCode >= 48 && keyCode <= 57) || (keyCode == 9) || specialKeys.indexOf(keyCode) != -1 || e.keyCode == 39 || e.keyCode == 37);
             return ret;
         }
         function uploadComplete2() {
@@ -52,14 +52,6 @@
             var btnImageUploadClick = document.getElementById("btn_UploadFiles");
             btn_UploadFiles.click();
 
-        }
-        function Email(e) {
-            debugger;
-            //<input type='text' ID='TextBox2' TabIndex='7' MaxLength='15' placeholder='EMail' value='bbb@gmail.com'>
-            var dataTypeValue = $(e).attr("data-type");
-            var subCount = $(e).closest('table').find('tr').length - 1;
-            $(e).closest('tr').prev().after("<tr><td class='paddingtd'></td><td>" +
-                                            "<input type='text' id='txtEMail" + dataTypeValue + subCount + "' tabindex='7' onblur='CheckDuplicateEmail(this);' name='nametxtEMail" + dataTypeValue + subCount + "'  placeholder='EMail' clientidmode='Static' /></td></tr>");
         }
     </script>
 
@@ -93,12 +85,12 @@
             top: 10%;
             left: 20%;
             width: 60%;
-            height: 10%;
+            height: 5%;
             padding: 16px;
-            border: 10px solid black;
+            border: 10px solid #327FB5;
             background-color: white;
             z-index: 1002;
-            overflow: hidden;
+            overflow: auto;
         }
     </style>
     <%-- <script>
@@ -161,7 +153,6 @@
                                 <asp:TextBox ID="txtfirstname" runat="server" MaxLength="25" TabIndex="101" autocomplete="off"
                                     EnableViewState="false" onkeypress="return lettersOnly(event);" AutoCompleteType="None" OnTextChanged="txtfirstname_TextChanged" Width="218px"></asp:TextBox>
                                 &nbsp;&nbsp;
-                               
                                 <br />
                                 <label></label>
                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="txtfirstname"
@@ -185,14 +176,11 @@
                         <tr>
                             <td class="style2">
                                 <label>
-                                    &nbsp;  &nbsp;Primary contact phone #<span>*</span></label>
+                                    &nbsp;Phone #<span>*</span></label>
                                 <asp:TextBox ID="txtPhone" runat="server" Width="218px" MaxLength="12" autocomplete="off" onkeypress="return IsNumeric(event);"
                                     TabIndex="104"></asp:TextBox>
                                 <br />
                                 <label></label>
-                                <asp:RegularExpressionValidator ID="rvPrimaryContactPhone" runat="server"
-                                    ErrorMessage="Please enter Phone Number(3-3-4)" ForeColor="red" ControlToValidate="txtPhone"
-                                    ValidationExpression="^\d{3}-\d{3}-\d{4}$"></asp:RegularExpressionValidator>
                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator3" runat="server" ControlToValidate="txtPhone"
                                     ForeColor="Red" Display="Dynamic" ValidationGroup="submit">Enter Phone#</asp:RequiredFieldValidator><br />
 
@@ -214,21 +202,8 @@
                             </td>
                         </tr>
 
-                        <tr>
-                            <td>Phone Type
-                                <asp:DropDownList ID="ddlPhoneType" runat="server">
-                                    <asp:ListItem Value="0">-Select-</asp:ListItem>
-                                    <asp:ListItem Value="1">Cell Phone #</asp:ListItem>
-                                    <asp:ListItem Value="2">House Phone #</asp:ListItem>
-                                    <asp:ListItem Value="3">Work Phone #</asp:ListItem>
-                                    <asp:ListItem Value="4">Alt #</asp:ListItem>
-                                </asp:DropDownList>
-                                <asp:RequiredFieldValidator ID="revPhoneType" runat="server" ControlToValidate="ddlPhoneType" Display="Dynamic"
-                                    ValidationGroup="submit" InitialValue="0" ForeColor="Red" ErrorMessage="Please Select PhoneType"></asp:RequiredFieldValidator>
-                            </td>
-                        </tr>
-                        <%if (isInstallUser == true)
-                          { %>
+
+                        <%if(isInstallUser==true){ %>
                         <tr>
                             <td>
                                 <%--<asp:UpdatePanel ID="UpdatePanel13" runat="server">
@@ -256,7 +231,6 @@
                             <td class="style2">
                                 <label>
                                     Date Sourced
-                               
                                 </label>
                                 <asp:TextBox ID="DateSourced" TabIndex="112" ClientIDMode="Static" runat="server" Width="218px" autocomplete="off"
                                     onkeypress="return false" ReadOnly="True"></asp:TextBox>
@@ -285,8 +259,6 @@
                                     TabIndex="112" />--%>
                                 &nbsp;
                                
-                               
-
                                 <br />
                                 <%--<asp:UpdatePanel ID="UpdatePanel1" runat="server">
                                     <ContentTemplate>--%>
@@ -329,15 +301,13 @@
                                 <asp:TextBox ID="txtlastname" runat="server" MaxLength="25" onkeypress="return lettersOnly(event);" Width="218px" TabIndex="102" autocomplete="off"
                                     OnTextChanged="txtlastname_TextChanged"></asp:TextBox>
                                 &nbsp;&nbsp;
-                               
                                 <br />
                                 <label></label>
                                 <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ControlToValidate="txtlastname"
                                     ForeColor="Red" Display="Dynamic" ValidationGroup="submit">Enter LastName</asp:RequiredFieldValidator><br />
                             </td>
                         </tr>
-                        <%if (isInstallUser == true)
-                          { %>
+                        <%if(isInstallUser==true){ %>
                         <tr>
                             <td class="style2">
 
@@ -355,13 +325,9 @@
                         <tr>
                             <td class="style2">
                                 <label>
-                                    Secondary Contact Phone # 2</label>
+                                    Phone# 2</label>
                                 <asp:TextBox ID="txtPhone2" runat="server" MaxLength="12" TabIndex="105" Width="218px" OnTextChanged="txtPhone2_TextChanged"
                                     autocomplete="off" onkeypress="return IsNumeric(event);"></asp:TextBox>
-                                <asp:RegularExpressionValidator ID="revSecondaryPhoneNumber" runat="server"
-                                    ErrorMessage="Please enter Phone Number(3-3-4)" ControlToValidate="txtPhone2"
-                                    ValidationExpression="^\d{3}-\d{3}-\d{4}$" ForeColor="red"></asp:RegularExpressionValidator>
-
                                 <br />
                                 <label></label>
 
@@ -370,19 +336,16 @@
                         </tr>
                         <tr>
                             <td>
-                                <div id="divEmail" visible="false" runat="server">
-                                    <label>
-                                        Email 2</label>
-                                    <asp:TextBox ID="txtemail2" runat="server" MaxLength="50" TabIndex="107" Width="218px" autocomplete="off"></asp:TextBox>
-                                    <br />
-                                    <label></label>
-                                    <asp:RegularExpressionValidator ID="RegularExpressionValidator1" ControlToValidate="txtemail2" ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*"
-                                        Display="Dynamic" runat="server" ForeColor="Red" ErrorMessage="Please Enter a valid Email"
-                                        ValidationGroup="submit">
+                                <label>
+                                    Email 2</label>
+                                <asp:TextBox ID="txtemail2" runat="server" MaxLength="50" TabIndex="107" Width="218px" autocomplete="off"></asp:TextBox>
+                                <br />
+                                <label></label>
+                                <asp:RegularExpressionValidator ID="RegularExpressionValidator1" ControlToValidate="txtemail2" ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*"
+                                    Display="Dynamic" runat="server" ForeColor="Red" ErrorMessage="Please Enter a valid Email"
+                                    ValidationGroup="submit">
                                 </asp:RegularExpressionValidator>
 
-                                </div>
-                                <asp:Button ID="btnAdd" runat="server" Text="Add" CssClass="btn_sec" OnClick="btnAdd_Click" />
 
 
 
@@ -394,28 +357,26 @@
 
 
 
-                        <%if (isInstallUser == true)
-                          { %>
+                        <%if(isInstallUser==true){ %>
                         <tr>
                             <td>
+
+                                <%--<asp:UpdatePanel ID="UpdatePanel1" runat="server">
+                                    <ContentTemplate>--%>
                                 <label>
                                     Secondary Trade <span>*</span></label>
-                                <asp:UpdatePanel ID="upnlSecondaryTrade" runat="server">
-                                    <ContentTemplate>
-                                        <asp:DropDownCheckBoxes ID="ddlSecondaryTrade" runat="server" Width="200px" OnSelectedIndexChanged="ddlSecondaryTrade_SelectedIndexChanged" AddJQueryReference="True" AutoPostBack="true">
-                                            <Style SelectBoxWidth="200" DropDownBoxBoxWidth="200" DropDownBoxBoxHeight="130" />
-                                        </asp:DropDownCheckBoxes>
 
-                                        <br />
-                                        <label>
-                                        </label>
-                                        <asp:TextBox ID="txtSecTradeOthers" TabIndex="111" runat="server" Width="215px"></asp:TextBox>
-
-                                        <asp:ExtendedRequiredFieldValidator ID="RfvSecondaryTrade" runat="server" ControlToValidate="ddlSecondaryTrade"
-                                            ValidationGroup="submit" InitialValue="0" Display="Dynamic" ForeColor="Red" ErrorMessage="Please Select Secondary Trade">
-                                        </asp:ExtendedRequiredFieldValidator>
-                                    </ContentTemplate>
-                                </asp:UpdatePanel>
+                                <asp:DropDownList ID="ddlSecondaryTrade" runat="server" TabIndex="110"
+                                    OnSelectedIndexChanged="ddlSecondaryTrade_SelectedIndexChanged" Style="border: 1px solid; border-radius: 5px; width: 227px;" AutoPostBack="True">
+                                </asp:DropDownList>
+                                <br />
+                                <label>
+                                </label>
+                                <asp:TextBox ID="txtSecTradeOthers" TabIndex="111" runat="server" Width="215px"></asp:TextBox>
+                                <%--</ContentTemplate>
+                                </asp:UpdatePanel>--%>
+                                <asp:RequiredFieldValidator ID="RfvSecondaryTrade" runat="server" ControlToValidate="ddlSecondaryTrade"
+                                    ValidationGroup="submit" InitialValue="0" Display="Dynamic" ForeColor="Red" ErrorMessage="Please Select Secondary Trade"></asp:RequiredFieldValidator>
                             </td>
                         </tr>
                         <%} %>
@@ -426,7 +387,6 @@
                                 <asp:TextBox ID="txtSource" runat="server" Width="218px" autocomplete="off" TabIndex="113"
                                     EnableViewState="false" Enabled="false" AutoCompleteType="None"></asp:TextBox>
                                 &nbsp;&nbsp;
-                               
                                 <br />
                                 <label></label>
                             </td>
@@ -441,109 +401,30 @@
                                 <br />
                             </td>
                         </tr>
-                        <tr>
-                            <td>
-                                <label style="font: bold">Home address</label></td>
-
-                        </tr>
-                        <tr>
-                            <td>
-                                <%--<label id="lblZip" runat="server">Zip<span>*</span></label>--%>
-                                <asp:Label ID="lblZip" runat="server" AssociatedControlID="txtzip" Text="">Zip<span>*</span></asp:Label>
-                                <asp:TextBox runat="server" ID="txtzip" Text="" onkeypress="return isNumericKey(event);" onblur="GetCityStateOnBlur(this)"
-                                    TabIndex="11" autocomplete="off"></asp:TextBox>
-                                <ajaxToolkit:AutoCompleteExtender ID="AutoCompleteExtender1" runat="server" OnClientItemSelected="onclientselect"
-                                    UseContextKey="false" CompletionInterval="200" MinimumPrefixLength="2" ServiceMethod="GetZipcodes"
-                                    TargetControlID="txtzip" EnableCaching="False" CompletionListCssClass="list_limit">
-                                </ajaxToolkit:AutoCompleteExtender>
-                                <asp:RequiredFieldValidator ID="Requiredzip" runat="server" ControlToValidate="txtzip"
-                                    ErrorMessage="Please Enter Zip Code" ForeColor="Red" ValidationGroup="addcust"> </asp:RequiredFieldValidator>
-                            </td>
-
-                        </tr>
-                        <tr>
-                            <td>
-                                <%--<label id="lblCity" runat="server">City<span>*</span></label>--%>
-                                <asp:Label ID="lblCity" runat="server" AssociatedControlID="txtcity" Text="">City<span>*</span></asp:Label>
-                                <asp:TextBox ID="txtcity" Text="" runat="server" onkeypress="return isAlphaKey(event);"
-                                    TabIndex="13"></asp:TextBox>
-                                <asp:RequiredFieldValidator ID="RequiredFieldValidator10" runat="server" ControlToValidate="txtcity"
-                                    ErrorMessage="Please Enter City" ForeColor="Red" ValidationGroup="addcust"> </asp:RequiredFieldValidator>
-                            </td>
-
-                        </tr>
-                        <tr>
-                            <td>
-                                <%--<label id="lblState" runat="server">State<span>*</span></label>--%>
-                                <asp:Label ID="lblState" runat="server" AssociatedControlID="txtstate" Text="">State<span>*</span></asp:Label>
-                                <asp:TextBox runat="server" ID="txtstate" onkeypress="return isAlphaKey(event);"
-                                    Text="" TabIndex="15"></asp:TextBox>
-                                <asp:RequiredFieldValidator ID="RequiredFieldValidator11" runat="server" ControlToValidate="txtstate"
-                                    ErrorMessage="Please Enter State" ForeColor="Red" ValidationGroup="addcust"> </asp:RequiredFieldValidator>
-                            </td>
-
-                        </tr>
-                        <tr>
-                            <td>
-                                <label style="font: bold">Secondary address</label></td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <%--<label id="lblZip" runat="server">Zip<span>*</span></label>--%>
-                                <asp:Label ID="lblSecondaryZip" runat="server" AssociatedControlID="txtSecondaryZip" Text="">Zip<span></span></asp:Label>
-                                <asp:TextBox runat="server" ID="txtSecondaryZip" Text="" onkeypress="return isNumericKey(event);" onblur="GetCityStateOnBlur(this)"
-                                    TabIndex="11" autocomplete="off"></asp:TextBox>
-                                <ajaxToolkit:AutoCompleteExtender ID="AutoCompleteExtender2" runat="server" OnClientItemSelected="onclientselect"
-                                    UseContextKey="false" CompletionInterval="200" MinimumPrefixLength="2" ServiceMethod="GetZipcodes"
-                                    TargetControlID="txtzip" EnableCaching="False" CompletionListCssClass="list_limit">
-                                </ajaxToolkit:AutoCompleteExtender>
-                             <%--   <asp:RequiredFieldValidator ID="revSecondaryZip" runat="server" ControlToValidate="txtSecondaryZip"
-                                    ErrorMessage="Please Enter Zip Code" ForeColor="Red" ValidationGroup="addcust"> </asp:RequiredFieldValidator>--%>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <%--<label id="lblCity" runat="server">City<span>*</span></label>--%>
-                                <asp:Label ID="lblSecondaryCity" runat="server" AssociatedControlID="txtSecondaryCity" Text="">City<span></span></asp:Label>
-                                <asp:TextBox ID="txtSecondaryCity" Text="" runat="server" onkeypress="return isAlphaKey(event);"
-                                    TabIndex="13"></asp:TextBox>
-                            <%--    <asp:RequiredFieldValidator ID="revSecondaryCity" runat="server" ControlToValidate="txtSecondaryCity"
-                                    ErrorMessage="Please Enter City" ForeColor="Red" ValidationGroup="addcust"> </asp:RequiredFieldValidator>--%>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <%--<label id="lblState" runat="server">State<span>*</span></label>--%>
-                                <asp:Label ID="lblSecondaryState" runat="server" AssociatedControlID="txtSecondaryState" Text="">State<span></span></asp:Label>
-                                <asp:TextBox ID="txtSecondaryState" runat="server" onkeypress="return isAlphaKey(event);"
-                                    Text="" TabIndex="15"></asp:TextBox>
-                             <%--   <asp:RequiredFieldValidator ID="revSecondaryState" runat="server" ControlToValidate="txtSecondaryState"
-                                    ErrorMessage="Please Enter State" ForeColor="Red" ValidationGroup="addcust"> </asp:RequiredFieldValidator>--%>
-                            </td>
-                        </tr>
-                          <tr>
-
-                        <td align="left">
-
-                            <div class="btn_sec">
-                                <asp:Button ID="btncreate" Text="Create Prospect" runat="server" OnClick="btncreate_Click"
-                                    TabIndex="116" ValidationGroup="submit" />
-                                <asp:Button ID="btnreset" Text="Reset" runat="server" OnClick="btnreset_Click" TabIndex="117" />
-                                <asp:Button ID="btnUpdate" Text="Update" runat="server" TabIndex="118" ValidationGroup="submit" />
-                                <br />
-                                <br />
-                            </div>
-                        </td>
-                    </tr>
                     </table>
                 </li>
                 <asp:Label ID="lblMessage" runat="server" Visible="False"></asp:Label>
-                <br />
-               
             </ul>
-      
-             
-          
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <div class="btn_sec">
+                <asp:Button ID="btncreate" Text="Create Prospect" runat="server" OnClick="btncreate_Click"
+                    TabIndex="116" ValidationGroup="submit" />
+                <asp:Button ID="btnreset" Text="Reset" runat="server" OnClick="btnreset_Click" TabIndex="117" />
+                <asp:Button ID="btnUpdate" Text="Update" runat="server" TabIndex="118" ValidationGroup="submit" />
+                <br />
+                <br />
+            </div>
             <br />
 
 

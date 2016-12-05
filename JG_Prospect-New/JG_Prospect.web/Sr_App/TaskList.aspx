@@ -169,6 +169,7 @@
                                     OnSelectedIndexChanged="ddlDesignation_SelectedIndexChanged">
                                     <asp:ListItem Text="--All--" Value="0"></asp:ListItem>
                                     <asp:ListItem Text="Admin" Value="Admin"></asp:ListItem>
+                                    <asp:ListItem Text="ITLead" Value="ITLead"></asp:ListItem>
                                     <asp:ListItem Text="Jr. Sales" Value="Jr. Sales"></asp:ListItem>
                                     <asp:ListItem Text="Jr Project Manager" Value="Jr Project Manager"></asp:ListItem>
                                     <asp:ListItem Text="Office Manager" Value="Office Manager"></asp:ListItem>
@@ -210,35 +211,38 @@
                             <td>
                                 <asp:ImageButton ID="btnSearch" runat="server" ImageUrl="~/img/search_btn.png" CssClass="searchbtn"
                                     Style="display: none;" OnClick="btnSearch_Click" />
+                                <asp:HiddenField ID="hdnTaskId" runat="server" Value="0" />
                             </td>
                         </tr>
                     </table>
                     <br />
                     <%--Task List Section--%>
                     <asp:GridView ID="gvTasks" runat="server" EmptyDataText="No task available!" AllowCustomPaging="true" 
-                        AllowPaging="true" PageSize="20" CssClass="table" Width="100%" CellSpacing="0" CellPadding="0" 
-                        BorderStyle="Solid" BorderWidth="1" AutoGenerateColumns="False" 
+                        AllowPaging="true" AllowSorting="true" PageSize="20" CssClass="table" Width="100%" CellSpacing="0" CellPadding="0" 
+                        BorderStyle="Solid" BorderWidth="1" AutoGenerateColumns="False" HeaderStyle-ForeColor="White"
                         OnRowDataBound="gvTasks_RowDataBound" 
                         OnRowCommand="gvTasks_RowCommand"
-                        OnPageIndexChanging="gvTasks_PageIndexChanging">
+                        OnPageIndexChanging="gvTasks_PageIndexChanging"
+                        OnSorting="gvTasks_Sorting">
                         <HeaderStyle CssClass="trHeader " />
                         <RowStyle CssClass="FirstRow" />
                         <AlternatingRowStyle CssClass="AlternateRow " />
                         <FooterStyle CssClass="trFooter" />
                         <PagerStyle CssClass="trPager" />
                         <Columns>
-                            <asp:BoundField DataField="InstallId" HeaderText="Install ID" HeaderStyle-Width="50" />
-                            <asp:TemplateField HeaderText="Task Title" HeaderStyle-Width="300">
+                            <asp:BoundField DataField="InstallId" HeaderText="Install ID" HeaderStyle-Width="50" SortExpression="InstallId" />
+                            <asp:TemplateField HeaderText="Task Title" HeaderStyle-Width="300" SortExpression="Title">
                                 <ItemTemplate>
                                     <asp:HyperLink ID="hypTask" runat="server" />
+                                    <asp:HiddenField ID="hdnTaskId" runat="server" Value='<%# Eval("TaskId") %>' />
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="Designation" HeaderStyle-Width="150">
+                            <asp:TemplateField HeaderText="Designation" HeaderStyle-Width="150" SortExpression="TaskDesignations">
                                 <ItemTemplate>
                                     <asp:Label ID="lblDesignation" runat="server" />
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="Assigned To" HeaderStyle-Width="150">
+                            <asp:TemplateField HeaderText="Assigned To" HeaderStyle-Width="150" SortExpression="TaskAssignedUsers">
                                 <ItemTemplate>
                                     <asp:Label ID="lblAssignedUser" runat="server" />
                                     <asp:DropDownCheckBoxes ID="ddcbAssignedUser" runat="server" UseSelectAllNode="false"
@@ -250,11 +254,18 @@
                                         CommandName="request" CommandArgument='<%# Eval("TaskId") %>' />
                                 </ItemTemplate>
                             </asp:TemplateField>
-                            <asp:TemplateField HeaderText="Status" HeaderStyle-Width="60">
+                            <asp:TemplateField HeaderText="Status" HeaderStyle-Width="60" SortExpression="Status">
                                 <ItemTemplate>
-                                    <asp:Literal ID="ltrlStatus" runat="server" />
-                                    <asp:DropDownList ID="ddlStatus" Width="50" AutoPostBack="true" runat="server" 
+                                    <asp:Literal ID="ltrlStatus" runat="server" Visible="false" />
+                                    <asp:DropDownList ID="ddlStatus" Width="100%" AutoPostBack="true" runat="server" 
                                         OnSelectedIndexChanged="gvTasks_ddlStatus_SelectedIndexChanged" />
+
+                                </ItemTemplate>
+                            </asp:TemplateField>
+                            <asp:TemplateField HeaderText="Priority" HeaderStyle-Width="15%" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center">
+                                <ItemTemplate>
+                                    <asp:Literal ID="ltrlPriority" runat="server" Visible="false" />
+                                    <asp:DropDownList ID="ddlPriority" runat="server" AutoPostBack="true" OnSelectedIndexChanged="gvTasks_ddlPriority_SelectedIndexChanged" />
                                 </ItemTemplate>
                             </asp:TemplateField>
                             <asp:TemplateField HeaderText="Due Date" HeaderStyle-Width="60">

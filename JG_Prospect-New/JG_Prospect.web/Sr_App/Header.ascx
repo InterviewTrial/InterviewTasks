@@ -23,12 +23,11 @@
         width: 80%;
         height: 150px;
     }
-
-        #divTask:hover {
-            height: 100%;
-            position: absolute;
-        }
-    /*#divTask:hover > nav {
+     #divTask:hover{
+        height:100%;
+        position:absolute;
+    }
+        /*#divTask:hover > nav {
             position:fixed;
         }*/
     #test a {
@@ -72,7 +71,7 @@
     <div id="divTask">
         <uc1:TaskGenerator runat="server" ID="TaskGenerator" />
     </div>
-    <div class="user_panel">
+     <div class="user_panel">
         Welcome! <span>
             <asp:Label ID="lbluser" runat="server" Text="User"></asp:Label>
             <asp:Button ID="btnlogout" runat="server" Text="Logout" CssClass="cancel" ValidationGroup="header" OnClick="btnlogout_Click" />
@@ -88,7 +87,7 @@
         <ul>
             <li><a id="idPhoneLink" class="clsPhoneLink" onclick="GetPhoneDiv()">Phone Dashboard</a></li>
         </ul>
-        <div class="clr">
+         <div class="clr">
         </div>
         <ul>
             <!--Email with # of unread msgs and new font-->
@@ -125,5 +124,5 @@
 
         <%-- <li><a href="/EditUser.aspx" runat="server" id="edituser">EditUser</a></li>
   <li><a href="/Accounts/newuser.aspx" runat="server" id ="newuser">CreateUser</a></li>--%>
-    </ul>
-</div>
+        </ul>
+    </div>

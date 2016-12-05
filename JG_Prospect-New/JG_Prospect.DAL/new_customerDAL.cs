@@ -577,7 +577,7 @@ namespace JG_Prospect.DAL
                     return lResult;
                 }
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 return ex.Message;
             }

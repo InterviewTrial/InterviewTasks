@@ -269,8 +269,7 @@ namespace JG_Prospect.Sr_App
                         Session["FirstName"] = ds.Tables[0].Rows[0][1].ToString();
                         txtlastname.Text = ds.Tables[0].Rows[0][2].ToString();
                         Session["LastName"] = ds.Tables[0].Rows[0][2].ToString();
-
-                        txtemail.Text = ds.Tables[0].Rows[0][3].ToString();                        
+                        txtemail.Text = ds.Tables[0].Rows[0][3].ToString();
                         ViewState["Email"] = ds.Tables[0].Rows[0][3].ToString();
                         ucAuditTrail.UserLoginID = ds.Tables[0].Rows[0][3].ToString();
                         txtaddress.Text = ds.Tables[0].Rows[0][4].ToString();
@@ -1020,7 +1019,6 @@ namespace JG_Prospect.Sr_App
                     txtSecTradeOthers.Text = split[26];
                     txtfirstname.Text = split[27];
                     txtemail.Text = split[28];
-                    
                     txtZip.Text = split[29];
                     txtState.Text = split[30];
                     txtCity.Text = split[31];

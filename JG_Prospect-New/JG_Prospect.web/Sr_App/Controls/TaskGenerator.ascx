@@ -85,15 +85,6 @@
         overflow: auto;
         overflow-x: hidden;
     }
-
-    /*.dropzone{
-        min-height:120px;
-        min-width:430px;
-    }
-    .dropzone .dz-default.dz-message {
-        height: 120px;
-        width: 430px;
-    }*/
 </style>
 
 <div id="divTaskMain" class="tasklist">
@@ -133,6 +124,7 @@
                         <asp:DropDownList ID="ddlDesignation" Width="130" AutoPostBack="true" runat="server" OnSelectedIndexChanged="ddlDesignation_SelectedIndexChanged">
                             <Items>
                                 <asp:ListItem Text="Admin" Value="Admin"></asp:ListItem>
+                                <asp:ListItem Text="ITLead" Value="ITLead"></asp:ListItem>
                                 <asp:ListItem Text="Jr. Sales" Value="Jr. Sales"></asp:ListItem>
                                 <asp:ListItem Text="Jr Project Manager" Value="Jr Project Manager"></asp:ListItem>
                                 <asp:ListItem Text="Office Manager" Value="Office Manager"></asp:ListItem>
@@ -155,11 +147,9 @@
                             </Items>
                         </asp:DropDownList></td>
                     <td id="tdUsers" runat="server">
-                        <asp:DropDownCheckBoxes ID="ddlUsers" runat="server" UseSelectAllNode="false"
-                                    AutoPostBack="true" OnSelectedIndexChanged="ddlUsers_SelectedIndexChanged">
-                                    <Style SelectBoxWidth="195" DropDownBoxBoxWidth="120" DropDownBoxBoxHeight="80"/>
-                                    <Texts SelectBoxCaption="--All--" />
-                        </asp:DropDownCheckBoxes></td>
+
+                        <asp:DropDownList ID="ddlUsers" Width="100" AutoPostBack="true" runat="server" OnSelectedIndexChanged="ddlUsers_SelectedIndexChanged">
+                        </asp:DropDownList></td>
                     <td>
 
                         <asp:DropDownList ID="ddlTaskStatus" Width="100" runat="server" AutoPostBack="True" OnSelectedIndexChanged="ddlTaskStatus_SelectedIndexChanged">
@@ -185,7 +175,8 @@
                         <asp:ImageButton ID="btnSearch" runat="server" ImageUrl="~/img/search_btn.png" CssClass="searchbtn" Style="display: none;" OnClick="btnSearch_Click" />
                     </td>
                     <td style="width: 8%;">
-                        <asp:LinkButton ID="btnLoadMore" runat="server" Text="View More" OnClick="btnLoadMore_Click" />
+                        <asp:LinkButton ID="btnLoadMore" runat="server" Style="display: none;" Text="View More" OnClick="btnLoadMore_Click" />
+                        <a id="hypViewMore" href="javascript:void(0);" data-expanded="0">View More</a>
                     </td>
                     <td style="display: none">
                         <%--<asp:Button ID="btnSubmit" runat="server" OnClick="btnSubmit_Click"  />--%>
@@ -196,20 +187,21 @@
             <div id="taskGrid">
                 <asp:GridView ID="gvTasks" runat="server" EmptyDataRowStyle-ForeColor="White" EmptyDataRowStyle-HorizontalAlign="Center"
                     EmptyDataText="No task available!" CssClass="table" Width="100%" CellSpacing="0" CellPadding="0" GridLines="Vertical"
-                    AutoGenerateColumns="False" OnRowDataBound="gvTasks_RowDataBound" OnRowCommand="gvTasks_RowCommand"
-                    DataKeyNames="TaskId,CreatedBy">
+                    AutoGenerateColumns="False" AllowSorting="true" OnRowDataBound="gvTasks_RowDataBound" OnRowCommand="gvTasks_RowCommand"
+                    DataKeyNames="TaskId,CreatedBy" HeaderStyle-ForeColor="White"
+                    OnSorting="gvTasks_Sorting">
                     <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
                     <HeaderStyle CssClass="trHeader " />
                     <RowStyle CssClass="FirstRow" BorderStyle="Solid" />
                     <AlternatingRowStyle CssClass="AlternateRow " />
                     <Columns>
-                        <asp:BoundField DataField="InstallId" HeaderText="ID#" HeaderStyle-Width="10%" />
-                        <asp:TemplateField HeaderText="Task Title">
+                        <asp:BoundField DataField="InstallId" ItemStyle-CssClass="tip" HeaderText="ID#" HeaderStyle-Width="10%" SortExpression="InstallId" />
+                        <asp:TemplateField HeaderText="Task Title" SortExpression="Title">
                             <ItemTemplate>
-                                <asp:HyperLink ID="hypTask" runat="server" Text='<%# Eval("Title")%>' Target="_blank" />
+                                <asp:HyperLink ID="hypTask" runat="server" Text='<%# Eval("Title")%>' Target="_self" />
                             </ItemTemplate>
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Designation" HeaderStyle-Width="15%">
+                        <asp:TemplateField HeaderText="Designation" HeaderStyle-Width="15%" SortExpression="TaskDesignations">
                             <ItemTemplate>
                                 <a id="hypDesg" style="text-decoration: none;" class="tooltip" runat="server"></a>
                                 <%-- <asp:Label ID="lblUserDesignation" runat="server" Text='<%# Eval("Designation") %>' HeaderStyle-Width="10%"></asp:Label>--%>
@@ -219,21 +211,25 @@
                                         </asp:DropDownList>--%>
                             </ItemTemplate>
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Assigned To" HeaderStyle-Width="12%">
+                        <asp:TemplateField HeaderText="Assigned To" HeaderStyle-Width="12%" SortExpression="TaskAssignedUsers">
                             <ItemTemplate>
                                 <a id="hypUsers" style="text-decoration: none;" class="tooltip" runat="server"></a>
                                 <asp:DropDownCheckBoxes ID="ddcbAssigned" runat="server" UseSelectAllNode="false"
                                     AutoPostBack="true" OnSelectedIndexChanged="gvTasks_ddcbAssigned_SelectedIndexChanged">
-                                    <Style SelectBoxWidth="195" DropDownBoxBoxWidth="120" DropDownBoxBoxHeight="150" />
+                                    <Style SelectBoxWidth="100" DropDownBoxBoxWidth="100" DropDownBoxBoxHeight="150" />
                                     <Texts SelectBoxCaption="--Open--" />
                                 </asp:DropDownCheckBoxes>
+                                <div id="divAcceptRejectButtons" runat="server" visible="false">
+                                    <asp:LinkButton ID="lbtnAcceptTask" runat="server" Text="Accept" CommandName="accept" CommandArgument='<%# Eval("TaskId") %>' />&nbsp;
+                                    <asp:LinkButton ID="lbtnRejectTask" runat="server" Text="Reject" CommandName="reject" CommandArgument='<%# Eval("TaskId") %>' />
+                                </div>
                                 <asp:LinkButton ID="lbtnRequestStatus" runat="server" Visible="false" Text="Request" CommandName="request" CommandArgument='<%# Eval("TaskId") %>' />
                             </ItemTemplate>
                         </asp:TemplateField>
-                        <asp:TemplateField HeaderText="Status" HeaderStyle-Width="5%">
+                        <asp:TemplateField HeaderText="Status" HeaderStyle-Width="5%" SortExpression="Status">
                             <ItemTemplate>
                                 <%--<asp:Label ID="lblTaskStatus" runat="server"></asp:Label>--%>
-                                <asp:DropDownList ID="ddlgvTaskStatus" Width="100" OnSelectedIndexChanged="ddlgvTaskStatus_SelectedIndexChanged"
+                                <asp:DropDownList ID="ddlTaskStatus" Width="100" OnSelectedIndexChanged="gvTasks_ddlTaskStatus_SelectedIndexChanged"
                                     AutoPostBack="true" runat="server">
                                     <%--<asp:ListItem Text="Open" Value="1"></asp:ListItem>
                                     <asp:ListItem Text="Assigned" Value="2"></asp:ListItem>
@@ -275,6 +271,7 @@
                                     <Style SelectBoxWidth="195" DropDownBoxBoxWidth="120" DropDownBoxBoxHeight="150" />
                                     <Items>
                                         <asp:ListItem Text="Admin" Value="Admin"></asp:ListItem>
+                                        <asp:ListItem Text="ITLead" Value="ITLead"></asp:ListItem>
                                         <asp:ListItem Text="Jr. Sales" Value="Jr. Sales"></asp:ListItem>
                                         <asp:ListItem Text="Jr Project Manager" Value="Jr Project Manager"></asp:ListItem>
                                         <asp:ListItem Text="Office Manager" Value="Office Manager"></asp:ListItem>
@@ -799,7 +796,8 @@
         setAutoSearch();
         setDatePicker();
         setTaskDivClickTrigger();
-
+        setClickableTooltip('#taskGrid');
+        bindViewMore();
     });
 
     var prmTaskGenerator = Sys.WebForms.PageRequestManager.getInstance();
@@ -811,6 +809,8 @@
         setAutoSearch();
         setDatePicker();
         setTaskDivClickTrigger();
+        setClickableTooltip('#<%=upnlTasks.ClientID%>');
+        bindViewMore();
     });
 
     function RemoveTask(TaskId) {
@@ -827,104 +827,109 @@
     function setAutoSearch() {
 
         $("#<%=txtSearch.ClientID%>").catcomplete({
-                delay: 500,
-                source: function (request, response) {
-                    $.ajax({
-                        type: "POST",
-                        url: "ajaxcalls.aspx/GetSearchSuggestions",
-                        dataType: "json",
-                        contentType: "application/json; charset=utf-8",
-                        data: JSON.stringify({ searchterm: request.term }),
-                        success: function (data) {
-                            // Handle 'no match' indicated by [ "" ] response
+            delay: 500,
+            source: function (request, response) {
+                $.ajax({
+                    type: "POST",
+                    url: "ajaxcalls.aspx/GetSearchSuggestions",
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify({ searchterm: request.term }),
+                    success: function (data) {
+                        // Handle 'no match' indicated by [ "" ] response
 
-                            if (data.d) {
+                        if (data.d) {
 
-                                response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
-                            }
+                            response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
+                        }
 
-                            // remove loading spinner image.                                
-                            $("#<%=txtSearch.ClientID%>").removeClass("ui-autocomplete-loading");
+                        // remove loading spinner image.                                
+                        $("#<%=txtSearch.ClientID%>").removeClass("ui-autocomplete-loading");
 
+                    }
+                });
+            },
+            minLength: 2,
+            select: function (event, ui) {
+                //console.log(event);
+                //console.log(ui);
+                $("#<%=txtSearch.ClientID%>").val(ui.item.value);
+                TriggerSearch();
+            }
+        });
+        }
+
+        function createCategorisedAutoSearch() {
+
+            $.widget("custom.catcomplete", $.ui.autocomplete, {
+                _create: function () {
+                    this._super();
+                    this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
+                },
+                _renderMenu: function (ul, items) {
+                    var that = this,
+                      currentCategory = "";
+                    $.each(items, function (index, item) {
+                        var li;
+                        if (item.Category != currentCategory) {
+                            ul.append("<li class='ui-autocomplete-category'> Search " + item.Category + "</li>");
+                            currentCategory = item.Category;
+                        }
+                        li = that._renderItemData(ul, item);
+                        if (item.Category) {
+                            li.attr("aria-label", item.Category + " : " + item.label);
                         }
                     });
-                },
-                minLength: 2,
-                select: function (event, ui) {
-                    //console.log(event);
-                    //console.log(ui);
-                    $("#<%=txtSearch.ClientID%>").val(ui.item.value);
-                    TriggerSearch();
+
                 }
             });
-            }
+        }
 
-            function createCategorisedAutoSearch() {
+        function setTaskDivClickTrigger() {
+            //On click of task list it should open tasklist page.
+            $('#taskGrid').click(function (e) {
 
-                $.widget("custom.catcomplete", $.ui.autocomplete, {
-                    _create: function () {
-                        this._super();
-                        this.widget().menu("option", "items", "> :not(.ui-autocomplete-category)");
-                    },
-                    _renderMenu: function (ul, items) {
-                        var that = this,
-                          currentCategory = "";
-                        $.each(items, function (index, item) {
-                            var li;
-                            if (item.Category != currentCategory) {
-                                ul.append("<li class='ui-autocomplete-category'> Search " + item.Category + "</li>");
-                                currentCategory = item.Category;
-                            }
-                            li = that._renderItemData(ul, item);
-                            if (item.Category) {
-                                li.attr("aria-label", item.Category + " : " + item.label);
-                            }
-                        });
-
-                    }
-                });
-            }
-
-            function setTaskDivClickTrigger() {
-                //On click of task list it should open tasklist page.
-                $('#taskGrid').click(function (e) {
-                    if ($(e.target).is("a") || $(e.target).is("select")) return;
-                    window.location.href = $("#hypTaskListMore").attr("href");
-                });
-            }
-
-            // as soon as user will type 2 character it will go for search.
-            function setSearchTextKeyUpSearchTrigger(textbox) {
-
-                var searchText = $(textbox).val();
-
-                if (searchText.length > 1) {
-                    TriggerSearch();
+                if ($(e.target).is("a") || $(e.target).is("select") || e.target.id == "caption" || $(e.target).hasClass('dd_chk_select')) {
+                    return true;
                 }
+                else {
+                    window.location.href = $("#hypTaskListMore").attr("href");
+                }
+            });
+        }
 
-                $(textbox).focus();
+        // as soon as user will type 2 character it will go for search.
+        function setSearchTextKeyUpSearchTrigger(textbox) {
+
+            var searchText = $(textbox).val();
+
+            if (searchText.length > 1) {
+                TriggerSearch();
             }
 
-            function EditTask(id, tasktitle) {
+            $(textbox).focus();
+        }
 
-                window.open("TaskGenerator.aspx?TaskId=" + ($('#<%=hdnTaskId.ClientID%>').val()));
-            }
+        function EditTask(id, tasktitle) {
 
-            function setDatePicker() {
-                // on date selection finish, trigger search, both dates must be selected.
-                $('.filter-datepicker').datepicker({
+            window.open("TaskGenerator.aspx?TaskId=" + ($('#<%=hdnTaskId.ClientID%>').val()));
+        }
 
-                    onSelect: function () {
-                        checkDatePickerDatesNTriggerSearch();
-                    }
-                });
+        function setDatePicker() {
+            // on date selection finish, trigger search, both dates must be selected.
+            $('.filter-datepicker').datepicker({
 
-                $('.datepicker').datepicker({ dateFormat: 'mm-dd-yy' });
-            }
+                onSelect: function () {
+                    checkDatePickerDatesNTriggerSearch();
+                }
+            });
 
-            function checkDatePickerDatesNTriggerSearch() {
-                var fromdate, todate;
-                fromdate = $('#<%= txtFromDate.ClientID %>').val();
+            $('.datepicker').datepicker({ dateFormat: 'mm-dd-yy' });
+        }
+
+        function checkDatePickerDatesNTriggerSearch() {
+            var fromdate, todate;
+            fromdate = $('#<%= txtFromDate.ClientID %>').val();
                 todate = $('#<%= txtToDate.ClientID %>').val();
                 if (fromdate.length > 0 && todate.length > 0) {
                     TriggerSearch();
@@ -935,8 +940,13 @@
             }
 
             function SetHeaderSectionHeight() {
-                $('.tasklist').css('max-height', '800px');
-                $('.tasklist').animate({ 'max-height': 800 }, 600);
+                //$('.tasklist').css('max-height', '800px');
+                $('.tasklist').animate({ 'maxHeight': 600 }, 1000);
+            }
+
+            function HideHeaderSectionHeight() {
+                //$('.tasklist').css('max-height', '165px');
+                $('.tasklist').animate({ 'maxHeight': 165 }, 1000);
             }
 
             function TriggerSearch() {
@@ -944,4 +954,45 @@
 
             }
 
-    </script>
+            function setClickableTooltip(target) {
+                $(target).mouseenter(function () {
+
+                    var hyperlinkview = $("#hypViewMore");
+                    var expanded = hyperlinkview.attr("data-expanded");
+                    if (expanded == "0") {
+                        toggleShowMoreResults(expanded, hyperlinkview);
+                    }
+                });
+
+                $(target).mouseleave(function () {
+
+                    HideHeaderSectionHeight();
+                    var linkobject = $("#hypViewMore");
+                    $(linkobject).html("View More");
+                    $(linkobject).attr("data-expanded", "0");
+                });
+            }
+
+            function bindViewMore() {
+
+                $("#hypViewMore").click(function () {
+                    var expanded = $(this).attr("data-expanded");
+                    toggleShowMoreResults(expanded, this);
+                });
+            }
+
+            function toggleShowMoreResults(view, linkobject) {
+
+                if (view == "0") {// if content is hidden than expand it.
+                    SetHeaderSectionHeight();
+                    $(linkobject).html("Hide");
+                    $(linkobject).attr("data-expanded", "1");
+                }
+                else {
+                    HideHeaderSectionHeight();
+                    $(linkobject).html("View More");
+                    $(linkobject).attr("data-expanded", "0");
+                }
+            }
+
+</script>

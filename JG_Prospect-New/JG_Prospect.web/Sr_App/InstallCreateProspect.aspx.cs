@@ -157,23 +157,11 @@ namespace JG_Prospect.Sr_App
             ddlPrimaryTrade.DataValueField = "Id";
             ddlPrimaryTrade.DataBind();
             ddlPrimaryTrade.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select", "0"));
-
-            //added by Ramya 09/23/2016
-            DataView view = DS.Tables[0].DefaultView;
-            view.Sort = "TradeName ASC";//this displays the content in dropdown alphabetically
-            
-
             ddlSecondaryTrade.DataSource = DS.Tables[0];
             ddlSecondaryTrade.DataTextField = "TradeName";
             ddlSecondaryTrade.DataValueField = "Id";
             ddlSecondaryTrade.DataBind();
             ddlSecondaryTrade.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select", "0"));
-
-            //added by Ramya 09/23/2016
-            //DataView view = DS.Tables[0].DefaultView;
-            //view.Sort = "TradeName";//this displays the content in dropdown alphabetically
-            ddlPrimaryTrade.DataSource = view;
-            ddlSecondaryTrade.DataSource = view;
         }
 
         private string GetId()
@@ -200,10 +188,6 @@ namespace JG_Prospect.Sr_App
             return installId;
         }
 
-        protected void btnAdd_Click(object sender, EventArgs e)
-        {
-            divEmail.Visible = true;
-        }
         protected void btncreate_Click(object sender, EventArgs e)
         {
             StringBuilder err = new StringBuilder();
@@ -238,13 +222,11 @@ namespace JG_Prospect.Sr_App
                     }
                     else if (ddlPrimaryTrade.SelectedValue != "17")
                     {
-                        //objuser.SecondoryTradeId = Convert.ToInt32(ddlSecondaryTrade.SelectedValue);
-                        objuser.sSecondoryTradeId = GetddlSecondaryTradedSelectedItems();//getting multiple selected secondarytrade items 
+                        objuser.SecondoryTradeId = Convert.ToInt32(ddlSecondaryTrade.SelectedValue);
                     }
                     else if (ddlPrimaryTrade.SelectedValue == "17")
                     {
-                        //objuser.SecondoryTradeId = -Convert.ToInt32(ddlSecondaryTrade.SelectedValue);
-                        objuser.sSecondoryTradeId = GetddlSecondaryTradedSelectedItems();//getting multiple selected secondarytrade items //by ramya
+                        objuser.SecondoryTradeId = Convert.ToInt32(ddlSecondaryTrade.SelectedValue);
                         objuser.PTradeOthers = txtSecTradeOthers.Text;
                     }
                 }
@@ -299,19 +281,6 @@ namespace JG_Prospect.Sr_App
                     objuser.UserType = "sales";
                 }
                 objuser.designation = ddldesignation.SelectedValue;
-
-                /*checks whether the designation selected is the sales list and if its so it disables the mandatory fields for primarytrade and secondarytrade*/
-                foreach (var item in salesUserDesignationList)
-                {
-                    if (item.Value == ddldesignation.SelectedValue)
-                    {
-                        RfvPrimaryTrade.Enabled = false; // disables the primary requiredfieldvalidator
-                        RfvSecondaryTrade.Enabled = false;// disables the secondary requiredfieldvalidator
-                    }
-                    else
-                    {
-                    }
-                }
                 string strFileName = string.Empty;
 
                 //if (ViewState["FileName"] != null)
@@ -326,20 +295,11 @@ namespace JG_Prospect.Sr_App
                 //}
                 objuser.status = "Install Prospect";
 
-                //added by Ramya 
-                objuser.Phone2Type = ddlPhoneType.SelectedValue;
-                objuser.city = txtcity.Text;
-                objuser.state = txtstate.Text;
-                objuser.zip = txtzip.Text;
-                objuser.city = txtSecondaryCity.Text;
-                objuser.state = txtSecondaryState.Text;
-                objuser.zip = txtSecondaryZip.Text;
-
                 lblException.Text = Convert.ToString(err.Append(" Before  CheckInstallUser "));
                 DataSet dsCheckDuplicate = InstallUserBLL.Instance.CheckInstallUser(txtemail.Text, txtPhone.Text);
                 lblException.Text = Convert.ToString(err.Append(" After  CheckInstallUser "));
-                
-                if (dsCheckDuplicate.Tables[0].Rows.Count > 0)
+                // if (dsCheckDuplicate.Tables[0].Rows.Count > 0)
+                if (dsCheckDuplicate.Tables.Count > 0)
                 {
                     lblException.Text = Convert.ToString(err.Append("Before Session[EmailEdiId]"));
                     Session["EmailEdiId"] = Convert.ToInt32(dsCheckDuplicate.Tables[0].Rows[0][0]);
@@ -410,13 +370,12 @@ namespace JG_Prospect.Sr_App
                 //ModalPopupExtender2.Hide();
                 //RadWindow_ExisatingRecord.VisibleOnPageLoad = false;
                 btn_UploadFiles_Click(sender, e);
-                //if (ddlPrimaryTrade.SelectedIndex == 0)
-                //{
-                //    ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Please Select Primary Trade');", true);
-                //    return;
-                //}
-                //else
-                    if (ddlPrimaryTrade.SelectedValue != "16")
+                if (ddlPrimaryTrade.SelectedIndex == 0)
+                {
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Please Select Primary Trade');", true);
+                    return;
+                }
+                else if (ddlPrimaryTrade.SelectedValue != "16")
                 {
                     objuser.PrimeryTradeId = Convert.ToInt32(ddlPrimaryTrade.SelectedValue);
                 }
@@ -426,16 +385,14 @@ namespace JG_Prospect.Sr_App
                     objuser.PTradeOthers = txtOtherTrade.Text;
                 }
 
-                //if (ddlSecondaryTrade.SelectedIndex == 0)
-                //{
-                //    ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Please Select Secondary Trade');", true);
-                //    return;
-                //}
-                //else 
-                    if (ddlPrimaryTrade.SelectedValue != "16")
+                if (ddlSecondaryTrade.SelectedIndex == 0)
                 {
-                    //objuser.SecondoryTradeId = Convert.ToInt32(ddlSecondaryTrade.SelectedValue);
-                    objuser.sSecondoryTradeId = GetddlSecondaryTradedSelectedItems();
+                    ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Please Select Secondary Trade');", true);
+                    return;
+                }
+                else if (ddlPrimaryTrade.SelectedValue != "16")
+                {
+                    objuser.SecondoryTradeId = Convert.ToInt32(ddlSecondaryTrade.SelectedValue);
                 }
                 else if (ddlPrimaryTrade.SelectedValue == "16")
                 {
@@ -729,7 +686,6 @@ namespace JG_Prospect.Sr_App
         protected void txtPhone_TextChanged(object sender, EventArgs e)
         {
             ViewState["Phone"] = txtPhone.Text;
-            CheckDuplicateEmailorPhone("", txtPhone.Text);
             txtPhone2.Focus();
         }
         protected void txtPhone2_TextChanged(object sender, EventArgs e)
@@ -740,7 +696,6 @@ namespace JG_Prospect.Sr_App
         protected void txtemail_TextChanged(object sender, EventArgs e)
         {
             ViewState["Email"] = txtemail.Text;
-            CheckDuplicateEmailorPhone(txtemail.Text, "");
             txtemail2.Focus();
 
         }
@@ -766,21 +721,13 @@ namespace JG_Prospect.Sr_App
         protected void ddlSecondaryTrade_SelectedIndexChanged(object sender, EventArgs e)
         {
             ViewState["PrimaryTrade"] = ddlPrimaryTrade.Text;
-            //if (ddlSecondaryTrade.SelectedValue == "17")
-            //{
-             string items = GetddlSecondaryTradedSelectedItems();
-            string[] values = items.Split(',');
-            foreach (string value in values)
+            if (ddlSecondaryTrade.SelectedValue == "17")
             {
-                if (value == "17")
-                {
-                    txtSecTradeOthers.Visible = true;
-                    break;
-                }
-                else
-                {
-                    txtSecTradeOthers.Visible = false;
-                }
+                txtSecTradeOthers.Visible = true;
+            }
+            else
+            {
+                txtSecTradeOthers.Visible = false;
             }
             //DateSourced.Focus();
         }
@@ -795,8 +742,7 @@ namespace JG_Prospect.Sr_App
                     fileNameall = Convert.ToString(Session["ProspectAttachment"]);
                 }
                 string fileName = Path.GetFileName(AsyncFileUploadCustomerAttachment.FileName);
-                // fileName = Convert.ToString(DateTime.Now) + fileName;//commented by Ramya on 09/22/2016
-
+                fileName = Convert.ToString(DateTime.Now) + fileName;
                 fileName = fileName.Replace("/", "");
                 fileName = fileName.Replace(":", "");
                 fileName = fileName.Replace(" ", "");
@@ -817,8 +763,6 @@ namespace JG_Prospect.Sr_App
                 Session["UploadFileCountProspect"] = 0;
             }
         }
-
-
 
         //List<Designation> lstSaleuser = new List<Designation>();
         //List<Designation> lstInstalluser = new List<Designation>();
@@ -903,42 +847,6 @@ namespace JG_Prospect.Sr_App
                 }
             }
         }
-
-         //check for duplicate emailorphone
-        public void CheckDuplicateEmailorPhone(string email, string phone)
-        {
-            StringBuilder err = new StringBuilder();
-            DataSet dsCheckDuplicate = InstallUserBLL.Instance.CheckInstallUser(email, phone);
-            if (dsCheckDuplicate.Tables[0].Rows.Count > 0)
-            {
-                lblException.Text = Convert.ToString(err.Append("Before Session[EmailEdiId]"));
-                Session["EmailEdiId"] = Convert.ToInt32(dsCheckDuplicate.Tables[0].Rows[0][0]);
-                lblException.Text = Convert.ToString(err.Append("After Session[EmailEdiId]"));
-                ScriptManager.RegisterStartupScript(this, GetType(), "overlay", "overlay();", true);
-                return;
-            }
-        }
-        //get the secondary traded multi select item values list
-        public string GetddlSecondaryTradedSelectedItems()
-        {
-            string items = string.Empty;
-            foreach (System.Web.UI.WebControls.ListItem item in ddlSecondaryTrade.Items)
-            {
-                if (item.Selected)
-                {
-                    if (Convert.ToInt32(item.Value) != 0)
-                    {
-                        items += item.Value + ",";
-                    }
-                }
-            }
-            if (items.Length>0)
-            items = items.Substring(0, items.Length - 1);
-
-            return items;
-        }
-
-
 
     }
 

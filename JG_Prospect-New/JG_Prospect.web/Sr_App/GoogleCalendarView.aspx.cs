@@ -14,6 +14,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using Telerik.Web.UI;
 using JG_Prospect.App_Code;
+using JG_Prospect.Common;
 
 namespace JG_Prospect.Sr_App
 {
@@ -342,12 +343,6 @@ namespace JG_Prospect.Sr_App
             hidApplicantID.Value = lnk.Text;
             hidSelectedVal.Value = selValue;
 
-            if ((selValue == "Active") || (selValue == "Deactive"))
-            {
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "showStatusChangePopUp()", true);
-                return;
-            }
-
             if (ViewState["Email"] == null)
             {
                 LinkButton lnkEmail = (LinkButton)((System.Web.UI.WebControls.ListControl)(sender)).Parent.FindControl("lnkEmail");
@@ -607,7 +602,7 @@ namespace JG_Prospect.Sr_App
 
                 // Change task status to assigned = 3.
                 if (isSuccessful)
-                    UpdateTaskStatus(Convert.ToInt32(ddlTechTask.SelectedValue), Convert.ToUInt16(TaskStatus.Assigned));
+                    UpdateTaskStatus(Convert.ToInt32(ddlTechTask.SelectedValue), Convert.ToUInt16(JGConstant.TaskStatus.Assigned));
 
                 if (ddlTechTask.SelectedValue != "" || ddlTechTask.SelectedValue != "0")
                     SendEmailToAssignedUsers(ApplicantId, ddlTechTask.SelectedValue);
@@ -827,13 +822,14 @@ namespace JG_Prospect.Sr_App
                 string strFooter = ds.Tables[0].Rows[0]["HTMLFooter"].ToString(); // GetFooter(status);
                 string strsubject = ds.Tables[0].Rows[0]["HTMLSubject"].ToString();
 
-                string userName = ConfigurationManager.AppSettings["VendorCategoryUserName"].ToString();
-                string password = ConfigurationManager.AppSettings["VendorCategoryPassword"].ToString();
+            string userName = ConfigurationManager.AppSettings["VendorCategoryUserName"].ToString();
+            string password = ConfigurationManager.AppSettings["VendorCategoryPassword"].ToString();
 
-                strBody = strBody.Replace("#Name#", FName).Replace("#name#", FName);
-                //strBody = strBody.Replace("#Date#", dtInterviewDate.Text).Replace("#date#", dtInterviewDate.Text);
-                //strBody = strBody.Replace("#Time#", ddlInsteviewtime.SelectedValue).Replace("#time#", ddlInsteviewtime.SelectedValue);
-                strBody = strBody.Replace("#Designation#", Designition).Replace("#designation#", Designition);
+            strBody = strBody.Replace("#Email#", emailId).Replace("#email#", emailId);
+            strBody = strBody.Replace("#Name#", FName).Replace("#name#", FName);
+            //strBody = strBody.Replace("#Date#", dtInterviewDate.Text).Replace("#date#", dtInterviewDate.Text);
+            //strBody = strBody.Replace("#Time#", ddlInsteviewtime.SelectedValue).Replace("#time#", ddlInsteviewtime.SelectedValue);
+            strBody = strBody.Replace("#Designation#", Designition).Replace("#designation#", Designition);
 
                 strFooter = strFooter.Replace("#Name#", FName).Replace("#name#", FName);
                 //strFooter = strFooter.Replace("#Date#", dtInterviewDate.Text).Replace("#date#", dtInterviewDate.Text);

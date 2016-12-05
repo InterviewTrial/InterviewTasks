@@ -9,6 +9,7 @@ using System.Text;
 using System.IO;
 using System.Net;
 using System.Web.UI;
+using System.Data;
 using System.Data.SqlClient;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls.WebParts;
@@ -22,15 +23,15 @@ using System.Web.Services;
 
 namespace JG_Prospect.Sr_App
 {
-
+    
     public partial class new_customer : System.Web.UI.Page
     {
         private static int UserId = 0;
         private static int ColorFlag = 0;
         protected void Page_Load(object sender, EventArgs e)
         {
-
-
+            
+            
             if (!IsPostBack)
             {
                 bindProducts();
@@ -50,24 +51,6 @@ namespace JG_Prospect.Sr_App
                     }
                     hideTouchPointLogDetails();
                 }
-            }
-            else
-            {
-              
-                Customer objCustomer = new Customer();
-               // Here objCustomer has to be intialized, using submitted form data it has to be initialzed 
-                new_customerBLL objBLL = new_customerBLL.Instance;
-                objCustomer.Addedby = Session["loginid"].ToString();
-                objCustomer.AddressType = "";
-                objCustomer.Email = txtEMail1.Value;
-                objCustomer.Email2 = txtEMail2.Value;
-                objCustomer.firstName = txtFName1.Value;
-                objCustomer.lastName = txtLName1.Value;
-                objCustomer.customerNm = txtPhone1.Value;
-               //------- like this all the fields have to be added
-
-                objBLL.AddCustomer(objCustomer);
-                
             }
             ChangeColours();
         }
@@ -216,7 +199,7 @@ namespace JG_Prospect.Sr_App
                     sc.DeliveryMethod = SmtpDeliveryMethod.Network;
                     sc.EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["enableSSL"].ToString()); // runtime encrypt the SMTP communications using SSL
                     sc.Send(m);
-
+                   
                 }
                 catch (Exception ex)
                 {
@@ -231,14 +214,8 @@ namespace JG_Prospect.Sr_App
             if (Session["CustomerId"].ToString() != null)
                 ds = new_customerBLL.Instance.GetCustomerDetails(Convert.ToInt32(Session["CustomerId"].ToString()));
 
-
+           
             return ds;
-        }
-
-        private void GetCustomerIdFromDuplicateReference(string duplicateReference)
-        {
-            string customerId = string.Empty;
-            customerId = duplicateReference;
         }
         protected void btnSubmit_Click(object sender, EventArgs e)
         {
@@ -304,7 +281,7 @@ namespace JG_Prospect.Sr_App
             DataTable dtblePrimary = Session["dtDetails"] as DataTable;
             DataTable dtbleProduct = Session["dtPrimarySecondary"] as DataTable;
 
-
+          
             int res = new_customerBLL.Instance.AddSrCustomer(c, dtbleAddress, dtbleBillingAddress, dtblePrimary, dtbleProduct, bitYesNo);
             if (res > 0)
             {
@@ -321,7 +298,7 @@ namespace JG_Prospect.Sr_App
                     time = Convert.ToDateTime(t).TimeOfDay;
                     datetime += time;
                 }
-                string gtitle = t + " -" + c.Addedby;
+                string gtitle = t + " -" +  c.Addedby;
                 //string gcontent = "Name: " + objcust.customerNm + " , Cell Phone: " + txtcell_ph.Text + ", Alt. phone: " + txtalt_phone.Text + ", Email: " + txtEmail.Text + ",Service: " + txtService.Text + ",Status: " + newstatus;
                 string gcontent = "Name: " + c.customerNm;//TCT
                 //string gaddress = txtaddress.Text + " " + txtcity.Text + "," + txtstate.Text + " -" + txtzip.Text;
@@ -571,10 +548,6 @@ namespace JG_Prospect.Sr_App
 
                 if (dtFirstNameId.Rows[i]["RowId"].ToString() == dtPrimaryContactId.Rows[i]["RowId"].ToString())
                 {
-                    //Added on 15092016 :: skip null and empty field
-                    if (string.IsNullOrEmpty(dtFirstNameId.Rows[i]["FirstName"].ToString()))
-                        continue;
-
                     strFName = dtFirstNameId.Rows[i]["FirstName"].ToString();
                     strIsPrimaryContactType = dtPrimaryContactId.Rows[i]["ISPrimaryContact"].ToString();
                 }
@@ -605,10 +578,6 @@ namespace JG_Prospect.Sr_App
                     {
                         if (dtPrimaryContactId.Rows[i]["RowId"].ToString() == dvPhoneNumberId[j]["RowId"].ToString())
                         {
-                            //Added on 15092016 :: skip null and empty field
-                            if (string.IsNullOrEmpty(dvPhoneNumberId[j]["Phone"].ToString()))
-                                continue;
-
                             strPhoneNumber = dvPhoneNumberId[j]["Phone"].ToString().Replace("-", "");
                             strPhoneType = dvPhoneTypeId[j]["PhoneType"].ToString();
                         }
@@ -643,22 +612,19 @@ namespace JG_Prospect.Sr_App
 
                     if (j < dvPhoneNumberId.Count || j < dvEMailId.Count)
                     {
-                        //Added on 15092016 :: skip null and empty field
-                        if (!string.IsNullOrEmpty(strFName) && !string.IsNullOrEmpty(strPhoneNumber))
-                        {
-                            dRowNew["FirstName"] = strFName;
-                            dRowNew["PhoneNumber"] = strPhoneNumber;
-                            dRowNew["PhoneType"] = strPhoneType;
-                            dRowNew["Email"] = strEMail;
-                            dRowNew["LastName"] = strLName;
-                            dRowNew["IsPrimaryContact"] = strIsPrimaryContactType;
-                            dRowNew["ContactType"] = strContactType;
+                        dRowNew["FirstName"] = strFName;
+                        dRowNew["PhoneNumber"] = strPhoneNumber;
+                        dRowNew["PhoneType"] = strPhoneType;
+                        dRowNew["Email"] = strEMail;
+                        dRowNew["LastName"] = strLName;
+                        dRowNew["IsPrimaryContact"] = strIsPrimaryContactType;
+                        dRowNew["ContactType"] = strContactType;
 
-                            dtDetails.Rows.Add(dRowNew);
-                            dRowNew = dtDetails.NewRow();
-                        }
+                        dtDetails.Rows.Add(dRowNew);
+                        dRowNew = dtDetails.NewRow();
                     }
                 }
+
             }
 
             DataTable dtPhoneNumber = new DataTable();
@@ -695,22 +661,10 @@ namespace JG_Prospect.Sr_App
             //}
 
 
-            //start changes on 15.09.2016
-            //DataTable dtFirstName = new DataTable();
-            //dtFirstName = GetAllValues(formVars, "FirstName", "txtFName");
+            DataTable dtFirstName = new DataTable();
+            dtFirstName = GetAllValues(formVars, "FirstName", "txtFName");
 
-            //foreach (DataRow drow in dtFirstName.Rows)
-            //{
-            //    if (drow["FirstName"] == "")
-            //    {
-
-            //        strResult = "Please fill First Name";
-            //        return strResult;
-            //    }
-            //}
-            //end changes on 15.09.2016
-
-            foreach (DataRow drow in dtDetails.Rows)
+            foreach (DataRow drow in dtFirstName.Rows)
             {
                 if (drow["FirstName"] == "")
                 {
@@ -719,7 +673,6 @@ namespace JG_Prospect.Sr_App
                     return strResult;
                 }
             }
-
 
             int CustomerId = 0;
             DataSet dsCustomerDuplication = new_customerBLL.Instance.CheckCustomerDuplication(dtCusAddress, dtDetails, CustomerId);
@@ -891,13 +844,12 @@ namespace JG_Prospect.Sr_App
             }
         }
 
-
+     
 
         [System.Web.Services.WebMethod]
         public static string GetCityState(string strZip)
         {
             DataSet ds = new DataSet();
-
             ds = UserBLL.Instance.fetchcitystate(strZip);
             if (ds != null)
             {
@@ -1322,5 +1274,5 @@ namespace JG_Prospect.Sr_App
         // public IEnumerable<string> CalendarIds { get; set; }
     }
 
-
+     
 }

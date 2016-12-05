@@ -125,6 +125,38 @@ namespace JG_Prospect.Sr_App.Controls
             }
         }
 
+        private SortDirection TaskSortDirection
+        {
+            get
+            {
+                if (ViewState["TaskSortDirection"] == null)
+                {
+                    return SortDirection.Descending;
+                }
+                return (SortDirection)ViewState["TaskSortDirection"];
+            }
+            set
+            {
+                ViewState["TaskSortDirection"] = value;
+            }
+        }
+
+        private string TaskSortExpression
+        {
+            get
+            {
+                if (ViewState["TaskSortExpression"] == null)
+                {
+                    return "CreatedOn";
+                }
+                return Convert.ToString(ViewState["TaskSortExpression"]);
+            }
+            set
+            {
+                ViewState["TaskSortExpression"] = value;
+            }
+        }
+
         #endregion
 
         #region "--Page methods--"
@@ -142,7 +174,8 @@ namespace JG_Prospect.Sr_App.Controls
                 controlMode.Value = "0";
                 SetControlDisplay();
                 LoadFilters();
-                SearchTasks(null);
+                //SearchTasks(null);
+                SearchTasks(50);
                 LoadPopupDropdown();
             }
         }
@@ -158,8 +191,6 @@ namespace JG_Prospect.Sr_App.Controls
             LoadFilterUsersByDesgination();
             SearchTasks(null);
         }
-
-
 
         protected void ddlUsers_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -224,20 +255,21 @@ namespace JG_Prospect.Sr_App.Controls
             if (e.Row.RowType == DataControlRowType.DataRow)
             {
                 HyperLink hypTask = (HyperLink)e.Row.FindControl("hypTask");
-                DropDownList ddlgvTaskStatus = (DropDownList)e.Row.FindControl("ddlgvTaskStatus");
+                DropDownList ddlTaskStatus = (DropDownList)e.Row.FindControl("ddlTaskStatus");
                 LinkButton lbtnRequestStatus = (LinkButton)e.Row.FindControl("lbtnRequestStatus");
                 HtmlAnchor hypUsers = (HtmlAnchor)e.Row.FindControl("hypUsers");
                 DropDownCheckBoxes ddcbAssigned = e.Row.FindControl("ddcbAssigned") as DropDownCheckBoxes;
                 HtmlAnchor hypDesg = (HtmlAnchor)e.Row.FindControl("hypDesg");
 
-                ddlgvTaskStatus.DataSource = CommonFunction.GetTaskStatusList();
-                ddlgvTaskStatus.DataTextField = "Text";
-                ddlgvTaskStatus.DataValueField = "Value";
-                ddlgvTaskStatus.DataBind();
+                ddlTaskStatus.DataSource = CommonFunction.GetTaskStatusList();
+                ddlTaskStatus.DataTextField = "Text";
+                ddlTaskStatus.DataValueField = "Value";
+                ddlTaskStatus.DataBind();
+                //ddlTaskStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()).Enabled = false;
+
+                SetStatusSelectedValue(ddlTaskStatus, DataBinder.Eval(e.Row.DataItem, "Status").ToString());
 
                 hypTask.NavigateUrl = "~/sr_app/TaskGenerator.aspx?TaskId=" + DataBinder.Eval(e.Row.DataItem, "TaskId").ToString();
-
-                ddlgvTaskStatus.SelectedValue = DataBinder.Eval(e.Row.DataItem, "Status").ToString();
 
                 hypDesg.InnerHtml = getSingleValueFromCommaSeperatedString(Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskDesignations")));
 
@@ -249,8 +281,10 @@ namespace JG_Prospect.Sr_App.Controls
                     #region Admin User
 
                     if (
-                        ddlgvTaskStatus.SelectedValue == Convert.ToByte(TaskStatus.Open).ToString() &&
-                        string.IsNullOrEmpty(Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskAssignedUsers")))
+                        ddlTaskStatus.SelectedValue != Convert.ToByte(JGConstant.TaskStatus.Requested).ToString() &&
+                        ddlTaskStatus.SelectedValue != Convert.ToByte(JGConstant.TaskStatus.InProgress).ToString() &&
+                        ddlTaskStatus.SelectedValue != Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString() &&
+                        ddlTaskStatus.SelectedValue != Convert.ToByte(JGConstant.TaskStatus.Closed).ToString()
                        )
                     {
                         ddcbAssigned.Visible = true;
@@ -264,11 +298,8 @@ namespace JG_Prospect.Sr_App.Controls
                         ddcbAssigned.DataTextField = "FristName";
                         ddcbAssigned.DataValueField = "Id";
                         ddcbAssigned.DataBind();
-
-                        ddcbAssigned.Attributes.Add("TaskId", DataBinder.Eval(e.Row.DataItem, "TaskId").ToString());
-                        ddcbAssigned.Attributes.Add("TaskStatus", ddlgvTaskStatus.SelectedValue);
                     }
-                    else if (ddlgvTaskStatus.SelectedValue == Convert.ToByte(TaskStatus.Requested).ToString())
+                    else if (ddlTaskStatus.SelectedValue == Convert.ToByte(JGConstant.TaskStatus.Requested).ToString())
                     {
                         lbtnRequestStatus.Visible = true;
                         ddcbAssigned.Visible =
@@ -287,13 +318,40 @@ namespace JG_Prospect.Sr_App.Controls
                     }
                     else
                     {
-                        hypUsers.Visible = true;
-                        ddcbAssigned.Visible =
+                        ddcbAssigned.Visible = true;
+                        hypUsers.Visible =
                         lbtnRequestStatus.Visible = false;
+                        DataSet dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskDesignations")).Trim());
 
+                        ddcbAssigned.Items.Clear();
+                        ddcbAssigned.DataSource = dsUsers;
+                        ddcbAssigned.DataTextField = "FristName";
+                        ddcbAssigned.DataValueField = "Id";
+                        ddcbAssigned.DataBind();
+
+                        SetTaskAssignedUsers(Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskAssignedUsers")), ddcbAssigned);
                         hypUsers.InnerHtml = getSingleValueFromCommaSeperatedString(Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskAssignedUsers")));
                         hypUsers.Attributes.Add("title", Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskAssignedUsers")));
                     }
+
+                    // set assigned user selection in dropdown.
+                    if (!string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "TaskAssignedUserIds").ToString()) && ddcbAssigned.Items.Count > 0)
+                    {
+                        string[] arrUserIds = DataBinder.Eval(e.Row.DataItem, "TaskAssignedUserIds").ToString().Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+                        foreach (string strId in arrUserIds)
+                        {
+                            ListItem objListItem = ddcbAssigned.Items.FindByValue(strId.Trim());
+                            if (objListItem != null)
+                            {
+                                objListItem.Selected = true;
+                                ddcbAssigned.Texts.SelectBoxCaption = objListItem.Text;
+                            }
+                        }
+                    }
+
+                    // below attributes are used in user assignement change.
+                    ddcbAssigned.Attributes.Add("TaskId", DataBinder.Eval(e.Row.DataItem, "TaskId").ToString());
+                    ddcbAssigned.Attributes.Add("TaskStatus", ddlTaskStatus.SelectedValue);
 
                     #endregion
                 }
@@ -301,17 +359,44 @@ namespace JG_Prospect.Sr_App.Controls
                 {
                     #region Install User
 
-                    string strMyDesignation = Convert.ToString(Session["DesigNew"]).Trim().ToLower();
+                    HtmlGenericControl divAcceptRejectButtons = e.Row.FindControl("divAcceptRejectButtons") as HtmlGenericControl;
+
+                    string strMyDesignation = Convert.ToString(Session["DesigNew"]).Trim().ToUpper();
+                    string[] arrTaskDesignations = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskDesignations")).Split(',');
+
+                    bool blSameDesignation = false;
+                    if (arrTaskDesignations != null && arrTaskDesignations.Any(d => d.ToUpper().Trim() == strMyDesignation))
+                    {
+                        blSameDesignation = true;
+                    }
 
                     // show request link when,
-                    // task status is open
-                    // task assigned to my designation
-                    if (ddlgvTaskStatus.SelectedValue == Convert.ToByte(TaskStatus.Open).ToString() &&
-                        strMyDesignation == Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskDesignations")).Trim().ToLower())
+                    // 1. task belongs to my designation
+                    // 2. task is not assigned to any user.
+                    if (
+                        blSameDesignation &&
+                        string.IsNullOrEmpty(Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskAssignedUsers")).Trim())
+                       )
                     {
+                        string strTaskAcceptanceUsers = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskAcceptanceUsers"));
+
+                        // show accept - reject buttons when, acceptance log for current task does not contain current user.
+                        if (
+                            string.IsNullOrEmpty(strTaskAcceptanceUsers) ||
+                            strTaskAcceptanceUsers.Split(',').Count(s => s.Trim() == JGSession.UserId.ToString()) == 0)
+                        {
+                            divAcceptRejectButtons.Visible = true;
+                        }
+                        else
+                        {
+                            divAcceptRejectButtons.Visible = false;
+                        }
+
                         lbtnRequestStatus.Visible = true;
+
                         ddcbAssigned.Visible =
                         hypUsers.Visible = false;
+
                         lbtnRequestStatus.ForeColor = System.Drawing.Color.Green;
                         lbtnRequestStatus.CommandName = "request";
                         lbtnRequestStatus.CommandArgument = DataBinder.Eval(e.Row.DataItem, "TaskId").ToString() + ":" + DataBinder.Eval(e.Row.DataItem, "CreatedBy").ToString();
@@ -319,21 +404,70 @@ namespace JG_Prospect.Sr_App.Controls
                     else
                     {
                         ddcbAssigned.Visible =
+                        divAcceptRejectButtons.Visible =
                         lbtnRequestStatus.Visible = false;
+
                         hypUsers.Visible = true;
-
                         hypUsers.InnerHtml = getSingleValueFromCommaSeperatedString(Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskAssignedUsers")));
-
                         hypUsers.Attributes.Add("title", Convert.ToString(DataBinder.Eval(e.Row.DataItem, "TaskAssignedUsers")));
                     }
 
                     #endregion
                 }
+                string strRowCssClass = string.Empty;
 
-                if (Convert.ToBoolean(DataBinder.Eval(e.Row.DataItem, "IsDeleted")))
+                if (e.Row.RowState == DataControlRowState.Alternate)
                 {
-                    e.Row.CssClass = "ui-state-default dark-gray-background";
+                    strRowCssClass = "AlternateRow";
                 }
+                else
+                {
+                    strRowCssClass = "FirstRow";
+                }
+
+                switch ((JGConstant.TaskStatus)Convert.ToByte(DataBinder.Eval(e.Row.DataItem, "Status")))
+                {
+                    case JGConstant.TaskStatus.Open:
+                        strRowCssClass += " task-open";
+                        if (!string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "TaskPriority").ToString()) && 
+                            DataBinder.Eval(e.Row.DataItem, "TaskPriority").ToString() != "0")
+                        {
+                            strRowCssClass += " task-with-priority";
+                        }
+                        break;
+                    case JGConstant.TaskStatus.Requested:
+                        strRowCssClass += " task-requested";
+                        break;
+                    case JGConstant.TaskStatus.Assigned:
+                        strRowCssClass += " task-assigned";
+                        break;
+                    case JGConstant.TaskStatus.InProgress:
+                        strRowCssClass += " task-inprogress";
+                        break;
+                    case JGConstant.TaskStatus.Pending:
+                        strRowCssClass += " task-pending";
+                        break;
+                    case JGConstant.TaskStatus.ReOpened:
+                        strRowCssClass += " task-reopened";
+                        break;
+                    case JGConstant.TaskStatus.Closed:
+                        strRowCssClass += " task-closed closed-task-bg";
+                        ddcbAssigned.Enabled = false;
+                    ddlTaskStatus.Enabled = false;
+                        break;
+                    case JGConstant.TaskStatus.SpecsInProgress:
+                        strRowCssClass += " task-specsinprogress";
+                        break;
+                    case JGConstant.TaskStatus.Deleted:
+                        strRowCssClass += " task-deleted deleted-task-bg";
+                        ddcbAssigned.Enabled = false;
+                    ddlTaskStatus.Enabled = false;
+                        break;
+                    default:
+                        break;
+                }
+
+                e.Row.CssClass = strRowCssClass;
             }
         }
 
@@ -349,6 +483,7 @@ namespace JG_Prospect.Sr_App.Controls
                 cmbStatus.DataTextField = "Text";
                 cmbStatus.DataValueField = "Value";
                 cmbStatus.DataBind();
+                //cmbStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()).Enabled = false;
 
                 LoadTaskData(e.CommandArgument.ToString(), true);
             }
@@ -357,7 +492,7 @@ namespace JG_Prospect.Sr_App.Controls
                 Task objTask = new Task()
                 {
                     TaskId = Convert.ToInt32(e.CommandArgument.ToString().Split(':')[0]),
-                    Status = Convert.ToByte(TaskStatus.Requested)
+                    Status = Convert.ToByte(JGConstant.TaskStatus.Requested)
                 };
 
                 // update task status to requested.
@@ -386,7 +521,7 @@ namespace JG_Prospect.Sr_App.Controls
                 Task objTask = new Task()
                 {
                     TaskId = Convert.ToInt32(e.CommandArgument.ToString().Split(':')[0]),
-                    Status = Convert.ToByte(TaskStatus.Assigned)
+                    Status = Convert.ToByte(JGConstant.TaskStatus.Assigned)
                 };
 
                 if (TaskGeneratorBLL.Instance.UpdateTaskStatus(objTask) > 0)
@@ -409,25 +544,105 @@ namespace JG_Prospect.Sr_App.Controls
                     CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Task was not assigned successfully! Please try again later.");
                 }
             }
+            else if (e.CommandName == "accept")
+            {
+                bool isSuccessful = TaskGeneratorBLL.Instance.SaveTaskAssignedUsers(Convert.ToUInt64(e.CommandArgument), JGSession.UserId.ToString());
+                if (isSuccessful)
+                {
+                    TaskAcceptance objTaskAcceptance = new TaskAcceptance();
+                    objTaskAcceptance.IsAccepted = true;
+                    objTaskAcceptance.IsInstallUser = JGSession.IsInstallUser.Value;
+                    objTaskAcceptance.UserId = JGSession.UserId;
+                    objTaskAcceptance.TaskId = Convert.ToInt64(e.CommandArgument);
+
+                    if (TaskGeneratorBLL.Instance.InsertTaskAcceptance(objTaskAcceptance) >= 0)
+                    {
+                        SearchTasks(null);
+                    }
+                    CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Task accepted successfully");
+                }
+                else
+                {
+                    CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Task acceptance was not successfull, Please try again later.");
+                }
+            }
+            else if (e.CommandName == "reject")
+            {
+                TaskAcceptance objTaskAcceptance = new TaskAcceptance();
+                objTaskAcceptance.IsAccepted = false;
+                objTaskAcceptance.IsInstallUser = JGSession.IsInstallUser.Value;
+                objTaskAcceptance.UserId = JGSession.UserId;
+                objTaskAcceptance.TaskId = Convert.ToInt64(e.CommandArgument);
+
+                if (TaskGeneratorBLL.Instance.InsertTaskAcceptance(objTaskAcceptance) >= 0)
+                {
+                    SearchTasks(null);
+
+                    CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Task rejected successfully");
+                }
+                else
+                {
+                    CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Task rejection was not successfull, Please try again later.");
+                }
+            }
             //else if (e.CommandName == "RemoveTask")
             //{
             //    DeletaTask(e.CommandArgument.ToString());
             //}
         }
 
-        protected void gvTasks_ddcbAssigned_SelectedIndexChanged(object sender, EventArgs e)
+        protected void gvTasks_Sorting(object sender, GridViewSortEventArgs e)
         {
-            DropDownCheckBoxes ddcbAssigned = sender as DropDownCheckBoxes;
-            if (ddcbAssigned != null)
+            if (this.TaskSortExpression == e.SortExpression)
             {
-                hdnTaskId.Value = ddcbAssigned.Attributes["TaskId"];
-                if (!string.IsNullOrEmpty(hdnTaskId.Value))
+                if (this.TaskSortDirection == SortDirection.Ascending)
                 {
-                    SaveAssignedTaskUsers(ddcbAssigned, (TaskStatus)Convert.ToByte(ddcbAssigned.Attributes["TaskStatus"]));
-                    hdnTaskId.Value = "0";
-                    SearchTasks(null);
+                    this.TaskSortDirection = SortDirection.Descending;
+                }
+                else
+                {
+                    this.TaskSortDirection = SortDirection.Ascending;
                 }
             }
+            else
+            {
+                this.TaskSortExpression = e.SortExpression;
+                this.TaskSortDirection = SortDirection.Ascending;
+            }
+
+            SearchTasks(null);
+        }
+
+        protected void gvTasks_ddcbAssigned_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            DropDownCheckBoxes ddcbAssigned = (DropDownCheckBoxes)sender;
+            GridViewRow objGridViewRow = (GridViewRow)ddcbAssigned.NamingContainer;
+            hdnTaskId.Value = ((HiddenField)objGridViewRow.FindControl("hdnTaskId")).Value;
+            DropDownList ddlTaskStatus = objGridViewRow.FindControl("ddlTaskStatus") as DropDownList;
+
+            if (ValidateTaskStatus(ddlTaskStatus, ddcbAssigned,Convert.ToInt32(hdnTaskId.Value)))
+            {
+                SaveAssignedTaskUsers(ddcbAssigned, (JGConstant.TaskStatus)Convert.ToByte(ddcbAssigned.Attributes["TaskStatus"]));
+            }
+            hdnTaskId.Value = "0";
+            SearchTasks(null);
+        }
+
+        protected void gvTasks_ddlTaskStatus_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            DropDownList ddlTaskStatus = (DropDownList)sender;
+            GridViewRow objGridViewRow = (GridViewRow)ddlTaskStatus.NamingContainer;
+            HiddenField hdnTaskId = (HiddenField)objGridViewRow.FindControl("hdnTaskId");
+            DropDownCheckBoxes ddcbAssigned = objGridViewRow.FindControl("ddcbAssigned") as DropDownCheckBoxes;
+
+            if (ValidateTaskStatus(ddlTaskStatus, ddcbAssigned,Convert.ToInt32(hdnTaskId.Value)))
+            {
+                Task objTask = new Task();
+                objTask.TaskId = Convert.ToInt32(hdnTaskId.Value);
+                objTask.Status = Convert.ToUInt16(ddlTaskStatus.SelectedItem.Value);
+                TaskGeneratorBLL.Instance.UpdateTaskStatus(objTask);
+            }
+            SearchTasks(null);
         }
 
         #endregion
@@ -573,7 +788,7 @@ namespace JG_Prospect.Sr_App.Controls
             SaveTaskDesignations();
 
             //Save details of users to whom task is assgined.
-            SaveAssignedTaskUsers(ddcbAssigned, (TaskStatus)Convert.ToByte(cmbStatus.SelectedItem.Value));
+            SaveAssignedTaskUsers(ddcbAssigned, (JGConstant.TaskStatus)Convert.ToByte(cmbStatus.SelectedItem.Value));
 
             if (controlMode.Value == "0" && this.lstTaskUserFiles.Any())
             {
@@ -595,7 +810,7 @@ namespace JG_Prospect.Sr_App.Controls
                 }
             }
 
-            if (controlMode.Value == "0"    )
+            if (controlMode.Value == "0")
             {
                 ScriptManager.RegisterStartupScript(this.Page, GetType(), "closepopup", "CloseTaskPopup();", true);
             }
@@ -630,7 +845,7 @@ namespace JG_Prospect.Sr_App.Controls
                 else
                 {
                     UploadUserAttachements(null, Convert.ToInt32(hdnTaskId.Value), hdnWorkFiles.Value);
-                    DataSet dsTaskUserFiles = TaskGeneratorBLL.Instance.GetTaskUserFiles(Convert.ToInt32(hdnTaskId.Value));
+                    DataSet dsTaskUserFiles = TaskGeneratorBLL.Instance.GetTaskUserFiles(Convert.ToInt32(hdnTaskId.Value), JGConstant.TaskFileDestination.WorkSpecification, null, null);
                     if (dsTaskUserFiles != null && dsTaskUserFiles.Tables.Count > 0)
                     {
                         foreach (DataRow drFile in dsTaskUserFiles.Tables[0].Rows)
@@ -714,22 +929,9 @@ namespace JG_Prospect.Sr_App.Controls
             }
         }
 
-        protected void ddlgvTaskStatus_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            DropDownList ddlGvTaskStatus = (DropDownList)sender;
-            GridViewRow row = (GridViewRow)ddlGvTaskStatus.NamingContainer;
-            HiddenField hdnTaskId = (HiddenField)row.FindControl("hdnTaskId");
-
-            Int32 taskId = Convert.ToInt32(hdnTaskId.Value);
-
-            UInt16 taskStatus = Convert.ToUInt16(ddlGvTaskStatus.SelectedItem.Value);
-
-            UpdateTaskStatus(taskId, taskStatus);
-        }
-
         protected void ddlTaskType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (ddlTaskType.SelectedValue == Convert.ToInt16(TaskType.Enhancement).ToString())
+            if (ddlTaskType.SelectedValue == Convert.ToInt16(JGConstant.TaskType.Enhancement).ToString())
             {
                 trDateHours.Visible = true;
             }
@@ -786,7 +988,6 @@ namespace JG_Prospect.Sr_App.Controls
             if (dsFilters != null && dsFilters.Tables.Count > 0)
             {
                 DataTable dtUsers = dsFilters.Tables[0];
-                //DataTable dtDesignations = dsFilters.Tables[1];
 
                 ddlTaskStatus.DataSource = CommonFunction.GetTaskStatusList();
                 ddlTaskStatus.DataTextField = "Text";
@@ -794,17 +995,15 @@ namespace JG_Prospect.Sr_App.Controls
                 ddlTaskStatus.DataBind();
                 ddlTaskStatus.Items.Insert(0, new ListItem("--All--", "0"));
 
-                ddlUsers.Items.Clear();
+                //if (!this.IsAdminMode)
+                //{
+                //    ddlTaskStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()).Enabled = false;
+                //}
+
                 ddlUsers.DataSource = dtUsers;
                 ddlUsers.DataTextField = "FirstName";
                 ddlUsers.DataValueField = "Id";
                 ddlUsers.DataBind();
-                
-
-                //ddlDesignation.DataSource = dtDesignations;
-                //ddlDesignation.DataTextField = "Designation";
-                //ddlDesignation.DataValueField = "Designation";
-                //ddlDesignation.DataBind();
 
                 ddlUsers.Items.Insert(0, new ListItem("--All--", "0"));
                 ddlDesignation.Items.Insert(0, new ListItem("--All--", "0"));
@@ -818,7 +1017,7 @@ namespace JG_Prospect.Sr_App.Controls
         private void SearchTasks(int? RecordstoPull)
         {
 
-            List<int> UserIDs = new List<int>();
+            int? UserID = null;
             string Title = String.Empty, Designation = String.Empty, Designations = String.Empty, Statuses = String.Empty;
             Int16? Status = null;
             DateTime? CreatedFrom = null, CreatedTo = null;
@@ -832,9 +1031,11 @@ namespace JG_Prospect.Sr_App.Controls
                 PageLimit = Convert.ToInt32(RecordstoPull);
             }
 
-            PrepareSearchFilters(ref UserIDs, ref Title, ref Designation, ref Status, ref CreatedFrom, ref CreatedTo, ref Statuses, ref Designations);
+            PrepareSearchFilters(ref UserID, ref Title, ref Designation, ref Status, ref CreatedFrom, ref CreatedTo, ref Statuses, ref Designations);
 
-            DataSet dsFilters = TaskGeneratorBLL.Instance.GetTasksList(UserIDs, Title, Designation, Status, CreatedFrom, CreatedTo, Statuses, Designations, this.IsAdminMode, Start, PageLimit);
+            string strSortExpression = this.TaskSortExpression + " " + (this.TaskSortDirection == SortDirection.Ascending ? "ASC" : "DESC");
+
+            DataSet dsFilters = TaskGeneratorBLL.Instance.GetTasksList(UserID, Title, Designation, Status, CreatedFrom, CreatedTo, Statuses, Designations, CommonFunction.CheckAdminAndItLeadMode(), Start, PageLimit, strSortExpression);
 
             if (dsFilters != null && dsFilters.Tables.Count > 0)
             {
@@ -997,7 +1198,7 @@ namespace JG_Prospect.Sr_App.Controls
             HighlightInterviewUsers(dsUsers.Tables[0], ddcbAssigned, null);
         }
 
-        private void HighlightInterviewUsers(DataTable dtUsers, DropDownCheckBoxes ddlUsers, DropDownCheckBoxes ddlFilterUsers)
+        private void HighlightInterviewUsers(DataTable dtUsers, DropDownCheckBoxes ddlUsers, DropDownList ddlFilterUsers)
         {
             if (dtUsers.Rows.Count > 0)
             {
@@ -1077,30 +1278,14 @@ namespace JG_Prospect.Sr_App.Controls
         /// <param name="Designation"></param>
         /// <param name="Status"></param>
         /// <param name="CreatedOn"></param>
-        private void PrepareSearchFilters(ref List<int> UserIDs, ref string Title, ref string Designation, ref short? Status, ref DateTime? CreatedFrom, ref DateTime? CreatedTo, ref string Statuses, ref string Designations)
+        private void PrepareSearchFilters(ref int? UserID, ref string Title, ref string Designation, ref short? Status, ref DateTime? CreatedFrom, ref DateTime? CreatedTo, ref string Statuses, ref string Designations)
         {
 
             if (this.IsAdminMode)
             {
                 if (ddlUsers.SelectedIndex > 0)
                 {
-                    //UserIDs = Convert.ToInt32(ddlUsers.SelectedItem.Value);
-                    foreach (ListItem item in ddlUsers.Items)
-                    {
-                        if (item.Selected)
-                        {
-                            ddcbAssigned.Texts.SelectBoxCaption = item.Text;
-                            break;
-                        }
-                    }
-
-                    foreach (ListItem item in ddlUsers.Items)
-                    {
-                        if (item.Selected)
-                        {
-                            UserIDs.Add(Convert.ToInt32(item.Value));
-                        }
-                    }
+                    UserID = Convert.ToInt32(ddlUsers.SelectedItem.Value);
                 }
 
                 if (ddlDesignation.SelectedIndex > 0)
@@ -1121,7 +1306,7 @@ namespace JG_Prospect.Sr_App.Controls
             }
             else
             {
-                UserIDs.Add(Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]));
+                UserID = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
 
                 Designation =
                 Designations = GetUserDepartmentAllDesignations(Session["DesigNew"].ToString());
@@ -1207,6 +1392,51 @@ namespace JG_Prospect.Sr_App.Controls
                 ddlTaskType.SelectedIndex = 0;
             }
             upAddSubTask.Update();
+        }
+
+        private bool ValidateTaskStatus(DropDownList ddlTaskStatus, DropDownCheckBoxes ddlAssignedUser, Int32 intTaskId)
+        {
+            bool blResult = true;
+
+            string strStatus = string.Empty;
+            string strMessage = string.Empty;
+
+            if (this.IsAdminMode)
+            {
+                strStatus = ddlTaskStatus.SelectedValue;
+
+                //if (
+                //    strStatus != Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString() &&
+                //    !TaskGeneratorBLL.Instance.IsTaskWorkSpecificationApproved(intTaskId)
+                //   )
+                //{
+                //    blResult = false;
+                //    strMessage = "Task work specifications must be approved, to change status from Specs In Progress.";
+                //}
+                //else
+                // if task is in assigned status. it should have assigned user selected there in dropdown. 
+                if (strStatus == Convert.ToByte(JGConstant.TaskStatus.Assigned).ToString())
+                {
+                    blResult = false;
+                    strMessage = "Task must be assigned to one or more users, to change status to assigned.";
+
+                    foreach (ListItem objItem in ddlAssignedUser.Items)
+                    {
+                        if (objItem.Selected)
+                        {
+                            blResult = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!blResult)
+                {
+                    CommonFunction.ShowAlertFromUpdatePanel(this.Page, strMessage);
+                }
+            }
+
+            return blResult;
         }
 
         /// <summary>
@@ -1298,7 +1528,7 @@ namespace JG_Prospect.Sr_App.Controls
                 Int64 ItaskId = TaskGeneratorBLL.Instance.SaveOrDeleteTask(task);
                 hdnSubTaskId.Value = ItaskId.ToString();
                 UploadUserAttachements(null, ItaskId, task.Attachment);
-                SetSubTaskDetails(TaskGeneratorBLL.Instance.GetSubTasks(Convert.ToInt32(hdnTaskId.Value)).Tables[0]);
+                SetSubTaskDetails(TaskGeneratorBLL.Instance.GetSubTasks(Convert.ToInt32(hdnTaskId.Value), CommonFunction.CheckAdminAndItLeadMode(), string.Empty).Tables[0]);
             }
             hdnAttachments.Value = string.Empty;
             ClearSubTaskData();
@@ -1325,7 +1555,7 @@ namespace JG_Prospect.Sr_App.Controls
         /// <summary>
         /// Save user's to whom task is assigned. 
         /// </summary>
-        private void SaveAssignedTaskUsers(DropDownCheckBoxes ddcbAssigned, TaskStatus objTaskStatus)
+        private void SaveAssignedTaskUsers(DropDownCheckBoxes ddcbAssigned, JGConstant.TaskStatus objTaskStatus)
         {
             //if task id is available to save its note and attachement.
             if (hdnTaskId.Value != "0")
@@ -1352,12 +1582,12 @@ namespace JG_Prospect.Sr_App.Controls
                     if (isSuccessful)
                     {
                         // Change task status to assigned = 3.
-                        if (objTaskStatus == TaskStatus.Open || objTaskStatus == TaskStatus.Requested)
+                        if (objTaskStatus == JGConstant.TaskStatus.Open || objTaskStatus == JGConstant.TaskStatus.Requested)
                         {
-                            UpdateTaskStatus(Convert.ToInt32(hdnTaskId.Value), Convert.ToUInt16(TaskStatus.Assigned));
+                            UpdateTaskStatus(Convert.ToInt32(hdnTaskId.Value), Convert.ToUInt16(JGConstant.TaskStatus.Assigned));
                         }
 
-                        SendEmailToAssignedUsers(Convert.ToInt32(hdnTaskId.Value),strUsersIds);
+                        SendEmailToAssignedUsers(Convert.ToInt32(hdnTaskId.Value), strUsersIds);
                     }
                 }
                 // send email to all users of the department as task is assigned to designation, but not to any specific user.
@@ -1703,7 +1933,7 @@ namespace JG_Prospect.Sr_App.Controls
             try
             {
                 string strHTMLTemplateName = "Task Generator Auto Email";
-                DataSet dsEmailTemplate = AdminBLL.Instance.GetEmailTemplate(strHTMLTemplateName,108);
+                DataSet dsEmailTemplate = AdminBLL.Instance.GetEmailTemplate(strHTMLTemplateName, 108);
                 foreach (string userID in strInstallUserIDs.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
                 {
                     DataSet dsUser = TaskGeneratorBLL.Instance.GetInstallUserDetails(Convert.ToInt32(userID));
@@ -1751,7 +1981,7 @@ namespace JG_Prospect.Sr_App.Controls
                 if (intTaskCreatedBy > 0)
                 {
                     string strHTMLTemplateName = "Task Assignment Requested";
-                    DataSet dsEmailTemplate = AdminBLL.Instance.GetEmailTemplate(strHTMLTemplateName,109);
+                    DataSet dsEmailTemplate = AdminBLL.Instance.GetEmailTemplate(strHTMLTemplateName, 109);
                     DataSet dsUser = TaskGeneratorBLL.Instance.GetUserDetails(intTaskCreatedBy);
                     if (dsUser == null || dsUser.Tables.Count == 0 || dsUser.Tables[0].Rows.Count == 0)
                     {
@@ -1893,6 +2123,34 @@ namespace JG_Prospect.Sr_App.Controls
             }
         }
 
+        private void SetTaskAssignedUsers(String strAssignedUser, DropDownCheckBoxes taskUsers)
+        {
+            String firstAssignedUser = String.Empty;
+            String[] users = strAssignedUser.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+            foreach (string user in users)
+            {
+
+                ListItem item = taskUsers.Items.FindByText(user);
+
+                if (item != null)
+                {
+                    item.Selected = true;
+
+                    if (string.IsNullOrEmpty(firstAssignedUser))
+                    {
+                        firstAssignedUser = item.Text;
+                    }
+                }
+            }
+
+            if (!String.IsNullOrEmpty(firstAssignedUser))
+            {
+                taskUsers.Texts.SelectBoxCaption = firstAssignedUser;
+            }
+
+        }
+
         private void SetTaskDesignationDetails(DataTable dtTaskDesignationDetails)
         {
             String firstDesignation = string.Empty;
@@ -1970,13 +2228,7 @@ namespace JG_Prospect.Sr_App.Controls
                 txtTaskTitle.Text = Server.HtmlDecode(dtTaskMasterDetails.Rows[0]["Title"].ToString());
                 txtDescription.Text = Server.HtmlDecode(dtTaskMasterDetails.Rows[0]["Description"].ToString());
 
-                //Get selected index of task status
-                ListItem item = cmbStatus.Items.FindByValue(dtTaskMasterDetails.Rows[0]["Status"].ToString());
-
-                if (item != null)
-                {
-                    cmbStatus.SelectedIndex = cmbStatus.Items.IndexOf(item);
-                }
+                SetStatusSelectedValue(cmbStatus, dtTaskMasterDetails.Rows[0]["Status"].ToString());
 
                 txtDueDate.Text = CommonFunction.FormatToShortDateString(dtTaskMasterDetails.Rows[0]["DueDate"]);
                 txtHours.Text = dtTaskMasterDetails.Rows[0]["Hours"].ToString();
@@ -2088,8 +2340,26 @@ namespace JG_Prospect.Sr_App.Controls
             }
         }
 
+        private void SetStatusSelectedValue(DropDownList ddlStatus, string strValue)
+        {
+            ddlStatus.ClearSelection();
+
+            ListItem objListItem = ddlStatus.Items.FindByValue(strValue);
+            if (objListItem != null)
+            {
+                //    if (objListItem.Value == Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString())
+                //    {
+                //        ddlStatus.Enabled = false;
+                //    }
+                //    else
+                //    {
+                ddlStatus.Enabled = true;
+                //    }
+                objListItem.Enabled = true;
+                objListItem.Selected = true;
+            }
+        }
 
         #endregion
-
     }
 }

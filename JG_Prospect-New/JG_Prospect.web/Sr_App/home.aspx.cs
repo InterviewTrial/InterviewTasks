@@ -23,17 +23,15 @@ namespace JG_Prospect.Sr_App
         {
             if (!IsPostBack)
             {
-
                 Session["AppType"] = "SrApp";
                 if ((string)Session["usertype"] == "SM" || (string)Session["usertype"] == "SSE" || (string)Session["usertype"] == "MM")
                 {
                     li_AnnualCalender.Visible = true;
                 }
-
-                //if ((string)Session["usertype"] == "Admin")
-                //{
-                //    pnlTestEmail.Visible = true;
-                //}
+                if ((string)Session["usertype"] == "Admin")
+                {
+                    pnlTestEmail.Visible = true;
+                }
             }
         }
 
@@ -86,69 +84,69 @@ namespace JG_Prospect.Sr_App
                 return string.Empty;
         }
 
-        //protected void btnTestMail_Click(object sender, EventArgs e)
-        //{
-        //    if (txtTestEmail.Text != "")
-        //        SendEmail(txtTestEmail.Text);
-        //}
+        protected void btnTestMail_Click(object sender, EventArgs e)
+        {
+            if (txtTestEmail.Text != "")
+                SendEmail(txtTestEmail.Text);
+        }
 
-        //private void SendEmail(string emailId)
-        //{
-        //    try
-        //    {
-        //        string strHeader = "<div>Email Header</div>";
-        //        string strBody = "<div>Email Body</div>";
-        //        string strFooter = "<div>Email Footer</div>";
-        //        string strsubject = "Subject - test mail";
+        private void SendEmail(string emailId)
+        {
+            try
+            {
+                string strHeader = "<div>Email Header</div>";
+                string strBody = "<div>Email Body</div>";
+                string strFooter = "<div>Email Footer</div>";
+                string strsubject = "Subject - test mail";
 
-        //        string userName = ConfigurationManager.AppSettings["VendorCategoryUserName"].ToString();
-        //        string password = ConfigurationManager.AppSettings["VendorCategoryPassword"].ToString();
+                string userName = ConfigurationManager.AppSettings["VendorCategoryUserName"].ToString();
+                string password = ConfigurationManager.AppSettings["VendorCategoryPassword"].ToString();
 
-        //        StringBuilder Body = new StringBuilder();
-        //        MailMessage Msg = new MailMessage();
-        //        Msg.From = new MailAddress(userName, "JGrove Construction");
-        //        Msg.To.Add(emailId);
-        //        //Msg.Bcc.Add(new MailAddress("shabbir.kanchwala@straitapps.com", "Shabbir Kanchwala"));
-        //        //Msg.CC.Add(new MailAddress("jgrove.georgegrove@gmail.com", "Justin Grove"));
+                StringBuilder Body = new StringBuilder();
+                MailMessage Msg = new MailMessage();
+                Msg.From = new MailAddress(userName, "JGrove Construction");
+                Msg.To.Add(emailId);
+                //Msg.Bcc.Add(new MailAddress("shabbir.kanchwala@straitapps.com", "Shabbir Kanchwala"));
+                //Msg.CC.Add(new MailAddress("jgrove.georgegrove@gmail.com", "Justin Grove"));
 
-        //        Msg.Subject = strsubject;// "JG Prospect Notification";
-        //        Body.Append(strHeader);
-        //        Body.Append(strBody);
-        //        Body.Append(strFooter);
+                Msg.Subject = strsubject;// "JG Prospect Notification";
+                Body.Append(strHeader);
+                Body.Append(strBody);
+                Body.Append(strFooter);
 
-        //        Msg.Body = Convert.ToString(Body);
-        //        Msg.IsBodyHtml = true;// your remote SMTP server IP
+                Msg.Body = Convert.ToString(Body);
+                Msg.IsBodyHtml = true;// your remote SMTP server IP
 
-        //        SmtpClient sc = new SmtpClient(ConfigurationManager.AppSettings["smtpHost"].ToString(), Convert.ToInt32(ConfigurationManager.AppSettings["smtpPort"].ToString()));
+                SmtpClient sc = new SmtpClient(ConfigurationManager.AppSettings["smtpHost"].ToString(), Convert.ToInt32(ConfigurationManager.AppSettings["smtpPort"].ToString()));
 
-        //        NetworkCredential ntw = new System.Net.NetworkCredential(userName, password);
-        //        sc.UseDefaultCredentials = false;
-        //        sc.Credentials = ntw;
+                NetworkCredential ntw = new System.Net.NetworkCredential(userName, password);
+                sc.UseDefaultCredentials = false;
+                sc.Credentials = ntw;
 
-        //        sc.DeliveryMethod = SmtpDeliveryMethod.Network;
-        //        sc.EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["enableSSL"].ToString()); // runtime encrypt the SMTP communications using SSL
-        //        try
-        //        {
-        //            sc.Send(Msg);
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            lblMessage.Text = "failure";
-        //            logManager.writeToLog(ex, "Home", Request.ServerVariables["remote_addr"].ToString());
-        //        }
+                sc.DeliveryMethod = SmtpDeliveryMethod.Network;
+                sc.EnableSsl = Convert.ToBoolean(ConfigurationManager.AppSettings["enableSSL"].ToString()); // runtime encrypt the SMTP communications using SSL
+                try
+                {
+                    sc.Send(Msg);
+                }
+                catch (Exception ex)
+                {
+                    lblMessage.Text = "failure";
+                    logManager.writeToLog(ex, "Home", Request.ServerVariables["remote_addr"].ToString());
+                }
 
-        //        Msg = null;
-        //        sc.Dispose();
-        //        sc = null;
-        //        lblMessage.Text = "Successfully Sent to " + emailId;
-        //        txtTestEmail.Text = "";
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        lblMessage.Text = "failure";
-        //        logManager.writeToLog(ex, "Home", Request.ServerVariables["remote_addr"].ToString());
-        //    }
-        //}
+                Msg = null;
+                sc.Dispose();
+                sc = null;
+                lblMessage.Text = "Successfully Sent to " + emailId;
+                txtTestEmail.Text = "";
+            }
+            catch (Exception ex)
+            {
+                lblMessage.Text = "failure";
+                logManager.writeToLog(ex, "Home", Request.ServerVariables["remote_addr"].ToString());
+            }
+        }
 
     }
 }

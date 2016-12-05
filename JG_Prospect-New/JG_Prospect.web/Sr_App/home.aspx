@@ -38,19 +38,13 @@
             <li id="li_AnnualCalender" visible="false" runat="server"><a href="#" runat="server">Annual Event Calendar</a> </li>
         </ul>
         <!-- appointment tabs section end -->
-
         <h1><b>Dashboard</b></h1>
-         <%--Removed Test Email-->
-        <%--<asp:Panel ID="pnlTestEmail" Visible="false" GroupingText="Test E-Mail" runat="server" CssClass="clsTestMail">
-=======
-        <h1><b>Dashboard</b></h1> 
         <asp:Panel ID="pnlTestEmail" Visible="false" GroupingText="Test E-Mail" runat="server" CssClass="clsTestMail">
->>>>>>> origin/jaylem-interviewtask
             <asp:TextBox ID="txtTestEmail" runat="server"></asp:TextBox>
             <asp:Button ID="btnTestMail" runat="server" Text="Send Mail" OnClick="btnTestMail_Click" />
             <br />
             <asp:Label runat="server" ID="lblMessage"></asp:Label>
-        </asp:Panel>--%>
+        </asp:Panel>
         <h2>Personal Prospect Calendar</h2>
         <div class="calendar" style="margin: 0;">
             <iframe src="../JGCalender/Calender.aspx" width="100%" height="1000" style="border: 0;"></iframe>

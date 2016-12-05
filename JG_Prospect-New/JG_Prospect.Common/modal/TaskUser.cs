@@ -21,6 +21,7 @@ namespace JG_Prospect.Common.modal
         public bool IsCreatorUser;
         public string UserFirstName;
         public string OriginalFileName;
+        public JG_Prospect.Common.JGConstant.TaskFileDestination? TaskFileDestination;
         public string FileType;
         public DateTime AttachedFileDate;
     }

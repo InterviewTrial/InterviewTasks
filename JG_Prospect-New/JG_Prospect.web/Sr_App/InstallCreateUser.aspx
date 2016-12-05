@@ -340,7 +340,7 @@
         /* Absolute Center Spinner */
         .loading {
             position: fixed;
-            z-index: 999;
+            z-index: 1100;
             height: 2em;
             width: 2em;
             overflow: show;

@@ -519,7 +519,7 @@ form.inline {
         }
 
 .right_panel {
-   /* overflow: scroll;*/
+    overflow: scroll;
     margin: 0 0 0 220px;
     min-height: 200px;
     padding: 0 0 26px 0;
@@ -1383,7 +1383,7 @@ ul.left_nav {
     margin-left: 220px !important;
     width: 75%;
     position: relative;
-    z-index: 9;
+    z-index: 10;
 }
 
     .tasklist a {
@@ -1445,6 +1445,66 @@ table tr.trFooter td {
     vertical-align: top;
 }
 
+.block-link-container a {
+    display: block;
+    line-height: 20px;
+    height: 20px;
+}
+
+a.page_enabled, a.page_enabled:hover, a.page_enabled:active {
+    text-decoration: underline;
+    font-weight: bold;
+    color: blue;
+}
+
+a.page_disabled, a.page_disabled:hover, a.page_disabled:active {
+    text-decoration: none;
+    font-weight: bold;
+    color: black;
+}
+
+input.fz, .fz > input {
+    outline: 2px solid !important;
+    outline-offset: 1px !important;
+}
+
+input.fz-admin, .fz-admin > input {
+    outline-color: red !important;
+}
+
+input.fz-techlead, .fz-techlead > input {
+    outline-color: black !important;
+}
+
+input.fz-user, .fz-user > input {
+    outline-color: blue !important;
+}
+
+.cke_textarea_inline {
+    display: block;
+    background-color: white;
+    padding: 5px;
+    border-radius: 5px;
+    border: #b5b4b4 1px solid;
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 5px;
+}
+
+.deleted-task-bg {
+    background: gray !important;
+    background-color: gray !important;
+}
+
+.closed-task-bg, .closed-task-bg a {
+    background: black !important;
+    background-color: black !important;
+    color: white !important;
+}
+.RadScheduler .rsHeader {
+z-index: 9 !important;
+}
+
 	.btnCommon {
     text-align: center;
     background: url(../img/btn.png) no-repeat;
@@ -1459,4 +1519,23 @@ table tr.trFooter td {
     display: inline-block;
     border-radius: 10px;
     box-shadow: 0 0 10px #a1a0a0;
+}
+
+.yellowthickborder {
+    animation: blink 1s step-end infinite alternate;
+}
+
+@keyframes blink { 
+   50% { background-color:yellow; } 
+}
+
+
+.task-assigned, .task-requested {
+    border:2px solid red;
+}
+.task-inprogress, .task-pending, .task-reopened {
+    border:2px solid yellow;
+}
+.task-open.task-with-priority {
+    border:2px solid green;
 }

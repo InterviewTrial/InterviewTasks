@@ -328,7 +328,7 @@
         /* Absolute Center Spinner */
         .loading {
             position: fixed;
-            z-index: 999;
+            z-index: 1100;
             height: 2em;
             width: 2em;
             overflow: show;
@@ -463,8 +463,8 @@
                     <li><a href="HRReports.aspx">HR Reports</a></li>
                     <li><a href="InstallCreateUser.aspx">Create Install User</a></li>
                     <li><a href="EditInstallUser.aspx">Edit Install User</a></li>
-                    <li><a href="CreateSalesUser.aspx">Create Sales-Admin_IT User</a></li>
-                    <li><a href="EditUser.aspx">Edit Sales-Admin_IT User</a></li>
+                    <li><a href="CreateSalesUser.aspx">Create Sales User</a></li>
+                    <li><a href="EditUser.aspx">Edit Sales User</a></li>
                 </ul>
                 <h1>Install Create Users
                 </h1>
@@ -1856,7 +1856,6 @@
                             </table>
                             <ucAudit:UserListing runat="server" ID="ucAuditTrail" />
                         </li>
-
                         <li style="width: 50%;" class="last">
                             <table border="0" cellspacing="0" cellpadding="0">
                                 <tr>

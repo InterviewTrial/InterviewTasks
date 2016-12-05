@@ -23,7 +23,7 @@ using System.Web.Services;
 using Newtonsoft.Json;
 using System.Linq;
 using System.Web.UI.HtmlControls;
-using JG_Prospect.Utilits;
+using CKEditor.NET;
 
 #endregion
 
@@ -31,11 +31,13 @@ namespace JG_Prospect.Sr_App
 {
     public partial class TaskGenerator : System.Web.UI.Page
     {
-        #region "--Properties--"
-
-        int intTaskUserFilesCount = 0;
+        #region "--Members--"
 
         string strSubtaskSeq = "sbtaskseq";
+
+        #endregion
+
+        #region "--Properties--"
 
         /// <summary>
         /// Set control view mode.
@@ -57,7 +59,28 @@ namespace JG_Prospect.Sr_App
             {
                 ViewState["AMODE"] = value;
             }
+        }
 
+        /// <summary>
+        /// Set control view mode.
+        /// </summary>
+        public bool IsAdminAndItLeadMode
+        {
+            get
+            {
+                bool returnVal = false;
+
+                if (ViewState["AIMODE"] != null)
+                {
+                    returnVal = Convert.ToBoolean(ViewState["AIMODE"]);
+                }
+
+                return returnVal;
+            }
+            set
+            {
+                ViewState["AIMODE"] = value;
+            }
         }
 
         public int TaskCreatedBy
@@ -76,45 +99,11 @@ namespace JG_Prospect.Sr_App
             }
         }
 
-        public String LastSubTaskSequence
-        {
-            get
-            {
-                String val = string.Empty;
-
-                if (ViewState[strSubtaskSeq] != null && !string.IsNullOrEmpty(ViewState[strSubtaskSeq].ToString()))
-                {
-                    val = ViewState[strSubtaskSeq].ToString();
-                }
-                return val;
-            }
-            set
-            {
-                ViewState[strSubtaskSeq] = value;
-            }
-        }
-
-        private List<Task> lstSubTasks
-        {
-            get
-            {
-                if (ViewState["lstSubTasks"] == null)
-                {
-                    ViewState["lstSubTasks"] = new List<Task>();
-                }
-                return (List<Task>)ViewState["lstSubTasks"];
-            }
-            set
-            {
-                ViewState["lstSubTasks"] = value;
-            }
-        }
-
         private DataTable dtTaskUserFiles
         {
             get
             {
-                if (ViewState["dtTaskUserFiles"] != null)
+                if (ViewState["dtTaskUserFiles"] == null)
                 {
                     DataTable dt = new DataTable();
                     dt.Columns.Add("attachment");
@@ -129,87 +118,110 @@ namespace JG_Prospect.Sr_App
             }
         }
 
-
         #endregion
 
-        #region "--Page methods--"
+        #region "--Page Events--"
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            ScriptManager scriptManager = ScriptManager.GetCurrent(this.Page);
-            scriptManager.RegisterPostBackControl(this.gdTaskUsers);
-            scriptManager.RegisterPostBackControl(this.gdTaskUsers1);
-            //scriptManager.RegisterPostBackControl(this.TabPanel2);
-            //scriptManager.RegisterPostBackControl(this.TabPanel3);
-            //scriptManager.RegisterPostBackControl(this.TabPanel4);
-            //scriptManager.RegisterPostBackControl(this.TabPanel5);
-
-            // scriptManager.RegisterPostBackControl(this.reapeaterLogAudio);
-            //scriptManager.RegisterPostBackControl(this.tpTaskHistory_Videos);
-            //scriptManager.RegisterPostBackControl(this.tpTaskHistory_FilesAndDocs);
-            //scriptManager.RegisterPostBackControl(this.tpTaskHistory_Images);
+            CommonFunction.AuthenticateUser();
 
             if (!IsPostBack)
             {
-                this.IsAdminMode = CommonFunction.CheckAdminMode();
-
                 clearAllFormData();
+
+                this.IsAdminMode = CommonFunction.CheckAdminMode();
+                this.IsAdminAndItLeadMode = CommonFunction.CheckAdminAndItLeadMode();
 
                 SetTaskView();
 
-                LoadPopupDropdown();
-
-                cmbStatus.DataSource = CommonFunction.GetTaskStatusList();
-                cmbStatus.DataTextField = "Text";
-                cmbStatus.DataValueField = "Value";
-                cmbStatus.DataBind();
-
-                ddlSubTaskStatus.DataSource = CommonFunction.GetTaskStatusList();
-                ddlSubTaskStatus.DataTextField = "Text";
-                ddlSubTaskStatus.DataValueField = "Value";
-                ddlSubTaskStatus.DataBind();
-
-                ddlTUStatus.DataSource = CommonFunction.GetTaskStatusList();
-                ddlTUStatus.DataTextField = "Text";
-                ddlTUStatus.DataValueField = "Value";
-                ddlTUStatus.DataBind();
-
-                this.LastSubTaskSequence = string.Empty;
+                FillDropdowns();
 
                 // edit mode, if task id is provided in query string parameter.
                 if (!string.IsNullOrEmpty(Request.QueryString["TaskId"]))
                 {
                     controlMode.Value = "1";
                     hdnTaskId.Value = Request.QueryString["TaskId"].ToString();
-                    LoadTaskData(hdnTaskId.Value);
-                    //divTableNote.Visible = true;
-                    if (Session[JG_Prospect.Common.SessionKey.Key.usertype.ToString()] == "Admin")
-                    {
-                        txtDescription.Enabled = true;
-                        divAddNoteOrImage.Visible = true;
-                        divAddNoteOrImage1.Visible = false;
-                    }
-                    else
-                    {
-                        txtDescription.Enabled = false;
-                        divAddNoteOrImage.Visible = false;
-                        divAddNoteOrImage1.Visible = true;
-                    }
                 }
                 else
                 {
-                    //divTableNote.Visible = false;
                     controlMode.Value = "0";
-                    txtDescription.Enabled = true;
+                    hdnTaskId.Value = "0";
 
-                    txtDescription.Text = " Hi " + Session[JG_Prospect.Common.SessionKey.Key.Username.ToString()] + ", How are you. Thank you for accepting to this task. \n\n";
-                    txtDescription.Text = txtDescription.Text + "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n\n";
+                    // set default specs in progress status for It Leads.
+                    if (this.IsAdminAndItLeadMode)
+                    {
+                        ListItem objSpecsInProgress = cmbStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString());
+                        objSpecsInProgress.Enabled = true;
+                        objSpecsInProgress.Selected = true;
+                        //cmbStatus.Enabled = false;
+                    }
+                }
 
-                    divAddNoteOrImage.Visible = false;
-                    divAddNoteOrImage1.Visible = false;
+                string strAction = Convert.ToString(Request.QueryString["Action"]);
+
+                if (!string.IsNullOrEmpty(strAction) && strAction == "tws")
+                {
+                    ShowWorkSpecificationSection(true);
                 }
             }
-            txtNote.Focus();
+
+            #region Task Work Specifications
+
+            objucTaskWorkSpecifications.TaskId = Convert.ToInt32(hdnTaskId.Value);
+            objucTaskWorkSpecifications.TaskStatus = (JGConstant.TaskStatus)(Convert.ToInt32(cmbStatus.SelectedValue));
+            objucTaskWorkSpecifications.UserAcceptance = Convert.ToBoolean(Convert.ToInt32(ddlUserAcceptance.SelectedValue));
+            objucTaskWorkSpecifications.IsAdminMode = this.IsAdminMode;
+            objucTaskWorkSpecifications.IsAdminAndItLeadMode = this.IsAdminAndItLeadMode;
+
+            #endregion
+
+            #region Sub Tasks
+
+            int intHighlightedTaskId = 0;
+
+            if (Request.QueryString["hstid"]!= null)
+            {
+                intHighlightedTaskId = Convert.ToInt32(Request.QueryString["hstid"].ToString());
+            }
+
+            objucSubTasks_Admin.TaskId = Convert.ToInt32(hdnTaskId.Value);
+            objucSubTasks_Admin.TaskStatus = (JGConstant.TaskStatus)(Convert.ToInt32(cmbStatus.SelectedValue));
+            objucSubTasks_Admin.UserAcceptance = Convert.ToBoolean(Convert.ToInt32(ddlUserAcceptance.SelectedValue));
+            objucSubTasks_Admin.HighlightedTaskId = intHighlightedTaskId;
+            objucSubTasks_Admin.IsAdminMode = this.IsAdminMode;
+            objucSubTasks_Admin.controlMode = controlMode.Value;
+            objucSubTasks_Admin.SetSubTaskView();
+
+            objucSubTasks_User.TaskId = Convert.ToInt32(hdnTaskId.Value);
+            objucSubTasks_User.HighlightedTaskId = intHighlightedTaskId;
+            objucSubTasks_User.IsAdminMode = this.IsAdminMode;
+            objucSubTasks_User.controlMode = controlMode.Value;
+            objucSubTasks_User.SetSubTaskView();
+
+            #endregion
+
+            #region Task History
+
+            objucTaskHistory_Admin.TaskId = Convert.ToInt64(hdnTaskId.Value);
+            objucTaskHistory_Admin.TaskStatus = (JGConstant.TaskStatus)(Convert.ToInt32(cmbStatus.SelectedValue));
+            objucTaskHistory_Admin.UserAcceptance = Convert.ToBoolean(Convert.ToInt32(ddlUserAcceptance.SelectedValue));
+            objucTaskHistory_Admin.LoadTaskData = LoadTaskData;
+
+            objucTaskHistory_User.TaskId = Convert.ToInt64(hdnTaskId.Value);
+            objucTaskHistory_User.TaskStatus = (JGConstant.TaskStatus)(Convert.ToInt32(cmbStatus.SelectedValue));
+            objucTaskHistory_User.UserAcceptance = Convert.ToBoolean(Convert.ToInt32(ddlUserAcceptance.SelectedValue));
+            objucTaskHistory_User.LoadTaskData = LoadTaskData;
+
+            #endregion
+
+            if (!IsPostBack)
+            {
+                if (hdnTaskId.Value != "0")
+                {
+                    LoadTaskData(hdnTaskId.Value);
+                }
+            }
         }
 
         #endregion
@@ -220,7 +232,7 @@ namespace JG_Prospect.Sr_App
         {
             LoadUsersByDesgination();
 
-            ddcbAssigned_SelectedIndexChanged(sender, e);
+            ddlAssignedUsers_SelectedIndexChanged(sender, e);
 
             ddlUserDesignation.Texts.SelectBoxCaption = "Select";
 
@@ -234,47 +246,15 @@ namespace JG_Prospect.Sr_App
             }
         }
 
-        protected void ddcbAssigned_SelectedIndexChanged(object sender, EventArgs e)
+        protected void ddlAssignedUsers_SelectedIndexChanged(object sender, EventArgs e)
         {
-            #region 'Commented as Not needed'
-            /*
-            if (controlMode.Value == "0")
-            {
-                DataSet dsUsers = new DataSet();
-                DataSet tempDs;
-                List<string> SelectedUsersID = new List<string>();
-                List<string> SelectedUsers = new List<string>();
-                foreach (System.Web.UI.WebControls.ListItem item in ddcbAssigned.Items)
-                {
-                    if (item.Selected)
-                    {
-                        SelectedUsersID.Add(item.Value);
-                        SelectedUsers.Add(item.Text);
-                        tempDs = TaskGeneratorBLL.Instance.GetInstallUserDetails(Convert.ToInt32(item.Value));
-                        dsUsers.Merge(tempDs);
-                    }
-                }
-                if (dsUsers.Tables.Count != 0)
-                {
-                    gdTaskUsers.DataSource = dsUsers;
-                    gdTaskUsers.DataBind();
-                }
-                else
-                {
-                    gdTaskUsers.DataSource = null;
-                    gdTaskUsers.DataBind();
-                }
-            } 
-            */
-            #endregion
+            ddlAssignedUsers.Texts.SelectBoxCaption = "--Open--";
 
-            ddcbAssigned.Texts.SelectBoxCaption = "--Open--";
-
-            foreach (ListItem item in ddcbAssigned.Items)
+            foreach (ListItem item in ddlAssignedUsers.Items)
             {
                 if (item.Selected)
                 {
-                    ddcbAssigned.Texts.SelectBoxCaption = item.Text;
+                    ddlAssignedUsers.Texts.SelectBoxCaption = item.Text;
                     break;
                 }
             }
@@ -313,269 +293,17 @@ namespace JG_Prospect.Sr_App
                 }
 
                 lbtnAttchment.CommandArgument = file;
-
-                //if (e.Item.ItemIndex == intTaskUserFilesCount - 1)
-                //{
-                //    e.Item.FindControl("ltrlSeprator").Visible = false;
-                //}
             }
         }
-
-        #region '--Sub Tasks--'
-
-        #region '--gvSubTasks--'
-
-        protected void gvSubTasks_RowDataBound(object sender, GridViewRowEventArgs e)
-        {
-            if (e.Row.RowType == DataControlRowType.DataRow)
-            {
-                DropDownList ddlStatus = e.Row.FindControl("ddlStatus") as DropDownList;
-                ddlStatus.DataSource = CommonFunction.GetTaskStatusList();
-                ddlStatus.DataTextField = "Text";
-                ddlStatus.DataValueField = "Value";
-                ddlStatus.DataBind();
-
-                if (!string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "Status").ToString()))
-                {
-                    ddlStatus.SelectedValue = DataBinder.Eval(e.Row.DataItem, "Status").ToString();
-                }
-
-                if (!this.IsAdminMode)
-                {
-                    if (!ddlStatus.SelectedValue.Equals(Convert.ToByte(TaskStatus.ReOpened).ToString()))
-                    {
-                        ddlStatus.Items.FindByValue(Convert.ToByte(TaskStatus.ReOpened).ToString()).Enabled = false;
-                    }
-                }
-
-                if (controlMode.Value == "0")
-                {
-                    ddlStatus.Attributes.Add("SubTaskIndex", e.Row.RowIndex.ToString());
-                }
-                else
-                {
-                    ddlStatus.Attributes.Add("TaskId", DataBinder.Eval(e.Row.DataItem, "TaskId").ToString());
-                }
-
-                if (!string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "attachment").ToString()))
-                {
-                    string attachments = DataBinder.Eval(e.Row.DataItem, "attachment").ToString();
-                    string[] attachment = attachments.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-
-                    intTaskUserFilesCount = attachment.Length;
-
-                    Repeater rptAttachments = (Repeater)e.Row.FindControl("rptAttachment");
-                    rptAttachments.DataSource = attachment;
-                    rptAttachments.DataBind();
-                }
-            }
-        }
-
-        protected void gvSubTasks_RowCommand(object sender, GridViewCommandEventArgs e)
-        {
-            if (e.CommandName.Equals("edit-sub-task"))
-            {
-                ClearSubTaskData();
-
-                hdnSubTaskId.Value = "0";
-                hdnSubTaskIndex.Value = "-1";
-
-                if (controlMode.Value == "0")
-                {
-                    hdnSubTaskIndex.Value = e.CommandArgument.ToString();
-
-                    Task objTask = this.lstSubTasks[Convert.ToInt32(hdnSubTaskIndex.Value)];
-
-                    txtTaskListID.Text = objTask.InstallId.ToString();
-                    txtSubTaskTitle.Text = Server.HtmlDecode(objTask.Title);
-                    txtSubTaskDescription.Text = Server.HtmlDecode(objTask.Description);
-
-                    if (objTask.TaskType.HasValue && ddlTaskType.Items.FindByValue(objTask.TaskType.Value.ToString()) != null)
-                    {
-                        ddlTaskType.SelectedValue = objTask.TaskType.Value.ToString();
-                    }
-
-                    txtSubTaskDueDate.Text = CommonFunction.FormatToShortDateString(objTask.DueDate);
-                    txtSubTaskHours.Text = objTask.Hours;
-                    ddlSubTaskStatus.SelectedValue = objTask.Status.ToString();
-                }
-                else
-                {
-                    hdnSubTaskId.Value = gvSubTasks.DataKeys[Convert.ToInt32(e.CommandArgument)]["TaskId"].ToString();
-
-                    DataSet dsTaskDetails = TaskGeneratorBLL.Instance.GetTaskDetails(Convert.ToInt32(hdnSubTaskId.Value));
-
-                    DataTable dtTaskMasterDetails = dsTaskDetails.Tables[0];
-
-                    txtTaskListID.Text = dtTaskMasterDetails.Rows[0]["InstallId"].ToString();
-                    txtSubTaskTitle.Text = Server.HtmlDecode(dtTaskMasterDetails.Rows[0]["Title"].ToString());
-                    txtSubTaskDescription.Text = Server.HtmlDecode(dtTaskMasterDetails.Rows[0]["Description"].ToString());
-
-                    ListItem item = ddlTaskType.Items.FindByValue(dtTaskMasterDetails.Rows[0]["TaskType"].ToString());
-
-                    if (item != null)
-                    {
-                        ddlTaskType.SelectedIndex = ddlTaskType.Items.IndexOf(item);
-                    }
-
-                    txtSubTaskDueDate.Text = CommonFunction.FormatToShortDateString(dtTaskMasterDetails.Rows[0]["DueDate"]);
-                    txtSubTaskHours.Text = dtTaskMasterDetails.Rows[0]["Hours"].ToString();
-                    ddlSubTaskStatus.SelectedValue = dtTaskMasterDetails.Rows[0]["Status"].ToString();
-                    if (!this.IsAdminMode)
-                    {
-                        if (!ddlSubTaskStatus.SelectedValue.Equals(Convert.ToByte(TaskStatus.ReOpened).ToString()))
-                        {
-                            ddlSubTaskStatus.Items.FindByValue(Convert.ToByte(TaskStatus.ReOpened).ToString()).Enabled = false;
-                        }
-                    }
-                    trSubTaskStatus.Visible = true;
-                }
-
-                upAddSubTask.Update();
-
-                ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slid down sub task", "$('#" + divSubTask.ClientID + "').slideDown('slow');", true);
-            }
-        }
-
-        protected void gvSubTasks_ddlStatus_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            DropDownList ddlStatus = sender as DropDownList;
-            if (controlMode.Value == "0")
-            {
-                this.lstSubTasks[Convert.ToInt32(ddlStatus.Attributes["SubTaskIndex"].ToString())].Status = Convert.ToInt32(ddlStatus.SelectedValue);
-
-                SetSubTaskDetails(this.lstSubTasks);
-            }
-            else
-            {
-                TaskGeneratorBLL.Instance.UpdateTaskStatus
-                                            (
-                                                new Task()
-                                                {
-                                                    TaskId = Convert.ToInt32(ddlStatus.Attributes["TaskId"].ToString()),
-                                                    Status = Convert.ToInt32(ddlStatus.SelectedValue)
-                                                }
-                                            );
-
-                SetSubTaskDetails(TaskGeneratorBLL.Instance.GetSubTasks(Convert.ToInt32(hdnTaskId.Value)).Tables[0]);
-            }
-        }
-
-
-        protected void gvNotesFiles_RowDataBound(object sender, GridViewRowEventArgs e)
-        {
-            if (e.Row.RowType == DataControlRowType.DataRow)
-            {
-                if (!string.IsNullOrEmpty(DataBinder.Eval(e.Row.DataItem, "attachment").ToString()))
-                {
-                    string attachments = DataBinder.Eval(e.Row.DataItem, "attachment").ToString();
-                    string[] attachment = attachments.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-
-                    intTaskUserFilesCount = attachment.Length;
-
-                    Repeater rptAttachments = (Repeater)e.Row.FindControl("rptAttachment");
-                    rptAttachments.DataSource = attachment;
-                    rptAttachments.DataBind();
-                }
-            }
-        }
-
-
-
-        #endregion
-
-        protected void lbtnAddNewSubTask_Click(object sender, EventArgs e)
-        {
-            ClearSubTaskData();
-            string[] subtaskListIDSuggestion = CommonFunction.getSubtaskSequencing(this.LastSubTaskSequence);
-            if (subtaskListIDSuggestion.Length > 0)
-            {
-                if (subtaskListIDSuggestion.Length > 1)
-                {
-                    if (String.IsNullOrEmpty(subtaskListIDSuggestion[1]))
-                    {
-                        txtTaskListID.Text = subtaskListIDSuggestion[0];
-
-                    }
-                    else
-                    {
-                        txtTaskListID.Text = subtaskListIDSuggestion[1];
-                        listIDOpt.Text = subtaskListIDSuggestion[0];
-
-                    }
-
-                }
-                else
-                {
-                    txtTaskListID.Text = subtaskListIDSuggestion[0];
-                    //listIDOpt.Text = subtaskListIDSuggestion[0];
-                }
-            }
-            ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slid down sub task", "$('#" + divSubTask.ClientID + "').slideDown('slow');", true);
-        }
-
-        protected void ddlTaskType_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (ddlTaskType.SelectedValue == Convert.ToInt16(TaskType.Enhancement).ToString())
-            {
-                trDateHours.Visible = true;
-            }
-            else
-            {
-                trDateHours.Visible = false;
-            }
-            ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slid down sub task", "$('#" + divSubTask.ClientID + "').slideDown('slow');", true);
-        }
-
-        protected void btnSaveSubTask_Click(object sender, EventArgs e)
-        {
-            SaveSubTask();
-            ScriptManager.RegisterStartupScript(this.Page, this.Page.GetType(), "slid up sub task", "$('#" + divSubTask.ClientID + "').slideUp('slow');", true);
-        }
-
-        #endregion
 
         protected void btnSaveTask_Click(object sender, EventArgs e)
         {
-            //Save task master details
-            SaveTask();
-
-            // Save assgined designation.
-            SaveTaskDesignations();
-
-            //Save details of users to whom task is assgined.
-            SaveAssignedTaskUsers(ddcbAssigned, (TaskStatus)Convert.ToByte(cmbStatus.SelectedItem.Value));
-
-            //if (controlMode.Value == "0")
-            //{
-            //    foreach (DataRow drTaskUserFiles in this.dtTaskUserFiles.Rows)
-            //    {
-            //        UploadUserAttachements(null, Convert.ToInt64(hdnTaskId.Value), Convert.ToString(drTaskUserFiles["attachment"]));
-            //    }
-            //}
-
-            if (this.lstSubTasks.Any())
+            if (ValidateTaskStatus())
             {
-                foreach (Task objSubTask in this.lstSubTasks)
-                {
-                    objSubTask.ParentTaskId = Convert.ToInt32(hdnTaskId.Value);
-                    // save task master details to database.
-                    hdnSubTaskId.Value = TaskGeneratorBLL.Instance.SaveOrDeleteTask(objSubTask).ToString();
+                InsertUpdateTask();
 
-                    UploadUserAttachements(null, Convert.ToInt64(hdnSubTaskId.Value), objSubTask.Attachment);
-                }
+                RedirectToViewTasks();
             }
-
-            if (controlMode.Value == "0")
-            {
-                ScriptManager.RegisterStartupScript(this.Page, GetType(), "closepopup", "CloseTaskPopup();", true);
-            }
-            else
-            {
-                CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Task updated successfully!");
-            }
-
-            SearchTasks(null);
         }
 
         protected void lbtnDeleteTask_Click(object sender, EventArgs e)
@@ -584,903 +312,252 @@ namespace JG_Prospect.Sr_App
             ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "HidePopup", "CloseTaskPopup();", true);
         }
 
-        #region '--Task History--'
+        #region '--Task Acceptance--'
 
-        protected void btnAddNote_Click(object sender, EventArgs e)
+        protected void lbtnAcceptTask_Click(object sender, EventArgs e)
         {
-            string notes = string.Empty;
-            if (!string.IsNullOrEmpty(Request.QueryString["TaskId"]))
+            bool isSuccessful = TaskGeneratorBLL.Instance.SaveTaskAssignedUsers(Convert.ToUInt64(hdnTaskId.Value), JG_Prospect.JGSession.UserId.ToString());
+            if (isSuccessful)
             {
-                if (Session[JG_Prospect.Common.SessionKey.Key.usertype.ToString()] == "Admin")
-                    notes = txtNote.Text;
-                else
-                    notes = txtNote1.Text;
+                TaskAcceptance objTaskAcceptance = new TaskAcceptance();
+                objTaskAcceptance.IsAccepted = true;
+                objTaskAcceptance.IsInstallUser = JGSession.IsInstallUser.Value;
+                objTaskAcceptance.UserId = JGSession.UserId;
+                objTaskAcceptance.TaskId = Convert.ToInt64(hdnTaskId.Value);
+
+                if (TaskGeneratorBLL.Instance.InsertTaskAcceptance(objTaskAcceptance) >= 0)
+                {
+                    divAcceptRejectButtons.Visible = false;
+                }
+
+                CommonFunction.ShowAlertFromUpdatePanel(this, "Task accepted successfully");
             }
             else
             {
-
-                //string description = string.Empty;
-                //if (txtDescription.Text.Contains("-"))
-                //    description = txtDescription.Text.Replace("-", "");
-                //else
-                //    description = txtDescription.Text;
-
-                notes = Server.HtmlEncode(txtDescription.Text);
-            }
-
-            if (string.IsNullOrEmpty(notes))
-                return;
-
-            SaveTaskNotesNAttachments();
-
-            //if (!string.IsNullOrEmpty(hdnNoteId.Value))
-            //{
-            //    btnCancelUpdateNote.Visible = false;
-            //    btnCancelUpdateNote1.Visible = false;
-
-            //}
-
-            hdnNoteId.Value = "";
-            hdnAttachments.Value = "";
-            //tpTaskHistory_Notes.TabIndex = 0;
-            //btnAddNote.Text = "Save Note";
-            //btnAddNote1.Text = "Save Note";
-            //tcTaskHistory
-        }
-
-        protected void btnUploadLogFiles_Click(object sender, EventArgs e)
-        {
-            UploadUserAttachements(null, Convert.ToInt32(hdnTaskId.Value), hdnNoteAttachments.Value);
-            LoadTaskData(hdnTaskId.Value);
-            hdnNoteAttachments.Value = "";
-        }
-
-        //protected void datalistLogDoc_ItemDataBound(object sender, DataListItemEventArgs e)
-        //{
-
-        //    if (datalistLogDoc.Items.Count > 0)
-        //    {
-
-        //    }
-        //}
-
-        //protected void datalistLogDoc_ItemCommand(object source, DataListCommandEventArgs e)
-        //{
-        //    if (e.CommandName == "viewFile") 
-        //    {
-        //        LinkButton btndetails = (LinkButton)e.CommandSource;
-        //        DataListItem gvrow = (DataListItem)btndetails.NamingContainer;
-        //        LinkButton txtAttachment = (LinkButton)gvrow.FindControl("linkOriginalfileName");
-        //        Label fileExtension = (Label)gvrow.FindControl("lableFileExtension");
-
-        //    }
-
-        //    if (e.CommandName == "DownLoadFiles")
-        //    {
-        //        // Allow download only if files are attached.
-        //        if (!String.IsNullOrEmpty(e.CommandArgument.ToString()))
-        //        {
-        //            DownloadUserAttachments(e.CommandArgument.ToString());
-        //        }
-        //    }
-        //}
-
-        protected void gdTaskUsers_RowDataBound(object sender, GridViewRowEventArgs e)
-        {
-            if (e.Row.RowType == DataControlRowType.DataRow)
-            {
-                string notes = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "Notes"));
-                string filefullName = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "Attachment"));
-                string FileType = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "FileType"));
-                string AttachmentOriginal = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "AttachmentOriginal"));
-
-                Label labelNotes = (Label)e.Row.FindControl("lblNotes");
-                Image imgFile = (Image)e.Row.FindControl("imgFile");
-                LinkButton linkOriginalfileName = (LinkButton)e.Row.FindControl("linkOriginalfileName");
-                Label lableOriginalfileName = (Label)e.Row.FindControl("lableOriginalfileName");
-                Button btnEdit = (Button)e.Row.FindControl("ButtonEdit");
-                LinkButton linkDownLoadFiles = (LinkButton)e.Row.FindControl("linkDownLoadFiles");
-
-
-                
-                if (labelNotes != null)
-                {
-                    if (!string.IsNullOrEmpty(notes))
-                    {
-                        labelNotes.Visible = true;
-                        imgFile.Visible = false;
-                        linkDownLoadFiles.Visible = false;
-                        linkOriginalfileName.Visible = false;
-                    }
-                    else
-                    {
-                        labelNotes.Visible = false;
-                        imgFile.Visible = true;
-                        linkDownLoadFiles.Visible = true;
-
-
-                        if (Convert.ToString((int)Utilits.Type.images) == FileType)
-                        {
-                            string filePath = "../TaskAttachments/" + filefullName;
-                            imgFile.ImageUrl = filePath;
-                            linkOriginalfileName.Visible = true;
-                            lableOriginalfileName.Visible = false;
-                        }
-                        if (Convert.ToString((int)Utilits.Type.docu) == FileType)
-                        {
-                            string fileExtension = Path.GetExtension(AttachmentOriginal);
-                            if (fileExtension.ToLower().Equals(".doc") || fileExtension.ToLower().Equals(".docx"))
-                                imgFile.ImageUrl = "../img/word.jpg";
-                            else if (fileExtension.ToLower().Equals(".xlx") || fileExtension.ToLower().Equals(".xlsx"))
-                                imgFile.ImageUrl = "../img/xls.png";
-                            else if (fileExtension.ToLower().Equals(".pdf"))
-                                imgFile.ImageUrl = "../img/pdf.jpg";
-                            else if (fileExtension.ToLower().Equals(".csv"))
-                                imgFile.ImageUrl = "../img/csv.png";
-                            else
-                                imgFile.ImageUrl = "../img/file.jpg";
-                            linkOriginalfileName.Visible = false;
-                            lableOriginalfileName.Visible = true;
-                        }
-                        if (Convert.ToString((int)Utilits.Type.audio) == FileType)
-                        {
-                            imgFile.ImageUrl = "../img/audio.png";
-                            linkOriginalfileName.Visible = true;
-                            lableOriginalfileName.Visible = false;
-                        }
-                        if (Convert.ToString((int)Utilits.Type.video) == FileType)
-                        {
-                            imgFile.ImageUrl = "../img/video.png";
-
-                            linkOriginalfileName.Visible = true;
-                            lableOriginalfileName.Visible = false;
-                        }
-                    }
-
-                    if (Session[JG_Prospect.Common.SessionKey.Key.usertype.ToString()] == "Admin" || Session[JG_Prospect.Common.SessionKey.Key.usertype.ToString()] == "IT Lead")
-                    {
-                        if (!string.IsNullOrEmpty(notes))
-                        {
-                            if (notes.Contains("Task Description :"))
-                            {
-                                btnEdit.Visible = false;
-                            }
-                            else
-                            {
-                                btnEdit.Visible = true;
-                            }
-                        }
-                        else
-                        {
-                            btnEdit.Visible = false;
-                        }
-                    }
-                }
+                CommonFunction.ShowAlertFromUpdatePanel(this, "Task acceptance was not successfull, Please try again later.");
             }
         }
 
-        protected void gdTaskUsers_RowCommand(object sender, GridViewCommandEventArgs e)
+        protected void lbtnRejectTask_Click(object sender, EventArgs e)
         {
-            if (e.CommandName == "DownLoadFiles")
+            TaskAcceptance objTaskAcceptance = new TaskAcceptance();
+            objTaskAcceptance.IsAccepted = false;
+            objTaskAcceptance.IsInstallUser = JGSession.IsInstallUser.Value;
+            objTaskAcceptance.UserId = JGSession.UserId;
+            objTaskAcceptance.TaskId = Convert.ToInt64(hdnTaskId.Value);
+
+            if (TaskGeneratorBLL.Instance.InsertTaskAcceptance(objTaskAcceptance) >= 0)
             {
-                // Allow download only if files are attached.
-                if (!String.IsNullOrEmpty(e.CommandArgument.ToString()))
-                {
-                    DownloadUserAttachments(e.CommandArgument.ToString());
-                }
-            }
+                divAcceptRejectButtons.Visible = false;
 
-            if (e.CommandName == "viewFile")
-            {
-                LinkButton btndetails = (LinkButton)e.CommandSource;
-                GridViewRow gvrow = (GridViewRow)btndetails.NamingContainer;
-                LinkButton txtAttachment = (LinkButton)gvrow.FindControl("linkOriginalfileName");
-                Label FileType = (Label)gvrow.FindControl("lableFileType");
-                string fileExtension = Path.GetExtension(txtAttachment.Text);
-
-                imgPreview.ImageUrl = "";
-                imgPreview.Visible = false;
-                divAudio.Visible = false;
-                divVideo.Visible = false;
-
-                if (Convert.ToString((int)Utilits.Type.images) == FileType.Text)
-                {
-                    imgPreview.ImageUrl = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
-                    imgPreview.Visible = true;
-                    divAudio.Visible = false;
-                    divVideo.Visible = false;
-                }
-
-                if (Convert.ToString((int)Utilits.Type.audio) == FileType.Text)
-                {
-                    imgPreview.Visible = false;
-                    divAudio.Visible = true;
-                    divVideo.Visible = false;
-
-                    if (fileExtension.ToLower().Equals(".mp3"))
-                        audiomp3.Src = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
-
-                    if (fileExtension.ToLower().Equals(".mp4"))
-                        audiomp4.Src = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
-
-                    if (fileExtension.ToLower().Equals(".wma"))
-                        audiowma.Src = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
-                }
-                if (Convert.ToString((int)Utilits.Type.video) == FileType.Text)
-                {
-                    imgPreview.Visible = false;
-                    divAudio.Visible = false;
-                    divVideo.Visible = true;
-
-
-                    if (fileExtension.ToLower().Equals(".mkv"))
-                        videomp4.Src = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
-
-                    if (fileExtension.ToLower().Equals(".mp4"))
-                        videomp4.Src = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
-
-                    if (fileExtension.ToLower().Equals(".3gpp"))
-                        video3gpp.Src = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
-
-                    if (fileExtension.ToLower().Equals(".mpeg"))
-                        videompeg.Src = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
-
-                    if (fileExtension.ToLower().Equals(".wmv"))
-                        videowmv.Src = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
-
-                    if (fileExtension.ToLower().Equals(".webm"))
-                        videowebm.Src = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
-
-                }
-                lblFileName.Text = txtAttachment.Text;
-                Popup(true);
-            }
-        }
-
-        protected void gdTaskUsersNotes_RowDataBound(object sender, GridViewRowEventArgs e)
-        {
-            if (e.Row.RowType == DataControlRowType.DataRow)
-            {
-                string notes = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "Notes"));
-                Button btnEdit = (Button)e.Row.FindControl("ButtonEdit");
-                //if (Session[JG_Prospect.Common.SessionKey.Key.usertype.ToString()] == "Admin" || Session[JG_Prospect.Common.SessionKey.Key.usertype.ToString()] == "IT Lead")
-                //{
-                if (btnEdit != null)
-                {
-                    if (!string.IsNullOrEmpty(notes))
-                    {
-                        if (notes.Contains("Task Description :"))
-                        {
-                            btnEdit.Visible = false;
-                        }
-                        else
-                        {
-                            btnEdit.Visible = true;
-                        }
-                    }
-                    else
-                    {
-                        btnEdit.Visible = false;
-                    }
-                }
-                //}
-            }
-        }
-        protected void reapeaterLogImages_ItemCommand(object source, RepeaterCommandEventArgs e)
-        {
-            if (e.CommandName == "DownLoadFiles")
-            {
-                //var linkAttachment = e.Item.FindControl("linkOriginalfileName") as LinkButton;
-
-                // Allow download only if files are attached.
-                if (!String.IsNullOrEmpty(e.CommandArgument.ToString()))
-                {
-                    DownloadUserAttachments(e.CommandArgument.ToString());
-                }
-            }
-
-            if (e.CommandName == "viewFile")
-            {
-                LinkButton btndetails = (LinkButton)e.CommandSource;
-
-                var linkAttachment = e.Item.FindControl("linkOriginalfileName") as LinkButton;
-                var FileType = e.Item.FindControl("lableFileType") as Label;
-
-
-                //string fileExtension = Path.GetExtension(linkAttachment.Text);
-
-                //imgPreview.ImageUrl = "";
-                //imgPreview.Visible = false;
-                //divAudioVido.Visible = false;
-
-                //if (Convert.ToString((int)Utilits.Type.images) == FileType.Text)
-                //{
-                //    imgPreview.ImageUrl = "../TaskAttachments/" + linkAttachment.CommandArgument.ToString();
-                //    imgPreview.Visible = true;
-                //    divAudioVido.Visible = false;
-                //}
-
-                //if (Convert.ToString((int)Utilits.Type.audio) == FileType.Text)
-                //{
-
-                //    if (fileExtension.ToLower().Equals(".mp3"))
-                //      //  mp3audioTab.Src = "../TaskAttachments/" + linkAttachment.CommandArgument.ToString();
-
-                //    if (fileExtension.ToLower().Equals(".mp4"))
-                //        audiomp4.Src = "../TaskAttachments/" + linkAttachment.CommandArgument.ToString();
-
-                //    if (fileExtension.ToLower().Equals(".wma"))
-                //        audiowma.Src = "../TaskAttachments/" + linkAttachment.CommandArgument.ToString();
-
-                //   // modelTab.Show();
-                //}
-                //if (Convert.ToString((int)Utilits.Type.video) == FileType.Text)
-                //{
-                //    imgPreview.Visible = false;
-                //    divAudioVido.Visible = true;
-
-                //    if (fileExtension.ToLower().Equals(".mkv"))
-                //       // mp4videoTab.Src = "../TaskAttachments/" + linkAttachment.CommandArgument.ToString();
-
-                //    if (fileExtension.ToLower().Equals(".mp4"))
-                //            videomp4.Src = "../TaskAttachments/" + linkAttachment.CommandArgument.ToString();
-
-                //    if (fileExtension.ToLower().Equals(".3gpp"))
-                //        video3gpp.Src = "../TaskAttachments/" + linkAttachment.CommandArgument.ToString();
-
-                //    if (fileExtension.ToLower().Equals(".mpeg"))
-                //        videompeg.Src = "../TaskAttachments/" + linkAttachment.CommandArgument.ToString();
-
-                //    if (fileExtension.ToLower().Equals(".wmv"))
-                //        videowmv.Src = "../TaskAttachments/" + linkAttachment.CommandArgument.ToString();
-
-                //    if (fileExtension.ToLower().Equals(".webm"))
-                //        videowebm.Src = "../TaskAttachments/" + linkAttachment.CommandArgument.ToString();
-                //}
-                lblFName.Text = linkAttachment.Text;
-
-                //ClientScript.RegisterStartupScript(GetType(), "Javascript", "javascript:ShowPopupLogFile(); ", true);
-
-                //Page.ClientScript.RegisterStartupScript(this.GetType(), "CallMyFunction", "ShowPopupLogFile()", true);
-                mpe.Show();
-            }
-        }
-        void Popup(bool isDisplay)
-        {
-            StringBuilder builder = new StringBuilder();
-            if (isDisplay)
-            {
-                builder.Append("<script language=JavaScript> ShowPopupLogFile(); </script>\n");
-                Page.ClientScript.RegisterStartupScript(this.GetType(), "ShowPopupLogFile", builder.ToString());
+                CommonFunction.ShowAlertFromUpdatePanel(this, "Task rejected successfully");
             }
             else
             {
-                builder.Append("<script language=JavaScript> HidePopup(); </script>\n");
-                Page.ClientScript.RegisterStartupScript(this.GetType(), "HidePopupLogFile", builder.ToString());
+                CommonFunction.ShowAlertFromUpdatePanel(this, "Task rejection was not successfull, Please try again later.");
             }
         }
 
-        protected void gdTaskUsers1_RowDataBound(object sender, GridViewRowEventArgs e)
+        protected void lbtnViewAcceptanceLog_Click(object sender, EventArgs e)
         {
-            if (e.Row.RowType == DataControlRowType.DataRow)
-            {
-                string notes = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "Notes"));
-                string filefullName = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "Attachment"));
-                string FileType = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "FileType"));
-                string AttachmentOriginal = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "AttachmentOriginal"));
+            FillAcceptanceLog();
 
-                Label labelNotes = (Label)e.Row.FindControl("lblNotes");
-                Image imgFile = (Image)e.Row.FindControl("imgFile");
-                LinkButton linkOriginalfileName = (LinkButton)e.Row.FindControl("linkOriginalfileName");
-                Label lableOriginalfileName = (Label)e.Row.FindControl("lableOriginalfileName");
-                Button btnEdit = (Button)e.Row.FindControl("ButtonEdit");
-                LinkButton linkDownLoadFiles = (LinkButton)e.Row.FindControl("linkDownLoadFiles");
+            upAcceptanceLog.Update();
 
-                if (labelNotes != null)
-                {
-                    if (!string.IsNullOrEmpty(notes))
-                    {
-                        labelNotes.Visible = true;
-                        imgFile.Visible = false;
-                        linkDownLoadFiles.Visible = false;
-                        linkOriginalfileName.Visible = false;
-                        btnEdit.Visible = true;
-                    }
-                    else
-                    {
-                        labelNotes.Visible = false;
-                        imgFile.Visible = true;
-                        linkDownLoadFiles.Visible = true;
-                        btnEdit.Visible = false;
-
-                        if (Convert.ToString((int)Utilits.Type.images) == FileType)
-                        {
-                            string filePath = "../TaskAttachments/" + filefullName;
-                            imgFile.ImageUrl = filePath;
-                            linkOriginalfileName.Visible = true;
-                            lableOriginalfileName.Visible = false;
-                        }
-                        if (Convert.ToString((int)Utilits.Type.docu) == FileType)
-                        {
-                            string fileExtension = Path.GetExtension(AttachmentOriginal);
-                            if (fileExtension.ToLower().Equals(".doc") || fileExtension.ToLower().Equals(".docx"))
-                                imgFile.ImageUrl = "../img/word.jpg";
-                            else if (fileExtension.ToLower().Equals(".xlx") || fileExtension.ToLower().Equals(".xlsx"))
-                                imgFile.ImageUrl = "../img/xls.png";
-                            else if (fileExtension.ToLower().Equals(".pdf"))
-                                imgFile.ImageUrl = "../img/pdf.jpg";
-                            else if (fileExtension.ToLower().Equals(".csv"))
-                                imgFile.ImageUrl = "../img/csv.png";
-                            else
-                                imgFile.ImageUrl = "../img/file.jpg";
-                            linkOriginalfileName.Visible = false;
-                            lableOriginalfileName.Visible = true;
-                        }
-                        if (Convert.ToString((int)Utilits.Type.audio) == FileType)
-                        {
-                            imgFile.ImageUrl = "../img/audio.png";
-                        }
-                        if (Convert.ToString((int)Utilits.Type.video) == FileType)
-                        {
-                            imgFile.ImageUrl = "../img/video.png";
-                        }
-                    }
-
-                    if (Session[JG_Prospect.Common.SessionKey.Key.usertype.ToString()] == "Admin" || Session[JG_Prospect.Common.SessionKey.Key.usertype.ToString()] == "IT Lead")
-                    {
-                        if (!string.IsNullOrEmpty(notes))
-                        {
-                            if (notes.Contains("Task Description :"))
-                            {
-                                btnEdit.Visible = false;
-                            }
-                            else
-                            {
-                                btnEdit.Visible = true;
-                            }
-                        }
-                        else
-                        {
-                            btnEdit.Visible = false;
-                        }
-                    }
-                    else
-                    {
-                        if (!string.IsNullOrEmpty(notes))
-                        {
-                            if (notes.Contains("Task Description :"))
-                            {
-                                btnEdit.Visible = false;
-                            }
-                            else
-                            {
-                                btnEdit.Visible = true;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        protected void gdTaskUsers1_RowCommand(object sender, GridViewCommandEventArgs e)
-        {
-            if (e.CommandName == "DownLoadFiles")
-            {
-                // Allow download only if files are attached.
-                if (!String.IsNullOrEmpty(e.CommandArgument.ToString()))
-                {
-                    DownloadUserAttachments(e.CommandArgument.ToString());
-                }
-            }
-
-            if (e.CommandName == "viewFile")
-            {
-                LinkButton btndetails = (LinkButton)e.CommandSource;
-                GridViewRow gvrow = (GridViewRow)btndetails.NamingContainer;
-                LinkButton txtAttachment = (LinkButton)gvrow.FindControl("linkOriginalfileName");
-                Label FileType = (Label)gvrow.FindControl("lableFileType");
-                string fileExtension = Path.GetExtension(txtAttachment.Text);
-
-                imgPreview.ImageUrl = "";
-                imgPreview.Visible = false;
-                divVideo.Visible = false;
-                divAudio.Visible = false;
-
-                if (Convert.ToString((int)Utilits.Type.images) == FileType.Text)
-                {
-                    imgPreview.ImageUrl = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
-                    imgPreview.Visible = true;
-                    divVideo.Visible = false;
-                    divAudio.Visible = false;
-                }
-
-                if (Convert.ToString((int)Utilits.Type.audio) == FileType.Text)
-                {
-                    divVideo.Visible = false;
-                    divAudio.Visible = true;
-
-                    if (fileExtension.ToLower().Equals(".mp3"))
-                        audiomp3.Src = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
-
-                    if (fileExtension.ToLower().Equals(".mp4"))
-                        audiomp4.Src = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
-
-                    if (fileExtension.ToLower().Equals(".wma"))
-                        audiowma.Src = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
-                }
-                if (Convert.ToString((int)Utilits.Type.video) == FileType.Text)
-                {
-                    imgPreview.Visible = false;
-                    divVideo.Visible = true;
-                    divAudio.Visible = false;
-
-                    if (fileExtension.ToLower().Equals(".mkv"))
-                        videomp4.Src = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
-
-                    if (fileExtension.ToLower().Equals(".mp4"))
-                        videomp4.Src = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
-
-                    if (fileExtension.ToLower().Equals(".3gpp"))
-                        video3gpp.Src = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
-
-                    if (fileExtension.ToLower().Equals(".mpeg"))
-                        videompeg.Src = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
-
-                    if (fileExtension.ToLower().Equals(".wmv"))
-                        videowmv.Src = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
-
-                    if (fileExtension.ToLower().Equals(".webm"))
-                        videowebm.Src = "../TaskAttachments/" + txtAttachment.CommandArgument.ToString();
-
-                }
-                lblFileName.Text = txtAttachment.Text;
-                Popup(true);
-            }
-        }
-
-        //protected void btnUpdateLogNotes_Click(object sender, EventArgs e)
-        //{
-        //    LinkButton btnEdit = (LinkButton)sender;
-        //    GridViewRow Grow = (GridViewRow)btnEdit.NamingContainer;
-        //    Label txtNotesId = (Label)Grow.FindControl("lblNoteId");
-        //    Label txtNotes = (Label)Grow.FindControl("lblNotes");
-
-        //    if (!string.IsNullOrEmpty(txtNotes.Text))
-        //    {
-        //        txtNote.Text = txtNotes.Text;
-        //        hdnNoteId.Value = txtNotesId.Text;
-        //        btnAddNote.Text = "Update Note";
-        //        btnAddNote1.Text = "Update Note";
-        //        btnCancelUpdateNote.Visible = true;
-        //        btnCancelUpdateNote1.Visible = true;
-        //        upTaskHistory.Update();
-        //    }
-
-        //    if (this.IsAdminMode)
-        //    {
-        //        txtNote.Focus();
-        //    }
-        //    else
-        //    {
-        //        txtNote1.Focus();
-        //    }
-        //}
-
-        //protected void btnCancelUpdateNote_Click(object sender, EventArgs e)
-        //{
-        //    txtNote.Text = "";
-        //    hdnNoteId.Value = "";
-        //    btnAddNote.Text = "Save Note";
-        //    btnAddNote1.Text = "Save Note";
-        //    btnCancelUpdateNote.Visible = false;
-        //    btnCancelUpdateNote1.Visible = false;
-        //    upTaskHistory.Update();
-        //}
-        #endregion
-
-        #region '--Work Specification - Popup--'
-
-        protected void btnAddAttachment_ClicK(object sender, EventArgs e)
-        {
-            if (!string.IsNullOrEmpty(hdnWorkFiles.Value))
-            {
-                if (controlMode.Value == "0")
-                {
-                    #region '-- Save And Refresh Viewstate --'
-
-                    foreach (string strAttachment in hdnWorkFiles.Value.Split('^'))
-                    {
-                        DataRow drTaskUserFiles = dtTaskUserFiles.NewRow();
-                        drTaskUserFiles["attachment"] = strAttachment;
-                        drTaskUserFiles["FirstName"] = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.Username.ToString()]);
-                        dtTaskUserFiles.Rows.Add(drTaskUserFiles);
-                    }
-
-                    FillrptWorkFiles(dtTaskUserFiles);
-
-                    #endregion
-                }
-                else
-                {
-                    #region '-- Save And Refresh Database --'
-
-                    UploadUserAttachements(null, Convert.ToInt32(hdnTaskId.Value), hdnWorkFiles.Value);
-
-                    DataSet dsTaskUserFiles = TaskGeneratorBLL.Instance.GetTaskUserFiles(Convert.ToInt32(hdnTaskId.Value));
-
-                    FillrptWorkFiles(dsTaskUserFiles.Tables[0]);
-
-                    #endregion
-                }
-
-                hdnWorkFiles.Value = "";
-                upFinishedWorkFiles.Update();
-            }
-        }
-
-        protected void lbtnWorkSpecificationFiles_Click(object sender, EventArgs e)
-        {
-            string strLastCheckedInBy = "";
-            string strLastVersionUpdateBy = "";
-
-            DataSet dsLatestTaskWorkSpecification = TaskGeneratorBLL.Instance.GetLatestTaskWorkSpecification
-                                                                                (
-                                                                                    Convert.ToInt32(hdnTaskId.Value),
-                                                                                    true
-                                                                                );
-
-            trFreezeWorkSpecification.Visible =
-            trSaveWorkSpecification.Visible =
-            lbtnDownloadWorkSpecificationFilePreview.Visible =
-            lbtnDownloadWorkSpecificationFile.Visible = false;
-
-            if (
-                dsLatestTaskWorkSpecification != null &&
-                dsLatestTaskWorkSpecification.Tables.Count == 2
-               )
-            {
-                // main / last freezed copy.
-                if (dsLatestTaskWorkSpecification.Tables[0].Rows.Count > 0)
-                {
-                    if (!string.IsNullOrEmpty(Convert.ToString(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUsername"])))
-                    {
-                        strLastCheckedInBy = dsLatestTaskWorkSpecification.Tables[0].Rows[0]["LastUsername"].ToString();
-
-                        ltrlLastCheckedInBy.Text = string.Format(
-                                                                "Last freeze by \'{0}\'.&nbsp;",
-                                                                strLastCheckedInBy
-                                                                );
-                        // show link to download freezed copy.
-                        lbtnDownloadWorkSpecificationFile.Visible = true;
-                    }
-                }
-
-                // current / working copy.
-                if (dsLatestTaskWorkSpecification.Tables[1].Rows.Count > 0)
-                {
-                    hdnWorkSpecificationId.Value = Convert.ToString(dsLatestTaskWorkSpecification.Tables[1].Rows[0]["Id"]);
-
-                    txtWorkSpecification.Text = Convert.ToString(dsLatestTaskWorkSpecification.Tables[1].Rows[0]["Content"]);
-
-                    if (!string.IsNullOrEmpty(Convert.ToString(dsLatestTaskWorkSpecification.Tables[1].Rows[0]["CurrentUsername"])))
-                    {
-                        strLastVersionUpdateBy = dsLatestTaskWorkSpecification.Tables[1].Rows[0]["CurrentUsername"].ToString();
-                        //ltrlLastVersionUpdateBy.Text = string.Format(
-                        //                                            "Last version updated by \'{0}\'",
-                        //                                            strLastVersionUpdateBy
-                        //                                            );
-                    }
-                }
-            }
-            else
-            {
-                hdnWorkSpecificationId.Value = "0";
-            }
-
-
-            // show link to download working copy for preview for admin users only.
-            if (this.IsAdminMode)
-            {
-                trFreezeWorkSpecification.Visible =
-                trSaveWorkSpecification.Visible =
-                lbtnDownloadWorkSpecificationFilePreview.Visible = true;
-            }
-
-            upWorkSpecificationFiles.Update();
             ScriptManager.RegisterStartupScript(
                                                     (sender as Control),
                                                     this.GetType(),
-                                                    "ShowPopup",
+                                                    "ShowPopup_AcceptanceLog",
                                                     string.Format(
-                                                                    "ShowPopupWithTitle(\"#{0}\", \"{1}\");",
-                                                                    divWorkSpecifications.ClientID,
-                                                                    GetWorkSpecificationFilePopupTitle(strLastCheckedInBy, strLastVersionUpdateBy)
+                                                                    "ShowPopup(\"#{0}\");",
+                                                                    divAcceptanceLog.ClientID
                                                                 ),
                                                     true
                                               );
         }
 
+        #endregion
 
-        protected void btnSaveWorkSpecification_Click(object sender, EventArgs e)
+        #region '--Work Specification Section--'
+
+        protected void lbtnShowWorkSpecificationSection_Click(object sender, EventArgs e)
         {
-            ScriptManager.RegisterStartupScript(
-                                                      (sender as Control),
-                                                      this.GetType(),
-                                                      "ShowPopupForPasswordAuthentication",
-                                                      string.Format(
-                                                                      "ShowPopupForPasswordAuthentication(\"#{0}\", \"{1}\");",
-                                                                      divFreez.ClientID,
-                                                                      ""
-                                                                  ),
-                                                      true
-                                                );
-            //old code
-            //TaskWorkSpecification objTaskWorkSpecification = new TaskWorkSpecification();
-            //objTaskWorkSpecification.Id = Convert.ToInt32(hdnWorkSpecificationId.Value);
-            //objTaskWorkSpecification.TaskId = Convert.ToInt64(hdnTaskId.Value);
-
-            //TaskWorkSpecificationVersions objTaskWorkSpecificationVersions = new TaskWorkSpecificationVersions();
-            //objTaskWorkSpecificationVersions.TaskWorkSpecificationId = objTaskWorkSpecification.Id;
-            //objTaskWorkSpecificationVersions.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
-            //objTaskWorkSpecificationVersions.Content = txtWorkSpecification.Text;
-            //objTaskWorkSpecificationVersions.IsInstallUser = JGSession.IsInstallUser.Value;
-            //objTaskWorkSpecificationVersions.Status = chkFreeze.Checked;
-
-            //objTaskWorkSpecification.TaskWorkSpecificationVersions.Add(objTaskWorkSpecificationVersions);
-
-            //if (objTaskWorkSpecification.Id == 0)
-            //{
-            //    TaskGeneratorBLL.Instance.InsertTaskWorkSpecification(objTaskWorkSpecification);
-            //}
-            //else
-            //{
-            //    TaskGeneratorBLL.Instance.UpdateTaskWorkSpecification(objTaskWorkSpecification);
-            //}
-            //ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "HidePopup", string.Format("HidePopup('#{0}');", divWorkSpecifications.ClientID), true);
-        }
-
-        private void SendEmailToManagerNUsers(string strUserIDs)
-        {
-            try
+            if (controlMode.Value == "0")
             {
-                string strHTMLTemplateName = "Work Speciication Auto Email";
-                DataSet dsEmailTemplate = AdminBLL.Instance.GetEmailTemplate(strHTMLTemplateName, 108);
-                foreach (string userID in strUserIDs.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
+                if (ValidateTaskStatus())
                 {
-                    DataSet dsUser = TaskGeneratorBLL.Instance.GetTaskUserFiles(Convert.ToInt32(userID));
+                    InsertUpdateTask();
 
-                    string emailId = dsUser.Tables[0].Rows[0]["Email"].ToString();
-                    string FName = dsUser.Tables[0].Rows[0]["FristName"].ToString();
-                    string LName = dsUser.Tables[0].Rows[0]["LastName"].ToString();
-                    string fullname = FName + " " + LName;
-
-                    string strHeader = dsEmailTemplate.Tables[0].Rows[0]["HTMLHeader"].ToString();
-                    string strBody = dsEmailTemplate.Tables[0].Rows[0]["HTMLBody"].ToString();
-                    string strFooter = dsEmailTemplate.Tables[0].Rows[0]["HTMLFooter"].ToString();
-                    string strsubject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString();
-
-                    strBody = strBody.Replace("#Fname#", fullname);
-                    strBody = strBody.Replace("#TaskLink#", string.Format("{0}?TaskId={1}", Request.Url.ToString().Split('?')[0], hdnTaskId.Value));
-
-                    strBody = strHeader + strBody + strFooter;
-
-                    List<Attachment> lstAttachments = new List<Attachment>();
-                    // your remote SMTP server IP.
-                    for (int i = 0; i < dsEmailTemplate.Tables[1].Rows.Count; i++)
-                    {
-                        string sourceDir = Server.MapPath(dsEmailTemplate.Tables[1].Rows[i]["DocumentPath"].ToString());
-                        if (File.Exists(sourceDir))
-                        {
-                            Attachment attachment = new Attachment(sourceDir);
-                            attachment.Name = Path.GetFileName(sourceDir);
-                            lstAttachments.Add(attachment);
-                        }
-                    }
-                    CommonFunction.SendEmail(strHTMLTemplateName, emailId, strsubject, strBody, lstAttachments);
+                    RedirectToViewTasks("tws");
                 }
             }
-            catch (Exception ex)
+            else
             {
-                Console.WriteLine("{0} Exception caught.", ex);
+                ShowWorkSpecificationSection(false);
             }
         }
 
-        protected void lbtnDownloadWorkSpecificationFilePreview_Click(object sender, EventArgs e)
+        protected void lbtnShowFinishedWorkFiles_Click(object sender, EventArgs e)
         {
-            DownloadPdf(
-                        CommonFunction.ConvertHtmlToPdf(txtWorkSpecification.Text),
-                        string.Format("Task-Preview-{0} {1}.pdf", ltrlInstallId.Text, DateTime.Now.ToString("dd-MM-yyyy hh-mm-ss-tt"))
-                       );
-        }
-
-        protected void lbtnDownloadWorkSpecificationFile_Click(object sender, EventArgs e)
-        {
-            DataSet dsLatestTaskWorkSpecification = TaskGeneratorBLL.Instance.GetLatestTaskWorkSpecification
-                                                                                (
-                                                                                    Convert.ToInt32(hdnTaskId.Value),
-                                                                                    true
-                                                                                );
-            if (
-                dsLatestTaskWorkSpecification != null &&
-                dsLatestTaskWorkSpecification.Tables.Count == 2 &&
-                dsLatestTaskWorkSpecification.Tables[0].Rows.Count > 0
-               )
+            if (controlMode.Value == "0")
             {
-                // main / last freezed copy.
-                if (!string.IsNullOrEmpty(Convert.ToString(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["Content"])))
+                if (ValidateTaskStatus())
                 {
-                    DownloadPdf(
-                                    CommonFunction.ConvertHtmlToPdf(dsLatestTaskWorkSpecification.Tables[0].Rows[0]["Content"].ToString()),
-                                    string.Format("Task-{0} {1}.pdf", ltrlInstallId.Text, DateTime.Now.ToString("dd-MM-yyyy hh-mm-ss-tt"))
-                                );
+                    InsertUpdateTask();
+
+                    RedirectToViewTasks("tws");
                 }
             }
-        }
-        protected void btnSetApproval_Click(object sender, EventArgs e)
-        {
-            try
+            else
             {
-                if (!string.IsNullOrEmpty(txtAuthenticateUser.Text.Trim()))
+                ShowWorkSpecificationSection(false);
+            }
+        }
+
+        #region Work Specifications
+
+        protected void repWorkSpecifications_ItemDataBound(object sender, RepeaterItemEventArgs e)
+        {
+            if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
+            {
+                HtmlTableRow trWorkSpecification = e.Item.FindControl("trWorkSpecification") as HtmlTableRow;
+                LinkButton lbtnEditWorkSpecification = e.Item.FindControl("lbtnEditWorkSpecification") as LinkButton;
+                Literal ltrlCustomId = e.Item.FindControl("ltrlCustomId") as Literal;
+                Literal ltrlDescription = e.Item.FindControl("ltrlDescription") as Literal;
+                CKEditorControl ckeWorkSpecification = e.Item.FindControl("ckeWorkSpecification") as CKEditorControl;
+
+                if (e.Item.ItemType == ListItemType.Item)
                 {
-                    //check accesibility with KERConsultancy and jmgrove 
-                    string jmPass = string.Empty;
-                    string KerPass = string.Empty;
-                    jmPass = TaskGeneratorBLL.Instance.GetAdminUserPass("jgrove@jmgroveconstruction.com").Tables[0].Rows[0][0].ToString();
-                    KerPass = TaskGeneratorBLL.Instance.GetInstallUserDetailByLogin("kerconsultancy@hotmail.com").Tables[0].Rows[0][0].ToString();
-                    if (txtAuthenticateUser.Text.Trim() == KerPass || txtAuthenticateUser.Text.Trim() == jmPass)
+                    trWorkSpecification.Attributes.Add("class", "FirstRow");
+                }
+                else
+                {
+                    trWorkSpecification.Attributes.Add("class", "AlternateRow");
+                }
+
+                DataRowView drWorkSpecification = e.Item.DataItem as DataRowView;
+
+                ltrlDescription.Text = HttpUtility.HtmlDecode(drWorkSpecification["Description"].ToString());
+                ltrlDescription.Text = (new System.Text.RegularExpressions.Regex(@"(<[\w\s\=\""\-\/\:\:]*/>)|(<[\w\s\=\""\-\/\:\:]*>)|(</[\w\s\=\""\-\/\:\:]*>)")).Replace(ltrlDescription.Text, " ").Trim();
+
+                ckeWorkSpecification.Text = HttpUtility.HtmlDecode(drWorkSpecification["Description"].ToString());
+
+                if (this.IsAdminAndItLeadMode)
+                {
+                    if (!string.IsNullOrEmpty(drWorkSpecification["AdminStatus"].ToString()))
                     {
-                        TaskWorkSpecification objTaskWorkSpecification = new TaskWorkSpecification();
-                        objTaskWorkSpecification.Id = Convert.ToInt32(hdnWorkSpecificationId.Value);
-                        objTaskWorkSpecification.TaskId = Convert.ToInt64(hdnTaskId.Value);
-
-                        TaskWorkSpecificationVersions objTaskWorkSpecificationVersions = new TaskWorkSpecificationVersions();
-                        objTaskWorkSpecificationVersions.TaskWorkSpecificationId = objTaskWorkSpecification.Id;
-                        objTaskWorkSpecificationVersions.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
-                        objTaskWorkSpecificationVersions.Content = txtWorkSpecification.Text;
-                        objTaskWorkSpecificationVersions.IsInstallUser = JGSession.IsInstallUser.Value;
-                        objTaskWorkSpecificationVersions.Status = chkFreeze.Checked;
-
-                        objTaskWorkSpecification.TaskWorkSpecificationVersions.Add(objTaskWorkSpecificationVersions);
-
-                        if (objTaskWorkSpecification.Id == 0)
+                        // do not allow edit for specifications freezed by both.
+                        if (Convert.ToBoolean(drWorkSpecification["AdminStatus"]) && Convert.ToBoolean(drWorkSpecification["TechLeadStatus"]))
                         {
-                            TaskGeneratorBLL.Instance.InsertTaskWorkSpecification(objTaskWorkSpecification);
+                            lbtnEditWorkSpecification.Visible = false;
                         }
                         else
                         {
-                            TaskGeneratorBLL.Instance.UpdateTaskWorkSpecification(objTaskWorkSpecification);
+                            ltrlCustomId.Visible = false;
                         }
-                        //Send Notification to concern user and manager
-                        string stremail = "jgrove@jmgroveconstruction.com" + "," + "ratn8177@gmail.com";
-                        SendEmailToManagerNUsers(stremail);
-                        ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "HidePopup1", string.Format("HidePopup1('#{0}');", divFreez.ClientID), true);
-                        ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "HidePopup", string.Format("HidePopup('#{0}');", divWorkSpecifications.ClientID), true);
                     }
                     else
                     {
-                        ScriptManager.RegisterStartupScript(this.Page, GetType(), "al", "alert('UnAthorised Password');", true);
-
+                        ltrlCustomId.Visible =
+                        lbtnEditWorkSpecification.Visible = false;
                     }
-
+                }
+                else
+                {
+                    lbtnEditWorkSpecification.Visible = false;
                 }
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine("{0} Exception caught.", ex);
-            }
-
         }
-        protected void rptWorkFiles_ItemCommand(object source, RepeaterCommandEventArgs e)
+
+        protected void txtPasswordToFreezeSpecification_TextChanged(object sender, EventArgs e)
         {
-            if (e.CommandName == "DownloadFile")
+            //if (this.IsAdminAndItLeadMode)
             {
-                string[] files = e.CommandArgument.ToString().Split(new char[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
+                #region Freeze Based On Password
 
-                DownloadUserAttachment(files[0].Trim(), files[1].Trim());
+                TextBox txtPassword = sender as TextBox;
+
+                if (txtPassword != null && !string.IsNullOrEmpty(txtPassword.Text))
+                {
+                    if (!txtPassword.Text.Equals(Convert.ToString(Session["loginpassword"])))
+                    {
+                        CommonFunction.ShowAlertFromUpdatePanel(this, "Specification cannot be freezed as password is not valid.");
+                    }
+                    else
+                    {
+                        // Freeze all specifications
+                        TaskWorkSpecification objTaskWorkSpecification = new TaskWorkSpecification();
+                        objTaskWorkSpecification.TaskId = Convert.ToInt64(hdnTaskId.Value);
+
+                        bool blIsAdmin, blIsTechLead, blIsUser;
+
+                        blIsAdmin = blIsTechLead = blIsUser = false;
+                        if (HttpContext.Current.Session["DesigNew"].ToString().ToUpper().Equals("ADMIN"))
+                        {
+                            objTaskWorkSpecification.AdminUserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                            objTaskWorkSpecification.IsAdminInstallUser = JGSession.IsInstallUser.Value;
+                            objTaskWorkSpecification.AdminStatus = true;
+                            blIsAdmin = true;
+                        }
+                        else if (HttpContext.Current.Session["DesigNew"].ToString().ToUpper().Equals("ITLEAD"))
+                        {
+                            objTaskWorkSpecification.TechLeadUserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                            objTaskWorkSpecification.IsTechLeadInstallUser = JGSession.IsInstallUser.Value;
+                            objTaskWorkSpecification.TechLeadStatus = true;
+                            blIsTechLead = true;
+                        }
+                        else
+                        {
+                            objTaskWorkSpecification.OtherUserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                            objTaskWorkSpecification.IsOtherUserInstallUser = JGSession.IsInstallUser.Value;
+                            objTaskWorkSpecification.OtherUserStatus = true;
+                            blIsUser = true;
+                        }
+
+                        TaskGeneratorBLL.Instance.UpdateTaskWorkSpecificationStatusByTaskId
+                                                    (
+                                                        objTaskWorkSpecification,
+                                                        blIsAdmin,
+                                                        blIsTechLead,
+                                                        blIsUser
+                                                    );
+
+                        CommonFunction.ShowAlertFromUpdatePanel(this, "Specification freezed successfully.");
+                    }
+                }
+
+                #endregion
+
+                #region Update Task and Status
+
+                // change status only after freezing all specifications.
+                // this will change disabled "specs in progress" status to open on feezing.
+                SetPasswordToFreezeWorkSpecificationUI();
+
+                // update task status.
+                Task objTask = new Task();
+                objTask.TaskId = Convert.ToInt32(hdnTaskId.Value);
+                objTask.Status = Convert.ToByte(cmbStatus.SelectedValue);
+
+                TaskGeneratorBLL.Instance.UpdateTaskStatus(objTask);
+
+                #endregion
+
+                ScriptManager.RegisterStartupScript(
+                                                    (sender as Control),
+                                                    this.GetType(),
+                                                    "Initialize_WorkSpecifications_Script",
+                                                    "Initialize_WorkSpecifications();",
+                                                    true
+                                                   );
             }
         }
 
-        protected void rptWorkFiles_ItemDataBound(object sender, RepeaterItemEventArgs e)
+        #endregion
+
+        #region Work Specification Attachments
+
+        protected void grdWorkSpecificationAttachments_ItemDataBound(object sender, RepeaterItemEventArgs e)
         {
             if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
             {
@@ -1501,18 +578,147 @@ namespace JG_Prospect.Sr_App
                 }
                 ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(lbtnAttchment);
                 lbtnAttchment.CommandArgument = file;
+
+                if (CommonFunction.IsImageFile(files[0].Trim()))
+                {
+                    ((HtmlImage)e.Item.FindControl("imgIcon")).Src = String.Concat("~/TaskAttachments/", Server.UrlEncode(files[0].Trim()));
+                }
+                else
+                {
+                    ((HtmlImage)e.Item.FindControl("imgIcon")).Src = CommonFunction.GetFileTypeIcon(files[0].Trim());
+                }
+            }
+        }
+
+        protected void grdWorkSpecificationAttachments_ItemCommand(object source, RepeaterCommandEventArgs e)
+        {
+            if (e.CommandName == "download-attachment")
+            {
+                string[] files = e.CommandArgument.ToString().Split(new char[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
+
+                DownloadUserAttachment(files[0].Trim(), files[1].Trim());
+            }
+            else if (e.CommandName == "delete-attachment")
+            {
+                DeleteWorkSpecificationFile(e.CommandArgument.ToString());
+            }
+        }
+
+        private void DeleteWorkSpecificationFile(string parameter)
+        {
+            // Seperate DB Id and Filename from parameter.
+            string[] parameters = parameter.Split('|');
+
+            if (parameter.Length > 0)
+            {
+                string id = parameters[0];
+                string[] fileNames = parameters[1].Split('@');//Id
+
+                TaskUser taskUserFiles = new TaskUser();
+
+                //Remove file from database
+                bool blnFileDeletedFromDb = TaskGeneratorBLL.Instance.DeleteTaskUserFile(Convert.ToInt64(id));  // save task files
+
+                //if file removed from database, remove from server file system.
+                if (fileNames.Length > 0 && blnFileDeletedFromDb)
+                {
+                    string filetodelete = fileNames[0];
+                    DeletefilefromServer(filetodelete);
+                }
+
+            }
+
+            //Reload records.
+            FillWorkSpecificationAttachments();
+        }
+
+        private void DeletefilefromServer(string filetodelete)
+        {
+            if (!String.IsNullOrEmpty(filetodelete))
+            {
+                var originalDirectory = new DirectoryInfo(Server.MapPath("~/TaskAttachments"));
+
+
+                string pathString = System.IO.Path.Combine(originalDirectory.ToString(), filetodelete);
+
+                bool isExists = System.IO.File.Exists(pathString);
+
+                if (isExists)
+                    File.Delete(pathString);
+
+
+            }
+
+
+        }
+
+        protected void btnAddAttachment_ClicK(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(hdnWorkFiles.Value))
+            {
+                if (controlMode.Value == "0")
+                {
+                    #region '-- Save To Viewstate --'
+
+                    foreach (string strAttachment in hdnWorkFiles.Value.Split('^'))
+                    {
+                        DataRow drTaskUserFiles = dtTaskUserFiles.NewRow();
+                        drTaskUserFiles["attachment"] = strAttachment;
+                        drTaskUserFiles["FirstName"] = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.Username.ToString()]);
+                        dtTaskUserFiles.Rows.Add(drTaskUserFiles);
+                    }
+
+                    #endregion
+                }
+                else
+                {
+                    #region '-- Save To Database --'
+
+                    UploadUserAttachements(null, Convert.ToInt32(hdnTaskId.Value), hdnWorkFiles.Value, JGConstant.TaskFileDestination.WorkSpecification);
+
+                    FillWorkSpecificationAttachments();
+                    #endregion
+                }
+
+                hdnWorkFiles.Value = "";
+            }
+        }
+
+        protected void grdWorkSpecificationAttachments_RowDataBound(object sender, GridViewRowEventArgs e)
+        {
+            if (e.Row.RowType == DataControlRowType.DataRow)
+            {
+                string file = Convert.ToString(DataBinder.Eval(e.Row.DataItem, "attachment"));
+
+                string[] files = file.Split(new char[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
+
+                LinkButton lbtnAttchment = (LinkButton)e.Row.FindControl("lbtnDownload");
+
+                if (files[1].Length > 40)// sort name with ....
+                {
+                    lbtnAttchment.Text = String.Concat(files[1].Substring(0, 40), "..");
+                    lbtnAttchment.Attributes.Add("title", files[1]);
+                }
+                else
+                {
+                    lbtnAttchment.Text = files[1];
+                }
+                ScriptManager.GetCurrent(this.Page).RegisterPostBackControl(lbtnAttchment);
+                lbtnAttchment.CommandArgument = file;
+            }
+        }
+
+        protected void grdWorkSpecificationAttachments_RowCommand(object sender, GridViewCommandEventArgs e)
+        {
+            if (e.CommandName == "DownloadFile")
+            {
+                string[] files = e.CommandArgument.ToString().Split(new char[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
+
+                DownloadUserAttachment(files[0].Trim(), files[1].Trim());
             }
         }
 
         #endregion
-
-        #region '--Finished Work - Popup--'
-
-        protected void lbtnFinishedWorkFiles_Click(object sender, EventArgs e)
-        {
-            upFinishedWorkFiles.Update();
-            ScriptManager.RegisterStartupScript((sender as Control), this.GetType(), "ShowPopup", string.Format("ShowPopup('#{0}');", divFinishedWorkFiles.ClientID), true);
-        }
 
         #endregion
 
@@ -1520,57 +726,39 @@ namespace JG_Prospect.Sr_App
 
         #region "--Private Methods--"
 
-        private void SearchTasks(object o) { }
-
-        private string getSingleValueFromCommaSeperatedString(string commaSeperatedString)
+        private void RedirectToViewTasks(string strAction = "")
         {
-            String strReturnVal;
-
-            if (commaSeperatedString.Contains(","))
-            {
-                strReturnVal = String.Concat(commaSeperatedString.Substring(0, commaSeperatedString.IndexOf(",")), "..");
-            }
-            else
-            {
-                strReturnVal = commaSeperatedString;
-            }
-
-            return strReturnVal;
+            Response.Redirect("~/sr_app/TaskGenerator.aspx?TaskId=" + hdnTaskId.Value + "&Action=" + strAction);
         }
 
         /// <summary>
         /// To load Designation to popup dropdown
         /// </summary>
-        private void LoadPopupDropdown()
+        private void FillDropdowns()
         {
-            BindTaskTypeDropDown();
-            //DataSet dsdesign = TaskGeneratorBLL.Instance.GetInstallUsers(1, "");
-            //DataSet ds = TaskGeneratorBLL.Instance.GetTaskUserDetails(1);
-            //ddlUserDesignation.DataSource = dsdesign;
-            //ddlUserDesignation.DataTextField = "Designation";
-            //ddlUserDesignation.DataValueField = "Designation";
-            //ddlUserDesignation.DataBind();
-        }
+            cmbStatus.DataSource = CommonFunction.GetTaskStatusList();
+            cmbStatus.DataTextField = "Text";
+            cmbStatus.DataValueField = "Value";
+            cmbStatus.DataBind();
+            //cmbStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()).Enabled = false;
 
-        private void BindTaskTypeDropDown()
-        {
-            ddlTaskType.DataSource = CommonFunction.GetTaskTypeList();
+            ddlTaskPriority.DataSource = CommonFunction.GetTaskPriorityList();
+            ddlTaskPriority.DataTextField = "Text";
+            ddlTaskPriority.DataValueField = "Value";
+            ddlTaskPriority.DataBind();
 
-            ddlTaskType.DataTextField = "Text";
-            ddlTaskType.DataValueField = "Value";
-            ddlTaskType.DataBind();
+            ddlTUStatus.DataSource = CommonFunction.GetTaskStatusList();
+            ddlTUStatus.DataTextField = "Text";
+            ddlTUStatus.DataValueField = "Value";
+            ddlTUStatus.DataBind();
+            //ddlTUStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()).Enabled = false;
         }
 
         private void DeletaTask(string TaskId)
         {
             TaskGeneratorBLL.Instance.DeleteTask(Convert.ToUInt64(TaskId));
             hdnTaskId.Value = string.Empty;
-            SearchTasks(null);
-        }
-
-        private void doSearch(object sender, EventArgs e)
-        {
-
+            RedirectToViewTasks();
         }
 
         private void UpdateTaskStatus(Int32 taskId, UInt16 Status)
@@ -1581,7 +769,7 @@ namespace JG_Prospect.Sr_App
 
             int result = TaskGeneratorBLL.Instance.UpdateTaskStatus(task);    // save task master details
 
-            SearchTasks(null);
+            RedirectToViewTasks();
 
             String AlertMsg;
 
@@ -1675,20 +863,20 @@ namespace JG_Prospect.Sr_App
         {
             DataSet dsUsers;
 
-            // DropDownCheckBoxes ddlAssign = (FindControl("ddcbAssigned") as DropDownCheckBoxes);
+            // DropDownCheckBoxes ddlAssign = (FindControl("ddlAssignedUsers") as DropDownCheckBoxes);
             // DropDownList ddlDesignation = (DropDownList)sender;
 
             string designations = GetSelectedDesignationsString();
 
             dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, designations);
 
-            ddcbAssigned.Items.Clear();
-            ddcbAssigned.DataSource = dsUsers;
-            ddcbAssigned.DataTextField = "FristName";
-            ddcbAssigned.DataValueField = "Id";
-            ddcbAssigned.DataBind();
+            ddlAssignedUsers.Items.Clear();
+            ddlAssignedUsers.DataSource = dsUsers;
+            ddlAssignedUsers.DataTextField = "FristName";
+            ddlAssignedUsers.DataValueField = "Id";
+            ddlAssignedUsers.DataBind();
 
-            HighlightInterviewUsers(dsUsers.Tables[0], ddcbAssigned, null);
+            HighlightInterviewUsers(dsUsers.Tables[0], ddlAssignedUsers, null);
         }
 
         private void HighlightInterviewUsers(DataTable dtUsers, DropDownCheckBoxes ddlUsers, DropDownList ddlFilterUsers)
@@ -1744,27 +932,52 @@ namespace JG_Prospect.Sr_App
             return returnVal;
         }
 
-        /// <summary>
-        /// Get all designations from department to which user's designation belongs to.
-        /// Ex. if user has designation IT - Network Admin , here all IT related task will be listed.
-        /// </summary>
-        /// <param name="UserDesignation"></param>
-        /// <returns></returns>
-        private string GetUserDepartmentAllDesignations(string UserDesignation)
+        private bool ValidateTaskStatus()
         {
-            string returnString = string.Empty;
-            const string ITDesignations = "IT - Network Admin,IT - Jr .Net Developer,IT - Sr .Net Developer,IT - Android Developer,IT - PHP Developer,IT - SEO / BackLinking";
+            bool blResult = true;
 
-            if (UserDesignation.Contains("IT"))
+            string strStatus = string.Empty;
+            string strMessage = string.Empty;
+
+            if (this.IsAdminMode)
             {
-                returnString = ITDesignations;
-            }
-            else
-            {
-                returnString = UserDesignation;
+                strStatus = cmbStatus.SelectedValue;
+
+                if (!string.IsNullOrEmpty(strStatus))
+                {
+                    //if (
+                    //    strStatus != Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString() && 
+                    //    !TaskGeneratorBLL.Instance.IsTaskWorkSpecificationApproved(Convert.ToInt32(hdnTaskId.Value))
+                    //   )
+                    //{
+                    //    blResult = false;
+                    //    strMessage = "Task work specifications must be approved, to change status from Specs In Progress.";
+                    //}
+                    //else 
+                    // if task is in assigned status. it should have assigned user selected there in dropdown. 
+                    if (strStatus == Convert.ToByte(JGConstant.TaskStatus.Assigned).ToString())
+                    {
+                        blResult = false;
+                        strMessage = "Task must be assigned to one or more users, to change status to assigned.";
+
+                        foreach (ListItem objItem in ddlAssignedUsers.Items)
+                        {
+                            if (objItem.Selected)
+                            {
+                                blResult = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (!blResult)
+                {
+                    CommonFunction.ShowAlertFromUpdatePanel(this, strMessage);
+                }
             }
 
-            return returnString;
+            return blResult;
         }
 
         /// <summary>
@@ -1773,58 +986,58 @@ namespace JG_Prospect.Sr_App
         private void clearAllFormData()
         {
             this.TaskCreatedBy = 0;
-            this.lstSubTasks = null;
+            objucSubTasks_Admin.ClearSubTaskData();
+            objucSubTasks_User.ClearSubTaskData();
             txtTaskTitle.Text = string.Empty;
             txtDescription.Text = string.Empty;
             ddlUserDesignation.ClearSelection();
             ddlUserDesignation.Texts.SelectBoxCaption = "Select";
-            ddcbAssigned.Items.Clear();
-            ddcbAssigned.Texts.SelectBoxCaption = "--Open--";
+            ddlAssignedUsers.Items.Clear();
+            ddlAssignedUsers.Texts.SelectBoxCaption = "--Open--";
             cmbStatus.ClearSelection();
             ddlUserAcceptance.ClearSelection();
+            ddlTaskPriority.SelectedValue = "0";
             txtDueDate.Text = string.Empty;
             txtHours.Text = string.Empty;
-            gdTaskUsers.DataSource = null;
-            gdTaskUsers.DataBind();
-            gdTaskUsers1.DataSource = null;
-            gdTaskUsers1.DataBind();
-            gdTaskUsersNotes.DataSource = null;
-            gdTaskUsersNotes.DataBind();
-
-            gdTaskUsersNotes1.DataSource = null;
-            gdTaskUsersNotes1.DataBind();
-
-            reapeaterLogDoc.DataSource = null;
-            reapeaterLogDoc.DataBind();
-            reapeaterLogImages.DataSource = null;
-            reapeaterLogImages.DataBind();
-            reapeaterLogVideoc.DataSource = null;
-            reapeaterLogVideoc.DataBind();
-            reapeaterLogAudio.DataSource = null;
-            reapeaterLogAudio.DataBind();
-            txtNote.Text = string.Empty;
-            txtNote1.Text = string.Empty;
             hdnTaskId.Value = "0";
             controlMode.Value = "0";
         }
 
-        private void ClearSubTaskData()
+        private void InsertUpdateTask()
         {
-            hdnSubTaskId.Value = "0";
-            hdnSubTaskIndex.Value = "-1";
-            txtTaskListID.Text = string.Empty;
-            txtSubTaskTitle.Text =
-            txtSubTaskDescription.Text =
-            txtSubTaskDueDate.Text =
-            txtSubTaskHours.Text = string.Empty;
-            if (ddlTaskType.Items.Count > 0)
+            // save task master details
+            SaveTask();
+
+            //if (controlMode.Value == "0")
+            //{
+            //    // save task description as a first note.
+            //    objucTaskHistory_Admin.SaveTaskNote(Convert.ToInt64(hdnTaskId.Value), true, null, string.Empty, txtDescription.Text);
+            //}
+
+            // save assgined designation.
+            SaveTaskDesignations();
+
+            // save details of users to whom task is assgined.
+            SaveAssignedTaskUsers(ddlAssignedUsers, (JGConstant.TaskStatus)Convert.ToByte(cmbStatus.SelectedItem.Value));
+
+            if (controlMode.Value == "0")
             {
-                ddlTaskType.SelectedIndex = 0;
+                foreach (DataRow drTaskUserFiles in this.dtTaskUserFiles.Rows)
+                {
+                    UploadUserAttachements(null, Convert.ToInt64(hdnTaskId.Value), Convert.ToString(drTaskUserFiles["attachment"]), JGConstant.TaskFileDestination.Task);
+                }
+
+                objucSubTasks_Admin.SaveSubTasks(Convert.ToInt32(hdnTaskId.Value));
             }
-            trSubTaskStatus.Visible = false;
-            ddlSubTaskStatus.Items.FindByValue(Convert.ToByte(TaskStatus.Open).ToString()).Selected = true;
-            ddlSubTaskStatus.Items.FindByValue(Convert.ToByte(TaskStatus.ReOpened).ToString()).Enabled = true;
-            upAddSubTask.Update();
+
+            if (controlMode.Value == "0")
+            {
+                CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Task created successfully!");
+            }
+            else
+            {
+                CommonFunction.ShowAlertFromUpdatePanel(this.Page, "Task updated successfully!");
+            }
         }
 
         /// <summary>
@@ -1833,334 +1046,35 @@ namespace JG_Prospect.Sr_App
         /// </summary>
         private void SaveTask()
         {
+            SetPasswordToFreezeWorkSpecificationUI();
+
             int userId = Convert.ToInt16(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
-            Task task = new Task();
-            task.TaskId = Convert.ToInt32(hdnTaskId.Value);
-            task.Title = Server.HtmlEncode(txtTaskTitle.Text);
-            task.Description = Server.HtmlEncode(txtDescription.Text);
-            task.Status = Convert.ToUInt16(cmbStatus.SelectedItem.Value);
-            task.DueDate = txtDueDate.Text;
-            task.Hours = txtHours.Text;
-            task.CreatedBy = userId;
-            task.Mode = Convert.ToInt32(controlMode.Value);
-            task.InstallId = GetInstallIdFromDesignation(ddlUserDesignation.SelectedItem.Text);
+            Task objTask = new Task();
+            objTask.TaskId = Convert.ToInt32(hdnTaskId.Value);
+            objTask.Title = Server.HtmlEncode(txtTaskTitle.Text);
+            // objTask.Description = Server.HtmlEncode(txtDescription.Text);
+            objTask.Description = objucTaskHistory_Admin.ucTaskDescription;
+            objTask.Status = Convert.ToUInt16(cmbStatus.SelectedItem.Value);
+            if (ddlTaskPriority.SelectedValue == "0")
+            {
+                objTask.TaskPriority = null;
+            }
+            else
+            {
+                objTask.TaskPriority = Convert.ToByte(ddlTaskPriority.SelectedItem.Value);
+            }
+            objTask.DueDate = txtDueDate.Text;
+            objTask.Hours = txtHours.Text;
+            objTask.CreatedBy = userId;
+            objTask.Mode = Convert.ToInt32(controlMode.Value);
+            objTask.InstallId = GetInstallIdFromDesignation(ddlUserDesignation.SelectedItem.Text);
+            objTask.IsTechTask = chkTechTask.Checked;
 
-            task.IsTechTask = chkTechTask.Checked;
-
-            Int64 ItaskId = TaskGeneratorBLL.Instance.SaveOrDeleteTask(task);    // save task master details
-
-            // Save task notes and user information,
-            Int32 TaskUpdateId = SaveTaskNote(ItaskId, false, null, string.Empty, "Task Description -: " + task.Description);
-
-            // Save task related user's attachment.
-            //UploadUserAttachements(TaskUpdateId, null, string.Empty);
-            LoadTaskData(ItaskId.ToString());
+            Int64 ItaskId = TaskGeneratorBLL.Instance.SaveOrDeleteTask(objTask);    // save task master details
 
             if (controlMode.Value == "0")
             {
                 hdnTaskId.Value = ItaskId.ToString();
-            }
-        }
-
-        private void SaveSubTask()
-        {
-            Task objTask = null;
-            if (hdnSubTaskIndex.Value == "-1")
-            {
-                objTask = new Task();
-                objTask.TaskId = Convert.ToInt32(hdnSubTaskId.Value);
-            }
-            else
-            {
-                objTask = this.lstSubTasks[Convert.ToInt32(hdnSubTaskIndex.Value)];
-            }
-
-            if (objTask.TaskId > 0)
-            {
-                objTask.Mode = 1;
-            }
-            else
-            {
-                objTask.Mode = 0;
-            }
-
-            objTask.Title = txtSubTaskTitle.Text;
-            objTask.Description = txtSubTaskDescription.Text;
-            objTask.Status = Convert.ToInt32(ddlSubTaskStatus.SelectedValue);
-            objTask.DueDate = txtSubTaskDueDate.Text;
-            objTask.Hours = txtSubTaskHours.Text;
-            objTask.CreatedBy = Convert.ToInt16(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
-            //task.InstallId = GetInstallIdFromDesignation(ddlUserDesignation.SelectedItem.Text);
-            objTask.InstallId = txtTaskListID.Text.Trim();
-            objTask.ParentTaskId = Convert.ToInt32(hdnTaskId.Value);
-            objTask.Attachment = hdnAttachments.Value;
-
-            if (ddlTaskType.SelectedIndex > 0)
-            {
-                objTask.TaskType = Convert.ToInt16(ddlTaskType.SelectedValue);
-            }
-
-            if (controlMode.Value == "0")
-            {
-                this.lstSubTasks.Add(objTask);
-
-                SetSubTaskDetails(this.lstSubTasks);
-
-                if (!string.IsNullOrEmpty(txtTaskListID.Text))
-                {
-                    this.LastSubTaskSequence = txtTaskListID.Text.Trim();
-                }
-            }
-            else
-            {
-                // save task master details to database.
-                if (hdnSubTaskId.Value == "0")
-                {
-                    hdnSubTaskId.Value = TaskGeneratorBLL.Instance.SaveOrDeleteTask(objTask).ToString();
-                }
-                else
-                {
-                    TaskGeneratorBLL.Instance.SaveOrDeleteTask(objTask);
-                }
-
-                UploadUserAttachements(null, Convert.ToInt64(hdnSubTaskId.Value), objTask.Attachment);
-                SetSubTaskDetails(TaskGeneratorBLL.Instance.GetSubTasks(Convert.ToInt32(hdnTaskId.Value)).Tables[0]);
-            }
-            hdnAttachments.Value = string.Empty;
-            ClearSubTaskData();
-        }
-
-        private void SetSubTaskDetails(List<Task> lstSubtasks)
-        {
-            // Title, [Description], [Status], DueDate,Tasks.[Hours], Tasks.CreatedOn, Tasks.InstallId, Tasks.CreatedBy, @AssigningUser AS AssigningManager
-            DataTable dtSubtasks = new DataTable();
-            dtSubtasks.Columns.Add("Title");
-            dtSubtasks.Columns.Add("Description");
-            dtSubtasks.Columns.Add("Status");
-            dtSubtasks.Columns.Add("DueDate");
-            dtSubtasks.Columns.Add("Hours");
-            dtSubtasks.Columns.Add("InstallId");
-            dtSubtasks.Columns.Add("FristName");
-            dtSubtasks.Columns.Add("TaskType");
-            dtSubtasks.Columns.Add("attachment");
-
-            foreach (Task objSubTask in lstSubtasks)
-            {
-                dtSubtasks.Rows.Add(objSubTask.Title, objSubTask.Description, objSubTask.Status, objSubTask.DueDate, objSubTask.Hours, objSubTask.InstallId, string.Empty, objSubTask.TaskType, objSubTask.Attachment);
-            }
-
-            gvSubTasks.DataSource = dtSubtasks;
-            gvSubTasks.DataBind();
-            upSubTasks.Update();
-        }
-
-        private void BindTaskUsersNotes(DataTable dt)
-        {
-            DataTable dttaskNotes = new DataTable();
-            DataTable dttaskNotesDoc = new DataTable();
-            DataTable dttaskNotesImg = new DataTable();
-            DataTable dttaskNotesAudio = new DataTable();
-            DataTable dttaskNotesVideo = new DataTable();
-
-
-            dttaskNotes.Columns.Add("ID");
-            dttaskNotes.Columns.Add("FristName");
-            dttaskNotes.Columns.Add("UserFirstName");
-            dttaskNotes.Columns.Add("UserId");
-            dttaskNotes.Columns.Add("UpdatedOn");
-            dttaskNotes.Columns.Add("Notes");
-
-            dttaskNotesDoc.Columns.Add("ID");
-            dttaskNotesDoc.Columns.Add("FristName");
-            dttaskNotesDoc.Columns.Add("UserFirstName");
-            dttaskNotesDoc.Columns.Add("UserId");
-            dttaskNotesDoc.Columns.Add("Attachment");
-            dttaskNotesDoc.Columns.Add("AttachmentOriginal");
-            dttaskNotesDoc.Columns.Add("UpdatedOn");
-            dttaskNotesDoc.Columns.Add("FileType");
-            dttaskNotesDoc.Columns.Add("FilePath");
-
-            dttaskNotesImg.Columns.Add("ID");
-            dttaskNotesImg.Columns.Add("FristName");
-            dttaskNotesImg.Columns.Add("UserFirstName");
-            dttaskNotesImg.Columns.Add("UserId");
-            dttaskNotesImg.Columns.Add("Attachment");
-            dttaskNotesImg.Columns.Add("AttachmentOriginal");
-            dttaskNotesImg.Columns.Add("UpdatedOn");
-            dttaskNotesImg.Columns.Add("FileType");
-            dttaskNotesImg.Columns.Add("FilePath");
-
-            dttaskNotesAudio.Columns.Add("ID");
-            dttaskNotesAudio.Columns.Add("FristName");
-            dttaskNotesAudio.Columns.Add("UserFirstName");
-            dttaskNotesAudio.Columns.Add("UserId");
-            dttaskNotesAudio.Columns.Add("Attachment");
-            dttaskNotesAudio.Columns.Add("AttachmentOriginal");
-            dttaskNotesAudio.Columns.Add("UpdatedOn");
-            dttaskNotesAudio.Columns.Add("FileType");
-            dttaskNotesAudio.Columns.Add("FilePath");
-
-            dttaskNotesVideo.Columns.Add("ID");
-            dttaskNotesVideo.Columns.Add("FristName");
-            dttaskNotesVideo.Columns.Add("UserFirstName");
-            dttaskNotesVideo.Columns.Add("UserId");
-            dttaskNotesVideo.Columns.Add("Attachment");
-            dttaskNotesVideo.Columns.Add("AttachmentOriginal");
-            dttaskNotesVideo.Columns.Add("UpdatedOn");
-            dttaskNotesVideo.Columns.Add("FileType");
-            dttaskNotesVideo.Columns.Add("FilePath");
-
-
-            for (int i = 0; i < dt.Rows.Count; i++)
-            {
-                string fileExtension = Path.GetExtension(Convert.ToString(dt.Rows[i]["AttachmentOriginal"]));
-                string FilePath = string.Empty;
-
-                if (string.IsNullOrEmpty(Convert.ToString(dt.Rows[i]["FileType"])))
-                {
-                    dttaskNotes.Rows.Add(dt.Rows[i]["ID"],
-                        Convert.ToString(dt.Rows[i]["FristName"]),
-                        Convert.ToString(dt.Rows[i]["UserFirstName"]),
-                        Convert.ToString(dt.Rows[i]["UserId"]),
-                        Convert.ToString(dt.Rows[i]["UpdatedOn"]),
-                        Convert.ToString(dt.Rows[i]["Notes"]));
-                }
-                if (Convert.ToString(dt.Rows[i]["FileType"]) == Convert.ToString((int)Utilits.Type.docu))
-                {
-                    if (fileExtension.ToLower().Equals(".doc") || fileExtension.ToLower().Equals(".docx"))
-                        FilePath = "../img/word.jpg";
-                    else if (fileExtension.ToLower().Equals(".xlx") || fileExtension.ToLower().Equals(".xlsx"))
-                        FilePath = "../img/xls.png";
-                    else if (fileExtension.ToLower().Equals(".pdf"))
-                        FilePath = "../img/pdf.jpg";
-                    else if (fileExtension.ToLower().Equals(".csv"))
-                        FilePath = "../img/csv.png";
-
-                    dttaskNotesDoc.Rows.Add(dt.Rows[i]["ID"],
-                                            Convert.ToString(dt.Rows[i]["FristName"]),
-                                            Convert.ToString(dt.Rows[i]["UserFirstName"]),
-                                            Convert.ToString(dt.Rows[i]["UserId"]),
-                                            Convert.ToString(dt.Rows[i]["Attachment"]),
-                                            Convert.ToString(dt.Rows[i]["AttachmentOriginal"]),
-                                            Convert.ToString(dt.Rows[i]["UpdatedOn"]),
-                                            Convert.ToString(dt.Rows[i]["FileType"]),
-                                            Convert.ToString(FilePath));
-                }
-                if (Convert.ToString(dt.Rows[i]["FileType"]) == Convert.ToString((int)Utilits.Type.images))
-                {
-                    if (fileExtension.ToLower().Equals(".png") || fileExtension.ToLower().Equals(".jpg") || fileExtension.ToLower().Equals(".jpeg"))
-                    {
-                        FilePath = "../TaskAttachments/" + dt.Rows[i]["Attachment"];
-                        dttaskNotesImg.Rows.Add(dt.Rows[i]["ID"],
-                                               Convert.ToString(dt.Rows[i]["FristName"]),
-                                               Convert.ToString(dt.Rows[i]["UserFirstName"]),
-                                               Convert.ToString(dt.Rows[i]["UserId"]),
-                                               Convert.ToString(dt.Rows[i]["Attachment"]),
-                                               Convert.ToString(dt.Rows[i]["AttachmentOriginal"]),
-                                               Convert.ToString(dt.Rows[i]["UpdatedOn"]),
-                                               Convert.ToString(dt.Rows[i]["FileType"]),
-                                               Convert.ToString(FilePath));
-                    }
-                }
-
-                if (Convert.ToString(dt.Rows[i]["FileType"]) == Convert.ToString((int)Utilits.Type.video))
-                {
-                    if (fileExtension.ToLower().Equals(".mp3") || fileExtension.ToLower().Equals(".mp4")
-                   || fileExtension.ToLower().Equals(".mkv") || fileExtension.ToLower().Equals(".3gpp")
-                    || fileExtension.ToLower().Equals(".mpeg") || fileExtension.ToLower().Equals(".wmv")
-                    || fileExtension.ToLower().Equals(".webm"))
-                    {
-                        FilePath = "../img/video.png"; /*"../img/audio.png";*/
-                        dttaskNotesVideo.Rows.Add(dt.Rows[i]["ID"],
-                                               Convert.ToString(dt.Rows[i]["FristName"]),
-                                               Convert.ToString(dt.Rows[i]["UserFirstName"]),
-                                               Convert.ToString(dt.Rows[i]["UserId"]),
-                                               Convert.ToString(dt.Rows[i]["Attachment"]),
-                                               Convert.ToString(dt.Rows[i]["AttachmentOriginal"]),
-                                               Convert.ToString(dt.Rows[i]["UpdatedOn"]),
-                                               Convert.ToString(dt.Rows[i]["FileType"]),
-                                               Convert.ToString(FilePath));
-                    }
-                }
-
-
-                if (Convert.ToString(dt.Rows[i]["FileType"]) == Convert.ToString((int)Utilits.Type.audio))
-                {
-                    if (fileExtension.Equals(".mp3") || fileExtension.Equals(".mp4")
-                      || fileExtension.Equals(".wma"))
-                    {
-                        FilePath = "../img/audio.png"; /*"../img/audio.png";*/
-                        dttaskNotesAudio.Rows.Add(dt.Rows[i]["ID"],
-                                               Convert.ToString(dt.Rows[i]["FristName"]),
-                                               Convert.ToString(dt.Rows[i]["UserFirstName"]),
-                                               Convert.ToString(dt.Rows[i]["UserId"]),
-                                               Convert.ToString(dt.Rows[i]["Attachment"]),
-                                               Convert.ToString(dt.Rows[i]["AttachmentOriginal"]),
-                                               Convert.ToString(dt.Rows[i]["UpdatedOn"]),
-                                               Convert.ToString(dt.Rows[i]["FileType"]),
-                                               Convert.ToString(FilePath));
-                    }
-                }
-            }
-            if (this.IsAdminMode)
-            {
-                gdTaskUsersNotes.DataSource = dttaskNotes;
-                gdTaskUsersNotes.DataBind();
-                dttaskNotes.Clear();
-
-                reapeaterLogDoc.DataSource = dttaskNotesDoc;
-                reapeaterLogDoc.DataBind();
-                dttaskNotesDoc.Clear();
-
-                reapeaterLogImages.DataSource = dttaskNotesImg;
-                reapeaterLogImages.DataBind();
-                dttaskNotesImg.Clear();
-
-                reapeaterLogVideoc.DataSource = dttaskNotesVideo;
-                reapeaterLogVideoc.DataBind();
-                dttaskNotesVideo.Clear();
-
-                reapeaterLogAudio.DataSource = dttaskNotesAudio;
-                reapeaterLogAudio.DataBind();
-                dttaskNotesAudio.Clear();
-
-                upTaskHistory.Update();
-            }
-            else
-            {
-                gdTaskUsersNotes1.DataSource = dttaskNotes;
-                gdTaskUsersNotes1.DataBind();
-                dttaskNotes.Clear();
-
-                reapeaterLogDoc1.DataSource = dttaskNotesDoc;
-                reapeaterLogDoc1.DataBind();
-                dttaskNotesDoc.Clear();
-
-                reapeaterLogImages1.DataSource = dttaskNotesImg;
-                reapeaterLogImages1.DataBind();
-                dttaskNotesImg.Clear();
-
-                reapeaterLogVideoc1.DataSource = dttaskNotesVideo;
-                reapeaterLogVideoc1.DataBind();
-                dttaskNotesVideo.Clear();
-
-                reapeaterLogAudio1.DataSource = dttaskNotesAudio;
-                reapeaterLogAudio1.DataBind();
-                dttaskNotesAudio.Clear();
-            }
-        }
-
-        private void SetLogFiles(List<TaskLogFile> lstSubtasks)
-        {
-            DataTable dtLogFiles = new DataTable();
-
-            dtLogFiles.Columns.Add("taskId");
-            dtLogFiles.Columns.Add("attachment");
-            dtLogFiles.Columns.Add("notesId");
-
-            foreach (TaskLogFile objSubTask in lstSubtasks)
-            {
-                dtLogFiles.Rows.Add(objSubTask.TaskId, objSubTask.NotesId, objSubTask.Attachment);
             }
         }
 
@@ -2185,14 +1099,14 @@ namespace JG_Prospect.Sr_App
         /// <summary>
         /// Save user's to whom task is assigned. 
         /// </summary>
-        private void SaveAssignedTaskUsers(DropDownCheckBoxes ddcbAssigned, TaskStatus objTaskStatus)
+        private void SaveAssignedTaskUsers(DropDownCheckBoxes ddlAssigned, JGConstant.TaskStatus objTaskStatus)
         {
             //if task id is available to save its note and attachement.
             if (hdnTaskId.Value != "0")
             {
                 string strUsersIds = string.Empty;
 
-                foreach (ListItem item in ddcbAssigned.Items)
+                foreach (ListItem item in ddlAssigned.Items)
                 {
                     if (item.Selected)
                     {
@@ -2212,26 +1126,26 @@ namespace JG_Prospect.Sr_App
                     if (isSuccessful)
                     {
                         // Change task status to assigned = 3.
-                        if (objTaskStatus == TaskStatus.Open || objTaskStatus == TaskStatus.Requested)
+                        if (objTaskStatus == JGConstant.TaskStatus.Open || objTaskStatus == JGConstant.TaskStatus.Requested)
                         {
-                            UpdateTaskStatus(Convert.ToInt32(hdnTaskId.Value), Convert.ToUInt16(TaskStatus.Assigned));
+                            UpdateTaskStatus(Convert.ToInt32(hdnTaskId.Value), Convert.ToUInt16(JGConstant.TaskStatus.Assigned));
                         }
 
                         SendEmailToAssignedUsers(strUsersIds);
                     }
                 }
                 // send email to all users of the department as task is assigned to designation, but not to any specific user.
-                else
-                {
-                    string strUserIDs = "";
+                //else
+                //{
+                //    string strUserIDs = "";
 
-                    foreach (ListItem item in ddcbAssigned.Items)
-                    {
-                        strUserIDs += string.Concat(item.Value, ",");
-                    }
+                //    foreach (ListItem item in ddlAssignedUsers.Items)
+                //    {
+                //        strUserIDs += string.Concat(item.Value, ",");
+                //    }
 
-                    SendEmailToAssignedUsers(strUserIDs.TrimEnd(','));
-                }
+                //    SendEmailToAssignedUsers(strUserIDs.TrimEnd(','));
+                //}
             }
         }
 
@@ -2245,7 +1159,7 @@ namespace JG_Prospect.Sr_App
         //    {
         //        Boolean? isCreatorUser = null;
 
-        //        foreach (ListItem item in ddcbAssigned.Items)
+        //        foreach (ListItem item in ddlAssignedUsers.Items)
         //        {
         //            if (item.Selected)
         //            {
@@ -2260,223 +1174,33 @@ namespace JG_Prospect.Sr_App
 
         //}
 
-        /// <summary>
-        /// Save task note and attachment added by user.
-        /// </summary>
-        private void SaveTaskNotesNAttachments()
-        {
-            //if task id is available to save its note and attachement.
-            if (hdnTaskId.Value != "0")
-            {
-                Boolean? isCreatorUser = null;
-
-                //if it is task is created than control mode will be 0 and Admin user has created task.
-                if (controlMode.Value == "0")
-                {
-                    isCreatorUser = true;
-                }
-
-                // Save task notes and user information, returns TaskUpdateId for reference to add in user attachments.
-
-                Int32 TaskUpdateId = SaveTaskNote(Convert.ToInt64(hdnTaskId.Value), isCreatorUser, null, string.Empty, string.Empty);
-
-                // Save task related user's attachment.
-                UploadUserAttachements(TaskUpdateId, null, string.Empty);
-
-                LoadTaskData(hdnTaskId.Value);
-
-                txtNote.Text = string.Empty;
-                txtNote1.Text = string.Empty;
-
-                txtDescription.Text = " Hi " + Session[JG_Prospect.Common.SessionKey.Key.Username.ToString()] + ", How are you. Thank you for accepting to this task. \n\n";
-                txtDescription.Text = txtDescription.Text + "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -\n\n";
-
-                //txtDescription.Text = string.Empty;
-                //clearAllFormData();
-
-                // Refresh task list on top header.
-                //SearchTasks(null);
-
-                //if (controlMode.Value == "0")
-                //{
-                //    ScriptManager.RegisterStartupScript(this.Page, GetType(), "al", "alert('Task created successfully');", true);
-                //}
-                //else
-                //{
-                //   ScriptManager.RegisterStartupScript(this.Page, GetType(), "al", "alert('Task updated successfully');", true);
-                //}
-
-            }
-        }
-
-        private void UploadUserAttachements(int? taskUpdateId, long? TaskId, string attachments)
+        private void UploadUserAttachements(int? taskUpdateId, long? TaskId, string attachments, JG_Prospect.Common.JGConstant.TaskFileDestination objTaskFileDestination)
         {
             //User has attached file than save it to database.
             if (!String.IsNullOrEmpty(attachments))
             {
                 TaskUser taskUserFiles = new TaskUser();
-                String[] files;
 
                 if (!string.IsNullOrEmpty(attachments))
                 {
-                    files = attachments.Split(new char[] { '^' }, StringSplitOptions.RemoveEmptyEntries);
-                }
-                else
-                {
-                    files = hdnAttachments.Value.Split(new char[] { '^' }, StringSplitOptions.RemoveEmptyEntries);
-                }
+                    String[] files = attachments.Split(new char[] { '^' }, StringSplitOptions.RemoveEmptyEntries);
 
-                foreach (String attachment in files)
-                {
-                    String[] attachements = attachment.Split('@');
-                    string fileExtension = Path.GetExtension(attachment);
-
-                    if (!string.IsNullOrEmpty(hdnNoteFileType.Value))
+                    foreach (String attachment in files)
                     {
-                        if (hdnNoteFileType.Value == "video")
-                        {
-                            if (fileExtension.ToLower() == ".mpeg" || fileExtension.ToLower() == ".mp4"
-                                || fileExtension.ToLower() == ".3gpp" || fileExtension.ToLower() == ".wmv"
-                                || fileExtension.ToLower() == ".mkv")
-                            {
+                        String[] attachements = attachment.Split('@');
 
-                                taskUserFiles.FileType = Convert.ToString((int)Utilits.Type.video);
-                            }
-                        }
-
-                        if (hdnNoteFileType.Value == "audio")
-                        {
-                            if (fileExtension.ToLower() == ".mp3" || fileExtension.ToLower() == ".mp4"
-                           || fileExtension.ToLower() == ".wma")
-                            {
-                                taskUserFiles.FileType = Convert.ToString((int)Utilits.Type.audio);
-                            }
-                        }
+                        taskUserFiles.Attachment = attachements[0];
+                        taskUserFiles.OriginalFileName = attachements[1];
+                        taskUserFiles.Mode = 0; // insert data.
+                        taskUserFiles.TaskId = TaskId ?? Convert.ToInt64(hdnTaskId.Value);
+                        taskUserFiles.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                        taskUserFiles.TaskUpdateId = taskUpdateId;
+                        taskUserFiles.UserType = JGSession.IsInstallUser ?? false;
+                        taskUserFiles.TaskFileDestination = objTaskFileDestination;
+                        TaskGeneratorBLL.Instance.SaveOrDeleteTaskUserFiles(taskUserFiles);  // save task files
                     }
-
-                    if (fileExtension.ToLower() == ".jpg" || fileExtension.ToLower() == ".jpeg"
-                      || fileExtension.ToLower() == ".png")
-                    {
-                        taskUserFiles.FileType = Convert.ToString((int)Utilits.Type.images);
-                    }
-
-                    if (fileExtension.ToLower() == ".doc" || fileExtension.ToLower() == ".docx"
-                     || fileExtension.ToLower() == ".xlx" || fileExtension.ToLower() == ".xlsx"
-                     || fileExtension.ToLower() == ".pdf" || fileExtension.ToLower() == ".txt"
-                     || fileExtension.ToLower() == ".csv")
-                    {
-                        taskUserFiles.FileType = Convert.ToString((int)Utilits.Type.docu);
-                    }
-                    taskUserFiles.Attachment = attachements[0];
-                    taskUserFiles.OriginalFileName = attachements[1];
-                    taskUserFiles.Mode = 0; // insert data.
-                    taskUserFiles.TaskId = TaskId ?? Convert.ToInt64(hdnTaskId.Value);
-                    taskUserFiles.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
-                    taskUserFiles.TaskUpdateId = taskUpdateId;
-                    taskUserFiles.UserType = JGSession.IsInstallUser ?? false;
-                    TaskGeneratorBLL.Instance.SaveOrDeleteTaskUserFiles(taskUserFiles);  // save task files
                 }
             }
-        }
-
-        /// <summary>
-        /// Save task user information.
-        /// </summary>
-        /// <param name="Designame"></param>
-        /// <param name="ItaskId"></param>
-        private Int32 SaveTaskNote(long ItaskId, Boolean? IsCreated, Int32? UserId, String UserName, String taskDescription)
-        {
-            Int32 TaskUpdateId = 0;
-
-            TaskUser taskUser = new TaskUser();
-
-            if (UserId == null)
-            {
-                // Take logged in user's id for logging note in database.
-                taskUser.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
-                taskUser.UserFirstName = Session["Username"].ToString();
-            }
-            else
-            {
-                taskUser.UserId = Convert.ToInt32(UserId);
-                taskUser.UserFirstName = UserName;
-            }
-
-            if (!string.IsNullOrEmpty(hdnNoteId.Value))
-                taskUser.Id = Convert.ToInt64(hdnNoteId.Value);
-            else
-                taskUser.Id = 0;
-
-            if (string.IsNullOrEmpty(taskDescription))
-            {
-                //taskUser.UserType = userType.Text;
-                if (Session[JG_Prospect.Common.SessionKey.Key.usertype.ToString()] == "Admin")
-                    taskUser.Notes = txtNote.Text;
-                else
-                    taskUser.Notes = txtNote1.Text;
-            }
-            else
-                taskUser.Notes = taskDescription;
-
-            if (!string.IsNullOrEmpty(taskUser.Notes))
-                taskUser.FileType = Convert.ToString((int)Utilits.Type.notes);
-
-            // if user has just created task then send entry with iscreator= true to distinguish record from other user's log.
-
-            if (IsCreated != null)
-            {
-                taskUser.IsCreatorUser = true;
-            }
-            else
-            {
-                taskUser.IsCreatorUser = false;
-            }
-
-            taskUser.TaskId = ItaskId;
-
-            taskUser.Status = Convert.ToInt16(cmbStatus.SelectedItem.Value);
-
-            int userAcceptance = Convert.ToInt32(ddlUserAcceptance.SelectedItem.Value);
-
-            taskUser.UserAcceptance = Convert.ToBoolean(userAcceptance);
-
-            if (taskUser.Id == 0)
-            {
-                TaskGeneratorBLL.Instance.SaveOrDeleteTaskNotes(ref taskUser);
-                TaskUpdateId = Convert.ToInt32(taskUser.TaskUpdateId);
-            }
-            else
-            {
-                TaskGeneratorBLL.Instance.UpadateTaskNotes(ref taskUser);
-            }
-
-
-
-            //for (int i = 0; i < gdTaskUsers.Rows.Count; i++)
-            //{
-
-            //    TaskUser taskUser = new TaskUser();
-            //    Label userID = (Label)gdTaskUsers.Rows[i].Cells[1].FindControl("lbluserId");
-            //    Label userType = (Label)gdTaskUsers.Rows[i].Cells[1].FindControl("lbluserType");
-            //    Label notes = (Label)gdTaskUsers.Rows[i].Cells[1].FindControl("lblNotes");
-            //    taskUser.UserId = Convert.ToInt32(userID.Text);
-            //    //taskUser.UserType = userType.Text;
-            //    taskUser.Notes = notes.Text;
-            //    taskUser.TaskId = ItaskId;
-
-            //    taskUser.Status = Convert.ToInt16(cmbStatus.SelectedItem.Value);
-            //    int userAcceptance = Convert.ToInt32(ddlUserAcceptance.SelectedItem.Value);
-            //    taskUser.UserAcceptance = Convert.ToBoolean(userAcceptance);
-            //    TaskGeneratorBLL.Instance.SaveOrDeleteTaskUser(ref taskUser);
-
-            //    TaskUpdateId = taskUser.TaskUpdateId;
-
-            //    //Inform user by email about task assgignment.
-            //    //SendEmail(Designame, taskUser.UserId); // send auto email to selected users
-
-            //}
-
-            return TaskUpdateId;
         }
 
         private void SendEmailToAssignedUsers(string strInstallUserIDs)
@@ -2525,6 +1249,11 @@ namespace JG_Prospect.Sr_App
             }
         }
 
+        private void LoadTaskData(Int64 intTaskId)
+        {
+            LoadTaskData(intTaskId.ToString());
+        }
+
         private void LoadTaskData(string TaskId)
         {
             DataSet dsTaskDetails = TaskGeneratorBLL.Instance.GetTaskDetails(Convert.ToInt32(TaskId));
@@ -2543,24 +1272,98 @@ namespace JG_Prospect.Sr_App
 
             SetMasterTaskDetails(dtTaskMasterDetails);
             SetTaskDesignationDetails(dtTaskDesignationDetails);
-            SetTaskAssignedUsers(dtTaskAssignedUserDetails);
-            SetTaskUserNNotesDetails(dtTaskNotesDetails);
-            SetSubTaskDetails(dtSubTaskDetails);
-            //SetLogFiles(dsTaskDetails.Tables[5]);
-            FillrptWorkFiles(dsTaskDetails.Tables[5]);
+            bool blUserAssigned = SetTaskAssignedUsers(dtTaskAssignedUserDetails);
+            objucTaskHistory_Admin.SetTaskUserNNotesDetails(dtTaskNotesDetails, dtTaskMasterDetails.Rows[0]["Description"].ToString());
+            objucTaskHistory_User.SetTaskUserNNotesDetails(dtTaskNotesDetails, dtTaskMasterDetails.Rows[0]["Description"].ToString());
+            objucSubTasks_Admin.SetSubTaskDetails();
+            objucSubTasks_User.SetSubTaskDetails();
+
             SetTaskPopupTitle(TaskId, dtTaskMasterDetails);
-        }
 
-        private void FillrptWorkFiles(DataTable dtTaskUserFiles)
-        {
-            if (dtTaskUserFiles != null)
+            SetPasswordToFreezeWorkSpecificationUI(false);
+
+            // show accept / reject task links for normal users, only if 
+            // 1. task belogs to the same designation as user.
+            // 2. task is not assigned to any user.
+            if (!this.IsAdminMode)
             {
-                intTaskUserFilesCount = dtTaskUserFiles.Rows.Count;
+                bool blSameDesignation = ltlTUDesig.Text
+                                                   .Split(',')
+                                                   .FirstOrDefault
+                                                    (
+                                                        d => d.ToUpper() == HttpContext.Current.Session["DesigNew"].ToString().ToUpper()
+                                                    ) != null;
+
+                if (!blUserAssigned && blSameDesignation)
+                {
+                    DataSet dsTaskUserFiles = TaskGeneratorBLL.Instance.GetTaskAcceptances(Convert.ToInt64(hdnTaskId.Value));
+                    if (dsTaskUserFiles != null)
+                    {
+                        DataView dv = dsTaskUserFiles.Tables[0].AsDataView();
+                        dv.RowFilter = string.Format("UserId={0}", JGSession.UserId);
+                        divAcceptRejectButtons.Visible = dv.ToTable().Rows.Count == 0;
+                    }
+                    else
+                    {
+                        divAcceptRejectButtons.Visible = true;
+                    }
+                }
+                else
+                {
+                    divAcceptRejectButtons.Visible = false;
+                }
             }
-            rptWorkFiles.DataSource = dtTaskUserFiles;
-            rptWorkFiles.DataBind();
         }
 
+        private void FillWorkSpecificationAttachments()
+        {
+            DataTable dtTaskUserFiles = null;
+
+            if (controlMode.Value == "0")
+            {
+                dtTaskUserFiles = this.dtTaskUserFiles;
+            }
+            else
+            {
+                DataSet dsTaskUserFiles = TaskGeneratorBLL.Instance.GetTaskUserFiles(Convert.ToInt32(hdnTaskId.Value), JGConstant.TaskFileDestination.WorkSpecification, null, null);
+                if (dsTaskUserFiles != null)
+                {
+                    dtTaskUserFiles = dsTaskUserFiles.Tables[0];
+                    //Convert.ToInt32(dsTaskUserFiles.Tables[1].Rows[0]["TotalRecordCount"]);
+                }
+            }
+
+            grdWorkSpecificationAttachments.DataSource = dtTaskUserFiles;
+            grdWorkSpecificationAttachments.DataBind();
+
+            upnlAttachments.Update();
+        }
+
+        private void ShowWorkSpecificationSection(bool IsOnPageLoad)
+        {
+            string strScript = string.Format(
+                                                "Initialize_WorkSpecifications();ShowPopup(\"#{0}\");ShowPopup(\"#{1}\");",
+                                                divWorkSpecificationSection.ClientID,
+                                                divFinishedWorkFiles.ClientID
+                                            );
+
+            if (IsOnPageLoad)
+            {
+                strScript = "$(document).ready(function(){" + strScript + "});";
+            }
+
+            FillWorkSpecificationAttachments();
+
+            upWorkSpecificationSection.Update();
+
+            ScriptManager.RegisterStartupScript(
+                                                    this.Page,
+                                                    this.GetType(),
+                                                    "ShowPopup",
+                                                    strScript,
+                                                    true
+                                              );
+        }
 
         private void SetSubTaskSectionView(bool blnView)
         {
@@ -2582,13 +1385,13 @@ namespace JG_Prospect.Sr_App
             tblTaskHeader.Visible = true;
         }
 
-        private void SetTaskAssignedUsers(DataTable dtTaskAssignedUserDetails)
+        private bool SetTaskAssignedUsers(DataTable dtTaskAssignedUserDetails)
         {
-            String firstAssignedUser = String.Empty;
+            string firstAssignedUser = string.Empty;
             foreach (DataRow row in dtTaskAssignedUserDetails.Rows)
             {
 
-                ListItem item = ddcbAssigned.Items.FindByValue(row["UserId"].ToString());
+                ListItem item = ddlAssignedUsers.Items.FindByValue(row["UserId"].ToString());
 
                 if (item != null)
                 {
@@ -2601,13 +1404,15 @@ namespace JG_Prospect.Sr_App
                 }
             }
 
-            if (!String.IsNullOrEmpty(firstAssignedUser))
+            if (!string.IsNullOrEmpty(firstAssignedUser))
             {
-                ddcbAssigned.Texts.SelectBoxCaption = firstAssignedUser;
+                ddlAssignedUsers.Texts.SelectBoxCaption = firstAssignedUser;
+                return true;
             }
             else
             {
-                ddcbAssigned.Texts.SelectBoxCaption = "--Open--";
+                ddlAssignedUsers.Texts.SelectBoxCaption = "--Open--";
+                return false;
             }
         }
 
@@ -2618,7 +1423,6 @@ namespace JG_Prospect.Sr_App
             {
                 foreach (DataRow row in dtTaskDesignationDetails.Rows)
                 {
-
                     ListItem item = ddlUserDesignation.Items.FindByText(row["Designation"].ToString());
 
                     if (item != null)
@@ -2645,122 +1449,9 @@ namespace JG_Prospect.Sr_App
                     designations.Append(String.Concat(row["Designation"].ToString(), ","));
                 }
 
-                ltlTUDesig.Text = String.IsNullOrEmpty(designations.ToString()) == true ? string.Empty : designations.ToString().Substring(0, designations.ToString().Length - 1);
+                ltlTUDesig.Text = string.IsNullOrEmpty(designations.ToString()) == true ? string.Empty : designations.ToString().Substring(0, designations.ToString().Length - 1);
             }
         }
-
-        private void SetTaskUserNNotesDetails(DataTable dtTaskUserDetails)
-        {
-            for (int i = 0; i < dtTaskUserDetails.Rows.Count; i++)
-            {
-                dtTaskUserDetails.Rows[i]["Notes"] = dtTaskUserDetails.Rows[i]["Notes"].ToString().Replace("-", "");
-            }
-
-            BindTaskUsersNotes(dtTaskUserDetails);
-
-            if (this.IsAdminMode)
-            {
-                gdTaskUsers.DataSource = dtTaskUserDetails;
-                gdTaskUsers.DataBind();
-                upTaskUsers.Update();
-            }
-            else
-            {
-                gdTaskUsers1.DataSource = dtTaskUserDetails;
-                gdTaskUsers1.DataBind();
-                upTaskUsers1.Update();
-            }
-        }
-
-        private void SetSubTaskDetails(DataTable dtSubTaskDetails)
-        {
-            gvSubTasks1.DataSource = dtSubTaskDetails;
-            gvSubTasks1.DataBind();
-
-            gvSubTasks.DataSource = dtSubTaskDetails;
-            gvSubTasks.DataBind();
-            upSubTasks.Update();
-
-            if (dtSubTaskDetails.Rows.Count > 0)
-            {
-                this.LastSubTaskSequence = dtSubTaskDetails.Rows[dtSubTaskDetails.Rows.Count - 1]["InstallId"].ToString();
-            }
-            else
-            {
-                this.LastSubTaskSequence = String.Empty;
-            }
-        }
-
-
-        private void SetLogFiles(DataTable dtLogFileDetails)
-        {
-            for (int i = 0; i < dtLogFileDetails.Rows.Count; i++)
-            {
-                string[] files = dtLogFileDetails.Rows[i]["attachment"].ToString().Split(new char[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
-                string onlyFileName = files[0];
-
-                string fileExtension = Path.GetExtension(Server.MapPath("~/TaskAttachments/" + onlyFileName));
-                string filePath = "../TaskAttachments/" + onlyFileName;
-
-
-
-                if (fileExtension.Equals(".png") || fileExtension.Equals(".jpg") || fileExtension.Equals(".jpeg"))
-                {
-                    //imgImage.ImageUrl = filePath;
-                    //hyperLnkImageName.Text = files[1];
-                    //hyperLnkImageName.CommandArgument = dtLogFileDetails.Rows[i]["attachment"].ToString();
-                    //hyperLnkDeleteLogImage.CommandArgument = dtLogFileDetails.Rows[i]["attachment"].ToString();
-                    //imgImage.Visible = true;
-                    //lblImage.Visible = false;
-                    //lblMessage.Text = "";
-                    //upLogImg.Update();
-                }
-                else
-                {
-                    //imgImage.Visible = false;
-                    //lblImage.Visible = true;
-                    //lblMessage.Text = "No Image added yet.";
-                }
-                //if (fileExtension.Equals(".doc") || fileExtension.Equals(".docx")
-                //    || fileExtension.Equals(".xlx") || fileExtension.Equals(".xlsx")
-                //    || fileExtension.Equals(".pdf")
-                //    || fileExtension.Equals(".csv") || fileExtension.Equals(".txt"))
-                //{
-                //    if (fileExtension.Equals(".doc") || fileExtension.Equals(".docx"))
-                //        imgDoc.ImageUrl = "../img/word.jpg";
-                //    else if (fileExtension.Equals(".xlx") || fileExtension.Equals(".xlsx"))
-                //        imgDoc.ImageUrl = "../img/xls.png";
-                //    else if (fileExtension.Equals(".pdf"))
-                //        imgDoc.ImageUrl = "../img/pdf.jpg";
-                //    else if (fileExtension.Equals(".csv"))
-                //        imgDoc.ImageUrl = "../img/csv.png";
-                //    else
-                //        imgDoc.ImageUrl = "../img/file.jpg" + onlyFileName;
-
-                //    hyperLnlDocName.CommandArgument = dtLogFileDetails.Rows[i]["attachment"].ToString();
-                //    hyperLnkDeleteLogDoc.CommandArgument = dtLogFileDetails.Rows[i]["attachment"].ToString();
-                //    hyperLnlDocName.Text = files[1];
-
-                //    imgDoc.Visible = true;
-                //    lblMessage.Visible = false;
-                //    lblMessage.Text = "";
-                //    upLogDoc.Update();
-                //}
-                //else
-                //{
-                //    imgDoc.Visible = false;
-                //    lblMessage.Visible = true;
-                //    lblMessage.Text = "No document added yet.";
-                //}
-                if (fileExtension.Equals(".mkv") || fileExtension.Equals(".flv") || fileExtension.Equals(".wmv") || fileExtension.Equals(".mp4") || fileExtension.Equals(".3gp"))
-                {
-
-                    // logVideo.Attributes.Add("src", filePath);
-                    // logVideo.Attributes.Add("value", filePath);
-                }
-            }
-        }
-
 
         private void SetMasterTaskDetails(DataTable dtTaskMasterDetails)
         {
@@ -2776,7 +1467,34 @@ namespace JG_Prospect.Sr_App
 
                 if (item != null)
                 {
+                    item.Enabled = true;
                     cmbStatus.SelectedIndex = cmbStatus.Items.IndexOf(item);
+
+                    // disable dropdown and do not allow user to change status
+                    // status will be changed only after freezing the specifications.
+                    //if (item.Value == Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString())
+                    //{
+                    //    cmbStatus.Enabled = false;
+                    //}
+                    //else
+                    //{
+                    //    cmbStatus.Enabled = true;
+                    //}
+                }
+                else
+                {
+                    cmbStatus.SelectedIndex = 0;
+                }
+
+                item = ddlTaskPriority.Items.FindByValue(dtTaskMasterDetails.Rows[0]["TaskPriority"].ToString());
+
+                if (item != null)
+                {
+                    ddlTaskPriority.SelectedIndex = ddlTaskPriority.Items.IndexOf(item);
+                }
+                else
+                {
+                    ddlTaskPriority.SelectedIndex = 0;
                 }
 
                 txtDueDate.Text = CommonFunction.FormatToShortDateString(dtTaskMasterDetails.Rows[0]["DueDate"]);
@@ -2799,49 +1517,69 @@ namespace JG_Prospect.Sr_App
 
                 if (item != null)
                 {
-                    ddlTUStatus.SelectedIndex = cmbStatus.Items.IndexOf(item);
+                    item.Enabled = true;
+                    ddlTUStatus.SelectedIndex = ddlTUStatus.Items.IndexOf(item);
+
+                    // disable dropdown and do not allow user to change status
+                    // status will be changed only after freezing the specifications.
+                    //if (item.Value == Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString())
+                    //{
+                    //    ddlTUStatus.Enabled = false;
+                    //}
+                    //else
+                    //{
+                    //    ddlTUStatus.Enabled = true;
+                    //}
+                }
+                else
+                {
+                    ddlTUStatus.SelectedIndex = 0;
                 }
 
+                if (!string.IsNullOrEmpty(dtTaskMasterDetails.Rows[0]["TaskPriority"].ToString()))
+                {
+                    ltrlTaskPriority.Text = ((JGConstant.TaskPriority)Convert.ToByte(dtTaskMasterDetails.Rows[0]["TaskPriority"])).ToString();
+                }
                 ltlTUDueDate.Text = CommonFunction.FormatToShortDateString(dtTaskMasterDetails.Rows[0]["DueDate"]);
                 ltlTUHrsTask.Text = dtTaskMasterDetails.Rows[0]["Hours"].ToString();
-
-
             }
             // ddlUserDesignation.SelectedValue = dtTaskMasterDetails.Rows[0]["Designation"].ToString();
             //LoadUsersByDesgination();
         }
 
+        private void FillAcceptanceLog()
+        {
+            DataTable dtAcceptanceLog = null;
+
+            if (controlMode.Value == "0")
+            {
+                dtAcceptanceLog = null;
+            }
+            else
+            {
+                DataSet dsTaskUserFiles = TaskGeneratorBLL.Instance.GetTaskAcceptances(Convert.ToInt64(hdnTaskId.Value));
+                if (dsTaskUserFiles != null)
+                {
+                    dtAcceptanceLog = dsTaskUserFiles.Tables[0];
+                }
+            }
+
+            gvAcceptanceLog.DataSource = dtAcceptanceLog;
+            gvAcceptanceLog.DataBind();
+
+            upAcceptanceLog.Update();
+        }
+
         private void toggleValidators(bool flag)
         {
             rfvTaskTitle.Visible = flag;
-            rfvDesc.Visible = flag;
+            //rfvDesc.Visible = flag;
             cvDesignations.Visible = flag;
         }
 
         private void DownloadUserAttachments(String CommaSeperatedFiles)
         {
             string[] files = CommaSeperatedFiles.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-
-            //var archive = Server.MapPath("~/TaskAttachments/archive.zip");
-            //var temp = Server.MapPath("~/TaskAttachments/temp");
-
-            //// clear any existing archive
-            //if (System.IO.File.Exists(archive))
-            //{
-            //    System.IO.File.Delete(archive);
-            //}
-
-            //// empty the temp folder
-            //Directory.EnumerateFiles(temp).ToList().ForEach(f => System.IO.File.Delete(f));
-
-            //// copy the selected files to the temp folder
-            //foreach (var file in files)
-            //{
-            //    System.IO.File.Copy(file, Path.Combine(temp, Path.GetFileName(file)));
-            //}
-
-            //// create a new archive
-            //ZipFile.CreateFromDirectory(temp, archive);
 
             using (ZipFile zip = new ZipFile())
             {
@@ -2855,7 +1593,7 @@ namespace JG_Prospect.Sr_App
                 Response.AddHeader("Content-Disposition", "attachment; filename=DownloadedFile.zip");
                 Response.ContentType = "application/zip";
                 zip.Save(Response.OutputStream);
-                //Test
+
                 Response.End();
 
 
@@ -2871,19 +1609,6 @@ namespace JG_Prospect.Sr_App
             Response.Flush();
             Response.End();
         }
-        public string RemoveUploadedattachment(string serverfilename)
-        {
-            var originalDirectory = new DirectoryInfo(HttpContext.Current.Server.MapPath("~/TaskAttachments"));
-
-            string pathString = System.IO.Path.Combine(originalDirectory.ToString(), serverfilename);
-
-            bool isExists = System.IO.File.Exists(pathString);
-
-            if (isExists)
-                File.Delete(pathString);
-
-            return serverfilename;
-        }
 
         private void SetTaskView()
         {
@@ -2891,9 +1616,6 @@ namespace JG_Prospect.Sr_App
             {
                 tblAdminTaskView.Visible = true;
                 tblUserTaskView.Visible = false;
-
-                gvSubTasks.DataSource = this.lstSubTasks;
-                gvSubTasks.DataBind();
             }
             else
             {
@@ -2902,222 +1624,153 @@ namespace JG_Prospect.Sr_App
             }
         }
 
-        private void DownloadPdf(byte[] arrPdf, string strFileName)
+        private void SetPasswordToFreezeWorkSpecificationUI(bool blResetStatus = true)
         {
-            if (arrPdf != null)
+            // show link to download working copy for preview for admin users only.
+            //if (this.IsAdminAndItLeadMode)
             {
-                Response.Clear();
-                Response.ContentType = "application/pdf";
-                Response.AddHeader("content-disposition", "attachment;filename=" + strFileName);
-                Response.Buffer = true;
-                (new MemoryStream(arrPdf)).WriteTo(Response.OutputStream);
-                Response.End();
+                txtITLeadPasswordToFreezeSpecificationMain.Visible =
+                txtITLeadPasswordToFreezeSpecificationPopup.Visible =
+                txtAdminPasswordToFreezeSpecificationMain.Visible =
+                txtAdminPasswordToFreezeSpecificationPopup.Visible =
+                txtUserPasswordToFreezeSpecificationMain.Visible =
+                txtUserPasswordToFreezeSpecificationPopup.Visible = true;
+
+                DataSet dsTaskSpecificationStatus = TaskGeneratorBLL.Instance.GetPendingTaskWorkSpecificationCount(Convert.ToInt32(hdnTaskId.Value));
+
+                // change status only after freezing all specifications.
+                // this will change disabled "specs in progress" status to open on feezing.
+                if (
+                    blResetStatus &&
+                    Convert.ToInt32(dsTaskSpecificationStatus.Tables[0].Rows[0]["TotalRecordCount"]) > 0 &&
+                    Convert.ToInt32(dsTaskSpecificationStatus.Tables[1].Rows[0]["PendingRecordCount"]) > 0
+                   )
+                {
+                    SetStatusSelectedValue(cmbStatus, Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString());
+                }
+                else
+                {
+                    //SetStatusSelectedValue(cmbStatus, Convert.ToByte(JGConstant.TaskStatus.Open).ToString());
+                }
+
+                if (HttpContext.Current.Session["DesigNew"].ToString().ToUpper().Equals("ITLEAD"))
+                {
+                    txtITLeadPasswordToFreezeSpecificationMain.AutoPostBack =
+                    txtITLeadPasswordToFreezeSpecificationPopup.AutoPostBack =
+                    txtUserPasswordToFreezeSpecificationMain.AutoPostBack =
+                    txtUserPasswordToFreezeSpecificationPopup.AutoPostBack = false;
+                }
+                else if (HttpContext.Current.Session["DesigNew"].ToString().ToUpper().Equals("ITLEAD"))
+                {
+                    txtAdminPasswordToFreezeSpecificationMain.AutoPostBack =
+                    txtAdminPasswordToFreezeSpecificationPopup.AutoPostBack =
+                    txtUserPasswordToFreezeSpecificationMain.AutoPostBack =
+                    txtUserPasswordToFreezeSpecificationPopup.AutoPostBack = false;
+                }
+                else
+                {
+                    txtAdminPasswordToFreezeSpecificationMain.AutoPostBack =
+                    txtAdminPasswordToFreezeSpecificationPopup.AutoPostBack =
+                    txtITLeadPasswordToFreezeSpecificationMain.AutoPostBack =
+                    txtITLeadPasswordToFreezeSpecificationPopup.AutoPostBack = false;
+                }
+
+                if (dsTaskSpecificationStatus.Tables[2].Rows.Count > 0)
+                {
+                    string strLinkText = string.Empty;
+
+                    #region Prepare Profile Links And Password
+
+                    if (Convert.ToBoolean(dsTaskSpecificationStatus.Tables[2].Rows[0]["AdminStatus"].ToString()))
+                    {
+                        strLinkText += string.Format(
+                                                    "<a href='CreatesalesUser.aspx?id={0}' target='_blank' style='margin-right:10px;'>{1} #{0} : {2}</a>",
+                                                    dsTaskSpecificationStatus.Tables[2].Rows[0]["AdminUserId"].ToString(),
+                                                    string.Concat
+                                                            (
+                                                                dsTaskSpecificationStatus.Tables[2].Rows[0]["AdminUserFirstName"].ToString(),
+                                                                " ",
+                                                                dsTaskSpecificationStatus.Tables[2].Rows[0]["AdminUserLastName"].ToString()
+                                                            ),
+                                                    Convert.ToDateTime(dsTaskSpecificationStatus.Tables[2].Rows[0]["AdminStatusUpdated"]).ToString("MM/dd/yyyy hh:mm tt")
+                                                   );
+
+                        txtAdminPasswordToFreezeSpecificationMain.Visible =
+                        txtAdminPasswordToFreezeSpecificationPopup.Visible = false;
+                    }
+
+                    if (Convert.ToBoolean(dsTaskSpecificationStatus.Tables[2].Rows[0]["TechLeadStatus"].ToString()))
+                    {
+                        strLinkText += string.Format(
+                                                       "<a href='CreatesalesUser.aspx?id={0}' target='_blank' style='margin-right:10px;'>{1} #{0} : {2}</a>",
+                                                       dsTaskSpecificationStatus.Tables[2].Rows[0]["TechLeadUserId"].ToString(),
+                                                       string.Concat
+                                                               (
+                                                                   dsTaskSpecificationStatus.Tables[2].Rows[0]["TechLeadUserFirstName"].ToString(),
+                                                                   " ",
+                                                                   dsTaskSpecificationStatus.Tables[2].Rows[0]["TechLeadUserLastName"].ToString()
+                                                               ),
+                                                        Convert.ToDateTime(dsTaskSpecificationStatus.Tables[2].Rows[0]["TechLeadStatusUpdated"]).ToString("MM/dd/yyyy hh:mm tt")
+                                                    );
+
+                        txtITLeadPasswordToFreezeSpecificationMain.Visible =
+                        txtITLeadPasswordToFreezeSpecificationPopup.Visible = false;
+                    }
+
+                    if (Convert.ToBoolean(dsTaskSpecificationStatus.Tables[2].Rows[0]["OtherUserStatus"].ToString()))
+                    {
+                        strLinkText += string.Format(
+                                                       "<a href='CreatesalesUser.aspx?id={0}' target='_blank' style='margin-right:10px;'>{1} #{0} : {2}</a>",
+                                                       dsTaskSpecificationStatus.Tables[2].Rows[0]["OtherUserId"].ToString(),
+                                                       string.Concat
+                                                               (
+                                                                   dsTaskSpecificationStatus.Tables[2].Rows[0]["OtherUserFirstName"].ToString(),
+                                                                   " ",
+                                                                   dsTaskSpecificationStatus.Tables[2].Rows[0]["OtherUserLastName"].ToString()
+                                                               ),
+                                                        Convert.ToDateTime(dsTaskSpecificationStatus.Tables[2].Rows[0]["OtherUserStatusUpdated"]).ToString("MM/dd/yyyy hh:mm tt")
+                                                    );
+
+                        txtUserPasswordToFreezeSpecificationMain.Visible =
+                        txtUserPasswordToFreezeSpecificationPopup.Visible = false;
+                    }
+
+                    #endregion
+
+                    if (this.IsAdminAndItLeadMode)
+                    {
+                        ltrlFreezedSpecificationByUserLinkMain.Text =
+                        ltrlFreezedSpecificationByUserLinkPopup.Text = strLinkText;
+                    }
+                }
+                else
+                {
+                    ltrlFreezedSpecificationByUserLinkMain.Text =
+                    ltrlFreezedSpecificationByUserLinkPopup.Text = string.Empty;
+                }
             }
         }
 
-        public static void DownLoadFileFromServer(string fileOrinalName, string fileActualFile)
+        private void SetStatusSelectedValue(DropDownList ddlStatus, string strValue)
         {
-            string filePath = ServerMapPath("~/TaskAttachments/" + fileActualFile);
-            HttpResponse res = GetHttpResponse();
-            res.Clear();
-            res.AppendHeader("content-disposition", "attachment; filename=" + fileOrinalName);
-            res.ContentType = "application/octet-stream";
-            res.WriteFile(filePath);
-            res.Flush();
-            res.End();
-            HttpContext.Current.ApplicationInstance.CompleteRequest();
-        }
+            ddlStatus.ClearSelection();
 
-        public static string ServerMapPath(string path)
-        {
-            return HttpContext.Current.Server.MapPath(path);
-        }
-
-        public static HttpResponse GetHttpResponse()
-        {
-            return HttpContext.Current.Response;
-        }
-        private string GetWorkSpecificationFilePopupTitle(string strFreezeUserName, string strLastUpdatedUserName)
-        {
-            string strTitle = string.Empty;
-            strTitle += "<div style='width:100%;'>";
-            strTitle += "<div style='float:left;max-width:180px;'>";
-            strTitle += "Work Specification Files";
-            strTitle += "</div>";
-            strTitle += "<div style='float:right; font-size:12px; font-weight:normal;max-width:330px;'>";
-            if (!string.IsNullOrEmpty(strFreezeUserName))
+            ListItem objListItem = ddlStatus.Items.FindByValue(strValue);
+            if (objListItem != null)
             {
-                strTitle += string.Concat("Specs freezed by: ", strFreezeUserName);
+                if (objListItem.Value == Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString())
+                {
+                    //ddlStatus.Enabled = false;
+                }
+                else
+                {
+                    ddlStatus.Enabled = true;
+                }
+                objListItem.Enabled = true;
+                objListItem.Selected = true;
             }
-            if (!string.IsNullOrEmpty(strLastUpdatedUserName))
-            {
-                strTitle += string.Concat(", Last updated by: ", strLastUpdatedUserName);
-            }
-            strTitle += "</div>";
-            strTitle += "</div>";
-
-            return strTitle;
         }
-
-
 
         #endregion
-
-
-
-        protected void linkDownLoadFiles_Click(object sender, EventArgs e)
-        {
-            LinkButton button = (sender as LinkButton);
-            DownLoadFileFromServer(button.CommandName, button.CommandArgument);
-        }
-
-        protected void gdTaskUsersNotes_RowEditing(object sender, GridViewEditEventArgs e)
-        {
-            gdTaskUsersNotes.EditIndex = e.NewEditIndex;
-            LoadTaskData(hdnTaskId.Value);
-        }
-
-        protected void gdTaskUsersNotes_RowUpdating(object sender, GridViewUpdateEventArgs e)
-        {
-            TaskUser taskUser = new TaskUser();
-
-            TextBox note = (TextBox)gdTaskUsersNotes.Rows[e.RowIndex].FindControl("txtNotes");
-            Label NoteId = (Label)gdTaskUsersNotes.Rows[e.RowIndex].FindControl("lblNoteId");
-
-            hdnNoteId.Value = NoteId.Text;
-            taskUser.Notes = note.Text;
-            taskUser.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
-            taskUser.UserFirstName = Session["Username"].ToString();
-            taskUser.Id = Convert.ToInt64(hdnNoteId.Value);
-            if (!string.IsNullOrEmpty(taskUser.Notes))
-                taskUser.FileType = Convert.ToString((int)Utilits.Type.notes);
-            taskUser.IsCreatorUser = false;
-            taskUser.TaskId = Convert.ToInt64(hdnTaskId.Value);
-            taskUser.Status = Convert.ToInt16(cmbStatus.SelectedItem.Value);
-            int userAcceptance = Convert.ToInt32(ddlUserAcceptance.SelectedItem.Value);
-            taskUser.UserAcceptance = Convert.ToBoolean(userAcceptance);
-            TaskGeneratorBLL.Instance.UpadateTaskNotes(ref taskUser);
-
-            gdTaskUsersNotes.EditIndex = -1;
-            LoadTaskData(hdnTaskId.Value);
-        }
-
-        protected void gdTaskUsersNotes_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
-        {
-            gdTaskUsersNotes.EditIndex = -1;
-            LoadTaskData(hdnTaskId.Value);
-        }
-
-        protected void gdTaskUsers_RowEditing(object sender, GridViewEditEventArgs e)
-        {
-            gdTaskUsers.EditIndex = e.NewEditIndex;
-            LoadTaskData(hdnTaskId.Value);
-        }
-
-        protected void gdTaskUsers_RowUpdating(object sender, GridViewUpdateEventArgs e)
-        {
-            TaskUser taskUser = new TaskUser();
-
-            TextBox note = (TextBox)gdTaskUsers.Rows[e.RowIndex].FindControl("txtNotes");
-            Label NoteId = (Label)gdTaskUsers.Rows[e.RowIndex].FindControl("lblNoteId");
-
-            hdnNoteId.Value = NoteId.Text;
-            taskUser.Notes = note.Text;
-            taskUser.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
-            taskUser.UserFirstName = Session["Username"].ToString();
-            taskUser.Id = Convert.ToInt64(hdnNoteId.Value);
-            if (!string.IsNullOrEmpty(taskUser.Notes))
-                taskUser.FileType = Convert.ToString((int)Utilits.Type.notes);
-            taskUser.IsCreatorUser = false;
-            taskUser.TaskId = Convert.ToInt64(hdnTaskId.Value);
-            taskUser.Status = Convert.ToInt16(cmbStatus.SelectedItem.Value);
-            int userAcceptance = Convert.ToInt32(ddlUserAcceptance.SelectedItem.Value);
-            taskUser.UserAcceptance = Convert.ToBoolean(userAcceptance);
-            TaskGeneratorBLL.Instance.UpadateTaskNotes(ref taskUser);
-
-            gdTaskUsers.EditIndex = -1;
-            LoadTaskData(hdnTaskId.Value);
-        }
-
-        protected void gdTaskUsers_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
-        {
-            gdTaskUsers.EditIndex = -1;
-            LoadTaskData(hdnTaskId.Value);
-        }
-
-        protected void gdTaskUsers1_RowEditing(object sender, GridViewEditEventArgs e)
-        {
-            gdTaskUsers1.EditIndex = e.NewEditIndex;
-            LoadTaskData(hdnTaskId.Value);
-        }
-
-        protected void gdTaskUsers1_RowUpdating(object sender, GridViewUpdateEventArgs e)
-        {
-            TaskUser taskUser = new TaskUser();
-
-            TextBox note = (TextBox)gdTaskUsers1.Rows[e.RowIndex].FindControl("txtNotes");
-            Label NoteId = (Label)gdTaskUsers1.Rows[e.RowIndex].FindControl("lblNoteId");
-
-            hdnNoteId.Value = NoteId.Text;
-            taskUser.Notes = note.Text;
-            taskUser.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
-            taskUser.UserFirstName = Session["Username"].ToString();
-            taskUser.Id = Convert.ToInt64(hdnNoteId.Value);
-            if (!string.IsNullOrEmpty(taskUser.Notes))
-                taskUser.FileType = Convert.ToString((int)Utilits.Type.notes);
-            taskUser.IsCreatorUser = false;
-            taskUser.TaskId = Convert.ToInt64(hdnTaskId.Value);
-            taskUser.Status = Convert.ToInt16(cmbStatus.SelectedItem.Value);
-            int userAcceptance = Convert.ToInt32(ddlUserAcceptance.SelectedItem.Value);
-            taskUser.UserAcceptance = Convert.ToBoolean(userAcceptance);
-            TaskGeneratorBLL.Instance.UpadateTaskNotes(ref taskUser);
-
-            gdTaskUsers1.EditIndex = -1;
-            LoadTaskData(hdnTaskId.Value);
-        }
-
-        protected void gdTaskUsers1_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
-        {
-            gdTaskUsers1.EditIndex = -1;
-            LoadTaskData(hdnTaskId.Value);
-        }
-
-        protected void gdTaskUsersNotes1_RowEditing(object sender, GridViewEditEventArgs e)
-        {
-
-            gdTaskUsersNotes1.EditIndex = e.NewEditIndex;
-            LoadTaskData(hdnTaskId.Value);
-        }
-
-        protected void gdTaskUsersNotes1_RowCancelingEdit(object sender, GridViewCancelEditEventArgs e)
-        {
-            gdTaskUsersNotes1.EditIndex = -1;
-            LoadTaskData(hdnTaskId.Value);
-        }
-
-        protected void gdTaskUsersNotes1_RowUpdating(object sender, GridViewUpdateEventArgs e)
-        {
-            TaskUser taskUser = new TaskUser();
-
-            TextBox note = (TextBox)gdTaskUsersNotes1.Rows[e.RowIndex].FindControl("txtNotes");
-            Label NoteId = (Label)gdTaskUsersNotes1.Rows[e.RowIndex].FindControl("lblNoteId");
-
-            hdnNoteId.Value = NoteId.Text;
-            taskUser.Notes = note.Text;
-            taskUser.UserId = Convert.ToInt32(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
-            taskUser.UserFirstName = Session["Username"].ToString();
-            taskUser.Id = Convert.ToInt64(hdnNoteId.Value);
-            if (!string.IsNullOrEmpty(taskUser.Notes))
-                taskUser.FileType = Convert.ToString((int)Utilits.Type.notes);
-            taskUser.IsCreatorUser = false;
-            taskUser.TaskId = Convert.ToInt64(hdnTaskId.Value);
-            taskUser.Status = Convert.ToInt16(cmbStatus.SelectedItem.Value);
-            int userAcceptance = Convert.ToInt32(ddlUserAcceptance.SelectedItem.Value);
-            taskUser.UserAcceptance = Convert.ToBoolean(userAcceptance);
-            TaskGeneratorBLL.Instance.UpadateTaskNotes(ref taskUser);
-
-            gdTaskUsersNotes1.EditIndex = -1;
-            LoadTaskData(hdnTaskId.Value);
-        }
     }
 }
