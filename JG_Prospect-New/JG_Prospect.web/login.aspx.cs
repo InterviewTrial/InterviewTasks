@@ -1062,7 +1062,8 @@ namespace JG_Prospect
                     {
                         Session["loginid"] = null;
                         Session[SessionKey.Key.GuIdAtLogin.ToString()] = null;
-                        ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('User Name or Password is incorrect. If you believe you have the correct login ID and password, try selecting the customer or staff toggle to confirm you are logging into correct site. If you still can not log in you may recover your user login and password by selecting forget username &/or forgot password link!');", true);
+                        //ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('User Name or Password is incorrect. If you believe you have the correct login ID and password, try selecting the customer or staff toggle to confirm you are logging into correct site. If you still can not log in you may recover your user login and password by selecting forget username &/or forgot password link!');", true);
+                        ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "loginFailMessage();", true);
                     }
 
                     #endregion
@@ -1071,8 +1072,8 @@ namespace JG_Prospect
             catch (Exception ex)
             {
                 //logErr.writeToLog(ex, this.Page.ToString(), Request.ServerVariables["remote_addr"].ToString());
-                ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Please enter a valid Loginid and password! If you believe you have the correct login ID and password, try selecting the customer or staff toggle to confirm you are logging into correct site. If you still can not log in you may recover your user login and password by selecting forget username &/or forgot password link!');", true);
-                //  Response.Redirect("ErrorPage.aspx");
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "loginFailMessage();", true);
+                //Response.Redirect("ErrorPage.aspx");
             }
         }
 
@@ -1214,7 +1215,6 @@ namespace JG_Prospect
             string appId = "00000000481C1797";
             string appSecrets = "cec1ShT5FFjexbtm08qv0w8";
             string returnUrl = Request.Url.AbsoluteUri.Split('?')[0];
-            returnUrl = "http://jaylem.localtest.me/login.aspx";
 
             MicrosoftClient ms = new DotNetOpenAuth.AspNet.Clients.MicrosoftClient(appId, appSecrets);
             Uri authUrl = new Uri(returnUrl);

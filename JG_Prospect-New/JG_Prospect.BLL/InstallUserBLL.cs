@@ -551,5 +551,10 @@ namespace JG_Prospect.BLL
         {
             return InstallUserDAL.Instance.GetTouchPointLogDataByUserID(UserID);
         }
+
+        public string Update_ForgotPassword(string loginId, string newPassword, bool isCustomer)
+        {
+            return InstallUserDAL.Instance.Update_ForgotPassword(loginId, newPassword, isCustomer);
+        }
     }
 }

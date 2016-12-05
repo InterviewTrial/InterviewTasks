@@ -1879,6 +1879,30 @@ namespace JG_Prospect.DAL
             return result;
         }
 
+        public string Update_ForgotPassword(string loginId, string newPassword, bool isCustomer)
+        {
+            string result = string.Empty;
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("UDP_ForgotPasswordReset");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@Login_Id", DbType.String, loginId);
+                    database.AddInParameter(command, "@NewPassword", DbType.String, newPassword);
+                    database.AddInParameter(command, "@IsCustomer", DbType.Byte, isCustomer);
+                    database.AddOutParameter(command, "@result", DbType.String, 1);
+                    returndata = database.ExecuteDataSet(command);
+                    result = returndata.Tables[0].Rows[0][0].ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                //LogManager.Instance.WriteToFlatFile(ex);
+            }
+            return result;
+        }
+
         #endregion
 
         public DataSet GetInstallerAvailability(string referenceId, int installerId)

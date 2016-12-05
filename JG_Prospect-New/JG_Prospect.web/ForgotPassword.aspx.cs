@@ -8,6 +8,7 @@ using JG_Prospect.Common.Logger;
 using JG_Prospect.BLL;
 using System.Net.Mail;
 using System.Net;
+using JG_Prospect.App_Code;
 
 namespace JG_Prospect
 {
@@ -25,21 +26,27 @@ namespace JG_Prospect
         protected void btnsubmit_Click(object sender, EventArgs e)
         {
             string password = "";
-            if (rdCustomer.Checked)
-            {
-                password = InstallUserBLL.Instance.GetCustomerPassword(txtloginid.Text);
-            }
-            else
-            {
-                password = InstallUserBLL.Instance.GetPassword(txtloginid.Text);
-            }
+            //if (rdCustomer.Checked)
+            //{
+            //    password = InstallUserBLL.Instance.GetCustomerPassword(txtloginid.Text);
+            //}
+            //else
+            //{
+            //    password = InstallUserBLL.Instance.GetPassword(txtloginid.Text);
+            //}
+
+            password = CommonFunction.CreatePassword(6);
+
+            string toEmail = txtloginid.Text;
             string strEmailId = System.Configuration.ConfigurationManager.AppSettings["ForgotPassEmail"].ToString();
             string strPass = System.Configuration.ConfigurationManager.AppSettings["ForgotPass"].ToString();
             if (password != "")
             {
+
                 string str_Body = "<table><tr><td>Hello,<span style=\"background-color: orange;\">User</span></td></tr><tr><td>your password for the GM Grove Construction is:" + password;
                 str_Body = str_Body + "</td></tr>";
                 str_Body = str_Body + "<tr><td></td></tr>";
+                str_Body = str_Body + "<tr><td>Click <a href='http://web.jmgrovebuildingsupply.com/login.aspx'>web.jmgrovebuildingsupply.com</a> for login with your new password</td></tr>";
                 str_Body = str_Body + "<tr><td>Thanks & Regards.</td></tr>";
                 str_Body = str_Body + "<tr><td><span style=\"background-color: orange;\">JM Grove Constructions</span></td></tr></table>";
                 //using (MailMessage mm = new MailMessage("support@jmgroveconstruction.com", txtloginid.Text))
@@ -61,6 +68,7 @@ namespace JG_Prospect
                     smtp.Port = 25;
                     try
                     {
+                        InstallUserBLL.Instance.Update_ForgotPassword(txtloginid.Text, password, rdCustomer.Checked);
                         smtp.Send(mm);
                         ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('Password send to your registered email id.');window.location ='login.aspx';", true);
                     }
