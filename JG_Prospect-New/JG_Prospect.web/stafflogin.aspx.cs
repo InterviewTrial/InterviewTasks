@@ -826,6 +826,10 @@ namespace JG_Prospect
                         AdminId = ConfigurationManager.AppSettings["AdminUserId"].ToString();
                         Session["DesigNew"] = ds.Tables[0].Rows[0]["Designation"].ToString().Trim();
                         isvaliduser = UserBLL.Instance.chklogin(txtloginid.Text.Trim(), txtpassword.Text);
+                        if (ds.Tables[0].Rows[0]["IsFirstTime"] != null && ds.Tables[0].Rows[0]["IsFirstTime"].ToString().ToLower() == "true")
+                        {
+                            JGSession.IsFirstTime = true;
+                        }
                     }
 
                     if (isvaliduser > 0)
@@ -841,45 +845,50 @@ namespace JG_Prospect
 
                         #region Redirect to home Or Sr_App/home
 
-                        if (txtloginid.Text.Trim() == AdminId)
+                        if (JGSession.IsFirstTime == true)
+                        {
+                            strRedirectUrl = "changepassword.aspx";
+                        }
+
+                        if (txtloginid.Text.Trim() == AdminId && JGSession.IsFirstTime == false)
                         {
                             Session["AdminUserId"] = AdminId;
                             Session["usertype"] = "Admin";
                             // strRedirectUrl = "~/Sr_App/home.aspx";
                             strRedirectUrl = "~/Sr_App/GoogleCalendarView.aspx?lastpage=login";
                         }
-                        else if (isvaliduser == 1)
+                        else if (isvaliduser == 1 && JGSession.IsFirstTime == false)
                         {
                             Session["usertype"] = "Admin";
                             // strRedirectUrl = "~/Sr_App/home.aspx";
                             strRedirectUrl = "~/Sr_App/GoogleCalendarView.aspx?lastpage=login";
                         }
-                        else if (isvaliduser == 2)
+                        else if (isvaliduser == 2 && JGSession.IsFirstTime == false)
                         {
                             Session["usertype"] = "JSE";
                             strRedirectUrl = "~/home.aspx";
                         }
-                        else if (isvaliduser == 3)
+                        else if (isvaliduser == 3 && JGSession.IsFirstTime == false)
                         {
                             Session["usertype"] = "SSE";
                             strRedirectUrl = "~/Sr_App/home.aspx";
                         }
-                        else if (isvaliduser == 4)
+                        else if (isvaliduser == 4 && JGSession.IsFirstTime == false)
                         {
                             Session["usertype"] = "MM";
                             strRedirectUrl = "~/home.aspx";
                         }
-                        else if (isvaliduser == 5)
+                        else if (isvaliduser == 5 && JGSession.IsFirstTime == false)
                         {
                             Session["usertype"] = "SM";
                             strRedirectUrl = "~/Sr_App/home.aspx";
                         }
-                        else if (isvaliduser == 6)
+                        else if (isvaliduser == 6 && JGSession.IsFirstTime == false)
                         {
                             Session["usertype"] = "AdminSec";
                             strRedirectUrl = "~/home.aspx";
                         }
-                        else if (isvaliduser == 7)
+                        else if (isvaliduser == 7 && JGSession.IsFirstTime == false)
                         {
                             Session["usertype"] = "Employee";
                             strRedirectUrl = "~/home.aspx";

@@ -463,7 +463,7 @@ namespace JG_Prospect.DAL
         }
 
 
-        public bool changepassword(int loginid, string password)//, string usertype, string password)
+        public bool changepassword(int loginid, string password,bool IsCustomer)//, string usertype, string password)
         {
             try
             {
@@ -474,7 +474,7 @@ namespace JG_Prospect.DAL
                     // database.AddInParameter(command, "@usertype", DbType.String, usertype);
                     database.AddInParameter(command, "@loginid", DbType.Int16, loginid);
                     database.AddInParameter(command, "@password", DbType.String, password);
-
+                    database.AddInParameter(command, "@IsCustomer", DbType.Boolean, IsCustomer);
                     database.AddOutParameter(command, "@result", DbType.Int32, 1);
                     database.ExecuteScalar(command);
                     int res = Convert.ToInt32(database.GetParameterValue(command, "@result"));

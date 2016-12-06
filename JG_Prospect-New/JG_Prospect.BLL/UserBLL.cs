@@ -161,9 +161,9 @@ namespace JG_Prospect.BLL
         {
             return UserDAL.Instance.updateProspectstatus(Estimateid,status,followupdate);
         }
-        public bool changepassword(int id, string password)//, string usertype
+        public bool changepassword(int id, string password,bool IsCustomer)//, string usertype
         {
-            return UserDAL.Instance.changepassword(id, password);//, usertype
+            return UserDAL.Instance.changepassword(id, password, IsCustomer);//, usertype
         }
 
         public bool SavePeriod(period objperiod)

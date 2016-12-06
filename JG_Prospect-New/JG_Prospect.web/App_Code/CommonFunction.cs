@@ -764,5 +764,33 @@ namespace JG_Prospect
                 HttpContext.Current.Session["IsInstallUser"] = value;
             }
         }
+
+        public static bool IsFirstTime
+        {
+            get
+            {
+                if (HttpContext.Current.Session["IsFirstTime"] == null)
+                    return false;
+                return Convert.ToBoolean(HttpContext.Current.Session["IsFirstTime"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["IsFirstTime"] = value;
+            }
+        }
+
+        public static bool IsCustomer
+        {
+            get
+            {
+                if (HttpContext.Current.Session["IsCustomer"] == null)
+                    return false;
+                return Convert.ToBoolean(HttpContext.Current.Session["IsCustomer"]);
+            }
+            set
+            {
+                HttpContext.Current.Session["IsCustomer"] = value;
+            }
+        }
     }
 }
