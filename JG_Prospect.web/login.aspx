@@ -94,6 +94,13 @@
             alert('Your session has expired,login to continue');
         }
         
+        function loginFailMessage() {
+            var loginFailMsg = 'We could not found Username and Password you entered. Please check possible resion for that.\n\n';
+            loginFailMsg += '1) Caps Lock on your keyboard might be open.\n\n';
+            loginFailMsg += '2) You might have selected "Customer" radio button isteade of Staff radio button to login for your staff account.\n\n';
+            loginFailMsg += '3) You might have entered wrong Username or passwor.\n';
+            alert(loginFailMsg);
+        }
         
     </script>
     
