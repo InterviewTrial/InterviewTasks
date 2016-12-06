@@ -16,3 +16,10 @@ JG_Prospect-New/JG_Prospect.web/TaskAttachments/
 JG_Prospect-New/JG_Prospect.web/Sr_App/MailDocument/MailAttachments/
 JG_Prospect-New/JG_Prospect.web/Properties/PublishProfiles/TestProfile.pubxml.user
 JG_Prospect-New/JG_Prospect.web/Properties/PublishProfiles/TestProfile.pubxml
+JG_Prospect.BLL/JG_Prospect.BLL.csproj.vspscc
+JG_Prospect.BLL/bin/
+JG_Prospect.Common/obj/
+JG_Prospect.DAL/obj/
+JG_Prospect.WebAPI/obj/
+JG_Prospect.web/bin/
+JG_Prospect.web/obj/

@@ -1,0 +1,434 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>jQuery Add / Remove Table Rows Dynamically</title>
+    <style type="text/css">
+        form {
+            margin: 20px 0;
+        }
+
+            form input, button {
+                padding: 5px;
+            }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            table td {
+                vertical-align: top;
+            }
+
+        table, th, td {
+            border: 1px solid #cdcdcd;
+        }
+
+            table th, table td {
+                text-align: left;
+            }
+
+        #nobordertable th, td {
+            border: none;
+        }
+
+        #nobordertable1 th, td {
+            border: none;
+        }
+    </style>
+    <script type="text/javascript" src="http://code.jquery.com/jquery.min.js"></script>
+    <script src="../ckeditor/ckeditor.js"></script>
+    <script src="../ckeditor/adapters/jquery.js"></script>
+    <script type="text/javascript">
+
+        var trToAdd = '<tr data-index="**sequence**" data-index-type="**indextype**" ><td><a href="#">**displaysequence**</a></td><td><textarea class="workspecs" contenteditable="true"  style="width:100%;" rows="7">work specs</textarea> <br /> <a class="add-row" href="javascript:void(0);">Add</a> &nbsp; <a class="add-subrow" href="javascript:void(0);">Add Sub Section</a></td><td width="10%"><input type="checkbox" style="border-color:green;" />&nbsp;<input type="checkbox" style="color:blue" />&nbsp;<input type="checkbox" style="color:red" /></td></tr>';
+
+        var tableToAdd = '<table><tbody><tr data-index="1" data-index-type="**indextype**"><td width="1%"><a href="#">**displaysequence**</a></td><td><textarea class="workspecs" style="width:100%;" rows="7">work specs</textarea><br />' +
+                         '<a class="add-row" href="javascript:void(0);">Add</a> &nbsp; <a class="add-subrow" href="javascript:void(0);">Add Sub Section</a>' +
+                         '</td><td width="10%"><input type="checkbox" style="border-color:green;" />&nbsp;<input type="checkbox" style="color:blue" />&nbsp;<input type="checkbox" style="color:red" /></td></tr></tbody></table>';
+
+        $(document).ready(function () {
+            CKEDITOR.disableAutoInline = true;
+            CKEDITOR.inline('workspecs');
+
+            $(".add-row").click(function () {
+
+                AddNewRow(this);
+
+            });
+
+            $(".add-subrow").click(function () {
+
+                AddNewSubRow(this);
+
+            });
+
+            function AddNewSubRow(object) {
+
+                //var sequence = trClosest.parent().closest('tr').attr("data-index");
+
+                console.log($(object).parent());
+
+                var trClosest = $(object).parent();
+
+
+                // Set Reference number sequence.
+                var displaySequence;
+                var dataindextype;
+                // decide type of previous sequence type.
+
+                console.log($(trClosest).closest('tr').attr('data-index-type'));
+                debugger;
+                switch ($(trClosest).closest('tr').attr('data-index-type')) {
+
+                    case 'alphabet':
+                        displaySequence = 'I'; // getting alphabet from 0 based index character array.
+                        dataindextype = 'roman';
+                        break;
+                    case 'number':
+                    default:
+                        displaySequence = 'a';
+                        dataindextype = 'alphabet';
+                        break;
+                }
+
+                var newTable = $(tableToAdd.replace("**indextype**", dataindextype).replace("**displaysequence**", displaySequence));
+
+                console.log(newTable);
+
+
+                trClosest.append(newTable);
+
+                newTable.find(".add-row").on("click", function () {
+                    AddNewRow(this);
+                });
+
+                newTable.find(".add-subrow").on("click", function () {
+                    AddNewSubRow(this);
+                });
+
+
+                if (trClosest.parent().closest('tr').attr("data-index") != "1") {
+                    trClosest.find(".add-subrow").remove();
+                }
+
+
+            }
+
+            function AddNewRow(object) {
+
+                console.log($(object).parent().parent());
+
+                var trClosest = $(object).parent().parent();
+
+                if (trClosest) {
+
+                    var i = $(trClosest).attr('data-index');
+                    var iNum = parseInt(i) + 1;
+                }
+
+                // Set Reference number sequence.
+                var displaySequence;
+                var dataindextype;
+                // decide type of previous sequence type.
+
+                switch ($(trClosest).attr('data-index-type')) {
+                    case 'roman':
+                        displaySequence = romanize(iNum);
+                        dataindextype = 'roman';
+                        break;
+                    case 'alphabet':
+                        displaySequence = charcterize(iNum - 1); // getting alphabet from 0 based index character array.
+                        dataindextype = 'alphabet';
+                        break;
+                    case 'number':
+                    default:
+                        displaySequence = iNum;
+                        dataindextype = 'number';
+                        break;
+                }
+
+                var trNewRow = $(trToAdd.replace("**sequence**", iNum).replace("**displaysequence**", displaySequence));
+
+                trNewRow.insertAfter(trClosest);
+
+                trNewRow.find(".add-row").on("click", function () {
+                    AddNewRow(this);
+                });
+
+                trNewRow.find(".add-subrow").on("click", function () {
+                    AddNewSubRow(this);
+                });
+
+                // set data-index-type of new element.
+                trNewRow.attr('data-index-type', dataindextype);
+
+                trClosest.find(".add-row").remove();
+                //CKEDITOR.inline('.workspecs');
+            }
+
+            // Find and remove selected table rows
+            $(".delete-row").click(function () {
+                $("table tbody").find('input[name="record"]').each(function () {
+                    if ($(this).is(":checked")) {
+                        $(this).parents("tr").remove();
+                    }
+                });
+            });
+        });
+
+        function charcterize(num) {
+
+            if (num < 26) {
+                var chr = String.fromCharCode(97 + n);
+
+            } return chr;
+        }
+
+        function romanize(num) {
+            if (!+num)
+                return false;
+            var digits = String(+num).split(""),
+                key = ["", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM",
+                       "", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC",
+                       "", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"],
+                roman = "",
+                i = 3;
+            while (i--)
+                roman = (key[+digits.pop() + (i * 10)] || "") + roman;
+            return Array(+digits.join("") + 1).join("M") + roman;
+        }
+    </script>
+</head>
+<body>
+
+    <table id="nobordertable">
+        <thead>
+
+        </thead>
+        <tbody>
+            <tr>
+                <td style="font-size:14px;"><strong> Specification Files</strong></td>
+                <td colspan="4"></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td><input type="text" placeholder="Admin Password" /></td>
+                <td><input type="text" placeholder="Tech Lead Password" /></td>
+                <td><input type="text" placeholder="User Password" /></td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <div style="height:300px; overflow:auto;">
+                        <table id="nobordertable1">
+                            <tbody>
+                                <tr>
+                                    <td>Attachments - Latest First</td>
+                                    <td colspan="4"></td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <a href="#">Delete</a>
+                                        <br />
+                                        <img height="100" width="100" src="img/excel-icon.png" />
+                                        <br />
+                                        <small>FileName-DateTimeStamp-UserName</small>
+                                    </td>
+                                    <td>
+                                        <a href="#">Delete</a>
+                                        <br />
+                                        <img height="100" width="100" src="img/word-icon.png" />
+                                        <br />
+                                        <small>FileName-DateTimeStamp-UserName</small>
+                                    </td>
+                                    <td>
+                                        <a href="#">Delete</a>
+                                        <br />
+                                        <img height="100" width="100" src="img/pdf-icon.png" />
+                                        <br />
+                                        <small>FileName-DateTimeStamp-UserName</small>
+                                    </td>
+                                    <td>
+                                        <a href="#">Delete</a>
+                                        <br />
+                                        <img height="100" width="100" src="img/videos.png" />
+                                        <br />
+                                        <small>FileName-DateTimeStamp-UserName</small>
+                                    </td>
+                                    <td>
+                                        <a href="#">Delete</a>
+                                        <br />
+                                        <img height="100" width="100" src="img/image-icon.png" />
+                                        <br />
+                                        <small>FileName-DateTimeStamp-UserName</small>
+                                    </td>
+
+
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <a href="#">Delete</a>
+                                        <br />
+                                        <img height="100" width="100" src="img/excel-icon.png" />
+                                        <br />
+                                        <small>FileName-DateTimeStamp-UserName</small>
+                                    </td>
+                                    <td>
+                                        <a href="#">Delete</a>
+                                        <br />
+                                        <img height="100" width="100" src="img/word-icon.png" />
+                                        <br />
+                                        <small>FileName-DateTimeStamp-UserName</small>
+                                    </td>
+                                    <td>
+                                        <a href="#">Delete</a>
+                                        <br />
+                                        <img height="100" width="100" src="img/pdf-icon.png" />
+                                        <br />
+                                        <small>FileName-DateTimeStamp-UserName</small>
+                                    </td>
+                                    <td>
+                                        <a href="#">Delete</a>
+                                        <br />
+                                        <img height="100" width="100" src="img/videos.png" />
+                                        <br />
+                                        <small>FileName-DateTimeStamp-UserName</small>
+                                    </td>
+                                    <td>
+                                        <a href="#">Delete</a>
+                                        <br />
+                                        <img height="100" width="100" src="img/image-icon.png" />
+                                        <br />
+                                        <small>FileName-DateTimeStamp-UserName</small>
+                                    </td>
+
+
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="4">
+                    <strong><<</strong>
+
+                    <strong>Specification 1 of 35</strong>
+
+                    <strong>>></strong>
+                </td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID#</th>
+                <th>Description</th>
+                
+            </tr>
+        </thead>
+        <tbody>
+            <tr style="background-color:#f57575;">
+                <td width="5%">
+                    <a href="#"> A</a>
+</td>
+                <td>
+                    <table>
+
+                        <tbody>
+                            <tr data-index="1">
+
+                                <td width="2%"><a href="#">1</a></td>
+                                <td>
+
+                                    <textarea id="workspecs" class="workspecs" style="width:100%;" rows="7" contenteditable="true">
+                                        Massive Inline Editing
+                                        Inline editor is a perfect candidate for modern applications where the user can seamlessly switch between viewing and a page and editing it and where the data is saved on the fly. It is really lightweight, so you can use as many editor instances as you need without worrying about the performance.
+
+                                        Click inside any of the elements below to start editing it in-place!
+                                    </textarea>
+                                    <br />
+                                    <a class="add-row" href="javascript:void(0);">Add</a> &nbsp; <a class="add-subrow" href="javascript:void(0);">Add Sub Section</a>
+                                </td>
+                                <td width="10%">Sign Off <br />
+                                    <input type="checkbox" style="border-color:green;" />&nbsp;<input type="checkbox" style="color:blue" />&nbsp;<input type="checkbox" style="color:red" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+                
+            </tr>
+            <tr style="background-color:white;">
+                <td width="2%">
+                    <a href="#">B</a>
+</td>
+                <td>
+                    <table>
+                        <tbody>
+                            <tr data-index="1" data-index-type="number">
+
+                                <td width="2%"><a href="#">1</a></td>
+                                <td>
+
+                                    <textarea id="workspecs" class="workspecs" style="width:100%;" rows="7" contenteditable="true">
+                                        Massive Inline Editing
+                                        Inline editor is a perfect candidate for modern applications where the user can seamlessly switch between viewing and a page and editing it and where the data is saved on the fly. It is really lightweight, so you can use as many editor instances as you need without worrying about the performance.
+
+                                        Click inside any of the elements below to start editing it in-place!
+                                    </textarea>
+                                    <br />
+                                    <a class="add-row" href="javascript:void(0);">Add</a> &nbsp; <a class="add-subrow" href="javascript:void(0);">Add Sub Section</a>
+                                </td>
+                                <td width="10%">
+                                    <input type="checkbox" style="border-color:green;" />&nbsp;<input type="checkbox" style="color:blue" />&nbsp;<input type="checkbox" style="color:red" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+                
+            </tr>
+            <tr style="background-color:#f57575;">
+                <td width="2%">
+                    <a href="#">C</a>
+</td>
+                <td>
+                    <table>
+                        <tbody>
+                            <tr data-index="1">
+
+                                <td width="2%"><a href="#">1</a></td>
+                                <td>
+
+                                    <textarea id="workspecs" class="workspecs" style="width:100%;" rows="7" contenteditable="true">
+                                        Massive Inline Editing
+                                        Inline editor is a perfect candidate for modern applications where the user can seamlessly switch between viewing and a page and editing it and where the data is saved on the fly. It is really lightweight, so you can use as many editor instances as you need without worrying about the performance.
+
+                                        Click inside any of the elements below to start editing it in-place!
+                                    </textarea>
+                                    <br />
+                                    <a class="add-row" href="javascript:void(0);">Add</a> &nbsp; <a class="add-subrow" href="javascript:void(0);">Add Sub Section</a>
+                                </td>
+                                <td width="10%">
+                                    
+                                    <input type="checkbox" style="border-color:green;" />&nbsp;<input type="checkbox" style="color:blue" />&nbsp;<input type="checkbox" style="color:red" />
+                                </td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+                
+            </tr>
+        </tbody>
+    </table>
+
+
+</body>
+</html>                                		
