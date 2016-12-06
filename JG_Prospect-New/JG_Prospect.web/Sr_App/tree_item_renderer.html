@@ -1,8 +1,0 @@
-﻿<script type="text/ng-template" id="tree_item_renderer.html">
-    {{workspecsInfo.name}}
-    <button ng-click="add(data)">Add node</button>
-    <button ng-click="delete(data)" ng-show="workspecsInfo.nodes.length > 0">Delete nodes</button>
-    <ul>
-        <li ng-repeat="data in workspecsInfo.nodes" ng-include="'tree_item_renderer.html'"></li>
-    </ul>
-</script>
