@@ -23,3 +23,7 @@ JG_Prospect.DAL/obj/
 JG_Prospect.WebAPI/obj/
 JG_Prospect.web/bin/
 JG_Prospect.web/obj/
+packages/
+JG_Prospect.BLL/obj/
+JG_Prospect.WebAPI/bin/
+.vs/

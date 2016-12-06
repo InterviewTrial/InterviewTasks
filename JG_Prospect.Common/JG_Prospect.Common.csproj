@@ -67,10 +67,10 @@
       <HintPath>..\JG_Prospect.web\External Dependencies\Microsoft.Practices.ServiceLocation.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.Unity">
-      <HintPath>..\JG_Prospect.web\bin\Microsoft.Practices.Unity.dll</HintPath>
+      <HintPath>..\JG_Prospect.web\External Dependencies\Microsoft.Practices.Unity.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Practices.Unity.Interception">
-      <HintPath>..\JG_Prospect.web\bin\Microsoft.Practices.Unity.Interception.dll</HintPath>
+      <HintPath>..\JG_Prospect.web\External Dependencies\Microsoft.Practices.Unity.Interception.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -142,6 +142,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="bin\Release\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
