@@ -829,11 +829,13 @@ namespace JG_Prospect.Sr_App
             EditUser obj = new EditUser();
             if (status == "OfferMade")
             {
-                obj.createForeMenForJobAcceptance(strBody, FName, LName, Designition, emailId, HireDate, EmpType, PayRates);
+                //TODO : commented code for missing directive using Word = Microsoft.Office.Interop.Word;
+                //obj.createForeMenForJobAcceptance(strBody, FName, LName, Designition, emailId, HireDate, EmpType, PayRates);
             }
             if (status == "Deactive")
             {
-                obj.CreateDeactivationAttachment(strBody, FName, LName, Designition, emailId, HireDate, EmpType, PayRates);
+                //TODO : commented code for missing directive using Word = Microsoft.Office.Interop.Word;
+                //obj.CreateDeactivationAttachment(strBody, FName, LName, Designition, emailId, HireDate, EmpType, PayRates);
             }
 
             List<Attachment> lstAttachments = new List<Attachment>();

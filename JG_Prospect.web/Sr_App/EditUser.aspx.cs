@@ -13,7 +13,7 @@ using System.Data.SqlClient;
 using System.IO;
 using System.Data.OleDb;
 using System.Text;
-using Word = Microsoft.Office.Interop.Word;
+//using Word = Microsoft.Office.Interop.Word;
 using System.Net;
 using System.Net.Mail;
 using System.Web.UI.DataVisualization.Charting;
@@ -2166,11 +2166,13 @@ namespace JG_Prospect
 
             if (status == "OfferMade")
             {
-                createForeMenForJobAcceptance(strBody, FName, LName, Designition, emailId, HireDate, EmpType, PayRates);
+                //TODO : commented code for missing directive using Word = Microsoft.Office.Interop.Word;
+                //createForeMenForJobAcceptance(strBody, FName, LName, Designition, emailId, HireDate, EmpType, PayRates);
             }
             if (status == "Deactive")
             {
-                CreateDeactivationAttachment(strBody, FName, LName, Designition, emailId, HireDate, EmpType, PayRates);
+                //TODO : commented code for missing directive using Word = Microsoft.Office.Interop.Word;
+                //CreateDeactivationAttachment(strBody, FName, LName, Designition, emailId, HireDate, EmpType, PayRates);
             }
 
             List<Attachment> lstAttachments = new List<Attachment>();
@@ -2231,150 +2233,151 @@ namespace JG_Prospect
             return Header;
         }
 
-        private void FindAndReplace(Word.Application wordApp, object findText, object replaceText)
-        {
-            object matchCase = true;
-            object matchWholeWord = true;
-            object matchWildCards = false;
-            object matchSoundsLike = false;
-            object matchAllWordForms = false;
-            object forward = true;
-            object format = false;
-            object matchKashida = false;
-            object matchDiacritics = false;
-            object matchAlefHamza = false;
-            object matchControl = false;
-            object read_only = false;
-            object visible = true;
-            object replace = 2;
-            object wrap = 1;
-            wordApp.Selection.Find.Execute(ref findText, ref matchCase,
-                ref matchWholeWord, ref matchWildCards, ref matchSoundsLike,
-                ref matchAllWordForms, ref forward, ref wrap, ref format,
-                ref replaceText, ref replace, ref matchKashida,
-                        ref matchDiacritics,
-                ref matchAlefHamza, ref matchControl);
-        }
+        #region TODO : commented code for missing directive using Word = Microsoft.Office.Interop.Word;
+        //private void FindAndReplace(Word.Application wordApp, object findText, object replaceText)
+        //{
+        //    object matchCase = true;
+        //    object matchWholeWord = true;
+        //    object matchWildCards = false;
+        //    object matchSoundsLike = false;
+        //    object matchAllWordForms = false;
+        //    object forward = true;
+        //    object format = false;
+        //    object matchKashida = false;
+        //    object matchDiacritics = false;
+        //    object matchAlefHamza = false;
+        //    object matchControl = false;
+        //    object read_only = false;
+        //    object visible = true;
+        //    object replace = 2;
+        //    object wrap = 1;
+        //    wordApp.Selection.Find.Execute(ref findText, ref matchCase,
+        //        ref matchWholeWord, ref matchWildCards, ref matchSoundsLike,
+        //        ref matchAllWordForms, ref forward, ref wrap, ref format,
+        //        ref replaceText, ref replace, ref matchKashida,
+        //                ref matchDiacritics,
+        //        ref matchAlefHamza, ref matchControl);
+        //}
 
-        public void createForeMenForJobAcceptance(string str_Body, string FName, string LName, string Designition, string emailId, string HireDate, string EmpType, string PayRates)
-        {
-            //copy sample file for Foreman Job Acceptance letter template
-            string str_date = DateTime.Now.ToString().Replace("/", "");
-            str_date = str_date.Replace(":", "");
-            str_date = str_date.Replace("-", "");
-            str_date = str_date.Replace(" ", "");
-            string SourcePath = @"~/Sr_App/MailDocSample/ForemanJobAcceptancelettertemplate.docx";
-            string TargetPath = @"~/Sr_App/MailDocument/" + str_date + FName + "ForemanJobAcceptanceletter.docx";
-            System.IO.File.Copy(Server.MapPath(SourcePath), Server.MapPath(TargetPath), true);
-            //modify word document
-            object missing = System.Reflection.Missing.Value;
-            Word.Application wordApp = new Word.Application();
-            Word.Document aDoc = null;
-            object Target = Server.MapPath(TargetPath);
-            if (File.Exists(Server.MapPath(TargetPath)))
-            {
-                DateTime today = DateTime.Now;
-                object readonlyNew = false;
-                object isVisible = false;
-                wordApp.Visible = false;
-                FileInfo objFInfo = new FileInfo(Server.MapPath(TargetPath));
-                objFInfo.IsReadOnly = false;
-                aDoc = wordApp.Documents.Open(ref Target, ref missing, ref readonlyNew, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref isVisible, ref missing, ref missing, ref missing, ref missing);
-                aDoc.Activate();
-                this.FindAndReplace(wordApp, "LBL Date", DateTime.Now.ToShortDateString());
-                this.FindAndReplace(wordApp, "Lbl Full name", FName + " " + LName);
-                this.FindAndReplace(wordApp, "LBL name", FName + " " + LName);
-                this.FindAndReplace(wordApp, "LBL position", Designition);
-                this.FindAndReplace(wordApp, "lbl fulltime", EmpType);
-                this.FindAndReplace(wordApp, "lbl: start date", HireDate);
-                this.FindAndReplace(wordApp, "$ rate", PayRates);
-                this.FindAndReplace(wordApp, "lbl: next pay period", "");
-                this.FindAndReplace(wordApp, "lbl: paycheck date", "");
-                aDoc.SaveAs(ref Target, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing);
-                aDoc.Close(ref missing, ref missing, ref missing);
-            }
-            using (MailMessage mm = new MailMessage("qat2015team@gmail.com", emailId))
-            {
-                try
-                {
-                    mm.Subject = "Foreman Job Acceptance";
-                    mm.Body = str_Body;
-                    mm.Attachments.Add(new Attachment(Server.MapPath(TargetPath)));
-                    mm.IsBodyHtml = true;
-                    SmtpClient smtp = new SmtpClient();
-                    smtp.Host = "smtp.gmail.com";
-                    smtp.EnableSsl = true;
-                    NetworkCredential NetworkCred = new NetworkCredential("qat2015team@gmail.com", "q$7@wt%j*65ba#3M@9P6");
-                    smtp.UseDefaultCredentials = true;
-                    smtp.Credentials = NetworkCred;
-                    smtp.Port = 587;
-                    smtp.Send(mm);
-                }
-                catch (Exception ex)
-                {
-                    ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('" + ex.Message + "')", true);
-                }
-                //ClientScript.RegisterStartupScript(GetType(), "alert", "alert('Email sent.');", true);
-            }
-        }
+        //public void createForeMenForJobAcceptance(string str_Body, string FName, string LName, string Designition, string emailId, string HireDate, string EmpType, string PayRates)
+        //{
+        //    //copy sample file for Foreman Job Acceptance letter template
+        //    string str_date = DateTime.Now.ToString().Replace("/", "");
+        //    str_date = str_date.Replace(":", "");
+        //    str_date = str_date.Replace("-", "");
+        //    str_date = str_date.Replace(" ", "");
+        //    string SourcePath = @"~/Sr_App/MailDocSample/ForemanJobAcceptancelettertemplate.docx";
+        //    string TargetPath = @"~/Sr_App/MailDocument/" + str_date + FName + "ForemanJobAcceptanceletter.docx";
+        //    System.IO.File.Copy(Server.MapPath(SourcePath), Server.MapPath(TargetPath), true);
+        //    //modify word document
+        //    object missing = System.Reflection.Missing.Value;
+        //    Word.Application wordApp = new Word.Application();
+        //    Word.Document aDoc = null;
+        //    object Target = Server.MapPath(TargetPath);
+        //    if (File.Exists(Server.MapPath(TargetPath)))
+        //    {
+        //        DateTime today = DateTime.Now;
+        //        object readonlyNew = false;
+        //        object isVisible = false;
+        //        wordApp.Visible = false;
+        //        FileInfo objFInfo = new FileInfo(Server.MapPath(TargetPath));
+        //        objFInfo.IsReadOnly = false;
+        //        aDoc = wordApp.Documents.Open(ref Target, ref missing, ref readonlyNew, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref isVisible, ref missing, ref missing, ref missing, ref missing);
+        //        aDoc.Activate();
+        //        this.FindAndReplace(wordApp, "LBL Date", DateTime.Now.ToShortDateString());
+        //        this.FindAndReplace(wordApp, "Lbl Full name", FName + " " + LName);
+        //        this.FindAndReplace(wordApp, "LBL name", FName + " " + LName);
+        //        this.FindAndReplace(wordApp, "LBL position", Designition);
+        //        this.FindAndReplace(wordApp, "lbl fulltime", EmpType);
+        //        this.FindAndReplace(wordApp, "lbl: start date", HireDate);
+        //        this.FindAndReplace(wordApp, "$ rate", PayRates);
+        //        this.FindAndReplace(wordApp, "lbl: next pay period", "");
+        //        this.FindAndReplace(wordApp, "lbl: paycheck date", "");
+        //        aDoc.SaveAs(ref Target, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing);
+        //        aDoc.Close(ref missing, ref missing, ref missing);
+        //    }
+        //    using (MailMessage mm = new MailMessage("qat2015team@gmail.com", emailId))
+        //    {
+        //        try
+        //        {
+        //            mm.Subject = "Foreman Job Acceptance";
+        //            mm.Body = str_Body;
+        //            mm.Attachments.Add(new Attachment(Server.MapPath(TargetPath)));
+        //            mm.IsBodyHtml = true;
+        //            SmtpClient smtp = new SmtpClient();
+        //            smtp.Host = "smtp.gmail.com";
+        //            smtp.EnableSsl = true;
+        //            NetworkCredential NetworkCred = new NetworkCredential("qat2015team@gmail.com", "q$7@wt%j*65ba#3M@9P6");
+        //            smtp.UseDefaultCredentials = true;
+        //            smtp.Credentials = NetworkCred;
+        //            smtp.Port = 587;
+        //            smtp.Send(mm);
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('" + ex.Message + "')", true);
+        //        }
+        //        //ClientScript.RegisterStartupScript(GetType(), "alert", "alert('Email sent.');", true);
+        //    }
+        //}
 
-        public void CreateDeactivationAttachment(string MailBody, string FName, string LName, string Designition, string emailId, string HireDate, string EmpType, string PayRates)
-        {
-            string str_date = DateTime.Now.ToString().Replace("/", "");
-            str_date = str_date.Replace(":", "");
-            str_date = str_date.Replace("-", "");
-            str_date = str_date.Replace(" ", "");
-            string SourcePath = @"~/Sr_App/MailDocSample/DeactivationMail.doc";
-            string TargetPath = @"~/Sr_App/MailDocument/" + str_date + FName + "DeactivationMail.doc";
-            System.IO.File.Copy(Server.MapPath(SourcePath), Server.MapPath(TargetPath), true);
-            //modify word document
-            object missing = System.Reflection.Missing.Value;
-            Word.Application wordApp = new Word.Application();
-            Word.Document aDoc = null;
-            object Target = Server.MapPath(TargetPath);
-            if (File.Exists(Server.MapPath(TargetPath)))
-            {
-                DateTime today = DateTime.Now;
-                object readonlyNew = false;
-                object isVisible = false;
-                wordApp.Visible = false;
-                FileInfo objFInfo = new FileInfo(Server.MapPath(TargetPath));
-                objFInfo.IsReadOnly = false;
-                aDoc = wordApp.Documents.Open(ref Target, ref missing, ref readonlyNew, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref isVisible, ref missing, ref missing, ref missing, ref missing);
-                aDoc.Activate();
-                this.FindAndReplace(wordApp, "name", FName + " " + LName);
-                this.FindAndReplace(wordApp, "HireDate", HireDate);
-                this.FindAndReplace(wordApp, "full time or part  time", EmpType);
-                this.FindAndReplace(wordApp, "HourlyRate", PayRates);
-                this.FindAndReplace(wordApp, "WorkingStatus", "No");
-                this.FindAndReplace(wordApp, "LastWorkingDay", DateTime.Now.ToShortDateString());
-                aDoc.SaveAs(ref Target, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing);
-                aDoc.Close(ref missing, ref missing, ref missing);
-            }
-            using (MailMessage mm = new MailMessage("qat2015team@gmail.com", emailId))
-            {
-                try
-                {
-                    mm.Subject = "Deactivation";
-                    mm.Body = MailBody;
-                    mm.Attachments.Add(new Attachment(Server.MapPath(TargetPath)));
-                    mm.IsBodyHtml = true;
-                    SmtpClient smtp = new SmtpClient();
-                    smtp.Host = "smtp.gmail.com";
-                    smtp.EnableSsl = true;
-                    NetworkCredential NetworkCred = new NetworkCredential("qat2015team@gmail.com", "q$7@wt%j*65ba#3M@9P6");
-                    smtp.UseDefaultCredentials = true;
-                    smtp.Credentials = NetworkCred;
-                    smtp.Port = 587;
-                    smtp.Send(mm);
-                }
-                catch (Exception ex)
-                {
-                    ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('" + ex.Message + "')", true);
-                }
-            }
-        }
-
+        //public void CreateDeactivationAttachment(string MailBody, string FName, string LName, string Designition, string emailId, string HireDate, string EmpType, string PayRates)
+        //{
+        //    string str_date = DateTime.Now.ToString().Replace("/", "");
+        //    str_date = str_date.Replace(":", "");
+        //    str_date = str_date.Replace("-", "");
+        //    str_date = str_date.Replace(" ", "");
+        //    string SourcePath = @"~/Sr_App/MailDocSample/DeactivationMail.doc";
+        //    string TargetPath = @"~/Sr_App/MailDocument/" + str_date + FName + "DeactivationMail.doc";
+        //    System.IO.File.Copy(Server.MapPath(SourcePath), Server.MapPath(TargetPath), true);
+        //    //modify word document
+        //    object missing = System.Reflection.Missing.Value;
+        //    Word.Application wordApp = new Word.Application();
+        //    Word.Document aDoc = null;
+        //    object Target = Server.MapPath(TargetPath);
+        //    if (File.Exists(Server.MapPath(TargetPath)))
+        //    {
+        //        DateTime today = DateTime.Now;
+        //        object readonlyNew = false;
+        //        object isVisible = false;
+        //        wordApp.Visible = false;
+        //        FileInfo objFInfo = new FileInfo(Server.MapPath(TargetPath));
+        //        objFInfo.IsReadOnly = false;
+        //        aDoc = wordApp.Documents.Open(ref Target, ref missing, ref readonlyNew, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref isVisible, ref missing, ref missing, ref missing, ref missing);
+        //        aDoc.Activate();
+        //        this.FindAndReplace(wordApp, "name", FName + " " + LName);
+        //        this.FindAndReplace(wordApp, "HireDate", HireDate);
+        //        this.FindAndReplace(wordApp, "full time or part  time", EmpType);
+        //        this.FindAndReplace(wordApp, "HourlyRate", PayRates);
+        //        this.FindAndReplace(wordApp, "WorkingStatus", "No");
+        //        this.FindAndReplace(wordApp, "LastWorkingDay", DateTime.Now.ToShortDateString());
+        //        aDoc.SaveAs(ref Target, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing, ref missing);
+        //        aDoc.Close(ref missing, ref missing, ref missing);
+        //    }
+        //    using (MailMessage mm = new MailMessage("qat2015team@gmail.com", emailId))
+        //    {
+        //        try
+        //        {
+        //            mm.Subject = "Deactivation";
+        //            mm.Body = MailBody;
+        //            mm.Attachments.Add(new Attachment(Server.MapPath(TargetPath)));
+        //            mm.IsBodyHtml = true;
+        //            SmtpClient smtp = new SmtpClient();
+        //            smtp.Host = "smtp.gmail.com";
+        //            smtp.EnableSsl = true;
+        //            NetworkCredential NetworkCred = new NetworkCredential("qat2015team@gmail.com", "q$7@wt%j*65ba#3M@9P6");
+        //            smtp.UseDefaultCredentials = true;
+        //            smtp.Credentials = NetworkCred;
+        //            smtp.Port = 587;
+        //            smtp.Send(mm);
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('" + ex.Message + "')", true);
+        //        }
+        //    }
+        //}
+        #endregion
         public List<string> GetTimeIntervals()
         {
             List<string> timeIntervals = new List<string>();
