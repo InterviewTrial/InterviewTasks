@@ -20,19 +20,27 @@ namespace JG_Prospect
 
         protected void btnsubmit_Click(object sender, EventArgs e)
         {
-          
-                //int loginid = (int)Session["loginid"];
-                int id = Convert.ToInt16(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
-               // string UserType = (string)Session["usertype"];
-                bool result = false;
-                result = UserBLL.Instance.changepassword(id, txtUser_Password.Text);//, UserType
-                if (result)
+            //int loginid = (int)Session["loginid"];
+            int id = Convert.ToInt16(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+            // string UserType = (string)Session["usertype"];
+            bool result = false;
+            result = UserBLL.Instance.changepassword(id, txtUser_Password.Text, JGSession.IsCustomer);//, UserType
+            if (result)
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Password Changed Successfully!');", true);
+                if (JGSession.IsFirstTime && JGSession.IsCustomer)
                 {
-                    ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Password Changed Successfully!');", true);
+                    Session.Abandon();
+                    Session.Clear();
+                    Response.Redirect("~/login.aspx", false);
                 }
-           
-           
-
+                else if(JGSession.IsFirstTime && JGSession.IsCustomer == false)
+                {
+                    Session.Abandon();
+                    Session.Clear();
+                    Response.Redirect("~/stafflogin.aspx", false);
+                }
+            }
         }
     }
 }

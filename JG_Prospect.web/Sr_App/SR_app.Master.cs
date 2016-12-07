@@ -18,6 +18,12 @@ namespace JG_Prospect.Sr_App
 
             if (Session["loginid"] != null)
             {
+
+                if (JGSession.IsFirstTime == true)
+                {
+                    Response.Redirect("changepassword.aspx", false);
+                }
+
                 if ((string)Session["usertype"] == "MM" || (string)Session["usertype"] == "SSE")
                 {
                     // li_addresources.Visible = false;

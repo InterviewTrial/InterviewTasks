@@ -1047,15 +1047,28 @@ namespace JG_Prospect
                             Session[SessionKey.Key.GuIdAtLogin.ToString()] = Guid.NewGuid().ToString(); // Adding GUID for Audit Track
                             Session["loginpassword"] = txtpassword.Text.Trim();
                             Session["Username"] = ds.Tables[0].Rows[0]["CustomerName"].ToString();
+                            Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()] = ds.Tables[0].Rows[0]["Id"].ToString().Trim();
                             // Response.Redirect("~/Customer_Panel.php?Cust_Id=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
                             // Response.Redirect("50.191.13.206/JGP/Customer_Panel.php?Cust_Id=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
                             // Uri url = new Uri("http://50.191.13.206:82/JGP/Customer_Panel.php");                          
                             Uri uri = Context.Request.Url;
                             string host = uri.Scheme + Uri.SchemeDelimiter + uri.Host + ":82";
                             //  Response.Redirect(host + "/JGP/Customer_Panel.php?Cust_Id=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
+                            JGSession.IsCustomer = true;
+                            if (ds.Tables[0].Rows[0]["IsFirstTime"] != null && ds.Tables[0].Rows[0]["IsFirstTime"].ToString().ToLower() == "true")
+                            {
+                                JGSession.IsFirstTime = true;
+                            }
 
-                            //Response.Redirect("~/Customer_Panel.php?Cust_Id=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
-                            Response.Redirect("~/Sr_App/Customer_Profile.aspx?CustomerId=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
+                            if (JGSession.IsFirstTime == true)
+                            {
+                                Response.Redirect("changepassword.aspx", false);
+                            }
+                            else
+                            {
+                                Response.Redirect("~/Customer_Panel.php?Cust_Id=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
+                                //Response.Redirect("~/Sr_App/Customer_Profile.aspx?CustomerId=" + Convert.ToString(ds.Tables[0].Rows[0][0]), false);
+                            }
                         }
                     }
                     else
