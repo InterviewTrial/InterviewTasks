@@ -27,3 +27,5 @@ packages/
 JG_Prospect.BLL/obj/
 JG_Prospect.WebAPI/bin/
 .vs/
+JG_Prospect.DAL/bin/
+JG_Prospect.Common/bin/
