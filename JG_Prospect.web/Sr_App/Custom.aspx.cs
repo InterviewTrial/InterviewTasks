@@ -44,6 +44,8 @@ namespace JG_Prospect.Sr_App.Product_Line
             }
         }
 
+        private string locCustomerId;
+        public string vCustomerId { get { return locCustomerId; } }
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -67,6 +69,7 @@ namespace JG_Prospect.Sr_App.Product_Line
             if (Request.QueryString[QueryStringKey.Key.CustomerId.ToString()] != null)
             {
                 lblmsg.Text = Request.QueryString[QueryStringKey.Key.CustomerId.ToString()].ToString();
+                locCustomerId = lblmsg.Text;
             }
 
             //DataSet dsCustomer=new_customerBLL.Instance.GetCustomerDetails(Convert.ToInt16(Request.QueryString[1]));
@@ -101,7 +104,7 @@ namespace JG_Prospect.Sr_App.Product_Line
                             }
                         }
                     }
-                    h1Heading.InnerText = "Details:" + productName;
+                    h1Heading.InnerText = productName;
                 }
             }
             if (ViewState[QueryStringKey.Key.Edit.ToString()] == null)

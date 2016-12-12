@@ -16,10 +16,10 @@
         }
         function uploadComplete2() {
 
-            
-                var btnImageUploadClick = document.getElementById("ctl00_ContentPlaceHolder1_btnImageUploadClick");
-                btnImageUploadClick.click();
-            
+
+            var btnImageUploadClick = document.getElementById("ctl00_ContentPlaceHolder1_btnImageUploadClick");
+            btnImageUploadClick.click();
+
         }
         function Checkfiles() {
 
@@ -100,10 +100,10 @@
               }
           }
             });
-        }
+  }
 
-        function focuslost() {
-            if (document.getElementById('<%= txtAmount.ClientID%>').value == '') {
+  function focuslost() {
+      if (document.getElementById('<%= txtAmount.ClientID%>').value == '') {
                 alert('Please enter proposal cost!');
                 return false;
             }
@@ -120,13 +120,13 @@
                 IsExists(pagePath, dataString, textboxid, errorlableid);
                 return true;
             }
-        }
-        function ShowPopup() {
+    }
+    function ShowPopup() {
 
 
-            $('#ContentPlaceHolder1_txtProposalCost').attr('readonly', 'readonly');
-            $('#ContentPlaceHolder1_txtAmount').focus();
-            if (document.getElementById('<%=txtProposalCost.ClientID %>').value != '') {
+        $('#ContentPlaceHolder1_txtProposalCost').attr('readonly', 'readonly');
+        $('#ContentPlaceHolder1_txtAmount').focus();
+        if (document.getElementById('<%=txtProposalCost.ClientID %>').value != '') {
                 document.getElementById('<%=txtAmount.ClientID %>').value = document.getElementById('<%=txtProposalCost.ClientID %>').value;
             }
             $('#mask').show();
@@ -150,12 +150,11 @@
 
     </script>
     <style type="text/css">
-        .style2
-        {
+        .style2 {
             width: 100%;
         }
-        #mask
-        {
+
+        #mask {
             position: fixed;
             left: 0px;
             top: 0px;
@@ -179,15 +178,17 @@
             <li><a href="#">Construction Calendar</a></li>
             <li><a href="CallSheet.aspx">Call Sheet</a></li>
         </ul>
-        <h1 id="h1Heading" runat="server">
-        </h1>
+        <h1 id="h1Heading" runat="server"></h1>
         <div class="form_panel_custom" id="customDiv">
             <span>
                 <label>
                     Customer Id:
                 </label>
-                <b>
-                    <asp:Label ID="lblmsg" runat="server" Visible="true"></asp:Label></b> </span>
+                <b><a onclick="window.open('Customer_Profile.aspx?CustomerId=' + '<%= vCustomerId %>','name','height=550, width=790,toolbar=no,directories=no,status=no, menubar=no,scrollbars=yes,resizable=yes'); return false;" href='#'>
+                    <asp:Label ID="lblmsg" runat="server" Visible="true"></asp:Label></a>
+                </b>
+
+            </span>
             <ul>
                 <li style="width: 49%;">
                     <table id="tblcustom" runat="server" border="0" cellspacing="0" cellpadding="0">
@@ -232,17 +233,17 @@
                             <td>
                                 <label>
                                     Customer Attachment:</label>
-                                     <ajaxToolkit:AsyncFileUpload ID="AsyncFileUploadCustomerAttachment" runat="server" ClientIDMode="AutoID" ThrobberID="abc"
-                                                OnUploadedComplete="AsyncFileUploadCustomerAttachment_UploadedComplete" CompleteBackColor="White"
-                                                Style="width: 22% !important;" OnClientUploadComplete="uploadComplete2"/> 
-                                    
-                                   
-                               <%-- <asp:FileUpload ID="fileAttachment" runat="server" class="multi" TabIndex="6" />--%>
-                              
+                                <ajaxToolkit:AsyncFileUpload ID="AsyncFileUploadCustomerAttachment" runat="server" ClientIDMode="AutoID" ThrobberID="abc"
+                                    OnUploadedComplete="AsyncFileUploadCustomerAttachment_UploadedComplete" CompleteBackColor="White"
+                                    Style="width: 22% !important;" OnClientUploadComplete="uploadComplete2" />
+
+
+                                <%-- <asp:FileUpload ID="fileAttachment" runat="server" class="multi" TabIndex="6" />--%>
+
                                 <label>
-                             
-                                   <asp:LinkButton ID="lnkDownload" runat="server" Text="" Visible="true" OnClick="lnkDownload_Click"></asp:LinkButton>
-                                    
+
+                                    <asp:LinkButton ID="lnkDownload" runat="server" Text="" Visible="true" OnClick="lnkDownload_Click"></asp:LinkButton>
+
                                 </label>
                             </td>
                         </tr>
@@ -287,18 +288,17 @@
                             <td align="left">
                                 <table cellpadding="0" cellspacing="0" class="style2">
                                     <tr>
-                                        <td style="width: 20%;">
-                                            Location Image
+                                        <td style="width: 20%;">Location Image
                                         </td>
                                         <td style="width: 60%;">
-                                        
+
                                             <ajaxToolkit:AsyncFileUpload ID="ajaxFileUpload" runat="server" ClientIDMode="AutoID"
                                                 OnUploadedComplete="ajaxFileUpload_UploadedComplete" ThrobberID="imgLoad" CompleteBackColor="White"
                                                 OnClientUploadComplete="uploadComplete" Style="width: 92% !important; margin-right: 6px" />
-                                           
-                                                    <asp:Button ID="btnImageUploadClick" ClientIDMode="AutoID" runat="server" CausesValidation="false"
-                                                        Text="hidden" Style="display: none" OnClick="btnImageUploadClick_Click" />
-                                              
+
+                                            <asp:Button ID="btnImageUploadClick" ClientIDMode="AutoID" runat="server" CausesValidation="false"
+                                                Text="hidden" Style="display: none" OnClick="btnImageUploadClick_Click" />
+
                                             <%--<asp:FileUpload ID="FileUpload1" runat="server" onchange="readURL(this);" TabIndex="4"/>--%>
                                             <%--<asp:RequiredFieldValidator ID="reqUpload" runat="server" ControlToValidate="FileUpload1" 
                                                 ErrorMessage="Upload atleast two image." Display="Dynamic" ForeColor="Red" SetFocusOnError="true" ValidationGroup="save">
@@ -343,7 +343,7 @@
                                                     </asp:GridView>
                                                     <asp:HiddenField ID="hidCount" runat="server" />
                                                 </ContentTemplate>
-                                              
+
                                             </asp:UpdatePanel>
                                         </td>
                                     </tr>
@@ -367,8 +367,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td>
-                            </td>
+                            <td></td>
                         </tr>
                     </table>
                 </li>
@@ -384,13 +383,11 @@
             <div id="mask">
             </div>
             <asp:Panel ID="pnlpopup" runat="server" BackColor="White" Height="175px" Width="300px"
-                Style="z-index: 111; background-color: White; position: absolute; left: 35%;
-                top: 12%; border: outset 2px gray; padding: 5px; display: none">
+                Style="z-index: 111; background-color: White; position: absolute; left: 35%; top: 12%; border: outset 2px gray; padding: 5px; display: none">
                 <table width="100%" style="width: 100%; height: 100%;" cellpadding="0" cellspacing="5">
                     <tr style="background-color: #b5494c">
                         <td colspan="2" style="color: White; font-weight: bold; font-size: 1.2em; padding: 3px"
-                            align="center">
-                            Admin Verification <a id="closebtn" style="color: white; float: right; text-decoration: none"
+                            align="center">Admin Verification <a id="closebtn" style="color: white; float: right; text-decoration: none"
                                 class="btnClose" href="#">X</a>
                         </td>
                     </tr>
@@ -400,8 +397,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td align="right" style="width: 45%">
-                            Amount:
+                        <td align="right" style="width: 45%">Amount:
                         </td>
                         <td>
                             <asp:TextBox ID="txtAmount" runat="server" onkeypress="return isNumericKey(event);"
@@ -409,8 +405,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td align="right">
-                            Admin Password:
+                        <td align="right">Admin Password:
                         </td>
                         <td>
                             <asp:TextBox ID="txtauthpass" runat="server" TextMode="Password" Text=""></asp:TextBox>
@@ -418,10 +413,9 @@
                         </td>
                     </tr>
                     <tr>
+                        <td></td>
                         <td>
-                        </td>
-                        <td>
-                            <input type="button" class="btnVerify" value="Verify" onclick="javascript:return focuslost();" />
+                            <input type="button" class="btnVerify" value="Verify" onclick="javascript: return focuslost();" />
                             &nbsp;&nbsp;
                             <input type="button" class="btnClose" value="Cancel" />
                         </td>
