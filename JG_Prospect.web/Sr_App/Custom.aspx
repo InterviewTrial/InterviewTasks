@@ -2,10 +2,12 @@
     CodeBehind="Custom.aspx.cs" Inherits="JG_Prospect.Sr_App.Product_Line.Custom" %>
 
 <%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajaxToolkit" %>
+<%@ Register Src="~/UserControl/UCAddress.ascx" TagPrefix="uc1" TagName="UCAddress" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.8.2.js"></script>
     <script src="../js/jquery-latest.js" type="text/javascript"></script>
     <script type="text/javascript" src="../../Scripts/jquery.MultiFile.js"></script>
+    <script src="../js/PrimaryContact.js" type="text/javascript"></script>
     <script type="text/javascript">
         function uploadComplete() {
 
@@ -53,13 +55,10 @@
                 return false;
             }
         }
-
         $(document).ready(function () {
-            $('#ContentPlaceHolder1_txtworkarea').focus();
+            //$('#ContentPlaceHolder1_txtworkarea').focus();
+            BindPrimaryContact();
         });
-
-
-
         function ValidateImage() {
             var count = $('#<%=hidCount.ClientID %>').val();
             //alert(count);
@@ -68,7 +67,6 @@
                 return false;
             }
         }
-
         function IsExists(pagePath, dataString, textboxid, errorlableid) {
             $.ajax({
                 type: "POST",
@@ -104,49 +102,44 @@
 
   function focuslost() {
       if (document.getElementById('<%= txtAmount.ClientID%>').value == '') {
-                alert('Please enter proposal cost!');
-                return false;
-            }
-            else if (document.getElementById('<%= txtauthpass.ClientID%>').value == '') {
-                alert('Please enter admin code!');
-                return false;
-            }
-            else {
-                var pagePath = "Custom.aspx/Exists";
-                var dataString = "{ 'value':'" + document.getElementById('<%= txtauthpass.ClientID%>').value + "' }";
-                var textboxid = "#<%= txtauthpass.ClientID%>";
-                var errorlableid = "#<%= lblError.ClientID%>";
+          alert('Please enter proposal cost!');
+          return false;
+      }
+      else if (document.getElementById('<%= txtauthpass.ClientID%>').value == '') {
+          alert('Please enter admin code!');
+          return false;
+      }
+      else {
+          var pagePath = "Custom.aspx/Exists";
+          var dataString = "{ 'value':'" + document.getElementById('<%= txtauthpass.ClientID%>').value + "' }";
+          var textboxid = "#<%= txtauthpass.ClientID%>";
+          var errorlableid = "#<%= lblError.ClientID%>";
 
-                IsExists(pagePath, dataString, textboxid, errorlableid);
-                return true;
-            }
+          IsExists(pagePath, dataString, textboxid, errorlableid);
+          return true;
+      }
+}
+function ShowPopup() {
+    $('#ContentPlaceHolder1_txtProposalCost').attr('readonly', 'readonly');
+    $('#ContentPlaceHolder1_txtAmount').focus();
+    if (document.getElementById('<%=txtProposalCost.ClientID %>').value != '') {
+        document.getElementById('<%=txtAmount.ClientID %>').value = document.getElementById('<%=txtProposalCost.ClientID %>').value;
     }
-    function ShowPopup() {
+    $('#mask').show();
+    $('#<%=pnlpopup.ClientID %>').show();
+}
+function HidePopup() {
+    $('#ContentPlaceHolder1_txtAmount, #ContentPlaceHolder1_txtauthpass').val('');
+    $('#ContentPlaceHolder1_lblError').text('');
 
+    $('#mask').hide();
+    $('#<%=pnlpopup.ClientID %>').hide();
+}
+$(".btnClose").live('click', function () {
+    $('#<%=txtAmount.ClientID %>, #<%=txtauthpass.ClientID %>, #<%=lblError.ClientID %>').val('');
 
-        $('#ContentPlaceHolder1_txtProposalCost').attr('readonly', 'readonly');
-        $('#ContentPlaceHolder1_txtAmount').focus();
-        if (document.getElementById('<%=txtProposalCost.ClientID %>').value != '') {
-                document.getElementById('<%=txtAmount.ClientID %>').value = document.getElementById('<%=txtProposalCost.ClientID %>').value;
-            }
-            $('#mask').show();
-            $('#<%=pnlpopup.ClientID %>').show();
-        }
-        function HidePopup() {
-
-            $('#ContentPlaceHolder1_txtAmount, #ContentPlaceHolder1_txtauthpass').val('');
-            $('#ContentPlaceHolder1_lblError').text('');
-
-            $('#mask').hide();
-            $('#<%=pnlpopup.ClientID %>').hide();
-        }
-        $(".btnClose").live('click', function () {
-
-
-            $('#<%=txtAmount.ClientID %>, #<%=txtauthpass.ClientID %>, #<%=lblError.ClientID %>').val('');
-
-            HidePopup();
-        });
+    HidePopup();
+});
 
     </script>
     <style type="text/css">
@@ -167,6 +160,61 @@
             width: 100%;
             height: 100%;
         }
+
+        .cls_btn_plus {
+            background-color: RGBA(182,74,76,1);
+            color: #fff;
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 0 0 15px #a1a0a0;
+            cursor: pointer;
+            border: 2px solid !important;
+            border-radius: 6px;
+            /* margin-bottom: 4px!important; */
+            height: 27px;
+            padding-right: 2px !important;
+        }
+
+        .form_panel_custom ul li table tr td {
+            padding: 0px !important;
+        }
+
+        input[type=text], input[type=password], input[type=url], input[type=email], input.text, input.title, textarea, select {
+            padding: 5px;
+            border-radius: 5px;
+            border: #b5b4b4 1px solid;
+            margin-left: 0;
+            margin-right: 0;
+            margin-bottom: 0;
+            background-color: #fff;
+            border-bottom-left-radius: 5px;
+            border-bottom-right-radius: 5px;
+            border-bottom-style: solid;
+            border-bottom-width: 1px;
+        }
+
+        /*CollapsiblePanelExtender
+        .cpHeader {
+            color: white;
+            background-color: #719DDB;
+            font: bold 11px auto "Trebuchet MS", Verdana;
+            font-size: 12px;
+            cursor: pointer;
+            width: 450px;
+            height: 18px;
+            padding: 4px;
+        }
+
+        .cpBody {
+            background-color: #DCE4F9;
+            font: normal 11px auto Verdana, Arial;
+            border: 1px gray;
+            width: 450px;
+            padding: 4px;
+            padding-top: 7px;
+        }*/
+    </style>
+
     </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
@@ -186,9 +234,131 @@
                 </label>
                 <b><a onclick="window.open('Customer_Profile.aspx?CustomerId=' + '<%= vCustomerId %>','name','height=550, width=790,toolbar=no,directories=no,status=no, menubar=no,scrollbars=yes,resizable=yes'); return false;" href='#'>
                     <asp:Label ID="lblmsg" runat="server" Visible="true"></asp:Label></a>
+                    <asp:Label ID="lblQuote" runat="server" Visible="true"></asp:Label>
                 </b>
 
-            </span>
+            </span></br></br>
+             <table style="width: 100%; padding: 0px;" border="0" cellspacing="0" cellpadding="0">
+                 <tr>
+                     <td>
+                         <span>
+                             <label>
+                                 *Check Primary Contact 
+                             </label>
+                         </span>
+                     </td>
+                 </tr>
+                 <tr>
+                     <td>
+                         <div style="width: 100%; overflow-x: hidden;" id="divPrimaryContact">
+                             <ul style="overflow-x: hidden;">
+                                 <li></li>
+                             </ul>
+                         </div>
+                     </td>
+                 </tr>
+                 <tr>
+                     <td>
+                         <table border="0" cellspacing="0" cellpadding="0">
+                             <tr>
+                                 <td>
+                                     <uc1:UCAddress runat="server" ID="UCAddress" />
+                                     <asp:UpdatePanel ID="panel4" runat="server">
+                                         <ContentTemplate>
+                                             <asp:PlaceHolder runat="server" ID="myPlaceHolder"></asp:PlaceHolder>
+                                         </ContentTemplate>
+                                         <Triggers>
+                                             <asp:AsyncPostBackTrigger ControlID="btnAddAddress" />
+                                         </Triggers>
+                                     </asp:UpdatePanel>
+                                 </td>
+                                 <td style="vertical-align: top;">
+                                     <div>
+                                         <input type="checkbox" id="chkbillingaddress" style="width: 5%" tabindex="20" checked="checked" onchange="BillingAddress(this)" />
+                                     </div>
+                                     <label style="vertical-align: top;">Billing Address Same</label>
+                                     <textarea id="txtbill_address" runat="server" clientidmode="Static" name="BillAddress" style="width: 169px;" tabindex="21"></textarea>
+                                     <label></label>
+                                     <span id=""></span>
+                                     <br />
+                                     <label>Address Type</label>
+                                     <select id="selAddressType" name="AddressType" runat="server" clientidmode="Static">
+                                         <option value="Select">Select</option>
+                                         <option value="Primary Residence">Primary Residence</option>
+                                         <option value="Business">Business</option>
+                                         <option value="Vacation House">Vacation House</option>
+                                         <option value="Rental">Rental</option>
+                                         <option value="Condo">Condo</option>
+                                         <option value="Apartment">Apartment</option>
+                                         <option value="Mobile Home">Mobile Home</option>
+                                         <option value="Other">Other</option>
+                                     </select>
+                                 </td>
+                             </tr>
+                         </table>
+                     </td>
+                 </tr>
+                 <tr>
+                     <td>
+                         <table border="0" cellspacing="0" style="width: 100%" cellpadding="0">
+                             <tr>
+                                 <td style="width: 41%;">&nbsp;</td>
+                                 <td style="text-align: left;">
+                                     <asp:UpdatePanel ID="UpdatePanel2" runat="server">
+                                         <ContentTemplate>
+                                             <asp:Button ID="btnAddAddress" runat="server" Text="Add Address" Width="110px" CssClass="cls_btn_plus" TabIndex="31"
+                                                 OnClick="btnAddAddress_Click" />
+                                         </ContentTemplate>
+                                     </asp:UpdatePanel>
+                                 </td>
+                             </tr>
+                         </table>
+                     </td>
+                 </tr>
+                 <tr>
+                     <td>
+                         <br />
+                         <br />
+                         <table border="0" cellspacing="0" style="width: 100%" cellpadding="0">
+                             <tr>
+                                 <td style="width: 53%; vertical-align: top;">
+                                     <asp:UpdatePanel ID="up" runat="server">
+                                         <ContentTemplate>
+                                             <table id="Table1" runat="server" border="0" cellspacing="0" cellpadding="0">
+                                                 <tr>
+                                                     <td>
+                                                         <label>
+                                                             Select Product Category: <span>*</span></label>
+                                                         <asp:DropDownList ID="ddlProductCategory" runat="server" Width="200px" AutoPostBack="true"
+                                                             TabIndex="2" OnSelectedIndexChanged="ddlProductCategory_SelectedIndexChanged">
+                                                         </asp:DropDownList>
+                                                         <asp:TextBox ID="txtOther" runat="server" Width="120" Visible="false"></asp:TextBox>
+                                                         <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ValidationGroup="Add"
+                                                             ErrorMessage="Please Select Product Category." InitialValue="0" ControlToValidate="ddlProductCategory"
+                                                             ForeColor="Red"></asp:RequiredFieldValidator>
+                                                     </td>
+                                                 </tr>
+                                             </table>
+                                         </ContentTemplate>
+                                         <Triggers>
+                                             <asp:AsyncPostBackTrigger ControlID="ddlProductCategory" EventName="SelectedIndexChanged" />
+                                         </Triggers>
+                                     </asp:UpdatePanel>
+                                 </td>
+                                 <td style="vertical-align: top;">
+                                     <div>
+                                         <asp:Button ID="btnAddProductCategory" runat="server" CssClass="cls_btn_plus" Text="Add Product Category" ValidationGroup="Add"
+                                             TabIndex="3" OnClick="btnAddProductCategory_Click" />
+                                         <a href="#">Clear/Delete</a>
+                                     </div>
+                                 </td>
+                             </tr>
+                         </table>
+                     </td>
+                 </tr>
+             </table>
+            <br />
+            <br />
             <ul>
                 <li style="width: 49%;">
                     <table id="tblcustom" runat="server" border="0" cellspacing="0" cellpadding="0">
