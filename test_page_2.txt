@@ -3,4 +3,4 @@ create pull request
 
 second commit
 
-thired commit
+second file
