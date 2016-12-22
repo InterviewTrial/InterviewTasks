@@ -786,9 +786,10 @@
                     
                     $.each(result, function (key, value) {
                         debugger;
+                        
                         //Top Grid
                         licount = key + 1;
-
+                        
                         if (value.FName == "" && value.LName == "" && value.strContactType == "") {
                             chdCount++;
                             if (childCount == "") {
@@ -817,7 +818,7 @@
                             $('input[id*="btnParent"]').css('visibility', 'hidden');
 
                             $("#divPrimaryContact ul li:last").after("<li style='width: 100%;'><div class='tblPrimaryContact' style='margin-top: 10px; width: 100%'><div style='width: 40%; float: left;'>" +
-                            "<table id='tblDetails" + licount + "'><tr><td><input type='checkbox' name='chkContactType " + licount + "'/></td><td><select id='selContactType" + licount + "' name='selContactType" + licount + "' clientidmode='Static' tabindex='4' class='drop_down'><option value='0'>Select</option>" +
+                            "<table id='tblDetails" + licount + "'><tr><td><input id='chkContactType" + licount + "' type='checkbox' name='chkContactType " + licount + "'/></td><td><select id='selContactType" + licount + "' name='selContactType" + licount + "' clientidmode='Static' tabindex='4' class='drop_down'><option value='0'>Select</option>" +
                             "<option value='DM'>DM</option><option value='Spouse'>Spouse</option><option value='Partner'>Partner</option><option value='Others'>Others</option></select><label></label>" +
                             "</td><td><input type='text' id='txtFName" + licount + "' tabindex='7' name='nametxtFName" + licount + "'  placeholder='First Name' data-type='" + licount + "' /></td><td>" +
                             "<input type='text' tabindex='7' id='txtLName" + licount + "' name='nametxtLName" + licount + "'  placeholder='Last Name' data-type='" + licount + "' /></td></tr><tr><td class='paddingtd'>" +
@@ -830,6 +831,16 @@
                             "</tr></table></div><div style='width: 20%; float: left;'><table id='tblEmail" + licount + "'><tr><td class='paddingtd'></td>" +
                             "<td><input type='text' clientidmode='Static' id='txtEMail" + licount + "' onblur='CheckDuplicateEmail(this)' name='nametxtEMail" + licount + "' data-type='" + licount + "' tabindex='7'  placeholder='EMail' /></td></tr><tr><td class='paddingtd'>" +
                             "<input type='button' value='Add' data-type='" + licount + "' class='clsFullWidth cls_btn_plus' tabindex='31' onclick='Email(this)' /></td></tr></table></div></div></li>");
+
+                            //--------- Start DP 22-dec-16---------
+                            
+                            if (value.IsPrimaryContact == 1) {
+                                $("#chkContactType" + licount).prop('checked', true);
+                            }
+                            else {
+                                $("#chkContactType" + licount).prop('checked', false);
+                            }
+                            //----------- End DP 22-dec-16 ----------
 
                             $("#selContactType" + licount).val(value.strContactType);
                             $("#txtFName" + licount).val(value.FName);
@@ -844,6 +855,7 @@
                             $('.clsMaskPhone').mask("999-999-9999");
                         }catch(e1){}
                     });
+                   
                     //Primary Product
                     $.each(PrimaryProduct, function (key, value) {
                         debugger;
