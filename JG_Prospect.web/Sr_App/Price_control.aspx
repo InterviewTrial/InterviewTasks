@@ -20,17 +20,17 @@
     <script type="text/javascript">
 
         function ClosePopup() {
-            document.getElementById('light').style.display = 'none';
-            document.getElementById('fade').style.display = 'none';
+            document.getElementById('lightSelling').style.display = 'none';
+            document.getElementById('fadeSelling').style.display = 'none';
         }
-
+        
         function overlay() {
             document.getElementById('light').style.display = 'block';
             document.getElementById('fade').style.display = 'block';
         }
         function overlayNew() {
             document.getElementById('lightSelling').style.display = 'block';
-            document.getElementById('fade').style.display = 'block';
+            document.getElementById('lightSelling').style.display = 'block';
         }
         $(document).ready(function () {
 
@@ -367,12 +367,12 @@ table th[class*="col-"] {
                           <asp:TemplateField ShowHeader="True" HeaderText="Install Selling Pricing" ControlStyle-ForeColor="Black"
                             ItemStyle-HorizontalAlign="Center">
                             <ItemTemplate>
-                                <asp:LinkButton ID="lbtnInstallSellingPrice" OnClientClick="overlay();" runat="server"
+                                <asp:LinkButton ID="lbtnInstallSellingPrice" OnClientClick="overlayNew();" runat="server"
                                      CommandArgument='<%#Eval("ProductName")%>'></asp:LinkButton>
                                 <%--<asp:Label ID="lblInstallsale" runat="server"></asp:Label>--%>
                             </ItemTemplate>
                             <ControlStyle ForeColor="Black" />
-                            <ControlStyle ForeColor="Black" />
+                            <ControlStyle ForeColor="Blue" />
                             <ItemStyle HorizontalAlign="Center"></ItemStyle>
                         </asp:TemplateField>
 
@@ -383,7 +383,7 @@ table th[class*="col-"] {
                                 <asp:LinkButton ID="lbtnLaborPricing" OnClientClick="overlay();" runat="server" CommandArgument='<%#Eval("ProductName")%>'></asp:LinkButton>
                             </ItemTemplate>
                             <ControlStyle ForeColor="Black" />
-                            <ControlStyle ForeColor="Black" />
+                            <ControlStyle ForeColor="Blue" />
                             <ItemStyle HorizontalAlign="Center"></ItemStyle>
                         </asp:TemplateField>
 
@@ -395,7 +395,7 @@ table th[class*="col-"] {
                                 <asp:Label ID="lblToolChecklist" runat="server"></asp:Label>
                             </ItemTemplate>
                             <ControlStyle ForeColor="Black" />
-                            <ControlStyle ForeColor="Black" />
+                            <ControlStyle ForeColor="Blue" />
                             <ItemStyle HorizontalAlign="Center"></ItemStyle>
                         </asp:TemplateField>
 
@@ -452,7 +452,7 @@ table th[class*="col-"] {
                 </div>
                 <div id="lightSelling" class="white_content">
                     <center><h1>Install Selling Price</h1></center>
-                    <a href="javascript:void(0)" onclick="document.getElementById('lightSelling').style.display='none';document.getElementById('fade').style.display='none'">Close</a>
+                    <a href="javascript:void(0)" onclick="document.getElementById('lightSelling').style.display='none';document.getElementById('fadeSelling').style.display='none'">Close</a>
                     <div>
                         <%--<h2>Header Template</h2>
                         <cc1:Editor ID="HeaderEditor" Width="1000px" Height="400px" runat="server" />--%>
@@ -470,6 +470,7 @@ table th[class*="col-"] {
             </asp:Panel>
             <div id="fade" class="black_overlay">
             </div>
+
             <%--</asp:Panel>--%>
 
 
