@@ -452,7 +452,7 @@ table th[class*="col-"] {
                 </div>
                 <div id="lightSelling" class="white_content">
                     <center><h1>Install Selling Price</h1></center>
-                    <a href="javascript:void(0)" onclick="document.getElementById('light').style.display='none';document.getElementById('fade').style.display='none'">Close</a>
+                    <a href="javascript:void(0)" onclick="document.getElementById('lightSelling').style.display='none';document.getElementById('fade').style.display='none'">Close</a>
                     <div>
                         <%--<h2>Header Template</h2>
                         <cc1:Editor ID="HeaderEditor" Width="1000px" Height="400px" runat="server" />--%>
