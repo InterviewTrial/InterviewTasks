@@ -530,8 +530,12 @@ namespace JG_Prospect.Sr_App
                     Label lblProductLine = (e.Row.FindControl("lblInstallid") as Label);
                     LinkButton lblContractTemplate = (e.Row.FindControl("lbtnContractTemplate") as LinkButton);
 
-                    Label lblInstallsale = (e.Row.FindControl("lblInstallsale") as Label);
-                    Label lblLaborPrice = (e.Row.FindControl("lblLaborPrice") as Label);
+                    LinkButton lblInstallsale = (e.Row.FindControl("lbtnInstallSellingPrice") as LinkButton);
+                    LinkButton lblLaborPrice = (e.Row.FindControl("lbtnLaborPricing") as LinkButton);
+                    LinkButton lblToolChecklist = (e.Row.FindControl("lbtnToolChecklist") as LinkButton);
+
+                    //Label lblInstallsale = (e.Row.FindControl("lblInstallsale") as Label);
+                    //Label lblLaborPrice = (e.Row.FindControl("lblLaborPrice") as Label);
                     //Label lblToolChecklist = (e.Row.FindControl("lblToolChecklist") as Label);
 
 

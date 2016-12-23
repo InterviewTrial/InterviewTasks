@@ -363,7 +363,9 @@ table th[class*="col-"] {
                           <asp:TemplateField ShowHeader="True" HeaderText="Install Selling Pricing" ControlStyle-ForeColor="Black"
                             ItemStyle-HorizontalAlign="Center">
                             <ItemTemplate>
-                                <asp:Label ID="lblInstallsale" runat="server"></asp:Label>
+                                <asp:LinkButton ID="lbtnInstallSellingPrice" OnClientClick="overlay();" runat="server"
+                                     CommandArgument='<%#Eval("ProductName")%>'></asp:LinkButton>
+                                <%--<asp:Label ID="lblInstallsale" runat="server"></asp:Label>--%>
                             </ItemTemplate>
                             <ControlStyle ForeColor="Black" />
                             <ControlStyle ForeColor="Black" />
@@ -373,7 +375,8 @@ table th[class*="col-"] {
                          <asp:TemplateField ShowHeader="True" HeaderText="Labor Pricing" ControlStyle-ForeColor="Black"
                             ItemStyle-HorizontalAlign="Center">
                             <ItemTemplate>
-                                <asp:Label ID="lblLaborPrice" runat="server" ></asp:Label>
+                                <%--<asp:Label ID="lblLaborPrice" runat="server" ></asp:Label>--%>
+                                <asp:LinkButton ID="lbtnLaborPricing" OnClientClick="overlay();" runat="server" CommandArgument='<%#Eval("ProductName")%>'></asp:LinkButton>
                             </ItemTemplate>
                             <ControlStyle ForeColor="Black" />
                             <ControlStyle ForeColor="Black" />
@@ -383,6 +386,8 @@ table th[class*="col-"] {
                          <asp:TemplateField ShowHeader="True" HeaderText="Tool Checklist" ControlStyle-ForeColor="Black"
                             ItemStyle-HorizontalAlign="Center">
                             <ItemTemplate>
+                                <asp:LinkButton ID="lbtnToolChecklist" OnClientClick="overlay();" runat="server" CommandArgument='<%#Eval("ProductName")%>'></asp:LinkButton>
+
                                 <asp:Label ID="lblToolChecklist" runat="server"></asp:Label>
                             </ItemTemplate>
                             <ControlStyle ForeColor="Black" />
