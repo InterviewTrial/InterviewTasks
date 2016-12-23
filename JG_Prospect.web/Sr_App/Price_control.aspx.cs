@@ -24,8 +24,8 @@ namespace JG_Prospect.Sr_App
                 bindshutterwidth();
                 bindaccessories();
                 bindshuttertop();
-                Session["ProductContractId"] = "";
-                Session["ProductLineName"] = "";
+               Session["ProductContractId"] = "";
+               Session["ProductLineName"] = "";
 
                 ////////New grid filling logic inserted by Sandeep
                 BindProductLineGrid();

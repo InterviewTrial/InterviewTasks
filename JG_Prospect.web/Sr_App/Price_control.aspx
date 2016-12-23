@@ -28,6 +28,10 @@
             document.getElementById('light').style.display = 'block';
             document.getElementById('fade').style.display = 'block';
         }
+        function overlayNew() {
+            document.getElementById('lightSelling').style.display = 'block';
+            document.getElementById('fade').style.display = 'block';
+        }
         $(document).ready(function () {
 
             $('.show_hide .sub').hide(); // Show Hide Feature onpage load
@@ -444,6 +448,23 @@ table th[class*="col-"] {
                     </div>
                     <div class="btn_sec">
                         <asp:Button ID="btnsave" runat="server" Text="Update" ValidationGroup="save" OnClick="btnsave_Click" />
+                    </div>
+                </div>
+                <div id="lightSelling" class="white_content">
+                    <center><h1>Install Selling Price</h1></center>
+                    <a href="javascript:void(0)" onclick="document.getElementById('light').style.display='none';document.getElementById('fade').style.display='none'">Close</a>
+                    <div>
+                        <%--<h2>Header Template</h2>
+                        <cc1:Editor ID="HeaderEditor" Width="1000px" Height="400px" runat="server" />--%>
+                        <h2>Body Template</h2>
+                        <cc1:Editor ID="Editor1" Width="1000px" Height="400px" runat="server" />
+                        <cc1:Editor ID="Editor2" Width="1000px" Height="400px" runat="server" />
+                        <%--<h2>Footer Template</h2>
+                        <asp:Image ImageUrl="~/img/Bar3.png" ID="img1" runat="server" Width="1000px" Height="40px" />
+                        <cc1:Editor ID="FooterEditor" Width="1000px" Height="600px" runat="server" />--%>
+                    </div>
+                    <div class="btn_sec">
+                        <asp:Button ID="Button1" runat="server" Text="Update" ValidationGroup="save" OnClick="btnsave_Click" />
                     </div>
                 </div>
             </asp:Panel>
