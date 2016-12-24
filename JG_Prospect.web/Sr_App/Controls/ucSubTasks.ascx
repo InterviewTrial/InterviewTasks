@@ -3,7 +3,6 @@
 <script type="text/javascript" src="../js/lightslider.js"></script>
 <fieldset class="tasklistfieldset">
     <legend>Task List</legend>
-
     <asp:UpdatePanel ID="upSubTasks" runat="server" UpdateMode="Conditional">
         <ContentTemplate>
             <div id="divSubTaskGrid">
