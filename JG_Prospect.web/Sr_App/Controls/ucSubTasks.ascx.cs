@@ -120,7 +120,7 @@ namespace JG_Prospect.Sr_App.Controls
             {
                 FillInitialData();
             }
-        
+        }
 
         #endregion
 
