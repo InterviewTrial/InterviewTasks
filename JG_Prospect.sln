@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JG_Prospect.web", "JG_Prospect.web\JG_Prospect.web.csproj", "{A7B25516-4610-48D5-9280-6392DC92F935}"
 EndProject
@@ -42,26 +42,5 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 6
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://jmgrove.visualstudio.com/
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = JG_Prospect.BLL\\JG_Prospect.BLL.csproj
-		SccProjectName1 = JG_Prospect.BLL
-		SccLocalPath1 = JG_Prospect.BLL
-		SccProjectUniqueName2 = JG_Prospect.Common\\JG_Prospect.Common.csproj
-		SccProjectName2 = JG_Prospect.Common
-		SccLocalPath2 = JG_Prospect.Common
-		SccProjectUniqueName3 = JG_Prospect.DAL\\JG_Prospect.DAL.csproj
-		SccProjectName3 = JG_Prospect.DAL
-		SccLocalPath3 = JG_Prospect.DAL
-		SccProjectUniqueName4 = JG_Prospect.web\\JG_Prospect.web.csproj
-		SccProjectName4 = JG_Prospect.web
-		SccLocalPath4 = JG_Prospect.web
-		SccProjectUniqueName5 = JG_Prospect.WebAPI\\JG_Prospect.WebAPI.csproj
-		SccProjectName5 = JG_Prospect.WebAPI
-		SccLocalPath5 = JG_Prospect.WebAPI
 	EndGlobalSection
 EndGlobal

@@ -49,6 +49,13 @@ namespace JG_Prospect.Sr_App.Product_Line
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            lblQuote.Text = string.Empty;
+            if (!IsPostBack)
+            {
+                BindProducts();
+            }
+
+            //CreateAndBindProductCategory();
 
             int ProductId = 0, CustomerId = 0, CustomId = 0;
             if (Request.QueryString[QueryStringKey.Key.Other.ToString()] != null)
@@ -69,7 +76,22 @@ namespace JG_Prospect.Sr_App.Product_Line
             if (Request.QueryString[QueryStringKey.Key.CustomerId.ToString()] != null)
             {
                 lblmsg.Text = Request.QueryString[QueryStringKey.Key.CustomerId.ToString()].ToString();
+                HttpContext.Current.Session["CustomerId"] = Request.QueryString[QueryStringKey.Key.CustomerId.ToString()].ToString();
                 locCustomerId = lblmsg.Text;
+
+                DataSet ds = new DataSet();
+                ds = new_customerBLL.Instance.GetCustomerProfileProducts(Convert.ToInt32(locCustomerId));
+                DataView view = ds.Tables[0].DefaultView;
+                view.Sort = "DateQuote DESC";
+                DataTable sortedDate = view.ToTable();
+                DataView dv = new DataView(sortedDate);
+                if (dv.Count > 0 && Request.QueryString[QueryStringKey.Key.ProductTypeId.ToString()] != null)
+                {
+                    dv.RowFilter = "ProductTypeId=" + Request.QueryString[QueryStringKey.Key.ProductTypeId.ToString()].ToString() + " and Statusid = 0";
+                    if (dv.Count > 0)
+                        lblQuote.Text = " - " + dv[0]["SoldJobId"].ToString().Substring(dv[0]["SoldJobId"].ToString().IndexOf('-') + 1);
+                }
+
             }
 
             //DataSet dsCustomer=new_customerBLL.Instance.GetCustomerDetails(Convert.ToInt16(Request.QueryString[1]));
@@ -228,6 +250,155 @@ namespace JG_Prospect.Sr_App.Product_Line
             gvCategory.DataSource = null;
             gvCategory.DataBind();
         }
+
+        private void RecreateControls(string ctrlPrefix, int cnt)
+        {
+            string ctrlName = string.Empty;
+            string ctrlValue = string.Empty;
+            string[] ctrls = Request.Form.ToString().Split('&');
+            //int cnt = FindOccurence(ctrlPrefix + "%24txtaddress");
+            if (cnt > 0)
+            {
+                for (int k = 1; k <= cnt; k++)
+                {
+                    UserControl.UCAddress objUCAddress = LoadControl("~/UserControl/UCAddress.ascx") as UserControl.UCAddress;
+                    objUCAddress.ID = "ucAddress" + k;
+                    for (int i = 0; i < ctrls.Length; i++)
+                    {
+                        if (ctrls[i].Contains(ctrlPrefix + k + "%24txtaddress"))
+                        {
+                            ctrlName = ctrls[i].Split('=')[0];
+                            ctrlValue = ctrls[i].Split('=')[1];
+                            //Decode the Value
+                            ctrlValue = Server.UrlDecode(ctrlValue);
+                            ((TextBox)objUCAddress.FindControl("txtaddress")).Text = ctrlValue;
+                            ((Label)objUCAddress.FindControl("lblAddress")).Text = "Address" + k.ToString();
+                        }
+                        else if (ctrls[i].Contains(ctrlPrefix + k + "%24DropDownList1"))
+                        {
+                            ctrlName = ctrls[i].Split('=')[0];
+                            ctrlValue = ctrls[i].Split('=')[1];
+                            //Decode the Value
+                            ctrlValue = Server.UrlDecode(ctrlValue);
+                            int myInt;
+                            bool isNumerical = int.TryParse(ctrlValue, out myInt);
+                            if (isNumerical)
+                                ((DropDownList)objUCAddress.FindControl("DropDownList1")).SelectedIndex = myInt;
+                            ((Label)objUCAddress.FindControl("lblAddressType")).Text = "Address" + k.ToString() + " Type";
+                        }
+                        else if (ctrls[i].Contains(ctrlPrefix + k + "%24txtzip"))
+                        {
+                            ctrlName = ctrls[i].Split('=')[0];
+                            ctrlValue = ctrls[i].Split('=')[1];
+                            //Decode the Value
+                            ctrlValue = Server.UrlDecode(ctrlValue);
+                            ((TextBox)objUCAddress.FindControl("txtzip")).Text = ctrlValue;
+                            ((Label)objUCAddress.FindControl("lblZip")).Text = "Zip" + k.ToString();
+                        }
+                        else if (ctrls[i].Contains(ctrlPrefix + k + "%24txtcity"))
+                        {
+                            ctrlName = ctrls[i].Split('=')[0];
+                            ctrlValue = ctrls[i].Split('=')[1];
+                            //Decode the Value
+                            ctrlValue = Server.UrlDecode(ctrlValue);
+                            ((TextBox)objUCAddress.FindControl("txtcity")).Text = ctrlValue;
+                            ((Label)objUCAddress.FindControl("lblCity")).Text = "City" + k.ToString();
+                        }
+                        else if (ctrls[i].Contains(ctrlPrefix + k + "%24txtstate"))
+                        {
+                            ctrlName = ctrls[i].Split('=')[0];
+                            ctrlValue = ctrls[i].Split('=')[1];
+                            //Decode the Value
+                            ctrlValue = Server.UrlDecode(ctrlValue);
+                            ((TextBox)objUCAddress.FindControl("txtstate")).Text = ctrlValue;
+                            ((Label)objUCAddress.FindControl("lblState")).Text = "State" + k.ToString();
+                        }
+                    }
+                    myPlaceHolder.Controls.Add(objUCAddress);
+                }
+            }
+        }
+
+        private void CreateAddressControls(string strId, int intCount)
+        {
+            UserControl.UCAddress objUCAddress = LoadControl("~/UserControl/UCAddress.ascx") as UserControl.UCAddress;
+            objUCAddress.ID = strId;
+
+            ((Label)objUCAddress.FindControl("lblAddress")).Text = "Address" + intCount.ToString();
+            ((Label)objUCAddress.FindControl("lblAddressType")).Text = "Address" + intCount.ToString() + " Type";
+            ((Label)objUCAddress.FindControl("lblZip")).Text = "Zip" + intCount.ToString();
+            ((Label)objUCAddress.FindControl("lblCity")).Text = "City" + intCount.ToString();
+            ((Label)objUCAddress.FindControl("lblState")).Text = "State" + intCount.ToString();
+
+            myPlaceHolder.Controls.Add(objUCAddress);
+        }
+
+        private void BindProducts()
+        {
+            DataSet ds = UserBLL.Instance.GetAllProducts();
+            ddlProductCategory.DataSource = ds;
+            ddlProductCategory.DataTextField = "ProductName";
+            ddlProductCategory.DataValueField = "ProductId";
+            ddlProductCategory.DataBind();
+            ddlProductCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select", "0"));
+        }
+
+        protected void btnAddAddress_Click(object sender, EventArgs e)
+        {
+
+            int count = 0;
+            if (Session["ButtonCount"] != null)
+            {
+                myPlaceHolder.Controls.Clear();
+
+                count = (int)Session["ButtonCount"];
+                //for (int intCount = 1; intCount <= count; intCount++)
+                RecreateControls("ContentPlaceHolder1%24ucAddress", count);
+            }
+
+            count++;
+            Session["ButtonCount"] = count;
+            //for (int i = 0; i < count; i++)
+            //{
+            CreateAddressControls("ucAddress" + count, count);
+            //}   
+        }
+
+        protected void ddlProductCategory_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            switch (ddlProductCategory.SelectedValue)
+            {
+                case "2":
+                case "3":
+                    txtOther.Visible = true;
+                    break;
+                default:
+                    txtOther.Visible = false;
+                    break;
+            }
+        }
+
+        protected void btnAddProductCategory_Click(object sender, EventArgs e)
+        {
+
+            /*if (Convert.ToInt32(vCustomerId) == 0)
+            {
+                ScriptManager.RegisterStartupScript(this, this.GetType(), "AlertBox", "alert('Please select Customer to Proceed');", true);
+                return;
+            }
+            switch (ddlProductCategory.SelectedValue)
+            {
+                //New code added
+                case "1":
+                    Response.Redirect("Shutters.aspx?ProductTypeId=" + ddlProductCategory.SelectedValue.Trim() + "&CustomerId=" + vCustomerId);
+                    break;
+                default:
+                    Response.Redirect("Custom.aspx?ProductTypeId=" + ddlProductCategory.SelectedValue.Trim() + "&CustomerId=" + vCustomerId + "&Other=" + txtOther.Text.Trim());
+                    break;
+            }*/
+        }
+
+
 
         protected void btnexit_Click(object sender, EventArgs e)
         {
