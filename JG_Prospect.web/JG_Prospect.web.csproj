@@ -1612,37 +1612,6 @@
     <Content Include="js\jquery.ui.position.min.js" />
     <Content Include="js\lightslider.js" />
     <Content Include="js\PrimaryContact.js" />
-    <Content Include="project.net\css\cupertino\images\animated-overlay.gif" />
-    <Content Include="project.net\css\cupertino\images\ui-bg_diagonals-thick_90_eeeeee_40x40.png" />
-    <Content Include="project.net\css\cupertino\images\ui-bg_flat_15_cd0a0a_40x100.png" />
-    <Content Include="project.net\css\cupertino\images\ui-bg_glass_100_e4f1fb_1x400.png" />
-    <Content Include="project.net\css\cupertino\images\ui-bg_glass_50_3baae3_1x400.png" />
-    <Content Include="project.net\css\cupertino\images\ui-bg_glass_80_d7ebf9_1x400.png" />
-    <Content Include="project.net\css\cupertino\images\ui-bg_highlight-hard_100_f2f5f7_1x100.png" />
-    <Content Include="project.net\css\cupertino\images\ui-bg_highlight-hard_70_000000_1x100.png" />
-    <Content Include="project.net\css\cupertino\images\ui-bg_highlight-soft_100_deedf7_1x100.png" />
-    <Content Include="project.net\css\cupertino\images\ui-bg_highlight-soft_25_ffef8f_1x100.png" />
-    <Content Include="project.net\css\cupertino\images\ui-icons_2694e8_256x240.png" />
-    <Content Include="project.net\css\cupertino\images\ui-icons_2e83ff_256x240.png" />
-    <Content Include="project.net\css\cupertino\images\ui-icons_3d80b3_256x240.png" />
-    <Content Include="project.net\css\cupertino\images\ui-icons_72a7cf_256x240.png" />
-    <Content Include="project.net\css\cupertino\images\ui-icons_ffffff_256x240.png" />
-    <Content Include="project.net\css\cupertino\jquery-ui-1.10.3.min.css" />
-    <Content Include="project.net\css\cupertino\jquery-ui-1.11.0.css" />
-    <Content Include="project.net\css\cupertino\jquery-ui-1.11.0.min.css" />
-    <Content Include="project.net\css\jquery.qtip-2.2.0.css" />
-    <Content Include="project.net\fullcalendar\fullcalendar-1.6.4.js" />
-    <Content Include="project.net\fullcalendar\fullcalendar-2.0.2.js" />
-    <Content Include="project.net\fullcalendar\fullcalendar-2.0.3.js" />
-    <Content Include="project.net\fullcalendar\fullcalendar.css" />
-    <Content Include="project.net\jquery\jquery-2.1.1.js" />
-    <Content Include="project.net\jquery\jquery-2.1.1.min.js" />
-    <Content Include="project.net\jquery\jquery-ui-1.11.1.js" />
-    <Content Include="project.net\jquery\jquery-ui-1.11.1.min.js" />
-    <Content Include="project.net\jquery\jquery-ui-timepicker-addon-1.4.5.js" />
-    <Content Include="project.net\jquery\jquery.qtip-2.2.0.js" />
-    <Content Include="project.net\jquery\moment-2.8.1.min.js" />
-    <Content Include="project.net\scripts\calendarscript.js" />
     <Content Include="Scripts\jquery.magnific-popup.min.js" />
     <Content Include="Scripts\jquery.MultiFile.js" />
     <Content Include="Services\service.aspx" />
@@ -2154,9 +2123,6 @@
     <Compile Include="JrAnnualCalendar.aspx.designer.cs">
       <DependentUpon>JrAnnualCalendar.aspx</DependentUpon>
     </Compile>
-    <Compile Include="project.net\App_Code\CalendarEvent.cs" />
-    <Compile Include="project.net\App_Code\EventDAO.cs" />
-    <Compile Include="project.net\App_Code\ImproperCalendarEvent.cs" />
     <Compile Include="Services\service.aspx.cs">
       <DependentUpon>service.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2925,9 +2891,6 @@
     <Content Include="Sr_App\MailDocSample\LIBC.pdf" />
     <Content Include="Sr_App\MailDocSample\LIBC.docx" />
     <Content Include="UserFile\SalesSample.xlsx" />
-    <Content Include="project.net\jquery\jquery-2.1.1.min.map" />
-    <Content Include="project.net\JsonResponse.ashx" />
-    <Content Include="project.net\project.bak" />
     <None Include="Properties\PublishProfiles\TestProfile.pubxml" />
     <Content Include="UserFile\SalesSample.csv" />
   </ItemGroup>
