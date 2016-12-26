@@ -43,6 +43,8 @@
     <WarningLevel>4</WarningLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <Prefer32Bit>false</Prefer32Bit>
+    <PublishDatabases>false</PublishDatabases>
+    <ExcludeGeneratedDebugSymbol>false</ExcludeGeneratedDebugSymbol>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -52,6 +54,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <PublishDatabases>false</PublishDatabases>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="AjaxControlToolkit, Version=3.5.60501.0, Culture=neutral, PublicKeyToken=28f01b0e84b6d53e, processorArchitecture=MSIL">
@@ -259,7 +262,6 @@
     <Content Include="bin\ASPSnippets.TwitterAPI.dll" />
     <Content Include="bin\BarcodeLib.dll" />
     <Content Include="bin\CKEditor.NET.dll" />
-    <Content Include="bin\CKEditor.NET.pdb" />
     <Content Include="bin\DropDownCheckBoxes.dll" />
     <Content Include="bin\EntityFramework.dll" />
     <Content Include="bin\EPPlus.dll" />
@@ -292,7 +294,6 @@
     <Content Include="bin\Microsoft.Web.Mvc.FixedDisplayModes.dll" />
     <Content Include="bin\Newtonsoft.Json.dll" />
     <Content Include="bin\NReco.PdfGenerator.dll" />
-    <Content Include="bin\NReco.PdfGenerator.xml" />
     <Content Include="bin\System.Net.Http.Formatting.dll" />
     <Content Include="bin\System.Spatial.dll" />
     <Content Include="bin\System.Web.Helpers.dll" />
@@ -1611,40 +1612,6 @@
     <Content Include="js\jquery.ui.position.min.js" />
     <Content Include="js\lightslider.js" />
     <Content Include="js\PrimaryContact.js" />
-    <Content Include="Location_img\Jellyfish.jpg" />
-    <Content Include="Location_img\Lighthouse.jpg" />
-    <Content Include="Location_img\Tulips.jpg" />
-    <Content Include="project.net\css\cupertino\images\animated-overlay.gif" />
-    <Content Include="project.net\css\cupertino\images\ui-bg_diagonals-thick_90_eeeeee_40x40.png" />
-    <Content Include="project.net\css\cupertino\images\ui-bg_flat_15_cd0a0a_40x100.png" />
-    <Content Include="project.net\css\cupertino\images\ui-bg_glass_100_e4f1fb_1x400.png" />
-    <Content Include="project.net\css\cupertino\images\ui-bg_glass_50_3baae3_1x400.png" />
-    <Content Include="project.net\css\cupertino\images\ui-bg_glass_80_d7ebf9_1x400.png" />
-    <Content Include="project.net\css\cupertino\images\ui-bg_highlight-hard_100_f2f5f7_1x100.png" />
-    <Content Include="project.net\css\cupertino\images\ui-bg_highlight-hard_70_000000_1x100.png" />
-    <Content Include="project.net\css\cupertino\images\ui-bg_highlight-soft_100_deedf7_1x100.png" />
-    <Content Include="project.net\css\cupertino\images\ui-bg_highlight-soft_25_ffef8f_1x100.png" />
-    <Content Include="project.net\css\cupertino\images\ui-icons_2694e8_256x240.png" />
-    <Content Include="project.net\css\cupertino\images\ui-icons_2e83ff_256x240.png" />
-    <Content Include="project.net\css\cupertino\images\ui-icons_3d80b3_256x240.png" />
-    <Content Include="project.net\css\cupertino\images\ui-icons_72a7cf_256x240.png" />
-    <Content Include="project.net\css\cupertino\images\ui-icons_ffffff_256x240.png" />
-    <Content Include="project.net\css\cupertino\jquery-ui-1.10.3.min.css" />
-    <Content Include="project.net\css\cupertino\jquery-ui-1.11.0.css" />
-    <Content Include="project.net\css\cupertino\jquery-ui-1.11.0.min.css" />
-    <Content Include="project.net\css\jquery.qtip-2.2.0.css" />
-    <Content Include="project.net\fullcalendar\fullcalendar-1.6.4.js" />
-    <Content Include="project.net\fullcalendar\fullcalendar-2.0.2.js" />
-    <Content Include="project.net\fullcalendar\fullcalendar-2.0.3.js" />
-    <Content Include="project.net\fullcalendar\fullcalendar.css" />
-    <Content Include="project.net\jquery\jquery-2.1.1.js" />
-    <Content Include="project.net\jquery\jquery-2.1.1.min.js" />
-    <Content Include="project.net\jquery\jquery-ui-1.11.1.js" />
-    <Content Include="project.net\jquery\jquery-ui-1.11.1.min.js" />
-    <Content Include="project.net\jquery\jquery-ui-timepicker-addon-1.4.5.js" />
-    <Content Include="project.net\jquery\jquery.qtip-2.2.0.js" />
-    <Content Include="project.net\jquery\moment-2.8.1.min.js" />
-    <Content Include="project.net\scripts\calendarscript.js" />
     <Content Include="Scripts\jquery.magnific-popup.min.js" />
     <Content Include="Scripts\jquery.MultiFile.js" />
     <Content Include="Services\service.aspx" />
@@ -1731,67 +1698,6 @@
     <Content Include="Sr_App\TaskGenerator.aspx" />
     <Content Include="Sr_App\TaskList.aspx" />
     <Content Include="Sr_App\Time_Material.aspx" />
-    <Content Include="Sr_App\UploadedFile\6162015 114211 AMKoala.jpg" />
-    <Content Include="Sr_App\UploadedFile\6162015120405PMDesert.jpg" />
-    <Content Include="Sr_App\UploadedFile\6162015120854PMKoala.jpg" />
-    <Content Include="Sr_App\UploadedFile\6162015121224PMTulips.jpg" />
-    <Content Include="Sr_App\UploadedFile\6162015121236PMJellyfish.jpg" />
-    <Content Include="Sr_App\UploadedFile\6162015121303PMHydrangeas.jpg" />
-    <Content Include="Sr_App\UploadedFile\6162015121315PMDesert.jpg" />
-    <Content Include="Sr_App\UploadedFile\6162015122840PMJellyfish.jpg" />
-    <Content Include="Sr_App\UploadedFile\6162015122848PMTulips.jpg" />
-    <Content Include="Sr_App\UploadedFile\6162015122856PMKoala.jpg" />
-    <Content Include="Sr_App\UploadedFile\6162015123431PMDesert.jpg" />
-    <Content Include="Sr_App\UploadedFile\6162015123603PMDesert.jpg" />
-    <Content Include="Sr_App\UploadedFile\6162015123910PMChrysanthemum.jpg" />
-    <Content Include="Sr_App\UploadedFile\616201522107PMKoala.jpg" />
-    <Content Include="Sr_App\UploadedFile\616201522128PMTulips.jpg" />
-    <Content Include="Sr_App\UploadedFile\616201522136PMPenguins.jpg" />
-    <Content Include="Sr_App\UploadedFile\616201522144PMChrysanthemum.jpg" />
-    <Content Include="Sr_App\UploadedFile\616201522204PMKoala.jpg" />
-    <Content Include="Sr_App\UploadedFile\616201522228PMHydrangeas.jpg" />
-    <Content Include="Sr_App\UploadedFile\616201522841PMKoala.jpg" />
-    <Content Include="Sr_App\UploadedFile\616201522855PMLighthouse.jpg" />
-    <Content Include="Sr_App\UploadedFile\616201522907PMHydrangeas.jpg" />
-    <Content Include="Sr_App\UploadedFile\616201522915PMPenguins.jpg" />
-    <Content Include="Sr_App\UploadedFile\616201524324PMKoala.jpg" />
-    <Content Include="Sr_App\UploadedFile\616201524439PMKoala.jpg" />
-    <Content Include="Sr_App\UploadedFile\616201540717PMKoala.jpg" />
-    <Content Include="Sr_App\UploadedFile\616201540729PMDesert.jpg" />
-    <Content Include="Sr_App\UploadedFile\616201541130PMKoala.jpg" />
-    <Content Include="Sr_App\UploadedFile\616201541622PMKoala.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201525549PMKoala.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201525634PMJellyfish.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201530002PMKoala.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201530011PMJellyfish.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201530323PMDesert.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201530332PMPenguins.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201530341PMChrysanthemum.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201532718PMHydrangeas.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201532728PMKoala.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201533313PMDesert.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201533325PMTulips.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201533429PMLighthouse.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201545141PMKoala.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201550325PMKoala.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201550728PMKoala.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201551116PMKoala.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201551130PMJellyfish.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201551314PMTulips.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201551343PMHydrangeas.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201551354PMLighthouse.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201551405PMKoala.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201570315PMKoala.jpg" />
-    <Content Include="Sr_App\UploadedFile\617201570356PMDesert.jpg" />
-    <Content Include="Sr_App\UploadedFile\CreditChex.png" />
-    <Content Include="Sr_App\UploadedFile\Hydrangeas.jpg" />
-    <Content Include="Sr_App\UploadedFile\icons-390.jpg" />
-    <Content Include="Sr_App\UploadedFile\Jellyfish.jpg" />
-    <Content Include="Sr_App\UploadedFile\Koala.jpg" />
-    <Content Include="Sr_App\UploadedFile\Lighthouse.jpg" />
-    <Content Include="Sr_App\UploadedFile\Penguins.jpg" />
-    <Content Include="Sr_App\UploadedFile\System-Desktop-icon.png" />
-    <Content Include="Sr_App\UploadedFile\Tulips.jpg" />
     <Content Include="Sr_App\UploadFile.aspx" />
     <Content Include="Sr_App\viewshutters1.aspx" />
     <Content Include="Sr_App\view_customer.aspx" />
@@ -1924,7 +1830,6 @@
     <Content Include="Sr_App\Header.ascx" />
     <Content Include="Sr_App\home.aspx" />
     <Content Include="Sr_App\LeftPanel.ascx" />
-    <Content Include="Location_img\Chrysanthemum.jpg" />
     <Content Include="Sr_App\Literature.aspx" />
     <Content Include="Sr_App\MaterialConfirmation.aspx" />
     <Content Include="Sr_App\new_customer.aspx" />
@@ -1947,12 +1852,8 @@
     <Content Include="Scripts\jquery-1.4.1.js" />
     <Content Include="Scripts\jquery-1.4.1.min.js" />
     <Content Include="Synapse.aspx" />
-    <Content Include="TaskAttachments\99ed03b0-da55-4fa9-8709-c09c0a009813-sql server connection error.png" />
-    <Content Include="TaskAttachments\aa86fb5d-d33a-4e6e-b131-19fca98707df-tblTask-InstallId.sql" />
     <Content Include="TestGoogleMap.aspx" />
     <Content Include="upload.aspx" />
-    <Content Include="UploadedFiles\7162015111634AMKoala.jpg" />
-    <Content Include="UploadedFiles\7162015111655AMJellyfish.jpg" />
     <Content Include="UserControl\UCAddress.ascx" />
     <Content Include="UserControl\ucAuditTrailByUser.ascx" />
     <Content Include="UserControl\ucStatusChangePopup.ascx" />
@@ -2222,9 +2123,6 @@
     <Compile Include="JrAnnualCalendar.aspx.designer.cs">
       <DependentUpon>JrAnnualCalendar.aspx</DependentUpon>
     </Compile>
-    <Compile Include="project.net\App_Code\CalendarEvent.cs" />
-    <Compile Include="project.net\App_Code\EventDAO.cs" />
-    <Compile Include="project.net\App_Code\ImproperCalendarEvent.cs" />
     <Compile Include="Services\service.aspx.cs">
       <DependentUpon>service.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2606,7 +2504,6 @@
     </Compile>
     <Compile Include="Sr_App\EditUser.aspx.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Sr_App\EditUser.aspx.designer.cs">
       <DependentUpon>EditUser.aspx</DependentUpon>
@@ -2908,8 +2805,12 @@
     <Folder Include="fileman\Uploads\FLV\" />
     <Folder Include="fileman\Uploads\Images\" />
     <Folder Include="InvoicePdf\" />
+    <Folder Include="Location_img\" />
     <Folder Include="Resources\" />
     <Folder Include="Sr_App\MailDocument\MailAttachments\" />
+    <Folder Include="Sr_App\UploadedFile\" />
+    <Folder Include="TaskAttachments\" />
+    <Folder Include="UploadedFiles\" />
     <Folder Include="UploadeProfile\" />
     <Folder Include="UserImages\" />
   </ItemGroup>
@@ -2985,24 +2886,12 @@
     <None Include="PDFTemplates\I-9.pdf" />
     <None Include="PDFTemplates\w4.pdf" />
     <None Include="PDFTemplates\w9.pdf" />
-    <Content Include="Sr_App\UploadedFile\6162015120413PM" />
-    <Content Include="Sr_App\UploadedFile\6162015120945PM" />
     <Content Include="Sr_App\MailDocSample\ForemanJobAcceptancelettertemplate.docx" />
     <Content Include="Sr_App\MailDocSample\DeactivationMail.doc" />
     <Content Include="Sr_App\MailDocSample\LIBC.pdf" />
     <Content Include="Sr_App\MailDocSample\LIBC.docx" />
     <Content Include="UserFile\SalesSample.xlsx" />
-    <Content Include="project.net\jquery\jquery-2.1.1.min.map" />
-    <Content Include="project.net\JsonResponse.ashx" />
-    <Content Include="project.net\project.bak" />
     <None Include="Properties\PublishProfiles\TestProfile.pubxml" />
-    <Content Include="TaskAttachments\2ff840ef-a84a-473a-82b3-e561d21b2c0e-shabbir-Task generator detailed - with comment.docx" />
-    <Content Include="TaskAttachments\4d29d55b-c5e3-4d2a-8253-03c308b93f4a-ACH Payment Processing - Requirements.docx" />
-    <Content Include="TaskAttachments\6312c3e9-9ef4-4501-a3d1-16f4db1e0977-shabbir-Task generator detailed - with comment.docx" />
-    <Content Include="TaskAttachments\8ea87352-911a-42d0-891b-de3fe6ab3896-shabbir-Task generator detailed - with comment.docx" />
-    <Content Include="TaskAttachments\c658405d-80dc-4369-98ea-39957a72e999-ACH Payment Processing - Requirements.docx" />
-    <Content Include="TaskAttachments\d7861120-6a81-45df-98fa-2ea773964656-shabbir-Task generator detailed - with comment.docx" />
-    <Content Include="TaskAttachments\ffa0d83c-59f3-4fa0-a401-946ce6b5f9a9-shabbir-Task generator detailed - with comment.docx" />
     <Content Include="UserFile\SalesSample.csv" />
   </ItemGroup>
   <ItemGroup>
@@ -3017,10 +2906,6 @@
     <ProjectReference Include="..\JG_Prospect.DAL\JG_Prospect.DAL.csproj">
       <Project>{2c56d357-387f-4070-9dc0-70ab17d35668}</Project>
       <Name>JG_Prospect.DAL</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\JG_Prospect.WebAPI\JG_Prospect.WebAPI.csproj">
-      <Project>{a2e0432f-2ed7-45eb-81d8-d889f2f85c6b}</Project>
-      <Name>JG_Prospect.WebAPI</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
