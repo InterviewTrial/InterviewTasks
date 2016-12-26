@@ -1948,8 +1948,6 @@
     <Content Include="TaskAttachments\aa86fb5d-d33a-4e6e-b131-19fca98707df-tblTask-InstallId.sql" />
     <Content Include="TestGoogleMap.aspx" />
     <Content Include="upload.aspx" />
-    <Content Include="UploadedFiles\7162015111634AMKoala.jpg" />
-    <Content Include="UploadedFiles\7162015111655AMJellyfish.jpg" />
     <Content Include="UserControl\UCAddress.ascx" />
     <Content Include="UserControl\ucAuditTrailByUser.ascx" />
     <Content Include="UserControl\ucStatusChangePopup.ascx" />
@@ -2907,6 +2905,7 @@
     <Folder Include="Location_img\" />
     <Folder Include="Resources\" />
     <Folder Include="Sr_App\MailDocument\MailAttachments\" />
+    <Folder Include="UploadedFiles\" />
     <Folder Include="UploadeProfile\" />
     <Folder Include="UserImages\" />
   </ItemGroup>
