@@ -262,7 +262,6 @@
     <Content Include="bin\ASPSnippets.TwitterAPI.dll" />
     <Content Include="bin\BarcodeLib.dll" />
     <Content Include="bin\CKEditor.NET.dll" />
-    <Content Include="bin\CKEditor.NET.pdb" />
     <Content Include="bin\DropDownCheckBoxes.dll" />
     <Content Include="bin\EntityFramework.dll" />
     <Content Include="bin\EPPlus.dll" />
@@ -295,7 +294,6 @@
     <Content Include="bin\Microsoft.Web.Mvc.FixedDisplayModes.dll" />
     <Content Include="bin\Newtonsoft.Json.dll" />
     <Content Include="bin\NReco.PdfGenerator.dll" />
-    <Content Include="bin\NReco.PdfGenerator.xml" />
     <Content Include="bin\System.Net.Http.Formatting.dll" />
     <Content Include="bin\System.Spatial.dll" />
     <Content Include="bin\System.Web.Helpers.dll" />
