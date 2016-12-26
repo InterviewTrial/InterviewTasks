@@ -1883,8 +1883,6 @@
     <Content Include="Scripts\jquery-1.4.1.js" />
     <Content Include="Scripts\jquery-1.4.1.min.js" />
     <Content Include="Synapse.aspx" />
-    <Content Include="TaskAttachments\99ed03b0-da55-4fa9-8709-c09c0a009813-sql server connection error.png" />
-    <Content Include="TaskAttachments\aa86fb5d-d33a-4e6e-b131-19fca98707df-tblTask-InstallId.sql" />
     <Content Include="TestGoogleMap.aspx" />
     <Content Include="upload.aspx" />
     <Content Include="UserControl\UCAddress.ascx" />
@@ -2845,6 +2843,7 @@
     <Folder Include="Resources\" />
     <Folder Include="Sr_App\MailDocument\MailAttachments\" />
     <Folder Include="Sr_App\UploadedFile\" />
+    <Folder Include="TaskAttachments\" />
     <Folder Include="UploadedFiles\" />
     <Folder Include="UploadeProfile\" />
     <Folder Include="UserImages\" />
@@ -2930,13 +2929,6 @@
     <Content Include="project.net\JsonResponse.ashx" />
     <Content Include="project.net\project.bak" />
     <None Include="Properties\PublishProfiles\TestProfile.pubxml" />
-    <Content Include="TaskAttachments\2ff840ef-a84a-473a-82b3-e561d21b2c0e-shabbir-Task generator detailed - with comment.docx" />
-    <Content Include="TaskAttachments\4d29d55b-c5e3-4d2a-8253-03c308b93f4a-ACH Payment Processing - Requirements.docx" />
-    <Content Include="TaskAttachments\6312c3e9-9ef4-4501-a3d1-16f4db1e0977-shabbir-Task generator detailed - with comment.docx" />
-    <Content Include="TaskAttachments\8ea87352-911a-42d0-891b-de3fe6ab3896-shabbir-Task generator detailed - with comment.docx" />
-    <Content Include="TaskAttachments\c658405d-80dc-4369-98ea-39957a72e999-ACH Payment Processing - Requirements.docx" />
-    <Content Include="TaskAttachments\d7861120-6a81-45df-98fa-2ea773964656-shabbir-Task generator detailed - with comment.docx" />
-    <Content Include="TaskAttachments\ffa0d83c-59f3-4fa0-a401-946ce6b5f9a9-shabbir-Task generator detailed - with comment.docx" />
     <Content Include="UserFile\SalesSample.csv" />
   </ItemGroup>
   <ItemGroup>
