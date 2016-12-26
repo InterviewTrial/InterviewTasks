@@ -1612,9 +1612,6 @@
     <Content Include="js\jquery.ui.position.min.js" />
     <Content Include="js\lightslider.js" />
     <Content Include="js\PrimaryContact.js" />
-    <Content Include="Location_img\Jellyfish.jpg" />
-    <Content Include="Location_img\Lighthouse.jpg" />
-    <Content Include="Location_img\Tulips.jpg" />
     <Content Include="project.net\css\cupertino\images\animated-overlay.gif" />
     <Content Include="project.net\css\cupertino\images\ui-bg_diagonals-thick_90_eeeeee_40x40.png" />
     <Content Include="project.net\css\cupertino\images\ui-bg_flat_15_cd0a0a_40x100.png" />
@@ -1925,7 +1922,6 @@
     <Content Include="Sr_App\Header.ascx" />
     <Content Include="Sr_App\home.aspx" />
     <Content Include="Sr_App\LeftPanel.ascx" />
-    <Content Include="Location_img\Chrysanthemum.jpg" />
     <Content Include="Sr_App\Literature.aspx" />
     <Content Include="Sr_App\MaterialConfirmation.aspx" />
     <Content Include="Sr_App\new_customer.aspx" />
@@ -2908,6 +2904,7 @@
     <Folder Include="fileman\Uploads\FLV\" />
     <Folder Include="fileman\Uploads\Images\" />
     <Folder Include="InvoicePdf\" />
+    <Folder Include="Location_img\" />
     <Folder Include="Resources\" />
     <Folder Include="Sr_App\MailDocument\MailAttachments\" />
     <Folder Include="UploadeProfile\" />
