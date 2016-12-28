@@ -241,7 +241,7 @@
                 <li>&copy; 2012 JG All Rights Reserved.</li>
                 <li><a href="#">Terms of Use</a></li>
                 <li>|</li>
-                <li><a href="#">Privacy Policy</a></li>
+                <li><a href="#">From Jenkins-Auto Build - Privacy Policy</a></li>
             </ul>
         </div>
     </form>
