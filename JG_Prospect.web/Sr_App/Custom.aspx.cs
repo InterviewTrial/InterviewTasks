@@ -335,11 +335,15 @@ namespace JG_Prospect.Sr_App.Product_Line
 
         private void BindProducts()
         {
+            ProductTypeId = Convert.ToInt16(Request.QueryString[QueryStringKey.Key.ProductTypeId.ToString()]);
             DataSet ds = UserBLL.Instance.GetAllProducts();
             ddlProductCategory.DataSource = ds;
             ddlProductCategory.DataTextField = "ProductName";
             ddlProductCategory.DataValueField = "ProductId";
             ddlProductCategory.DataBind();
+            //-------- Start DP ----------
+            ddlProductCategory.SelectedValue = ProductTypeId.ToString();
+            //-------- End DP ----------
             ddlProductCategory.Items.Insert(0, new System.Web.UI.WebControls.ListItem("Select", "0"));
         }
 
@@ -364,19 +368,19 @@ namespace JG_Prospect.Sr_App.Product_Line
             //}   
         }
 
-        protected void ddlProductCategory_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            switch (ddlProductCategory.SelectedValue)
-            {
-                case "2":
-                case "3":
-                    txtOther.Visible = true;
-                    break;
-                default:
-                    txtOther.Visible = false;
-                    break;
-            }
-        }
+        //protected void ddlProductCategory_SelectedIndexChanged(object sender, EventArgs e)
+        //{
+        //    switch (ddlProductCategory.SelectedValue)
+        //    {
+        //        case "2":
+        //        case "3":
+        //            txtOther.Visible = true;
+        //            break;
+        //        default:
+        //            txtOther.Visible = false;
+        //            break;
+        //    }
+        //}
 
         protected void btnAddProductCategory_Click(object sender, EventArgs e)
         {

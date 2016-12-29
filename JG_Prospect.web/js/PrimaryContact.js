@@ -1,4 +1,5 @@
-﻿function BindPrimaryContact() {
+﻿
+function BindPrimaryContact() {
     debugger;
     $.ajax({
         type: "POST",
@@ -31,7 +32,7 @@
 
                     if (value.PhoneType != "" || value.PhoneNumber != "") {
                         $("#tblPhone" + childCount + " tr:last").before("<tr><td class='paddingtd'></td>" +
-                          "<td><input type='text' clientidmode='Static' onblur='CheckDuplicatePhone(this);' id='txtPhone" + licount + chdCount + "' name='nametxtPhone" + licount + chdCount + "' data-type='" + licount + "' tabindex='7' class='clsMaskPhone'  placeholder='___-___-____' /></td>" +
+                          "<td><input type='tel' clientidmode='Static'  onblur='CheckDuplicatePhone(this);' id='txtPhone" + licount + chdCount + "' name='nametxtPhone" + licount + chdCount + "' data-type='" + licount + "' tabindex='7' class='clsMaskPhone valid-phone'  placeholder='___-___-____' /></td>" +
                           "<td><label class='clsFullWidth'>Phone Type</label></td><td>" +
                           "<select class='clsFullWidth' id='selPhoneType" + licount + chdCount + "' name='nameselPhoneType" + licount + chdCount + "' data-type='" + licount + "' clientidmode='Static' tabindex='4'>" +
                           "<option value='0'>Select</option><option value='CellPhone'>Cell Phone #</option><option value='HousePhone'>House Phone #</option><option value='WorkPhone'>Work Phone #</option><option value='AltPhone'>Alt. Phone #</option>" +
@@ -62,7 +63,7 @@
                     "<input type='text' style='width:100px;' tabindex='7' id='txtLName" + licount + "' name='nametxtLName" + licount + "'  placeholder='Last Name' data-type='" + licount + "' /></td></tr><tr><td class='paddingtd'>" +
                     "<input type='button' id='btnParent" + licount + "' value='Add' data-type='" + licount + "' class='clsFullWidth cls_btn_plus' tabindex='31' onclick='AddTemplate(this)' /></td>" +
                     "</tr></table></div><div style='width: 30%; float: left;'><table id='tblPhone" + licount + "'><tr><td>" +
-                    "<input type='text' style='width:70px;' clientidmode='Static' onblur='CheckDuplicatePhone(this);' id='txtPhone" + licount + "' name='nametxtPhone" + licount + "' data-type='" + licount + "' tabindex='7' class='clsMaskPhone'  placeholder='___-___-____' /></td>" +
+                    "<input type='tel' style='width:70px;' clientidmode='Static' onblur='CheckDuplicatePhone(this);' id='txtPhone" + licount + "' name='nametxtPhone" + licount + "' data-type='" + licount + "' tabindex='7' class='clsMaskPhone valid-phone'  placeholder='___-___-____' /></td>" +
                     "<td style='width:70px;'><label class='clsFullWidth' style='width:70px;'>Phone Type</label></td><td><select style='width:100px;' class='clsFullWidth' id='selPhoneType" + licount + "' name='nameselPhoneType" + licount + "' data-type='" + licount + "' clientidmode='Static' tabindex='4'>" +
                     "<option value='0'>Select</option><option value='CellPhone'>Cell Phone #</option><option value='HousePhone'>House Phone #</option><option value='WorkPhone'>Work Phone #</option><option value='AltPhone'>Alt. Phone #</option>" +
                     "</select></td></tr><tr><td class='paddingtd'><input type='button' value='Add' data-type='" + licount + "' class='clsFullWidth cls_btn_plus' tabindex='31' onclick='Phone(this)' /></td>" +
@@ -86,6 +87,12 @@
                     //    //document.getElementById("chkContactType1").checked = true;
                     //}
                 }
+                //-------- Start DP ----------
+                if (result.length == 1)
+                {
+                    $(".cls_btn_plus").trigger("click");
+                }
+                //-------- End DP ----------
                 try {
                     $('.clsMaskPhone').mask("999-999-9999");
                 } catch (e1) { }
@@ -180,24 +187,69 @@
     });
 }
 
+//-------- Start DP ----------
+function CheckDuplicatePhone(obj) {
+    if (obj.value != '___-___-____') {
+        CheckDuplicateCustomerCred(obj, 1);
+    }
+}
+
+
+function CheckDuplicateCustomerCred(obj, type) {
+    $.ajax({
+        type: "POST",
+        url: "Customer_Profile.aspx/CheckDuplicateCustomerCredentials",
+        contentType: "application/json; charset=utf-8",
+        dataType: "JSON",
+        data: "{'pValueForValidation':'" + obj.value + "', 'pValidationType':" + type + "}",
+
+        success: function (data) {
+            debugger;
+            var dataInput = (data.d);
+            if (dataInput != '') {
+                alert(dataInput);
+                obj.value = '';
+            }
+        }
+    });
+}
+//-------- End DP ----------
+
 function AddTemplate(e) {
     debugger;
 
     var liCount = $("#divPrimaryContact ul li").length + 1;
 
-    $(e).closest('li').after("<li style='width: 100%;'><div class='tblPrimaryContact' style='margin-top: 10px; width: 100%'><div style='width: 40%; float: left;'>" +
-    "<table><tr><td><input type='checkbox' id='chkContactType" + liCount + "' name='chkContactType " + liCount + "'/></td><td><select id='selContactType" + liCount + "' name='selContactType" + liCount + "' clientidmode='Static' tabindex='4' class='drop_down'><option value='0'>Select</option>" +
-    "<option value='DM'>DM</option><option value='Spouse'>Spouse</option><option value='Partner'>Partner</option><option value='Others'>Others</option></select><label></label>" +
-    "</td><td><input type='text' id='txtFName" + liCount + "' tabindex='7' name='nametxtFName" + liCount + "'  placeholder='First Name' data-type='" + liCount + "' /></td><td>" +
-    "<input type='text' tabindex='7' id='txtLName" + liCount + "' name='nametxtLName" + liCount + "'  placeholder='Last Name' data-type='" + liCount + "' /></td></tr><tr><td class='paddingtd'>" +
+    $(e).closest('li').after("<li style='width: 100%;'>"+
+    "<div class='tblPrimaryContact' style='margin-top: 10px; width: 100%'><div style='width: 40%; float: left;'>" +
+    "<table><tr>"+
+    "<td><input type='checkbox' id='chkContactType" + liCount + "' name='chkContactType " + liCount + "'/></td>"+
+    "<td><select id='selContactType" + liCount + "' name='selContactType" + liCount + "' clientidmode='Static' tabindex='4' class='drop_down'>"+
+    "<option value='0'>Select</option>" +
+    "<option value='DM'>DM</option>"+
+    "<option value='Spouse'>Spouse</option>"+
+    "<option value='Partner'>Partner</option>"+
+    "<option value='Others'>Others</option>"+
+    "</select><label></label>" +
+    "</td>"+
+    "<td><input type='text' style='width:100px;' id='txtFName" + liCount + "' tabindex='7' name='nametxtFName" + liCount + "'  placeholder='First Name' data-type='" + liCount + "' /></td><td>" +
+    "<input type='text' tabindex='7' style='width:100px;' id='txtLName" + liCount + "' name='nametxtLName" + liCount + "'  placeholder='Last Name' data-type='" + liCount + "' /></td></tr><tr><td class='paddingtd'>" +
     "<input type='button' value='Add' data-type='" + liCount + "' class='clsFullWidth cls_btn_plus' tabindex='31' onclick='AddTemplate(this)' /></td>" +
-    "</tr></table></div><div style='width: 40%; float: left;'><table><tr><td class='paddingtd'></td><td>" +
-    "<input type='text' clientidmode='Static' id='txtPhone" + liCount + "' name='nametxtPhone" + liCount + "' data-type='" + liCount + "' tabindex='7' class='clsMaskPhone'  placeholder='___-___-____' onblur='CheckDuplicatePhone(this)' /></td>" +
-    "<td><label class='clsFullWidth'>Phone Type</label></td><td><select class='clsFullWidth' id='selPhoneType" + liCount + "' name='nameselPhoneType" + liCount + "' data-type='" + liCount + "' clientidmode='Static' tabindex='4'>" +
-    "<option value='0'>Select</option><option value='CellPhone'>Cell Phone #</option><option value='HousePhone'>House Phone #</option><option value='WorkPhone'>Work Phone #</option><option value='AltPhone'>Alt. Phone #</option>" +
-    "</select></td></tr><tr><td class='paddingtd'><input type='button' value='Add' data-type='" + liCount + "' class='clsFullWidth cls_btn_plus' tabindex='31' onclick='Phone(this)' /></td>" +
-    "</tr></table></div><div style='width: 20%; float: left;'><table><tr><td class='paddingtd'></td>" +
-    "<td><input type='text' clientidmode='Static' id='txtEMail" + liCount + "' name='nametxtEMail" + liCount + "' data-type='" + liCount + "' tabindex='7'  placeholder='EMail' onblur='CheckDuplicateEmail(this)' /></td></tr><tr><td class='paddingtd'>" +
+    "</tr></table></div><div style='width: 30%; float: left;'><table><tr><td>" +
+    "<input type='text' clientidmode='Static' id='txtPhone" + liCount + "' name='nametxtPhone" + liCount + "' data-type='" + liCount + "' tabindex='7' style='width:70px;' class='clsMaskPhone'  placeholder='___-___-____' onblur='CheckDuplicatePhone(this)' /></td>" +
+    "<td><label class='clsFullWidth' style='width:70px;'>Phone Type</label></td><td>" +
+    "<select class='clsFullWidth' style='width:100px;' id='selPhoneType" + liCount + "' name='nameselPhoneType" + liCount + "' data-type='" + liCount + "' clientidmode='Static' tabindex='4'>" +
+    "<option value='0'>Select</option>"+
+    "<option value='CellPhone'>Cell Phone #</option>"+
+    "<option value='HousePhone'>House Phone #</option>"+
+    "<option value='WorkPhone'>Work Phone #</option>"+
+    "<option value='AltPhone'>Alt. Phone #</option>" +
+    "</select>"+
+    "</td></tr>"+
+    "<tr>"+
+    "<td class='paddingtd'><input type='button' value='Add' data-type='" + liCount + "' class='clsFullWidth cls_btn_plus' tabindex='31' onclick='Phone(this)' /></td>" +
+    "</tr></table></div><div style='width: 20%; float: left;'><table><tr>" +
+    "<td><input type='text' clientidmode='Static'  style='width:160px;' id='txtEMail" + liCount + "' name='nametxtEMail" + liCount + "' data-type='" + liCount + "' tabindex='7'  placeholder='EMail' onblur='CheckDuplicateEmail(this)' /></td></tr><tr><td class='paddingtd'>" +
     "<input type='button' value='Add' data-type='" + liCount + "' class='clsFullWidth cls_btn_plus' tabindex='31' onclick='Email(this)' /></td></tr></table></div></div></li>");
     $('.clsMaskPhone').mask("999-999-9999");
     $(e).css("visibility", "hidden");
