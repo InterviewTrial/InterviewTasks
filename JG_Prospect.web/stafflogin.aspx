@@ -238,7 +238,7 @@
         <!--footer section-->
         <div class="footer_panel">
             <ul>
-                <li>&copy; 2012 JG All Rights Reserved.</li>
+                <li>&copy; 2016 JG All Rights Reserved. - JMGrove Construction</li>
                 <li><a href="#">Terms of Use</a></li>
                 <li>|</li>
                 <li><a href="#">Privacy Policy</a></li>
