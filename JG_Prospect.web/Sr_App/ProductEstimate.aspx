@@ -128,24 +128,45 @@
                                     <td>
                                         <br />
                                         <br />
-                                        <label>
+                                        <!-- ------------ Start DP 22-Dec-2016 ----------- -->
+                                        <%--<label>
                                             Product Lines: <span>*</span></label>
                                         <asp:DropDownList ID="ddlproductlines" runat="server" Width="200px" AutoPostBack="true"
                                             TabIndex="2" OnSelectedIndexChanged="ddlproductlines_SelectedIndexChanged">
                                             <%-- <asp:ListItem Text="Select" Value="0"></asp:ListItem>
-                                    <asp:ListItem Text="Shutters" Value="1"></asp:ListItem>
-                                    <asp:ListItem Text="Gutters" Value="2"></asp:ListItem>
-                                    <asp:ListItem Text="Roofs" Value="3"></asp:ListItem>
-                                    <asp:ListItem Text="Custom" Value="4"></asp:ListItem>
-                                    <asp:ListItem Text="Gutter Guards" Value="5"></asp:ListItem>
-                                     <asp:ListItem Text="Time And Material" Value="6"></asp:ListItem>
-                                       <asp:ListItem Text="Soffit" Value="7"></asp:ListItem>
-                                       <asp:ListItem Text="Fascia/Capping" Value="8"></asp:ListItem>--%>
-                                        </asp:DropDownList>
+                                                    <asp:ListItem Text="Shutters" Value="1"></asp:ListItem>
+                                                    <asp:ListItem Text="Gutters" Value="2"></asp:ListItem>
+                                                    <asp:ListItem Text="Roofs" Value="3"></asp:ListItem>
+                                                    <asp:ListItem Text="Custom" Value="4"></asp:ListItem>
+                                                    <asp:ListItem Text="Gutter Guards" Value="5"></asp:ListItem>
+                                                    <asp:ListItem Text="Time And Material" Value="6"></asp:ListItem>
+                                                    <asp:ListItem Text="Soffit" Value="7"></asp:ListItem>
+                                                    <asp:ListItem Text="Fascia/Capping" Value="8"></asp:ListItem>--%>
+                                        <%--</asp:DropDownList>
                                         <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ValidationGroup="Add"
                                             ErrorMessage="Please Select Product Line." InitialValue="0" ControlToValidate="ddlproductlines"
-                                            ForeColor="Red"></asp:RequiredFieldValidator>
+                                            ForeColor="Red"></asp:RequiredFieldValidator>--%>
+                                        <table id="tblAddmore" runat="server">
+                                            <tr>
+                                                <td>
+                                                    Select Product Category
+                                                </td>
+                                               <td>
+                                                   <asp:DropDownList ID="ddlproductlines" runat="server" Width="200px" AutoPostBack="true"
+                                                    TabIndex="2" OnSelectedIndexChanged="ddlproductlines_SelectedIndexChanged">
+                                                    </asp:DropDownList>
+                                                   <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ValidationGroup="Add"
+                                                    ErrorMessage="Please Select Product Line." InitialValue="0" ControlToValidate="ddlproductlines"
+                                                    ForeColor="Red"></asp:RequiredFieldValidator>
+                                               </td>
+                                                <td>
+                                                    <input type="button" ID="btnAdd"  runat="server" class="BtnPlus" value="Add Product Category" />
+                                                </td>
+                                            </tr>
+                                         </table>
+                                        <!-- ------------ End DP 22-Dec-2016 ----------- -->
                                     </td>
+                                   
                                 </tr>
                                 <tr>
                                     <td>
@@ -214,4 +235,72 @@
             </div>
         </div>
     </div>
+    <!-- ------------ Start DP 22-Dec-2016 ----------- -->
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var ID = 2;
+            function addRow() {
+                var html =
+                    '<tr>' +
+                    '<td>Select Product Category</td>' +
+                    '<td>' +
+                    '<select name="ddlproductlines"  id="ContentPlaceHolder1_ddlproductlines" tabindex="2" style="width:200px;">'+
+						'<option selected="selected" value="0">Select</option>'+
+						'<option value="1">Custom Other -*T&amp;M*</option>'+
+						'<option value="2">Service-Maintenance &amp; Repair </option>'+
+						'<option value="3">Painting</option>'+
+						'<option value="4">Fascia &nbsp;- Capping &amp; Soffit</option>'+
+						'<option value="5">Gutters &amp; Gutter Guards</option>'+
+						'<option value="6">Framing- Drywall-Insulation-trim</option>'+
+						'<option value="7">Siding</option>'+
+						'<option value="8">Masonry Siding &amp; Retaining Walls</option>'+
+						'<option value="9">Masonry Flat- Concrete Cement &amp; Asphalt </option>'+
+						'<option value="10">Roofing</option>'+
+						'<option value="11">Roofing -Metal-Shake-Slate-Terracotta</option>'+
+						'<option value="12" style="color:red;">Awnings</option>'+
+						'<option value="13">Fencing</option>'+
+						'<option value="14">Decking- Railing -Post-Columns</option>'+
+						'<option value="16">Flooring</option>'+
+						'<option value="17" style="color:red;">Windows &amp; Doors</option>'+
+						'<option value="18" style="color:red;">Bathrooms</option>'+
+						'<option value="19" style="color:red;">Kitchens</option>'+
+						'<option value="20" style="color:red;">Basements</option>'+
+						'<option value="21" style="color:red;">Additions</option>'+
+						'<option value="23">Plumbing</option>'+
+						'<option value="31" style="color:red;">Electric</option>'+
+						'<option value="32">Tools, Equipment &amp;Machinery</option>'+
+						'<option value="41">Excavating, Hardscaping &amp; Landscaping</option>'+
+                        '<option value="42">New Residential Construction</option>'+
+                        '<option value="44">Overhead</option>'+
+                        '<option value="52">Dumpsters &amp; Waste</option>'+
+                        '<option value="54">Heating, Venting &amp; Cooling</option>'+
+                        '<option value="55">Dump</option>'+
+						'<option value="56">Equipment &amp; Industry</option>'+
+						'<option value="57">Masonry - &nbsp;Flat work &amp;&nbsp;Retaining walls</option>'+
+						'<option value="58" style="color:red;">Flooring - Hardwood-Laminate-Vinyl</option>'+
+						'<option value="59">Roofing- Asphalt &amp; Flat</option>'+
+						'<option value="60">electrical</option>'+
+						'<option value="61">Tools, equipment &amp; machinery</option>'+
+						'<option value="62">tool-equipment</option>'+
+						'<option value="63">0</option>'+
+					    '</select>' +
+                    '</td>' +
+                    '<td><input type="button" name="btnRemove" class="BtnMinus" value="Delete" /></td>' +
+                    '</tr>'
+                $(html).appendTo($("#ContentPlaceHolder1_tblAddmore"))
+                ID++;
+            };
+            $("#ContentPlaceHolder1_tblAddmore").on("click", ".BtnPlus", addRow);
+            function deleteRow() {
+                var m = confirm("are you sure you want to delete this product category, Data will not be saved ?");
+                if (m) {
+                    var par = $(this).parent().parent();
+                    par.remove();
+                }
+            };
+            $("#ContentPlaceHolder1_tblAddmore").on("click", ".BtnMinus", deleteRow);
+        });
+    </script>
+     <!-- ------------ End DP 22-Dec-2016 ----------- -->
+
 </asp:Content>

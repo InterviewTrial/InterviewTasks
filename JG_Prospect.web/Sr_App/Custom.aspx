@@ -141,6 +141,11 @@ $(".btnClose").live('click', function () {
     HidePopup();
 });
 
+
+
+
+
+
     </script>
     <style type="text/css">
         .style2 {
@@ -215,7 +220,11 @@ $(".btnClose").live('click', function () {
         }*/
     </style>
 
-    </style>
+    <script src="../Scripts/jquery.maskedinput.min.js" type="text/javascript"></script>
+    <%--<script src="../Scripts/dropDownlistDiv.js" type="text/javascript"></script>--%>
+    <script src="../Scripts/jquery.webui-popover.min.js" type="text/javascript"></script>
+    <script src="../Scripts/pgwslideshow.min.js" type="text/javascript"></script>
+       
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
     <div class="right_panel">
@@ -233,12 +242,16 @@ $(".btnClose").live('click', function () {
                     Customer Id:
                 </label>
                 <b><a onclick="window.open('Customer_Profile.aspx?CustomerId=' + '<%= vCustomerId %>','name','height=550, width=790,toolbar=no,directories=no,status=no, menubar=no,scrollbars=yes,resizable=yes'); return false;" href='#'>
-                    <asp:Label ID="lblmsg" runat="server" Visible="true"></asp:Label></a>
+                    <asp:Label ID="lblmsg" runat="server" Visible="true"></asp:Label> </a>
+                    <a onclick="window.open('Customer_Profile.aspx?CustomerId=' + '<%= vCustomerId %>','name','height=550, width=790,toolbar=no,directories=no,status=no, menubar=no,scrollbars=yes,resizable=yes'); return false;" href='#'>
                     <asp:Label ID="lblQuote" runat="server" Visible="true"></asp:Label>
+                   </a>
+                    
                 </b>
 
             </span></br></br>
              <table style="width: 100%; padding: 0px;" border="0" cellspacing="0" cellpadding="0">
+                 
                  <tr>
                      <td>
                          <span>
@@ -261,9 +274,61 @@ $(".btnClose").live('click', function () {
                      <td>
                          <table border="0" cellspacing="0" cellpadding="0">
                              <tr>
-                                 <td>
+                                 <td style="vertical-align: top;">
                                      <uc1:UCAddress runat="server" ID="UCAddress" />
-                                     <asp:UpdatePanel ID="panel4" runat="server">
+                                 </td>
+                                 <td style="vertical-align: top;">
+                                     
+                                     <table >
+                                         <tr>
+                                             <td colspan="2">
+                                                 <input type="checkbox" id="chkbillingaddress" style="width: 5%" tabindex="20" checked="checked" onchange="BillingAddress(this)" />
+                                             </td>
+                                         </tr>
+                                         <tr>
+                                             <td valign="top">Billing Address Same</td>
+                                             <td>
+                                                  <textarea id="txtbill_address" runat="server" clientidmode="Static" name="BillAddress" style="width: 169px;" tabindex="21"></textarea>
+                                             </td>
+                                         </tr>
+                                         <tr>
+                                             <td  valign="top">Address Type</td>
+                                             <td>
+                                                 <select id="selAddressType" name="AddressType" runat="server" clientidmode="Static">
+                                                     <option value="Select">Select</option>
+                                                     <option value="Primary Residence">Primary Residence</option>
+                                                     <option value="Business">Business</option>
+                                                     <option value="Vacation House">Vacation House</option>
+                                                     <option value="Rental">Rental</option>
+                                                     <option value="Condo">Condo</option>
+                                                     <option value="Apartment">Apartment</option>
+                                                     <option value="Mobile Home">Mobile Home</option>
+                                                     <option value="Other">Other</option>
+                                                 </select>
+                                             </td>
+                                         </tr>
+                                         <tr>
+                                             <td>
+                                                 <table border="0" cellspacing="0" style="width: 100%" cellpadding="0">
+                                                     <tr>
+                                                         <td style="width: 41%;">&nbsp;</td>
+                                                         <td style="text-align: left;">
+                                                             <asp:UpdatePanel ID="UpdatePanel2" runat="server">
+                                                                 <ContentTemplate>
+                                                                     <asp:Button ID="btnAddAddress" runat="server" Text="Add Address" Width="110px" CssClass="cls_btn_plus" TabIndex="31"
+                                                                         OnClick="btnAddAddress_Click" />
+                                                                 </ContentTemplate>
+                                                             </asp:UpdatePanel>
+                                                         </td>
+                                                     </tr>
+                                                 </table>
+                                             </td>
+                                         </tr>
+                                     </table>
+                                     
+                                 </td>
+                                 <td style="vertical-align: top;">
+                                      <asp:UpdatePanel ID="panel4" runat="server">
                                          <ContentTemplate>
                                              <asp:PlaceHolder runat="server" ID="myPlaceHolder"></asp:PlaceHolder>
                                          </ContentTemplate>
@@ -272,54 +337,17 @@ $(".btnClose").live('click', function () {
                                          </Triggers>
                                      </asp:UpdatePanel>
                                  </td>
-                                 <td style="vertical-align: top;">
-                                     <div>
-                                         <input type="checkbox" id="chkbillingaddress" style="width: 5%" tabindex="20" checked="checked" onchange="BillingAddress(this)" />
-                                     </div>
-                                     <label style="vertical-align: top;">Billing Address Same</label>
-                                     <textarea id="txtbill_address" runat="server" clientidmode="Static" name="BillAddress" style="width: 169px;" tabindex="21"></textarea>
-                                     <label></label>
-                                     <span id=""></span>
-                                     <br />
-                                     <label>Address Type</label>
-                                     <select id="selAddressType" name="AddressType" runat="server" clientidmode="Static">
-                                         <option value="Select">Select</option>
-                                         <option value="Primary Residence">Primary Residence</option>
-                                         <option value="Business">Business</option>
-                                         <option value="Vacation House">Vacation House</option>
-                                         <option value="Rental">Rental</option>
-                                         <option value="Condo">Condo</option>
-                                         <option value="Apartment">Apartment</option>
-                                         <option value="Mobile Home">Mobile Home</option>
-                                         <option value="Other">Other</option>
-                                     </select>
-                                 </td>
                              </tr>
                          </table>
                      </td>
                  </tr>
-                 <tr>
-                     <td>
-                         <table border="0" cellspacing="0" style="width: 100%" cellpadding="0">
-                             <tr>
-                                 <td style="width: 41%;">&nbsp;</td>
-                                 <td style="text-align: left;">
-                                     <asp:UpdatePanel ID="UpdatePanel2" runat="server">
-                                         <ContentTemplate>
-                                             <asp:Button ID="btnAddAddress" runat="server" Text="Add Address" Width="110px" CssClass="cls_btn_plus" TabIndex="31"
-                                                 OnClick="btnAddAddress_Click" />
-                                         </ContentTemplate>
-                                     </asp:UpdatePanel>
-                                 </td>
-                             </tr>
-                         </table>
-                     </td>
-                 </tr>
+                 
                  <tr>
                      <td>
                          <br />
                          <br />
-                         <table border="0" cellspacing="0" style="width: 100%" cellpadding="0">
+                          <!-- ------------ Start DP 22-Dec-2016 ----------- -->
+                         <%--<table border="0" cellspacing="0" style="width: 100%" cellpadding="0">
                              <tr>
                                  <td style="width: 53%; vertical-align: top;">
                                      <asp:UpdatePanel ID="up" runat="server">
@@ -349,11 +377,47 @@ $(".btnClose").live('click', function () {
                                      <div>
                                          <asp:Button ID="btnAddProductCategory" runat="server" CssClass="cls_btn_plus" Text="Add Product Category" ValidationGroup="Add"
                                              TabIndex="3" OnClick="btnAddProductCategory_Click" />
-                                         <a href="#">Clear/Delete</a>
+                                        <a href="#">Clear/Delete</a>
                                      </div>
                                  </td>
                              </tr>
-                         </table>
+                         </table>--%>
+
+
+                         <table id="Table1" runat="server" border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td>
+                                        <br />
+                                        <br />
+                                       
+                                       
+                                        <table id="tblAddmore" runat="server">
+                                            <tr>
+                                                <td>
+                                                    <input type="button" ID="btnexpand"  runat="server" class="cls_btn_plus" value=" - " />
+                                                    Select Product Category
+                                                </td>
+                                                <td>
+                                                    <asp:DropDownList ID="ddlProductCategory"   runat="server" Width="200px"  TabIndex="2" >
+                                                    </asp:DropDownList>
+                                                    <asp:TextBox ID="txtOther" runat="server" Width="120"  ></asp:TextBox>
+                                                </td>
+                                                <td>
+                                                    <input type="button" ID="btnAdd"  runat="server" class="cls_btn_plus" value="Add Product Category" />
+                                                        <asp:RequiredFieldValidator ID="RequiredFieldValidator2" runat="server" ValidationGroup="Add"
+                                                    ErrorMessage="Please Select Product Line." InitialValue="0" ControlToValidate="ddlProductCategory"
+                                                    ForeColor="Red"></asp:RequiredFieldValidator>
+                                                </td>
+                                            </tr>
+                                         </table>
+                                        
+                                    </td>
+                                   
+                                </tr>
+                                
+                                
+                            </table>
+                         <!-- ------------ End DP 22-Dec-2016 ----------- -->
                      </td>
                  </tr>
              </table>
@@ -602,4 +666,148 @@ $(".btnClose").live('click', function () {
                 </asp:Panel>--%>
         </div>
     </div>
+
+     <!-- ------------ Start DP 22-Dec-2016 ----------- -->
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var cnt = 2;
+            function addRow() {
+                var html =
+                '<tr id="tr_'+cnt+'">' +
+                    '<td><input type="button" ID="btnexpand_' + cnt + '"  class="cls_btn_plus" value=" - " />' +
+                    'Select Product Category</td>' +
+                    '<td>' +
+                    '<select name="ddlProductCategory" class="productlines" id="ddlProductCategory_' + cnt + '" onChange="javascript:prodchange('+cnt +');" tabindex="2" style="width:200px;">' +
+						'<option selected="selected" value="0">Select</option>' +
+						'<option value="1">Custom Other -*T&amp;M*</option>' +
+						'<option value="2">Service-Maintenance &amp; Repair </option>' +
+						'<option value="3">Painting</option>' +
+						'<option value="4">Fascia &nbsp;- Capping &amp; Soffit</option>' +
+						'<option value="5">Gutters &amp; Gutter Guards</option>' +
+						'<option value="6">Framing- Drywall-Insulation-trim</option>' +
+						'<option value="7">Siding</option>' +
+						'<option value="8">Masonry Siding &amp; Retaining Walls</option>' +
+						'<option value="9">Masonry Flat- Concrete Cement &amp; Asphalt </option>' +
+						'<option value="10">Roofing</option>' +
+						'<option value="11">Roofing -Metal-Shake-Slate-Terracotta</option>' +
+						'<option value="12" style="color:red;">Awnings</option>' +
+						'<option value="13">Fencing</option>' +
+						'<option value="14">Decking- Railing -Post-Columns</option>' +
+						'<option value="16">Flooring</option>' +
+						'<option value="17" style="color:red;">Windows &amp; Doors</option>' +
+						'<option value="18" style="color:red;">Bathrooms</option>' +
+						'<option value="19" style="color:red;">Kitchens</option>' +
+						'<option value="20" style="color:red;">Basements</option>' +
+						'<option value="21" style="color:red;">Additions</option>' +
+						'<option value="23">Plumbing</option>' +
+						'<option value="31" style="color:red;">Electric</option>' +
+						'<option value="32">Tools, Equipment &amp;Machinery</option>' +
+						'<option value="41">Excavating, Hardscaping &amp; Landscaping</option>' +
+                        '<option value="42">New Residential Construction</option>' +
+                        '<option value="44">Overhead</option>' +
+                        '<option value="52">Dumpsters &amp; Waste</option>' +
+                        '<option value="54">Heating, Venting &amp; Cooling</option>' +
+                        '<option value="55">Dump</option>' +
+						'<option value="56">Equipment &amp; Industry</option>' +
+						'<option value="57">Masonry - &nbsp;Flat work &amp;&nbsp;Retaining walls</option>' +
+						'<option value="58" style="color:red;">Flooring - Hardwood-Laminate-Vinyl</option>' +
+						'<option value="59">Roofing- Asphalt &amp; Flat</option>' +
+						'<option value="60">electrical</option>' +
+						'<option value="61">Tools, equipment &amp; machinery</option>' +
+						'<option value="62">tool-equipment</option>' +
+						'<option value="63">0</option>' +
+					    '</select>' +
+                        '&nbsp;<input type="text" name="txtOth" style="display:none;width:120px;" id="txtOther_'+cnt+'" />'+
+                    '</td>' +
+                    '<td><a href="javascript:void(0);" class="BtnMinus">Clear/Delete</a></td>' +
+                    '</tr>'
+
+              
+                $(html).appendTo($("#ContentPlaceHolder1_tblAddmore"));
+                cnt++;
+            };
+
+           // $("#ContentPlaceHolder1_tblAddmore").on("click", ".cls_btn_plus", addRow);
+
+            $(".cls_btn_plus").click(function () {
+                $("#ContentPlaceHolder1_btnexpand").val(' + ')
+                addRow();
+            });
+            function deleteRow() {
+                var m = confirm("are you sure you want to delete this product category, Data will not be saved ?");
+                if (m) {
+                    //var strId = $(this).attr('id');
+                    //alert(strId);
+                    //var vArr = strId.split("_");
+                    //var vId = vArr[1];
+                    //alert($('#tr_' + vId + ''));
+                    //$('#tr_'+vId+'').remove();
+                    var par = $(this).parent().parent();
+                    par.remove();
+                }
+            };
+            $("#ContentPlaceHolder1_tblAddmore").on("click", ".BtnMinus", deleteRow);
+        
+
+
+            $("#ContentPlaceHolder1_txtOther").hide();
+            $("#ContentPlaceHolder1_txtOther").val('');
+
+            $("#ContentPlaceHolder1_ddlProductCategory").change(function () {
+                var drpVal  = $("#ContentPlaceHolder1_ddlProductCategory").val();
+                if ( parseInt(drpVal) == 2 || parseInt(drpVal) == 3) {
+                    $("#ContentPlaceHolder1_txtOther").show();
+
+                }
+                else {
+                    $("#ContentPlaceHolder1_txtOther").hide();
+                    $("#ContentPlaceHolder1_txtOther").val('');
+
+                }
+            });
+        
+            
+           
+                
+               /* if ($(this).val() == "2" || $(this).val == "3") {
+                    var strId = $(this).attr('id');
+                    var vArr = strId.split("_");
+                    var vId = vArr[1];
+                    $("#ContentPlaceHolder1_txtOther"+vId+"").show();
+
+                }
+                else {
+                    $("#ContentPlaceHolder1_txtOther" + vId + "").val('');
+                    $("#ContentPlaceHolder1_txtOther" + vId + "").hide();
+                
+
+                }*/
+            
+        });
+
+        function prodchange(obj) {
+            
+            var drpval = $('#ddlProductCategory_' + obj + '').val();
+            if (drpval != 0)
+            {
+                $('#btnexpand_' + obj + '').val(' + ')
+            }
+            else
+            {
+                $('#btnexpand_' + obj + '').val(' - ')
+            }
+            if(drpval==2 || drpval==3)
+            {
+                $('#txtOther_' + obj + '').show();
+            }
+            else
+            {
+                $('#txtOther_' + obj + '').val('');
+                $('#txtOther_' + obj + '').hide();
+            }
+            
+        }
+        //-------- End DP ----------
+    </script>
+    
 </asp:Content>
