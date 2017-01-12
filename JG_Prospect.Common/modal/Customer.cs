@@ -87,8 +87,28 @@ namespace JG_Prospect.Common.modal
         public string EventName;
         public string Eventdate;
         public int EventAddedBy;
-
+        //------ start DP ----
+        public string EventEndDate;
+        public string EventStartTime;
+        public string EventEndTime;
+        public string EventDesc;
+        public string EventLoc;
+        public string EventColor;
+        public int EventCal;
+        public string EventFile;
+        public int EventRepeat;
+        public int EventType;
+        //------ End DP -----
     }
+
+    //------- start DP ----
+    public class EventCalendar
+    {
+        public string CalendarName;
+        public int UserId;
+        public string InsertionDate;
+    }
+    //-------- End DP----
 
     public class AddForemanName
     {

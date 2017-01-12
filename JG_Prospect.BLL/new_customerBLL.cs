@@ -202,6 +202,19 @@ namespace JG_Prospect.BLL
         {
             return new_customerDAL.Instance.CheckDuplicateAnnualEvent(Event);
         }
+
+        //----------- start DP ----------
+
+        public DataSet CheckDuplicateCalendarEvent(EventCalendar EventCal)
+        {
+            return new_customerDAL.Instance.CheckDuplicateCalendarEvent(EventCal);
+        }
+
+        public void AddEventCalendar(EventCalendar EventCal)
+        {
+            new_customerDAL.Instance.AddEventCalendar(EventCal);
+        }
+        //---------- end DP ----------
         public void AddForeManName(AddForemanName foremanname)
         {
             new_customerDAL.Instance.AddForemanName(foremanname);
