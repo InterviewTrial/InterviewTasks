@@ -6,7 +6,7 @@
 
 <%--<%@ Register Src="~/Controls/left.ascx" TagName="leftmenu" TagPrefix="uc1" %>--%>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
-   <%-- <script src="../datetime/js/jquery.ptTimeSelect.js" type="text/javascript"></script>
+    <%-- <script src="../datetime/js/jquery.ptTimeSelect.js" type="text/javascript"></script>
     <link href="../datetime/js/jquery.ptTimeSelect.css" rel="stylesheet" type="text/css" />--%>
     <style type="text/css">
         .rsAptDelete {
@@ -293,7 +293,9 @@
                     <asp:Button ID="btnCreateEvent" runat="server" Text="Create" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" Height="30px" Width="75px" OnClick="btnCreateEvent_Click"   />
                     <asp:Button ID="btnCreateCal" runat="server" Text="Create Calendar" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" Height="30px" Width="120px" OnClick="btnCreateCal_Click"   />
                     <% } %>
-                    &nbsp; <asp:Button ID="btnMyCal" runat="server" Text="My Calendar" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" Height="30px" Width="90px"   />
+                    &nbsp; <asp:DropDownList runat="server" ID="drpMyCalendar" Height="30px" Width="200px" OnSelectedIndexChanged="drpMyCalendar_SelectedIndexChanged" AutoPostBack="true">
+                                <asp:ListItem Text="My Calendar" Value="0"></asp:ListItem>
+                           </asp:DropDownList>
                     
                     &nbsp;<asp:Button ID="btnAddEvent" runat="server" Text="Add Event" Style="background: url(img/main-header-bg.png) repeat-x; color: #fff;" Height="30px" Width="75px" OnClick="btnAddEvent_Click" Visible="false" />
                     &nbsp;&nbsp;&nbsp;&nbsp;<asp:CheckBox ID="chkHR" runat="server" Visible ="false" OnCheckedChanged="chkHR_CheckedChanged" Text="HR" AutoPostBack="true" />
@@ -304,18 +306,19 @@
                 <div class="calendar" style="margin: 0;">
 
                     <div id="calendarBodyDiv">
-                        <telerik:RadScheduler ID="rsAppointments" runat="server" DataKeyField="id" DayStartTime="7:00:00" DayEndTime="20:59:59"
+                        <telerik:RadScheduler  ID="rsAppointments" runat="server" DataKeyField="id" DayStartTime="7:00:00" DayEndTime="20:59:59"
                             AllowEdit="false" DataStartField="EventDate" DataEndField="EventDate" DataSubjectField="EventName"
                             ShowHeader="true" Width="100%" Height="100%" TimelineView-NumberOfSlots="0" TimelineView-ShowDateHeaders="false"
-                            EnableExactTimeRendering="true" EnableDatePicker="true" SelectedView="WeekView" 
+                            EnableExactTimeRendering="true" EnableDatePicker="true" SelectedView="MonthView"
                             CustomAttributeNames="EventName,id,LastName,ApplicantId,Designation,Status, Email, AssignedUserFristNames,TaskId ,InstallId"
                             AppointmentContexcalendarBodyDivtMenuSettings-EnableDefault="true" TimelineView-GroupingDirection="Vertical"
-                            TimelineView-ReadOnly="true" DisplayDeleteConfirmation="false" OnAppointmentCreated="rsAppointments_AppointmentCreated">
+                            TimelineView-ReadOnly="true" m DisplayDeleteConfirmation="false" OnAppointmentCreated="rsAppointments_AppointmentCreated">
                             <%-- OnClientAppointmentClick="OnClientAppointmentClick" OnClientTimeSlotClick="OnClientTimeSlotClick"      OnAppointmentClick="rsAppointments_AppointmentClick"--%>
                             <AdvancedForm Modal="True" />
                             <AppointmentTemplate>
                                 <%--<%#Eval("EventName") %>--%>
-                                <asp:LinkButton ID="lbtCustID" runat="server" OnClick="lbtCustID_Click" Text='<%#Eval("ApplicantId") %>' ForeColor="Black"></asp:LinkButton>
+                                <asp:Label ID="lbleventname" runat="server" Text='<%#Eval("EventName")%>' BackColor="Wheat"></asp:Label>
+                             <%--   <asp:LinkButton ID="lbtCustID" runat="server" OnClick="lbtCustID_Click" Text='<%#Eval("ApplicantId") %>' ForeColor="Black"></asp:LinkButton>
 
                                 <asp:LinkButton ID="lnkEmail" Visible="false" runat="server" Text='<%#Eval("Email") %>'></asp:LinkButton>
                                 <%#Eval("LastName") %>, <%#Eval("Designation") %>, <%#Eval("AssignedUserFristNames") %> ,
@@ -332,10 +335,11 @@
 
                                 <asp:LinkButton ID="lbtnReSchedule" runat="server" OnCommand="lbtnReSchedule_Click" Text='Re-Schedule' CommandArgument='<%#Eval("ApplicantId") +","+ Eval("Designation")%> ' ></asp:LinkButton>
                                 /&nbsp;
-                                <a target="_blank" href="/Sr_App/TaskGenerator.aspx?TaskId=<%#Eval("TaskId")%>"><%#Eval("InstallId")%></a>                                
+                                <a target="_blank" href="/Sr_App/TaskGenerator.aspx?TaskId=<%#Eval("TaskId")%>"><%#Eval("InstallId")%></a>   --%>                             
                                 
                             </AppointmentTemplate>
                         </telerik:RadScheduler>
+                        
                         <telerik:RadWindow ID="RadWindow1" runat="server" Modal="true" Title="No Appointment available"
                             Behaviors="Close">
                         </telerik:RadWindow>

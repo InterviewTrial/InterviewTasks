@@ -69,38 +69,14 @@ namespace JG_Prospect.Sr_App
                     }
                 }
                 Session["AppType"] = "SrApp";
-                LoadCalendar();
+                //LoadCalendar();
 
 
-                //---------- start DP ------------
-                DataSet result = new DataSet();
-                try
-                {
-                    SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
-                    {
-                        DbCommand command = database.GetStoredProcCommand("GetAllEventCalendar");
-                        command.CommandType = CommandType.StoredProcedure;
-                        result = database.ExecuteDataSet(command);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    //LogManager.Instance.WriteToFlatFile(ex);
-                }
+                //----- Start DP ------
+                FillMyCalendarDropDown();
+                BindEventCalendar();
+                //------ End DP -----
                 
-                if (result.Tables[0].Rows.Count > 0)
-                {
-                    for (int i = 0; i < result.Tables[0].Rows.Count - 1; i++)
-                    {
-                        ListItem lst = new ListItem();
-                        lst.Text = result.Tables[0].Rows[i]["CalendarName"].ToString();
-                        lst.Value = result.Tables[0].Rows[i]["ID"].ToString();
-                        drpEventCalender.Items.Add(lst);
-                    }
-                }
-                result.Dispose();
-                //------------ End DP ------------
-
             }
 
         }
@@ -108,6 +84,11 @@ namespace JG_Prospect.Sr_App
         #endregion
 
         #region '--Control Events--'
+
+        protected void drpMyCalendar_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            BindEventByCalendar(Convert.ToInt32(drpMyCalendar.SelectedValue));
+        }
 
         protected void lbtCustomerID_Click(object sender, EventArgs e)
         {
@@ -196,6 +177,7 @@ namespace JG_Prospect.Sr_App
               
                 // -------- insert record  ----------
                 new_customerBLL.Instance.AddEventCalendar(a);
+                FillMyCalendarDropDown();
                 ScriptManager.RegisterStartupScript(this.Page, GetType(), "al", "alert('Calendar Added Successfully');", true);
             }
             else
@@ -360,6 +342,7 @@ namespace JG_Prospect.Sr_App
                             CommonFunction.SendEmail("", emailId, strsubject, emailbody, lstAttachments);
                         }
                     }
+                    
                     ScriptManager.RegisterStartupScript(this.Page, GetType(), "al", "alert('Event Added Successfully');", true);
                 }
                 catch(Exception ex)
@@ -986,6 +969,20 @@ namespace JG_Prospect.Sr_App
             RadWindow2.VisibleOnPageLoad = false;
         }
 
+        //----------- Start DP ------------
+
+        public void BindEventByCalendar(int calid)
+        {
+            DataSet ds = AdminBLL.Instance.GetEventByCalendar(calid);
+            if (ds.Tables[0].Rows.Count > 0)
+            {
+                rsAppointments.DataSource = ds.Tables[0];
+                rsAppointments.DataBind();
+            }
+            RadWindow2.VisibleOnPageLoad = false;
+        }
+        // ---------- End DP ------------
+
         public void BindHRCompanyCalendar()
         {
             DataSet ds = AdminBLL.Instance.GetHRCompanyCalendar();
@@ -1111,6 +1108,51 @@ namespace JG_Prospect.Sr_App
                 UtilityBAL.AddException("CreateSalesUser-SendEmail", Session["loginid"] == null ? "" : Session["loginid"].ToString(), ex.Message, ex.StackTrace);
             }
         }
+
+        private void FillMyCalendarDropDown()
+        {
+            //---------- start DP ------------
+            int userId = Convert.ToInt16(Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+            DataSet result = new DataSet();
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("GetAllEventCalendar");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@UserId", DbType.Int32, userId);
+                    result = database.ExecuteDataSet(command);
+                }
+            }
+            catch (Exception ex)
+            {
+                //LogManager.Instance.WriteToFlatFile(ex);
+            }
+
+            if (result.Tables[0].Rows.Count > 0)
+            {
+                drpMyCalendar.Items.Clear();
+                drpEventCalender.Items.Clear();
+
+                ListItem lstMyCal = new ListItem();
+                lstMyCal.Text = "My Calendar";
+                lstMyCal.Value = "0";
+                drpMyCalendar.Items.Add(lstMyCal);
+
+
+                for (int i = 0; i < result.Tables[0].Rows.Count; i++)
+                {
+                    ListItem lst = new ListItem();
+                    lst.Text = result.Tables[0].Rows[i]["CalendarName"].ToString();
+                    lst.Value = result.Tables[0].Rows[i]["ID"].ToString();
+                    drpEventCalender.Items.Add(lst);
+                    drpMyCalendar.Items.Add(lst);
+                }
+            }
+            result.Dispose();
+            //------------ End DP ------------
+        }
+
 
         #endregion
     }

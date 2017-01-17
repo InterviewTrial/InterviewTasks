@@ -85,13 +85,13 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.WebControls.Button btnCreateCal;
         
         /// <summary>
-        /// btnMyCal control.
+        /// drpMyCalendar control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnMyCal;
+        protected global::System.Web.UI.WebControls.DropDownList drpMyCalendar;
         
         /// <summary>
         /// btnAddEvent control.

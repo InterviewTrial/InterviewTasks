@@ -18,9 +18,10 @@ GO
 -- Create date: <Create Date,,>
 -- Description:	<Description,,>
 -- =============================================
-create PROCEDURE [dbo].[GetAllEventCalendar] 
+create PROCEDURE [dbo].[GetEventByCalendar]
 	-- Add the parameters for the stored procedure here
-	@UserId as int
+	@Year varchar(10),
+	@calid int
 AS
 BEGIN
 	-- SET NOCOUNT ON added to prevent extra result sets from
@@ -28,7 +29,28 @@ BEGIN
 	SET NOCOUNT ON;
 
     -- Insert statements for procedure here
-	select * from tbl_EventCalendar where UserId=@UserId order by InsertionDate desc
-	
+	SELECT 
+		a.ID,a.EventName,a.EventDate,a.EventAddedBy,a.ApplicantId,u.Username,i.FristName,i.LastName,i.Phone
+	FROM 
+		tbl_AnnualEvents a 
+		OUTER APPLY 
+		(
+			SELECT TOP 1 Id, Username, FirstName AS FristName
+			FROM tblUsers
+			WHERE tblUsers.id = a.EventAddedBy AND ISNULL(a.IsInstallUser,0) = 0
+
+			UNION
+
+			SELECT TOP 1  Id, Email AS Username, FristName
+			FROM tblInstallUsers
+			WHERE tblInstallUsers.id = a.EventAddedBy AND ISNULL(a.IsInstallUser,1) = 1
+		) u --INNER JOIN  tblUsers u ON u.Id = a.EventAddedBy 
+		LEFT JOIN tblInstallUsers i ON i.Id = a.ApplicantId 
+	WHERE 
+		a.EventName IS NOT NULL 
+			AND a.EventName !='InterViewDetails' 
+			AND DATEPART(yyyy,EventDate)=@Year
+			AND a.EventCal = @calid
 END
+
 
