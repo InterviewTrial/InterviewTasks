@@ -19,7 +19,6 @@
      <link rel="stylesheet" href="https://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.css" />
     <script src="https://code.jquery.com/jquery-1.9.1.js"></script>
     <script src="https://code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
-    <script src="js/Custom/JgPopUp.js" type="text/javascript"></script>
     <link rel="stylesheet" href="/resources/demos/style.css" />
 
 
@@ -42,79 +41,8 @@
                 changeYear: true,
                 yearRange: '1950:2050',
                 maxDate: 'today'
-          });
-
-          $(document).ready(function () {
-              var userEmail = GetParameterValues('Email');
-              var UserId = GetParameterValues('ID');
-
-              
-              if (userEmail != undefined && UserId != undefined && userEmail != "" && UserId != "") {
-                  // Check user existe
-                  checkUserIsNewUserAndShowMsg(userEmail, UserId);
-              }
-              
-
-          });
-
-
-          function checkUserIsNewUserAndShowMsg(UserEmail,UserId)
-          {
-              debugger;
-              $.ajax({
-                  type: "POST",
-                  url: "stafflogin.aspx/CheckForNewUserFromOtherSite",
-                  contentType: "application/json; charset=utf-8",
-                  dataType: "JSON",
-                  data: "{'UserEmail':'" + UserEmail + "','UserID':" + UserId + "}",
-
-                  success: function (data) {
-                  
-                      if (data.d == 'YES') {
-                          TheConfirm_Ok_Cancel('Your username is the phone # or email you have entered, your default password is "jmgrove". Select continue to proceed with application process or cancel. Save your username and password for future use.'
-                          , function () {
-                          }, function () {
-                          },
-                            'Login Guidance'
-                        );
-                      }
-
-                  },
-                  error: function (req, status, err) {
-                      debugger;
-                  }
-              });
-          }
-
-
-          function GetParameterValues(param) {
-              var url = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-              for (var i = 0; i < url.length; i++) {
-                  var urlparam = url[i].split('=');
-                  if (urlparam[0] == param) {
-                      return urlparam[1];
-                  }
-              }
-          }
-
-          
-      });
-
-
-      function getUrlVars() {
-          
-          var vars = [], hash;
-          var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
-          alert(hashes);
-          for (var i = 0; i < hashes.length; i++) {
-              hash = hashes[i].split('=');
-              vars.push(hash[0]);
-              vars[hash[0]] = hash[1];
-          }
-          return vars;
-      }
-
-
+            });
+        });
           </script>
    <%-- <script type="text/javascript">
         $(function () {
@@ -167,16 +95,6 @@
             alert('Your session has expired,login to continue');
         }
         
-        function loginFailMessage() {
-
-            var loginFailMsg = '';
-            loginFailMsg += 'User Name or Password is incorrect.\n';
-            loginFailMsg += 'If you believe you have the correct login ID and password, try selecting the customer or staff toggle to confirm you are logging into correct site.\n';
-            loginFailMsg += 'If you still can not log in you may recover your user login and password by selecting forgot username &/or forgot password link!';
-
-            alert(loginFailMsg);
-        }
-
     </script>
     
 </head>
@@ -320,7 +238,7 @@
         <!--footer section-->
         <div class="footer_panel">
             <ul>
-                <li>&copy; 2012 JG All Rights Reserved.</li>
+                <li>&copy; 2016 JG All Rights Reserved. - JMGrove Construction</li>
                 <li><a href="#">Terms of Use</a></li>
                 <li>|</li>
                 <li><a href="#">Privacy Policy</a></li>
