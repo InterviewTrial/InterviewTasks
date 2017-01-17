@@ -224,14 +224,6 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Net.Http">
-      <HintPath>..\packages\Microsoft.Net.Http.2.0.20505.0\lib\net40\System.Net.Http.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Net.Http.WebRequest">
-      <HintPath>..\packages\Microsoft.Net.Http.2.0.20505.0\lib\net40\System.Net.Http.WebRequest.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System.Web.DataVisualization" />
     <Reference Include="System.Web.DataVisualization.Design" />
     <Reference Include="System.Web.Extensions" />
@@ -255,7 +247,6 @@
     <Content Include="AddResourcesJr.aspx" />
     <Content Include="AssignProspect.aspx" />
     <Content Include="bin\AjaxControlToolkit.dll" />
-    <Content Include="bin\Antlr3.Runtime.dll" />
     <Content Include="bin\aspsnippets.facebookapi.dll" />
     <Content Include="bin\ASPSnippets.GoogleAPI.dll" />
     <Content Include="bin\ASPSnippets.SmsAPI.dll" />
@@ -294,22 +285,11 @@
     <Content Include="bin\Microsoft.Web.Mvc.FixedDisplayModes.dll" />
     <Content Include="bin\Newtonsoft.Json.dll" />
     <Content Include="bin\NReco.PdfGenerator.dll" />
-    <Content Include="bin\System.Net.Http.Formatting.dll" />
     <Content Include="bin\System.Spatial.dll" />
     <Content Include="bin\System.Web.Helpers.dll" />
-    <Content Include="bin\System.Web.Http.dll" />
     <Content Include="bin\System.Web.Http.OData.dll" />
-    <Content Include="bin\System.Web.Http.Tracing.dll" />
-    <Content Include="bin\System.Web.Http.WebHost.dll" />
-    <Content Include="bin\System.Web.Mvc.dll" />
-    <Content Include="bin\System.Web.Optimization.dll" />
     <Content Include="bin\System.Web.Providers.dll" />
-    <Content Include="bin\System.Web.Razor.dll" />
-    <Content Include="bin\System.Web.WebPages.Deployment.dll" />
-    <Content Include="bin\System.Web.WebPages.dll" />
-    <Content Include="bin\System.Web.WebPages.Razor.dll" />
     <Content Include="bin\Telerik.Web.UI.DLL" />
-    <Content Include="bin\WebGrease.dll" />
     <Content Include="calendar\calendar.aspx" />
     <Content Include="calendar\calvis.js" />
     <Content Include="calendar\close.gif" />
@@ -2934,6 +2914,11 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
+  <Import Project="..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" />
+  <Target Name="EnsureBclBuildImported" BeforeTargets="BeforeBuild" Condition="'$(BclBuildImported)' == ''">
+    <Error Condition="!Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" Text="This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=317567." HelpKeyword="BCLBUILD2001" />
+    <Error Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.14\tools\Microsoft.Bcl.Build.targets')" Text="The build restored NuGet packages. Build the project again to include these packages in the build. For more information, see http://go.microsoft.com/fwlink/?LinkID=317568." HelpKeyword="BCLBUILD2002" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
